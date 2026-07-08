@@ -1,0 +1,11 @@
+▲ Next.js 16.2.10 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.37.1:3000
+- Environments: .env.local
+✓ Ready in 574ms
+
+ GET / 200 in 3.5s (next.js: 2.9s, proxy.ts: 257ms, application-code: 408ms)
+ GET / 200 in 243ms (next.js: 8ms, proxy.ts: 12ms, application-code: 223ms)
+ GET /login 200 in 1032ms (next.js: 895ms, proxy.ts: 7ms, application-code: 131ms)
+ GET /signup 200 in 630ms (next.js: 576ms, proxy.ts: 5ms, application-code: 49ms)
+ GET /pricing 200 in 736ms (next.js: 520ms, proxy.ts: 10ms, application-code: 206ms)

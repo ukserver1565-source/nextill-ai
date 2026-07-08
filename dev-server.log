@@ -1,0 +1,104 @@
+
+> nextill-ai@1.0.0 dev
+> next dev
+
+▲ Next.js 16.2.10 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.37.1:3000
+- Environments: .env.local
+✓ Ready in 857ms
+
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+ GET / 200 in 1985ms (next.js: 597ms, proxy.ts: 727ms, application-code: 661ms)
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+[MIDDLEWARE] role: free_user
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+ GET / 200 in 513ms (next.js: 63ms, proxy.ts: 351ms, application-code: 98ms)
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+ GET / 200 in 306ms (next.js: 5ms, proxy.ts: 237ms, application-code: 64ms)
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+ GET / 200 in 297ms (next.js: 4ms, proxy.ts: 218ms, application-code: 75ms)
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+ GET / 200 in 287ms (next.js: 5ms, proxy.ts: 213ms, application-code: 69ms)
+[MIDDLEWARE] role: free_user
+Using the user object as returned from supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly from the storage medium (usually cookies on the server) and may not be authentic. Use supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.
+[MIDDLEWARE] session active for: muzamal57gansari@gmail.com
+ GET / 200 in 301ms (next.js: 6ms, proxy.ts: 208ms, application-code: 88ms)
+[MIDDLEWARE] role: free_user
+ GET / 200 in 283ms (next.js: 9ms, proxy.ts: 219ms, application-code: 55ms)
