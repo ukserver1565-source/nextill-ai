@@ -3,17 +3,17 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors",
+  "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors",
   {
     variants: {
       variant: {
-        default: "bg-primary/10 text-primary border border-primary/20",
-        success: "bg-success/10 text-success border border-success/20",
-        warning: "bg-warning/10 text-warning border border-warning/20",
-        danger: "bg-danger/10 text-danger border border-danger/20",
-        info: "bg-info/10 text-info border border-info/20",
-        outline: "text-foreground border border-border",
-        ghost: "bg-card text-muted",
+        default: "bg-[#6D5EF5]/10 text-[#6D5EF5] border border-[#6D5EF5]/20",
+        success: "bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20",
+        warning: "bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20",
+        danger: "bg-[#EF4444]/10 text-[#EF4444] border border-[#EF4444]/20",
+        info: "bg-[#4CC9F0]/10 text-[#4CC9F0] border border-[#4CC9F0]/20",
+        outline: "text-white border border-[rgba(255,255,255,0.06)]",
+        ghost: "bg-[#151C2E] text-[#A7B0C0]",
       },
       size: {
         default: "px-2.5 py-0.5 text-xs",
@@ -30,11 +30,28 @@ const badgeVariants = cva(
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+    VariantProps<typeof badgeVariants> {
+  showDot?: boolean
+}
 
-function Badge({ className, variant, size, ...props }: BadgeProps) {
+const dotColorMap: Record<string, string> = {
+  default: "bg-[#6D5EF5]",
+  success: "bg-[#22C55E]",
+  warning: "bg-[#F59E0B]",
+  danger: "bg-[#EF4444]",
+  info: "bg-[#4CC9F0]",
+  outline: "bg-white",
+  ghost: "bg-[#A7B0C0]",
+}
+
+function Badge({ className, variant, size, showDot, children, ...props }: BadgeProps) {
   return (
-    <div className={cn(badgeVariants({ variant, size }), className)} {...props} />
+    <div className={cn(badgeVariants({ variant, size }), className)} {...props}>
+      {showDot && (
+        <span className={cn("inline-block h-1.5 w-1.5 rounded-full", dotColorMap[variant || "default"])} />
+      )}
+      {children}
+    </div>
   )
 }
 

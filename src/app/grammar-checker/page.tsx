@@ -1,5 +1,11 @@
+import { LegacyBanner } from "@/components/tools/legacy-banner"
 import { GenericToolPage } from "@/components/tools/generic-tool-page"
 
-export default function Page() {
-  return <GenericToolPage slug="grammar-checker" />
+export default function OldToolPage() {
+  return (
+    <>
+      <LegacyBanner toolName="Grammar Checker" targetRoute="/post-generator" />
+      <GenericToolPage slug="grammar-checker" />
+    </>
+  )
 }

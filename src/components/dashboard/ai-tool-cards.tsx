@@ -1,77 +1,90 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  PenSquare, UserCheck, SearchCheck, FileSearch,
-  SpellCheck, RefreshCw, AlignLeft, Languages, HelpCircle,
-  Star, Pin, ArrowRight, Clock,
-} from "lucide-react"
+import { Search, FileText, FileSearch, ArrowRight, Sparkles } from "lucide-react"
 import Link from "next/link"
 
 const tools = [
-  { icon: PenSquare, name: "AI Writer", slug: "/ai-writer", description: "Generate high-quality, SEO-optimized content with AI", color: "from-blue-500 to-purple-600", badge: "Popular", recent: "Created 2 hours ago", pinned: true },
-  { icon: UserCheck, name: "AI Humanizer", slug: "/ai-humanizer", description: "Make AI-generated text indistinguishable from human writing", color: "from-emerald-500 to-teal-600", badge: "New", recent: "Used 30 min ago", pinned: true },
-  { icon: SearchCheck, name: "AI Detector", slug: "/ai-detector", description: "Detect AI-generated content with advanced analysis", color: "from-amber-500 to-orange-600", badge: "Updated", recent: "Used 1 hour ago", pinned: false },
-  { icon: FileSearch, name: "Plagiarism Checker", slug: "/plagiarism-checker", description: "Check content originality across billions of web pages", color: "from-red-500 to-pink-600", badge: undefined, recent: "Used yesterday", pinned: false },
-  { icon: SpellCheck, name: "Grammar Checker", slug: "/grammar-checker", description: "Fix grammar, punctuation, and style issues instantly", color: "from-pink-500 to-rose-600", badge: undefined, recent: "Used 3 hours ago", pinned: false },
-  { icon: RefreshCw, name: "Article Rewriter", slug: "/article-rewriter", description: "Rewrite content while maintaining original meaning", color: "from-orange-500 to-red-600", badge: undefined, recent: "Used 5 hours ago", pinned: false },
-  { icon: AlignLeft, name: "Summarizer", slug: "/summarizer", description: "Condense long content into concise summaries", color: "from-cyan-500 to-blue-600", badge: undefined, recent: "Never used", pinned: false },
-  { icon: Languages, name: "Translator", slug: "/translator", description: "Translate content across 50+ languages", color: "from-violet-500 to-indigo-600", badge: undefined, recent: "Used 2 days ago", pinned: false },
-  { icon: HelpCircle, name: "FAQ Generator", slug: "/faq-generator", description: "Generate FAQ sections with schema markup", color: "from-lime-500 to-green-600", badge: "New", recent: "Never used", pinned: false },
+  {
+    icon: Search,
+    name: "Keyword Intelligence",
+    slug: "/keyword-intelligence",
+    description: "Discover high-value keywords with volume, difficulty & SERP analysis",
+    color: "from-violet-500 to-indigo-600",
+    badge: "Popular",
+    credits: "2 credits",
+  },
+  {
+    icon: FileText,
+    name: "Post Generator",
+    slug: "/post-generator",
+    description: "Generate full SEO-optimized blog posts from a topic in one click",
+    color: "from-blue-500 to-purple-600",
+    badge: "New",
+    credits: "5 credits",
+  },
+  {
+    icon: FileSearch,
+    name: "Plagiarism Checker",
+    slug: "/plagiarism-checker",
+    description: "Check content originality against billions of indexed web pages",
+    color: "from-red-500 to-pink-600",
+    badge: undefined,
+    credits: "3 credits",
+  },
 ]
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.12, duration: 0.5, ease: "easeOut" },
+  }),
+}
 
 export function AIToolCards() {
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold tracking-tight">AI Tools</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-white">AI Workflows</h2>
+        <span className="text-xs text-[#A7B0C0]">3 available</span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {tools.map((tool, i) => {
           const Icon = tool.icon
           return (
             <Link key={tool.name} href={tool.slug}>
               <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05, duration: 0.3 }}
-                className="glass-card rounded-xl p-4 hover:glass-card-hover transition-all duration-300 group cursor-pointer"
+                custom={i}
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6 hover:border-[#6D5EF5]/30 hover:bg-[#151C2E]/90 transition-all duration-300 group cursor-pointer h-full flex flex-col"
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div className={cn(
-                    "w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br",
-                    tool.color
-                  )}>
-                    <Icon className="w-5 h-5 text-white" />
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${tool.color} shadow-lg`}>
+                    <Icon className="w-6 h-6 text-white" />
                   </div>
-                  <div className="flex items-center gap-1">
-                    {tool.pinned && (
-                      <Pin className="w-3.5 h-3.5 text-primary fill-primary/30" />
-                    )}
+                  <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:bg-[#6D5EF5]/10 group-hover:border-[#6D5EF5]/20">
+                    <ArrowRight className="w-4 h-4 text-[#6D5EF5]" />
                   </div>
                 </div>
-
-                <h3 className="text-sm font-semibold mb-1">{tool.name}</h3>
-                <p className="text-[11px] text-muted leading-relaxed mb-3 line-clamp-2">
+                <h3 className="text-base font-semibold text-white mb-2">{tool.name}</h3>
+                <p className="text-xs text-[#A7B0C0] leading-relaxed mb-4 flex-1">
                   {tool.description}
                 </p>
-
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between pt-3 border-t border-white/[0.06]">
                   <div className="flex items-center gap-2">
                     {tool.badge && (
-                      <Badge variant="info" size="sm">{tool.badge}</Badge>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#4CC9F0]/10 text-[#4CC9F0] border border-[#4CC9F0]/20">
+                        {tool.badge}
+                      </span>
                     )}
-                    <div className="flex items-center gap-1 text-[10px] text-muted">
-                      <Clock className="w-3 h-3" />
-                      {tool.recent}
-                    </div>
+                    <span className="text-[10px] text-[#A7B0C0]">{tool.credits}</span>
                   </div>
-                  <Button variant="ghost" size="icon-sm" className="rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Button>
+                  <Sparkles className="w-3.5 h-3.5 text-[#6D5EF5]/40" />
                 </div>
               </motion.div>
             </Link>

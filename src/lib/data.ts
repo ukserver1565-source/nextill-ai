@@ -80,77 +80,28 @@ export const projectList = [
 ]
 
 export const sidebarMenu = [
-  {
-    section: "Main",
-    items: [
-      { label: "Dashboard", icon: "LayoutDashboard", path: "/dashboard" },
-    ],
-  },
-  {
-    section: "AI Content",
-    items: [
-      { label: "AI Writer", icon: "PenSquare", path: "/ai-writer" },
-      { label: "AI Humanizer", icon: "UserCheck", path: "/ai-humanizer" },
-      { label: "AI Detector", icon: "SearchCheck", path: "/ai-detector" },
-      { label: "Plagiarism Checker", icon: "FileSearch", path: "/plagiarism-checker" },
-      { label: "Article Rewriter", icon: "RefreshCw", path: "/article-rewriter" },
-      { label: "Grammar Checker", icon: "SpellCheck", path: "/grammar-checker" },
-      { label: "Summarizer", icon: "AlignLeft", path: "/summarizer" },
-      { label: "Translator", icon: "Languages", path: "/translator" },
-    ],
-  },
-  {
-    section: "SEO Suite",
-    items: [
-      { label: "Keyword Research", icon: "Search", path: "/keyword-research" },
-      { label: "SEO Title Generator", icon: "Heading", path: "/seo-title-generator" },
-      { label: "Meta Description", icon: "FileText", path: "/meta-description-generator" },
-      { label: "Schema Generator", icon: "Code", path: "/schema-generator" },
-      { label: "Sitemap Generator", icon: "Map", path: "/sitemap-generator" },
-      { label: "Robots.txt Generator", icon: "Bot", path: "/robots-txt-generator" },
-      { label: "Internal Link Generator", icon: "Link", path: "/internal-link-generator" },
-      { label: "Content Brief", icon: "ClipboardList", path: "/content-brief" },
-      { label: "Topical Map", icon: "GitBranch", path: "/topical-map" },
-      { label: "FAQ Generator", icon: "HelpCircle", path: "/faq-generator" },
-    ],
-  },
-  {
-    section: "Advanced Tools",
-    items: [
-      { label: "Website Audit", icon: "Shield", path: "/website-audit" },
-      { label: "Rank Tracker", icon: "TrendingUp", path: "/rank-tracker" },
-      { label: "Backlink Checker", icon: "Share2", path: "/backlink-checker" },
-    ],
-  },
-  {
-    section: "Workspace",
-    items: [
-      { label: "Projects", icon: "FolderKanban", path: "/dashboard/projects" },
-      { label: "Documents", icon: "File", path: "/dashboard/documents" },
-      { label: "History", icon: "Clock", path: "/dashboard/history" },
-    ],
-  },
-  {
-    section: "Account",
-    items: [
-      { label: "Billing", icon: "CreditCard", path: "/dashboard/billing" },
-      { label: "Settings", icon: "Settings", path: "/dashboard/settings" },
-    ],
-  },
+  { section: "Main", items: [
+    { label: "Dashboard", icon: "LayoutDashboard", path: "/dashboard" },
+  ]},
+  { section: "Workflows", items: [
+    { label: "Keyword Intelligence", icon: "Search", path: "/keyword-intelligence" },
+    { label: "Post Generator", icon: "FileText", path: "/post-generator" },
+    { label: "Plagiarism Checker", icon: "Shield", path: "/plagiarism-checker" },
+  ]},
+  { section: "Workspace", items: [
+    { label: "Projects", icon: "FolderKanban", path: "/dashboard/projects" },
+    { label: "Documents", icon: "File", path: "/dashboard/documents" },
+    { label: "History", icon: "Clock", path: "/dashboard/history" },
+  ]},
+  { section: "Account", items: [
+    { label: "Credits", icon: "Sparkles", path: "/dashboard/credits" },
+    { label: "Billing", icon: "CreditCard", path: "/dashboard/billing" },
+    { label: "Settings", icon: "Settings", path: "/dashboard/settings" },
+  ]},
 ]
 
 export const quickActions = [
-  { label: "Create Article", icon: "FilePlus", color: "from-blue-500 to-purple-600" },
-  { label: "Humanize", icon: "UserCheck", color: "from-emerald-500 to-teal-600" },
-  { label: "Rewrite", icon: "RefreshCw", color: "from-orange-500 to-red-600" },
-  { label: "Translate", icon: "Languages", color: "from-violet-500 to-indigo-600" },
-  { label: "Summarize", icon: "AlignLeft", color: "from-cyan-500 to-blue-600" },
-  { label: "Grammar Fix", icon: "SpellCheck", color: "from-pink-500 to-rose-600" },
-  { label: "Check AI", icon: "SearchCheck", color: "from-amber-500 to-orange-600" },
+  { label: "Keyword Intelligence", icon: "Search", color: "from-violet-500 to-indigo-600" },
+  { label: "Generate SEO Post", icon: "FileText", color: "from-blue-500 to-purple-600" },
   { label: "Check Plagiarism", icon: "FileSearch", color: "from-red-500 to-pink-600" },
-  { label: "Generate FAQ", icon: "HelpCircle", color: "from-lime-500 to-green-600" },
-  { label: "Generate Outline", icon: "ListTree", color: "from-sky-500 to-indigo-600" },
-  { label: "Generate Title", icon: "Heading", color: "from-purple-500 to-violet-600" },
-  { label: "Generate Meta", icon: "FileText", color: "from-teal-500 to-emerald-600" },
-  { label: "Generate Schema", icon: "Code", color: "from-indigo-500 to-blue-600" },
 ]

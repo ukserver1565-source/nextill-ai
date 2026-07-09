@@ -1,21 +1,22 @@
-import { NextResponse } from "next/server"
-import { apiKeyRepo } from "@/lib/repositories/api-key-repo"
+import { NextRequest, NextResponse } from "next/server"
+import { apiKeysService } from "@/lib/services/admin/api-keys.service"
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const keys = await apiKeyRepo.listAll()
-    return NextResponse.json(keys)
+    const providerId = req.nextUrl.searchParams.get("provider_id") || undefined
+    const data = await apiKeysService.list(providerId)
+    return NextResponse.json(data)
   } catch (err) {
     return NextResponse.json({ error: "Failed to fetch API keys", details: (err as Error).message }, { status: 500 })
   }
 }
 
-export async function DELETE(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const { id } = await request.json()
-    await apiKeyRepo.delete(id)
-    return NextResponse.json({ success: true })
+    const body = await req.json()
+    const data = await apiKeysService.create(body)
+    return NextResponse.json(data)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to delete API key", details: (err as Error).message }, { status: 500 })
+    return NextResponse.json({ error: "Failed to create API key", details: (err as Error).message }, { status: 400 })
   }
 }

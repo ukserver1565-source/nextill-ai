@@ -1,16 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { useData, LoadingSkeleton, ErrorState } from "@/lib/hooks/use-admin-data"
-import { adminApi } from "@/lib/admin-api"
-import { AdminModal } from "@/components/admin/admin-modal"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import { cn } from "@/lib/utils"
-import { formatCurrency } from "@/lib/admin-utils"
-import { Cpu, Edit3, Key, CheckCircle } from "lucide-react"
+import { motion } from "framer-motion"
+import { Cpu, Bot, Brain, Globe, Edit3, Key, Star, CheckCircle } from "lucide-react"
 
 const providerColors: Record<string, string> = {
   OpenAI: "from-emerald-500 to-teal-600",
@@ -20,139 +12,86 @@ const providerColors: Record<string, string> = {
   "Self-Hosted": "from-zinc-500 to-zinc-600",
 }
 
+const providerIcons: Record<string, any> = {
+  OpenAI: Bot, Google: Globe, Anthropic: Brain, DeepSeek: Cpu, "Self-Hosted": Cpu,
+}
+
+const sampleModels = [
+  { id: 1, name: "GPT-4o", provider: "OpenAI", model_id: "gpt-4o", enabled: true, cost: 0.0025, usage: 15230, default_for: ["writer", "outline"], fallback: false, placeholder: "sk-..." },
+  { id: 2, name: "GPT-4o Mini", provider: "OpenAI", model_id: "gpt-4o-mini", enabled: true, cost: 0.00015, usage: 28400, default_for: ["humanizer"], fallback: true, placeholder: "sk-..." },
+  { id: 3, name: "Claude 3 Opus", provider: "Anthropic", model_id: "claude-3-opus", enabled: true, cost: 0.015, usage: 5200, default_for: ["final-optimization"], fallback: false, placeholder: "sk-ant-..." },
+  { id: 4, name: "Gemini Pro", provider: "Google", model_id: "gemini-pro", enabled: true, cost: 0.0005, usage: 8900, default_for: ["keyword-analysis"], fallback: false, placeholder: "AIza..." },
+  { id: 5, name: "DeepSeek Chat", provider: "DeepSeek", model_id: "deepseek-chat", enabled: false, cost: 0.0001, usage: 0, default_for: [], fallback: false, placeholder: "sk-ds-..." },
+]
+
 export default function AiModelsPage() {
-  const {data: models, loading, error, refetch} = useData(() => adminApi.models())
-  const [editModel, setEditModel] = useState<any>(null)
-  const [showKeyModal, setShowKeyModal] = useState(false)
-  const [showEditModal, setShowEditModal] = useState(false)
-  const [keyValue, setKeyValue] = useState("")
-  const [editForm, setEditForm] = useState({ api_key_placeholder: "", enabled: true, fallback: false })
-
-  if (loading) return <LoadingSkeleton />
-  if (error) return <ErrorState message={error} onRetry={refetch} />
-
-  const handleSaveKey = async () => {
-    if (!editModel || !keyValue) return
-    try {
-      await adminApi.updateModel(editModel.id, { api_key_placeholder: keyValue })
-      setShowKeyModal(false)
-      setKeyValue("")
-      setEditModel(null)
-      refetch()
-    } catch (e) { console.error(e) }
-  }
-
-  const handleSaveEdit = async () => {
-    if (!editModel) return
-    try {
-      await adminApi.updateModel(editModel.id, editForm)
-      setShowEditModal(false)
-      setEditModel(null)
-      refetch()
-    } catch (e) { console.error(e) }
-  }
-
-  const openApiKey = (model: any) => {
-    setEditModel(model)
-    setKeyValue(model.api_key_placeholder || "")
-    setShowKeyModal(true)
-  }
-
-  const openEdit = (model: any) => {
-    setEditModel(model)
-    setEditForm({ api_key_placeholder: model.api_key_placeholder || "", enabled: model.enabled, fallback: model.fallback || false })
-    setShowEditModal(true)
-  }
+  const [models] = useState(sampleModels)
 
   return (
     <div className="space-y-6">
-      <div><h1 className="text-2xl font-bold tracking-tight">AI Models</h1><p className="text-sm text-muted mt-1">Manage AI provider models and API keys</p></div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {(models || []).map((model: any) => (
-          <div key={model.id} className="glass-card rounded-xl p-4 hover:glass-card-hover transition-all">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br", providerColors[model.provider] || "from-primary to-accent")}>
-                  <Cpu className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold">{model.name}</h3>
-                  <p className="text-[10px] text-muted">{model.provider}</p>
-                </div>
-              </div>
-              <div className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium border", model.enabled ? "bg-success/10 text-success border-success/20" : "bg-muted/10 text-muted border-muted/20")}>
-                {model.enabled ? "Active" : "Disabled"}
-              </div>
-            </div>
-
-            <Separator className="my-3" />
-
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between"><span className="text-muted">API Key</span><span className="font-mono text-[10px]">{model.api_key_placeholder}••••</span></div>
-              <div className="flex justify-between"><span className="text-muted">Cost/Request</span><span className="font-medium">{formatCurrency(model.cost_per_request)}</span></div>
-              <div className="flex justify-between"><span className="text-muted">Monthly Cost</span><span className="font-medium">{formatCurrency(model.monthly_cost)}</span></div>
-              <div className="flex justify-between"><span className="text-muted">Usage</span><span className="font-medium">{model.usage_count.toLocaleString()}</span></div>
-            </div>
-
-            <div className="mt-3">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1">Default For</p>
-              <div className="flex flex-wrap gap-1">
-                {model.default_for.length > 0 ? model.default_for.map((tool: any) => (
-                  <Badge key={tool} variant="info" size="sm">{tool.replace(/_/g, " ")}</Badge>
-                )) : <span className="text-[10px] text-muted">None</span>}
-              </div>
-            </div>
-
-            {model.fallback && (
-              <div className="flex items-center gap-1 mt-2 text-[10px] text-warning">
-                <CheckCircle className="w-3 h-3" /> Fallback model
-              </div>
-            )}
-
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
-              <Button variant="outline" size="sm" className="rounded-lg flex-1 gap-1.5" onClick={() => openApiKey(model)}><Key className="w-3.5 h-3.5" /> API Key</Button>
-              <Button variant="outline" size="sm" className="rounded-lg flex-1 gap-1.5" onClick={() => openEdit(model)}><Edit3 className="w-3.5 h-3.5" /> Edit</Button>
-            </div>
-          </div>
-        ))}
+      <div>
+        <h1 className="text-2xl font-bold text-white">AI Models</h1>
+        <p className="text-sm text-[#A7B0C0] mt-1">Manage AI provider models and API keys</p>
       </div>
 
-      <AdminModal open={showKeyModal} onClose={() => setShowKeyModal(false)} title={`API Key: ${editModel?.name || ""}`} size="sm">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-xs text-muted mb-1">API Key Value</label>
-            <Input value={keyValue} onChange={(e) => setKeyValue(e.target.value)} placeholder="sk-..." className="bg-card border-border text-xs font-mono" />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" size="sm" onClick={() => setShowKeyModal(false)}>Cancel</Button>
-            <Button variant="gradient" size="sm" onClick={handleSaveKey}>Save Key</Button>
-          </div>
-        </div>
-      </AdminModal>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {models.map((m, i) => {
+          const Icon = providerIcons[m.provider] || Cpu
+          return (
+            <motion.div key={m.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br ${providerColors[m.provider] || "from-[#6D5EF5] to-[#8B5CF6]"}`}>
+                    <Icon className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-white">{m.name}</h3>
+                    <p className="text-[10px] text-[#A7B0C0]">{m.provider}</p>
+                  </div>
+                </div>
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${
+                  m.enabled ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]"
+                }`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${m.enabled ? "bg-[#22C55E]" : "bg-[#A7B0C0]"}`} />
+                  {m.enabled ? "Active" : "Disabled"}
+                </span>
+              </div>
 
-      <AdminModal open={showEditModal} onClose={() => setShowEditModal(false)} title={`Edit: ${editModel?.name || "Model"}`} size="sm">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-xs text-muted mb-1">API Key Placeholder</label>
-            <Input value={editForm.api_key_placeholder} onChange={(e) => setEditForm(f => ({ ...f, api_key_placeholder: e.target.value }))} className="bg-card border-border text-xs" />
-          </div>
-          <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2 text-xs text-muted cursor-pointer">
-              <input type="checkbox" checked={editForm.enabled} onChange={(e) => setEditForm(f => ({ ...f, enabled: e.target.checked }))} className="rounded border-border" />
-              Enabled
-            </label>
-            <label className="flex items-center gap-2 text-xs text-muted cursor-pointer">
-              <input type="checkbox" checked={editForm.fallback} onChange={(e) => setEditForm(f => ({ ...f, fallback: e.target.checked }))} className="rounded border-border" />
-              Fallback
-            </label>
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" size="sm" onClick={() => setShowEditModal(false)}>Cancel</Button>
-            <Button variant="gradient" size="sm" onClick={handleSaveEdit}>Save Changes</Button>
-          </div>
-        </div>
-      </AdminModal>
+              <div className="border-t border-white/[0.06] pt-4 space-y-2 text-xs">
+                <div className="flex justify-between"><span className="text-[#A7B0C0]">Model ID</span><span className="font-medium text-white font-mono">{m.model_id}</span></div>
+                <div className="flex justify-between"><span className="text-[#A7B0C0]">Cost/Request</span><span className="font-medium text-white">${m.cost.toFixed(4)}</span></div>
+                <div className="flex justify-between"><span className="text-[#A7B0C0]">Usage</span><span className="font-medium text-white">{m.usage.toLocaleString()}</span></div>
+                <div className="flex justify-between"><span className="text-[#A7B0C0]">API Key</span><span className="font-mono text-[10px] text-[#A7B0C0]">{m.placeholder}••••</span></div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-white/[0.06]">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-[#A7B0C0] mb-1">Default For</p>
+                <div className="flex flex-wrap gap-1">
+                  {m.default_for.length > 0 ? m.default_for.map((tool: string) => (
+                    <span key={tool} className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#6D5EF5]/10 text-[#6D5EF5] border border-[#6D5EF5]/20">{tool.replace(/_/g, " ")}</span>
+                  )) : <span className="text-[10px] text-[#A7B0C0]">None</span>}
+                </div>
+              </div>
+
+              {m.fallback && (
+                <div className="flex items-center gap-1 mt-2 text-[10px] text-[#F59E0B]">
+                  <CheckCircle className="w-3 h-3" /> Fallback model
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/[0.06]">
+                <button className="flex-1 h-8 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center justify-center gap-1.5 transition-all">
+                  <Key className="w-3.5 h-3.5" /> API Key
+                </button>
+                <button className="flex-1 h-8 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center justify-center gap-1.5 transition-all">
+                  <Edit3 className="w-3.5 h-3.5" /> Edit
+                </button>
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
     </div>
   )
 }

@@ -5,90 +5,214 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
-  LayoutDashboard, Users, CreditCard, DollarSign, Wrench, Cpu,
-  FolderKanban, FileText, BarChart3, FileSpreadsheet, MessageSquare,
-  FileEdit, TicketPercent, Key, Shield, Settings, HeartPulse,
-  Wrench as WrenchIcon, ChevronDown, ChevronRight, Sparkles,
-  PanelLeftClose, PanelLeft,
+  LayoutDashboard, Cpu, Brain, Key, Shield, Settings as SettingsIcon,
+  CreditCard, DollarSign, Users, FolderKanban, FileText, BarChart3,
+  FileSpreadsheet, MessageSquare, FileEdit, TicketPercent, HeartPulse,
+  ChevronDown, ChevronRight, Sparkles,
+  PanelLeftClose, PanelLeft, Mail, Terminal, Database, Zap,
+  Link as LinkIcon, ClipboardList, Workflow, Search, Globe, Wrench,
 } from "lucide-react"
 
-const menuItems = [
-  { label: "Admin Overview", icon: LayoutDashboard, href: "/admin" },
-  { label: "Users", icon: Users, href: "/admin/users" },
-  { label: "Plans", icon: CreditCard, href: "/admin/plans" },
-  { label: "Credits", icon: DollarSign, href: "/admin/credits" },
-  { label: "Payments", icon: DollarSign, href: "/admin/payments" },
-  { label: "Tools", icon: Wrench, href: "/admin/tools" },
-  { label: "AI Models", icon: Cpu, href: "/admin/ai-models" },
-  { label: "Projects", icon: FolderKanban, href: "/admin/projects" },
-  { label: "Documents", icon: FileText, href: "/admin/documents" },
-  { label: "Analytics", icon: BarChart3, href: "/admin/analytics" },
-  { label: "Reports", icon: FileSpreadsheet, href: "/admin/reports" },
-  { label: "Contact", icon: MessageSquare, href: "/admin/contact" },
-  { label: "Blog", icon: FileEdit, href: "/admin/blog" },
-  { label: "Coupons", icon: TicketPercent, href: "/admin/coupons" },
-  { label: "API Keys", icon: Key, href: "/admin/api-keys" },
-  { label: "Security Logs", icon: Shield, href: "/admin/security" },
-  { label: "Settings", icon: Settings, href: "/admin/settings" },
-  { label: "System Health", icon: HeartPulse, href: "/admin/system-health" },
-  { label: "Maintenance", icon: WrenchIcon, href: "/admin/maintenance" },
+const menuSections = [
+  {
+    section: "Overview",
+    items: [
+      { label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
+    ],
+  },
+  {
+    section: "AI Hub",
+    items: [
+      { label: "AI Hub", icon: Cpu, href: "/admin/ai-hub" },
+      { label: "Providers", icon: Brain, href: "/admin/ai-hub/providers" },
+      { label: "API Keys", icon: Key, href: "/admin/ai-hub/api-keys" },
+      { label: "Models", icon: Zap, href: "/admin/ai-hub/models" },
+      { label: "Prompts", icon: FileText, href: "/admin/ai-hub/prompts" },
+    ],
+  },
+  {
+    section: "Business",
+    items: [
+      { label: "Plans", icon: CreditCard, href: "/admin/plans" },
+      { label: "Credits", icon: DollarSign, href: "/admin/credits" },
+      { label: "Users", icon: Users, href: "/admin/users" },
+      { label: "Payments", icon: DollarSign, href: "/admin/payments" },
+      { label: "Coupons", icon: TicketPercent, href: "/admin/coupons" },
+    ],
+  },
+  {
+    section: "Tools",
+    items: [
+      { label: "Tools", icon: Wrench, href: "/admin/tools" },
+      { label: "Workflows", icon: Workflow, href: "/admin/workflows" },
+    ],
+  },
+  {
+    section: "Settings",
+    items: [
+      { label: "Site Settings", icon: SettingsIcon, href: "/admin/settings" },
+      { label: "Security", icon: Shield, href: "/admin/security" },
+      { label: "Performance", icon: Zap, href: "/admin/performance" },
+      { label: "Integrations", icon: LinkIcon, href: "/admin/integrations" },
+      { label: "SEO", icon: Search, href: "/admin/seo" },
+      { label: "Email", icon: Mail, href: "/admin/email" },
+      { label: "Backups", icon: Database, href: "/admin/backups" },
+      { label: "Maintenance", icon: Wrench, href: "/admin/maintenance" },
+    ],
+  },
+  {
+    section: "Monitoring",
+    items: [
+      { label: "Analytics", icon: BarChart3, href: "/admin/analytics" },
+      { label: "Logs", icon: Terminal, href: "/admin/logs" },
+      { label: "Reports", icon: FileSpreadsheet, href: "/admin/reports" },
+    ],
+  },
+  {
+    section: "Content",
+    items: [
+      { label: "Documents", icon: FileText, href: "/admin/documents" },
+      { label: "Projects", icon: FolderKanban, href: "/admin/projects" },
+      { label: "Blog", icon: FileEdit, href: "/admin/blog" },
+      { label: "Contact", icon: MessageSquare, href: "/admin/contact" },
+    ],
+  },
+  {
+    section: "System",
+    items: [
+      { label: "System Health", icon: HeartPulse, href: "/admin/system-health" },
+    ],
+  },
 ]
 
 export function AdminSidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const pathname = usePathname()
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    () => new Set(menuSections.map(s => s.section))
+  )
+
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => {
+      const next = new Set(prev)
+      if (next.has(section)) next.delete(section)
+      else next.add(section)
+      return next
+    })
+  }
+
+  const allItems = menuSections.flatMap(s => s.items)
 
   return (
     <aside className={cn(
-      "h-full bg-sidebar border-r border-border flex flex-col transition-all duration-300 shrink-0",
-      collapsed ? "w-[68px]" : "w-64"
+      "h-full bg-[#0C1125]/80 backdrop-blur-xl border-r border-white/[0.04] flex flex-col transition-all duration-300 shrink-0",
+      collapsed ? "w-[72px]" : "w-[280px]"
     )}>
-      <div className="flex items-center gap-3 px-4 h-16 shrink-0 border-b border-border">
-        <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center shrink-0">
+      <div className="flex items-center gap-3 px-4 h-16 shrink-0 border-b border-white/[0.04]">
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-r from-[#6D5EF5] to-[#8B5CF6] flex items-center justify-center shrink-0 shadow-lg shadow-[#6D5EF5]/20">
           <Sparkles className="w-5 h-5 text-white" />
         </div>
         {!collapsed && (
           <div className="overflow-hidden">
-            <span className="text-sm font-bold tracking-tight">
-              Nextill<span className="text-primary-light"> AI</span>
+            <span className="text-sm font-bold tracking-tight text-white">
+              Nextill<span className="text-[#6D5EF5]"> AI</span>
             </span>
-            <span className="block text-[9px] text-muted font-medium tracking-widest uppercase">Admin Panel</span>
+            <span className="block text-[9px] text-[#A7B0C0] font-medium tracking-widest uppercase">Admin Panel</span>
           </div>
         )}
       </div>
 
-      <div className="px-2 py-2 border-b border-border">
-        <button onClick={onToggle} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-foreground hover:bg-card transition-colors text-xs">
-          {collapsed ? <PanelLeft className="w-4 h-4 mx-auto" /> : <><PanelLeftClose className="w-4 h-4" /><span>Collapse</span></>}
+      <div className="px-2 py-2 border-b border-white/[0.04]">
+        <button
+          onClick={onToggle}
+          className={cn(
+            "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors text-xs",
+            collapsed && "justify-center"
+          )}
+        >
+          {collapsed ? <PanelLeft className="w-4 h-4" /> : <><PanelLeftClose className="w-4 h-4" /><span>Collapse</span></>}
         </button>
       </div>
 
       <div className="flex-1 overflow-y-auto px-2 py-3 space-y-0.5">
-        {menuItems.map((item) => {
-          const Icon = item.icon
-          const isActive = pathname === item.href
-          return (
-            <Link key={item.href} href={item.href} className={cn(
-              "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200",
-              isActive
-                ? "bg-primary/10 text-primary-light border border-primary/20"
-                : "text-muted hover:text-foreground hover:bg-card border border-transparent",
-              collapsed && "justify-center px-2"
-            )}>
-              <Icon className="w-4 h-4 shrink-0" />
-              {!collapsed && <span className="truncate">{item.label}</span>}
-            </Link>
-          )
-        })}
+        {collapsed ? (
+          <div className="space-y-0.5">
+            {allItems.map((item) => {
+              const Icon = item.icon
+              const isActive = pathname === item.href
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "group relative flex items-center justify-center w-full p-2 rounded-lg transition-colors",
+                    isActive
+                      ? "bg-[#6D5EF5]/10 text-[#6D5EF5]"
+                      : "text-[#A7B0C0] hover:text-white hover:bg-[#151C2E]"
+                  )}
+                  title={item.label}
+                >
+                  <Icon className="w-4 h-4 shrink-0" />
+                  <span className="absolute left-full ml-2 px-2 py-1 text-xs font-medium text-white bg-[#111827]/90 backdrop-blur-xl border border-white/[0.06] rounded-lg shadow-xl whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+                    {item.label}
+                  </span>
+                </Link>
+              )
+            })}
+          </div>
+        ) : (
+          menuSections.map((section) => {
+            const isExpanded = expandedSections.has(section.section)
+            return (
+              <div key={section.section} className="mb-0.5">
+                <button
+                  onClick={() => toggleSection(section.section)}
+                  className="flex w-full items-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-[#A7B0C0] hover:text-white transition-colors"
+                >
+                  {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+                  <span>{section.section}</span>
+                </button>
+                {isExpanded && (
+                  <div className="space-y-0.5">
+                    {section.items.map((item) => {
+                      const Icon = item.icon
+                      const isActive = pathname === item.href
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={cn(
+                            "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 group relative",
+                            isActive
+                              ? "bg-[#6D5EF5]/10 text-[#6D5EF5]"
+                              : "text-[#A7B0C0] hover:text-white hover:bg-[#151C2E]"
+                          )}
+                        >
+                          {isActive && (
+                            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-[#6D5EF5] rounded-r-full" />
+                          )}
+                          <Icon className={cn("w-4 h-4 shrink-0", isActive && "text-[#6D5EF5]")} />
+                          <span className="truncate">{item.label}</span>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )
+          })
+        )}
       </div>
 
-      <div className="px-4 py-3 border-t border-border">
-        {!collapsed && (
-          <div className="glass-card px-3 py-2 rounded-lg flex items-center gap-2 text-xs">
-            <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-            <span className="text-muted">System</span>
-            <span className="text-success font-medium ml-auto">Online</span>
-          </div>
-        )}
+      <div className="px-4 py-3 border-t border-white/[0.04]">
+        <div className={cn("flex items-center gap-2", collapsed ? "justify-center" : "px-3 py-2 rounded-lg bg-white/[0.02] border border-white/[0.04]")}>
+          <div className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse shadow-lg shadow-[#22C55E]/30" />
+          {!collapsed && (
+            <>
+              <span className="text-xs text-[#A7B0C0]">System</span>
+              <span className="text-[11px] font-medium text-[#22C55E] ml-auto">All Systems Operational</span>
+            </>
+          )}
+        </div>
       </div>
     </aside>
   )

@@ -1,5 +1,11 @@
+import { LegacyBanner } from "@/components/tools/legacy-banner"
 import { GenericToolPage } from "@/components/tools/generic-tool-page"
 
-export default function Page() {
-  return <GenericToolPage slug="ai-writer" />
+export default function OldToolPage() {
+  return (
+    <>
+      <LegacyBanner toolName="AI Writer" targetRoute="/post-generator" />
+      <GenericToolPage slug="ai-writer" />
+    </>
+  )
 }

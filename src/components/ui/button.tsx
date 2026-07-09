@@ -5,17 +5,18 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6D5EF5]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#090B16] disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
   {
     variants: {
       variant: {
-        default: "bg-primary text-white hover:brightness-110 shadow-lg shadow-primary/20",
-        destructive: "bg-danger text-white hover:brightness-110",
-        outline: "border border-border bg-transparent hover:bg-card hover:border-muted",
-        secondary: "bg-card text-foreground hover:bg-card-hover border border-border",
-        ghost: "hover:bg-card text-muted hover:text-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        gradient: "gradient-primary text-white shadow-lg shadow-primary/20 hover:brightness-110",
+        default: "bg-[#6D5EF5] text-white hover:brightness-110 shadow-lg shadow-[#6D5EF5]/20 hover:-translate-y-0.5",
+        destructive: "bg-[#EF4444] text-white hover:brightness-110 hover:-translate-y-0.5",
+        outline: "border border-[rgba(255,255,255,0.06)] bg-transparent hover:bg-[#151C2E] hover:border-[#A7B0C0] hover:-translate-y-0.5",
+        secondary: "bg-[#151C2E] text-white hover:bg-[#151C2E]/80 border border-[rgba(255,255,255,0.06)] hover:-translate-y-0.5",
+        ghost: "hover:bg-[#151C2E] text-[#A7B0C0] hover:text-white hover:-translate-y-0.5",
+        link: "text-[#6D5EF5] underline-offset-4 hover:underline",
+        glass: "bg-white/[0.04] backdrop-blur-xl border border-[rgba(255,255,255,0.06)] text-white hover:bg-white/[0.08] shadow-lg hover:-translate-y-0.5",
+        gradient: "bg-gradient-to-r from-[#6D5EF5] to-[#4CC9F0] text-white shadow-lg shadow-[#6D5EF5]/20 hover:brightness-110 hover:-translate-y-0.5",
       },
       size: {
         default: "h-10 px-4 py-2",

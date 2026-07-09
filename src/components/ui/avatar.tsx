@@ -26,7 +26,9 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
         ref={ref}
         className={cn(
           "relative inline-flex items-center justify-center rounded-full overflow-hidden shrink-0",
-          "bg-gradient-to-br from-primary/20 to-accent/20 border border-border",
+          "bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20",
+          "ring-2 ring-[rgba(255,255,255,0.06)] ring-offset-2 ring-offset-[#090B16]",
+          "shadow-lg shadow-[#6D5EF5]/10",
           sizeMap[size],
           className
         )}
@@ -40,7 +42,7 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
             onError={() => setError(true)}
           />
         ) : fallback ? (
-          <span className="font-medium text-foreground/80 select-none">
+          <span className="font-medium text-white/80 select-none">
             {fallback.slice(0, 2).toUpperCase()}
           </span>
         ) : null}

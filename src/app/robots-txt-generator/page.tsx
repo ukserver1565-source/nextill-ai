@@ -1,5 +1,11 @@
+import { LegacyBanner } from "@/components/tools/legacy-banner"
 import { GenericToolPage } from "@/components/tools/generic-tool-page"
 
-export default function Page() {
-  return <GenericToolPage slug="robots-txt-generator" />
+export default function OldToolPage() {
+  return (
+    <>
+      <LegacyBanner toolName="Robots.txt Generator" targetRoute="/post-generator" />
+      <GenericToolPage slug="robots-txt-generator" />
+    </>
+  )
 }

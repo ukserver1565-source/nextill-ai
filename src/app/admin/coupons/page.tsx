@@ -1,150 +1,108 @@
 "use client"
 
 import { useState } from "react"
-import { AdminTable } from "@/components/admin/admin-table"
-import { AdminModal } from "@/components/admin/admin-modal"
-import { useData, LoadingSkeleton, ErrorState } from "@/lib/hooks/use-admin-data"
-import { adminApi } from "@/lib/admin-api"
-import type { Coupon } from "@/lib/admin-types"
-import { formatDate } from "@/lib/admin-utils"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Plus, Edit3, Trash2, Copy } from "lucide-react"
+import { motion } from "framer-motion"
+import { Search, Plus, Copy, Edit3, Trash2, ChevronLeft, ChevronRight, Tag } from "lucide-react"
 
-const defaultForm = { code: "", type: "percentage" as "percentage" | "fixed", value: 0, expiry_date: "", usage_limit: 1, active: true }
+const sampleCoupons = [
+  { id: 1, code: "SUMMER24", discount: 20, type: "percentage", uses: 145, limit: 500, expires: "2024-09-30", active: true },
+  { id: 2, code: "WELCOME10", discount: 10, type: "percentage", uses: 890, limit: 1000, expires: "2024-12-31", active: true },
+  { id: 3, code: "PRO50", discount: 50, type: "fixed", uses: 23, limit: 100, expires: "2024-08-15", active: true },
+  { id: 4, code: "FLAT25", discount: 25, type: "fixed", uses: 67, limit: 200, expires: "2024-10-01", active: false },
+  { id: 5, code: "VIP100", discount: 100, type: "fixed", uses: 5, limit: 10, expires: "2024-07-31", active: true },
+  { id: 6, code: "BLACKFRIDAY", discount: 50, type: "percentage", uses: 0, limit: 1000, expires: "2024-11-30", active: false },
+]
+
+const PAGE_SIZE = 8
 
 export default function CouponsPage() {
-  const {data: coupons, loading, error, refetch} = useData(() => adminApi.coupons())
-  const [showModal, setShowModal] = useState(false)
-  const [editingCoupon, setEditingCoupon] = useState<any>(null)
-  const [form, setForm] = useState(defaultForm)
+  const [search, setSearch] = useState("")
+  const [page, setPage] = useState(1)
 
-  if (loading) return <LoadingSkeleton />
-  if (error) return <ErrorState message={error} onRetry={refetch} />
-
-  const handleSave = async () => {
-    try {
-      if (editingCoupon) {
-        await adminApi.updateCoupon(editingCoupon.id, form)
-      } else {
-        const payload = { ...form }
-        if (payload.expiry_date) {
-          (payload as any).expiry_date = new Date(payload.expiry_date).toISOString()
-        }
-        await adminApi.createCoupon(payload as any)
-      }
-      setShowModal(false)
-      setEditingCoupon(null)
-      setForm(defaultForm)
-      refetch()
-    } catch (e) { console.error(e) }
-  }
-
-  const openEdit = (c: any) => {
-    setEditingCoupon(c)
-    setForm({
-      code: c.code,
-      type: c.type,
-      value: c.value,
-      expiry_date: c.expiry_date ? c.expiry_date.split("T")[0] : "",
-      usage_limit: c.usage_limit,
-      active: c.active,
-    })
-    setShowModal(true)
-  }
-
-  const openNew = () => {
-    setEditingCoupon(null)
-    setForm(defaultForm)
-    setShowModal(true)
-  }
-
-  const columns = [
-    { key: "code", label: "Code", render: (c: Coupon) => (
-      <div className="flex items-center gap-2">
-        <code className="px-2 py-0.5 rounded bg-card border border-border text-xs font-mono font-bold">{c.code}</code>
-        <button className="p-0.5 text-muted hover:text-foreground" onClick={() => navigator.clipboard.writeText(c.code)}><Copy className="w-3 h-3" /></button>
-      </div>
-    )},
-    { key: "type", label: "Type", render: (c: Coupon) => (
-      <span className="text-xs capitalize">{c.type}</span>
-    )},
-    { key: "value", label: "Value", render: (c: Coupon) => (
-      <span className="text-xs font-bold">{c.type === "percentage" ? `${c.value}%` : `$${c.value}`}</span>
-    )},
-    { key: "usage", label: "Usage", render: (c: any) => (
-      <span className="text-xs">{c.usage_count}/{c.usage_limit}</span>
-    )},
-    { key: "expiry", label: "Expires", render: (c: any) => (
-      <span className="text-[11px] text-muted">{formatDate(c.expiry_date)}</span>
-    )},
-    { key: "active", label: "Status", render: (c: Coupon) => (
-      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${c.active ? "bg-success/10 text-success border-success/20" : "bg-muted/10 text-muted border-muted/20"}`}>
-        {c.active ? "Active" : "Inactive"}
-      </span>
-    )},
-    { key: "actions", label: "", className: "text-right", render: (c: Coupon) => (
-      <div className="flex items-center justify-end gap-1">
-        <Button variant="ghost" size="icon-sm" onClick={() => openEdit(c)}><Edit3 className="w-3.5 h-3.5" /></Button>
-        <Button variant="ghost" size="icon-sm" className="text-danger" onClick={async () => {
-          if (confirm(`Delete coupon ${c.code}?`)) { try { await adminApi.deleteCoupon(c.id); refetch() } catch (e) { console.error(e) } }
-        }}><Trash2 className="w-3.5 h-3.5" /></Button>
-      </div>
-    )},
-  ]
+  const filtered = sampleCoupons.filter(c => c.code.toLowerCase().includes(search.toLowerCase()))
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div><h1 className="text-2xl font-bold tracking-tight">Coupons</h1><p className="text-sm text-muted mt-1">Manage discount coupons and promotions</p></div>
-        <Button variant="gradient" size="sm" className="gap-1.5 rounded-lg" onClick={openNew}><Plus className="w-4 h-4" /> Create Coupon</Button>
-      </div>
-      <div className="glass-card rounded-xl overflow-hidden">
-        <AdminTable columns={columns} data={coupons || []} keyField="id" />
+        <div>
+          <h1 className="text-2xl font-bold text-white">Coupons</h1>
+          <p className="text-sm text-[#A7B0C0] mt-1">Manage discount coupons and promotions</p>
+        </div>
+        <button className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20">
+          <Plus className="w-4 h-4" /> Create Coupon
+        </button>
       </div>
 
-      <AdminModal open={showModal} onClose={() => setShowModal(false)} title={editingCoupon ? "Edit Coupon" : "Create Coupon"} size="md">
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-muted mb-1">Code</label>
-              <Input value={form.code} onChange={(e) => setForm(f => ({ ...f, code: e.target.value.toUpperCase() }))} placeholder="SAVE20" className="bg-card border-border text-xs font-mono uppercase" />
-            </div>
-            <div>
-              <label className="block text-xs text-muted mb-1">Type</label>
-              <select value={form.type} onChange={(e) => setForm(f => ({ ...f, type: e.target.value as "percentage" | "fixed" }))} className="w-full h-10 px-3 rounded-lg bg-card border border-border text-xs outline-none">
-                <option value="percentage">Percentage</option>
-                <option value="fixed">Fixed ($)</option>
-              </select>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-muted mb-1">Value</label>
-              <Input type="number" value={form.value} onChange={(e) => setForm(f => ({ ...f, value: Number(e.target.value) }))} className="bg-card border-border text-xs" />
-            </div>
-            <div>
-              <label className="block text-xs text-muted mb-1">Usage Limit</label>
-              <Input type="number" value={form.usage_limit} onChange={(e) => setForm(f => ({ ...f, usage_limit: Number(e.target.value) }))} className="bg-card border-border text-xs" />
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs text-muted mb-1">Expiry Date</label>
-            <Input type="date" value={form.expiry_date} onChange={(e) => setForm(f => ({ ...f, expiry_date: e.target.value }))} className="bg-card border-border text-xs" />
-          </div>
-          <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2 text-xs text-muted cursor-pointer">
-              <input type="checkbox" checked={form.active} onChange={(e) => setForm(f => ({ ...f, active: e.target.checked }))} className="rounded border-border" />
-              Active
-            </label>
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" size="sm" onClick={() => setShowModal(false)}>Cancel</Button>
-            <Button variant="gradient" size="sm" onClick={handleSave}>{editingCoupon ? "Save Changes" : "Create Coupon"}</Button>
-          </div>
+      <div className="relative w-full max-w-xs">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A7B0C0]" />
+        <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} placeholder="Search coupons..." className="w-full h-10 pl-10 pr-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+      </div>
+
+      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-white/[0.06]">
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Code</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Discount</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Uses</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Expires</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Status</th>
+                <th className="text-right p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginated.map((c, i) => (
+                <motion.tr
+                  key={c.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03 }}
+                  className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors"
+                >
+                  <td className="p-4">
+                    <div className="flex items-center gap-2">
+                      <Tag className="w-4 h-4 text-[#6D5EF5]" />
+                      <code className="px-2.5 py-1 rounded-lg bg-[#090B16] border border-white/[0.06] text-xs font-mono font-bold text-white">{c.code}</code>
+                      <button onClick={() => navigator.clipboard.writeText(c.code)} className="p-1 rounded hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"><Copy className="w-3 h-3" /></button>
+                    </div>
+                  </td>
+                  <td className="p-4 text-sm font-bold text-white">{c.type === "percentage" ? `${c.discount}%` : `$${c.discount}`}</td>
+                  <td className="p-4 text-xs text-[#A7B0C0]">{c.uses}/{c.limit}</td>
+                  <td className="p-4 text-xs text-[#A7B0C0]">{c.expires}</td>
+                  <td className="p-4">
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${c.active ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20"}`}>
+                      {c.active ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                  <td className="p-4 text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"><Edit3 className="w-3.5 h-3.5" /></button>
+                      <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))}
+              {paginated.length === 0 && (
+                <tr><td colSpan={6} className="p-8 text-center text-xs text-[#A7B0C0]">No coupons found</td></tr>
+              )}
+            </tbody>
+          </table>
         </div>
-      </AdminModal>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-[#A7B0C0]">Showing {(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}</p>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronLeft className="w-4 h-4" /></button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+            <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === p ? "bg-[#6D5EF5] text-white" : "bg-[#151C2E]/80 border border-white/[0.06] text-[#A7B0C0] hover:text-white"}`}>{p}</button>
+          ))}
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronRight className="w-4 h-4" /></button>
+        </div>
+      </div>
     </div>
   )
 }

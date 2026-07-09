@@ -1,163 +1,110 @@
 "use client"
 
 import { useState } from "react"
-import { AdminTable } from "@/components/admin/admin-table"
-import { AdminSearch } from "@/components/admin/admin-search"
-import { AdminModal } from "@/components/admin/admin-modal"
-import { useData, LoadingSkeleton, ErrorState } from "@/lib/hooks/use-admin-data"
-import { adminApi } from "@/lib/admin-api"
-import type { BlogPost } from "@/lib/admin-types"
-import { formatDate, statusColors } from "@/lib/admin-utils"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Plus, Edit3, Trash2, ExternalLink } from "lucide-react"
+import { motion } from "framer-motion"
+import { Search, Plus, Edit3, Trash2, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react"
 
-const defaultForm = { title: "", slug: "", category: "AI & SEO", content: "", seo_title: "", meta_description: "", status: "draft" as "draft" | "published", author: "" }
+const samplePosts = [
+  { id: 1, title: "10 SEO Tips for 2024", author: "Sarah Chen", status: "published", date: "2024-07-15", slug: "seo-tips-2024" },
+  { id: 2, title: "How AI is Changing Content Marketing", author: "Mike Ross", status: "published", date: "2024-07-12", slug: "ai-content-marketing" },
+  { id: 3, title: "Keyword Research Guide", author: "Lisa Wang", status: "draft", date: "2024-07-10", slug: "keyword-research-guide" },
+  { id: 4, title: "Understanding Google Rankings", author: "Tom Baker", status: "published", date: "2024-07-08", slug: "google-rankings" },
+  { id: 5, title: "On-Page SEO Checklist", author: "Emma Davis", status: "draft", date: "2024-07-05", slug: "onpage-seo-checklist" },
+  { id: 6, title: "Backlink Building Strategies", author: "Sarah Chen", status: "published", date: "2024-07-01", slug: "backlink-strategies" },
+  { id: 7, title: "Content Calendar Planning", author: "Lisa Wang", status: "draft", date: "2024-06-28", slug: "content-calendar" },
+  { id: 8, title: "Technical SEO Fundamentals", author: "Mike Ross", status: "published", date: "2024-06-25", slug: "technical-seo" },
+]
+
+const PAGE_SIZE = 8
 
 export default function BlogPage() {
   const [search, setSearch] = useState("")
-  const {data, loading, error, refetch} = useData(() => adminApi.blogPosts())
-  const [showModal, setShowModal] = useState(false)
-  const [editingPost, setEditingPost] = useState<any>(null)
-  const [form, setForm] = useState(defaultForm)
+  const [page, setPage] = useState(1)
 
-  const blogCategories = ["AI & SEO", "Content Writing", "SEO", "SEO Tools", "AI", "Product Updates", "Tutorials"]
-  const filtered = (data?.data || []).filter((p: any) => p.title.toLowerCase().includes(search.toLowerCase()))
-
-  if (loading) return <LoadingSkeleton />
-  if (error) return <ErrorState message={error} onRetry={refetch} />
-
-  const handleSave = async () => {
-    try {
-      if (editingPost) {
-        await adminApi.updateBlogPost(editingPost.id, form)
-      } else {
-        await adminApi.createBlogPost(form)
-      }
-      setShowModal(false)
-      setEditingPost(null)
-      setForm(defaultForm)
-      refetch()
-    } catch (e) { console.error(e) }
-  }
-
-  const openEdit = (post: any) => {
-    setEditingPost(post)
-    setForm({
-      title: post.title,
-      slug: post.slug,
-      category: post.category,
-      content: post.content || "",
-      seo_title: post.seo_title || "",
-      meta_description: post.meta_description || "",
-      status: post.status,
-      author: post.author,
-    })
-    setShowModal(true)
-  }
-
-  const openNew = () => {
-    setEditingPost(null)
-    setForm(defaultForm)
-    setShowModal(true)
-  }
-
-  const columns = [
-    { key: "title", label: "Title", render: (p: BlogPost) => (
-      <div><p className="text-xs font-medium">{p.title}</p><p className="text-[10px] text-muted">/{p.slug}</p></div>
-    )},
-    { key: "category", label: "Category", render: (p: BlogPost) => (
-      <Badge variant="info" size="sm">{p.category}</Badge>
-    )},
-    { key: "status", label: "Status", render: (p: BlogPost) => (
-      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${statusColors[p.status]}`}>{p.status}</span>
-    )},
-    { key: "author", label: "Author", render: (p: BlogPost) => (
-      <span className="text-xs">{p.author}</span>
-    )},
-    { key: "date", label: "Updated", render: (p: any) => (
-      <span className="text-[11px] text-muted">{formatDate(p.updated_at)}</span>
-    )},
-    { key: "actions", label: "", className: "text-right", render: (p: BlogPost) => (
-      <div className="flex items-center justify-end gap-1">
-        <Button variant="ghost" size="icon-sm" onClick={() => window.open(`/${p.slug}`, "_blank")}><ExternalLink className="w-3.5 h-3.5" /></Button>
-        <Button variant="ghost" size="icon-sm" onClick={() => openEdit(p)}><Edit3 className="w-3.5 h-3.5" /></Button>
-        <Button variant="ghost" size="icon-sm" className="text-danger" onClick={async () => {
-          if (confirm(`Delete "${p.title}"?`)) { try { await adminApi.deleteBlogPost(p.id); refetch() } catch (e) { console.error(e) } }
-        }}><Trash2 className="w-3.5 h-3.5" /></Button>
-      </div>
-    )},
-  ]
+  const filtered = samplePosts.filter(p => p.title.toLowerCase().includes(search.toLowerCase()))
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div><h1 className="text-2xl font-bold tracking-tight">Blog Manager</h1><p className="text-sm text-muted mt-1">Manage blog posts and categories</p></div>
-        <Button variant="gradient" size="sm" className="gap-1.5 rounded-lg" onClick={openNew}><Plus className="w-4 h-4" /> New Post</Button>
-      </div>
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="w-full max-w-xs"><AdminSearch value={search} onChange={setSearch} placeholder="Search posts..." /></div>
-        <div className="flex flex-wrap gap-1">
-          {blogCategories.map((cat) => (
-            <Badge key={cat} variant="outline" size="sm" className="cursor-pointer hover:bg-card-hover">{cat}</Badge>
-          ))}
+        <div>
+          <h1 className="text-2xl font-bold text-white">Blog Posts</h1>
+          <p className="text-sm text-[#A7B0C0] mt-1">Manage blog content</p>
         </div>
-      </div>
-      <div className="glass-card rounded-xl overflow-hidden">
-        <AdminTable columns={columns} data={filtered} keyField="id" />
+        <button className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20">
+          <Plus className="w-4 h-4" /> New Post
+        </button>
       </div>
 
-      <AdminModal open={showModal} onClose={() => setShowModal(false)} title={editingPost ? "Edit Post" : "New Post"} size="xl">
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-muted mb-1">Title</label>
-              <Input value={form.title} onChange={(e) => setForm(f => ({ ...f, title: e.target.value }))} className="bg-card border-border text-xs" />
-            </div>
-            <div>
-              <label className="block text-xs text-muted mb-1">Slug</label>
-              <Input value={form.slug} onChange={(e) => setForm(f => ({ ...f, slug: e.target.value }))} className="bg-card border-border text-xs font-mono" />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-muted mb-1">Category</label>
-              <select value={form.category} onChange={(e) => setForm(f => ({ ...f, category: e.target.value }))} className="w-full h-10 px-3 rounded-lg bg-card border border-border text-xs outline-none">
-                {blogCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-muted mb-1">Author</label>
-              <Input value={form.author} onChange={(e) => setForm(f => ({ ...f, author: e.target.value }))} className="bg-card border-border text-xs" />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-muted mb-1">SEO Title</label>
-              <Input value={form.seo_title} onChange={(e) => setForm(f => ({ ...f, seo_title: e.target.value }))} className="bg-card border-border text-xs" />
-            </div>
-            <div>
-              <label className="block text-xs text-muted mb-1">Meta Description</label>
-              <Input value={form.meta_description} onChange={(e) => setForm(f => ({ ...f, meta_description: e.target.value }))} className="bg-card border-border text-xs" />
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs text-muted mb-1">Content</label>
-            <textarea value={form.content} onChange={(e) => setForm(f => ({ ...f, content: e.target.value }))} rows={6} className="w-full px-3 py-2 rounded-lg bg-card border border-border text-xs outline-none focus:ring-2 focus:ring-primary/30 resize-y font-mono" />
-          </div>
-          <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2 text-xs text-muted cursor-pointer">
-              <input type="checkbox" checked={form.status === "published"} onChange={(e) => setForm(f => ({ ...f, status: e.target.checked ? "published" : "draft" }))} className="rounded border-border" />
-              Published
-            </label>
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" size="sm" onClick={() => setShowModal(false)}>Cancel</Button>
-            <Button variant="gradient" size="sm" onClick={handleSave}>{editingPost ? "Save Changes" : "Create Post"}</Button>
-          </div>
+      <div className="relative w-full max-w-xs">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A7B0C0]" />
+        <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} placeholder="Search posts..." className="w-full h-10 pl-10 pr-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+      </div>
+
+      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-white/[0.06]">
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Title</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Author</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Status</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Date</th>
+                <th className="text-right p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginated.map((post, i) => (
+                <motion.tr
+                  key={post.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03 }}
+                  className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors"
+                >
+                  <td className="p-4">
+                    <p className="text-sm font-medium text-white">{post.title}</p>
+                    <p className="text-[10px] text-[#A7B0C0]">/{post.slug}</p>
+                  </td>
+                  <td className="p-4 text-xs text-white">{post.author}</td>
+                  <td className="p-4">
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${
+                      post.status === "published"
+                        ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20"
+                        : "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
+                    }`}>
+                      {post.status}
+                    </span>
+                  </td>
+                  <td className="p-4 text-xs text-[#A7B0C0]">{post.date}</td>
+                  <td className="p-4 text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#4CC9F0] transition-all"><ExternalLink className="w-3.5 h-3.5" /></button>
+                      <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"><Edit3 className="w-3.5 h-3.5" /></button>
+                      <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))}
+              {paginated.length === 0 && (
+                <tr><td colSpan={5} className="p-8 text-center text-xs text-[#A7B0C0]">No posts found</td></tr>
+              )}
+            </tbody>
+          </table>
         </div>
-      </AdminModal>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-[#A7B0C0]">Showing {(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}</p>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronLeft className="w-4 h-4" /></button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+            <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === p ? "bg-[#6D5EF5] text-white" : "bg-[#151C2E]/80 border border-white/[0.06] text-[#A7B0C0] hover:text-white"}`}>{p}</button>
+          ))}
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronRight className="w-4 h-4" /></button>
+        </div>
+      </div>
     </div>
   )
 }

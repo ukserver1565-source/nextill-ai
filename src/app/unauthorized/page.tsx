@@ -38,22 +38,41 @@ export default function UnauthorizedPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="text-center max-w-sm">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-danger/10 border border-danger/20 mb-6">
-          <ShieldAlert className="w-8 h-8 text-danger" />
+    <div className="min-h-screen bg-[#090B16] flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-8 space-y-6 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20">
+            <ShieldAlert className="w-8 h-8 text-red-400" />
+          </div>
+
+          <div>
+            <h1 className="text-2xl font-bold text-white">Access Denied</h1>
+            <p className="text-[#A7B0C0] text-sm mt-1">
+              You don&apos;t have permission to access this area.
+            </p>
+          </div>
+
+          {loading ? (
+            <Loader2 className="w-5 h-5 animate-spin text-[#A7B0C0] mx-auto" />
+          ) : (
+            <div className="space-y-3">
+              <Link href={href}>
+                <Button variant="gradient" className="w-full">
+                  {label}
+                </Button>
+              </Link>
+              <button
+                onClick={async () => {
+                  await supabase.auth.signOut()
+                  window.location.href = "/login"
+                }}
+                className="text-sm text-[#A7B0C0] hover:text-white transition-colors"
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
         </div>
-        <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
-        <p className="text-sm text-muted mb-6">
-          You do not have permission to access this area.
-        </p>
-        {loading ? (
-          <Loader2 className="w-4 h-4 animate-spin text-muted mx-auto" />
-        ) : (
-          <Link href={href}>
-            <Button variant="gradient">{label}</Button>
-          </Link>
-        )}
       </div>
     </div>
   )

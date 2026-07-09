@@ -1,112 +1,107 @@
 "use client"
 
 import { useState } from "react"
-import { AdminTable } from "@/components/admin/admin-table"
-import { AdminSearch } from "@/components/admin/admin-search"
-import { AdminModal } from "@/components/admin/admin-modal"
-import { useData, LoadingSkeleton, ErrorState } from "@/lib/hooks/use-admin-data"
-import { adminApi } from "@/lib/admin-api"
-import type { ContactMessage } from "@/lib/admin-types"
-import { formatDateTime } from "@/lib/admin-utils"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Mail, Trash2, CheckCheck, Reply } from "lucide-react"
+import { motion } from "framer-motion"
+import { Search, Mail, Reply, CheckCheck, Trash2 } from "lucide-react"
+
+const sampleMessages = [
+  { id: 1, name: "John Doe", email: "john@example.com", subject: "Billing Question", message: "I was charged twice for my Pro plan this month...", date: "2024-07-15", read: false },
+  { id: 2, name: "Alice Smith", email: "alice@example.com", subject: "Feature Request", message: "It would be great if you could add support for...", date: "2024-07-14", read: false },
+  { id: 3, name: "Bob Wilson", email: "bob@example.com", subject: "Account Issue", message: "I can't log into my account after the update...", date: "2024-07-13", read: true },
+  { id: 4, name: "Carol Brown", email: "carol@example.com", subject: "Partnership Inquiry", message: "We're interested in partnering with Nextill AI for...", date: "2024-07-12", read: true },
+  { id: 5, name: "David Lee", email: "david@example.com", subject: "Technical Support", message: "The AI writer tool is not generating proper...", date: "2024-07-11", read: false },
+  { id: 6, name: "Emma Taylor", email: "emma@example.com", subject: "Feedback", message: "Love the platform! Just a suggestion for...", date: "2024-07-10", read: true },
+]
 
 export default function ContactPage() {
   const [search, setSearch] = useState("")
-  const {data, loading, error, refetch} = useData(() => adminApi.contact())
-  const [replyMsg, setReplyMsg] = useState<ContactMessage | null>(null)
-  const [showReplyModal, setShowReplyModal] = useState(false)
-  const [replyText, setReplyText] = useState("")
 
-  const filtered = (data?.data || []).filter((m: any) =>
-    m.name.toLowerCase().includes(search.toLowerCase()) || m.subject.toLowerCase().includes(search.toLowerCase())
+  const filtered = sampleMessages.filter(m =>
+    m.name.toLowerCase().includes(search.toLowerCase()) ||
+    m.subject.toLowerCase().includes(search.toLowerCase()) ||
+    m.email.toLowerCase().includes(search.toLowerCase())
   )
-
-  if (loading) return <LoadingSkeleton />
-  if (error) return <ErrorState message={error} onRetry={refetch} />
-
-  const handleSendReply = async () => {
-    if (!replyMsg || !replyText) return
-    try {
-      const res = await fetch("/api/admin/contact/reply", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contactId: replyMsg.id, to: replyMsg.email, message: replyText }),
-      })
-      if (!res.ok) throw new Error("Failed to send")
-      await adminApi.markContactRead(replyMsg.id)
-      setShowReplyModal(false)
-      setReplyText("")
-      setReplyMsg(null)
-      refetch()
-    } catch (e) { console.error(e) }
-  }
-
-  const columns = [
-    { key: "name", label: "From", render: (m: ContactMessage) => (
-      <div><p className="text-xs font-medium">{m.name}</p><p className="text-[10px] text-muted">{m.email}</p></div>
-    )},
-    { key: "subject", label: "Subject", render: (m: ContactMessage) => (
-      <div className="flex items-center gap-2">
-        {!m.read && <div className="w-2 h-2 rounded-full bg-primary shrink-0" />}
-        <span className="text-xs">{m.subject}</span>
-      </div>
-    )},
-    { key: "message", label: "Message", render: (m: ContactMessage) => (
-      <span className="text-[11px] text-muted max-w-[250px] truncate block">{m.message}</span>
-    )},
-    { key: "read", label: "Status", render: (m: ContactMessage) => (
-      <Badge variant={m.read ? "ghost" : "info"} size="sm">{m.read ? "Read" : "New"}</Badge>
-    )},
-    { key: "date", label: "Date", render: (m: ContactMessage) => (
-      <span className="text-[11px] text-muted">{formatDateTime((m as any).created_at)}</span>
-    )},
-    { key: "actions", label: "", className: "text-right", render: (m: ContactMessage) => (
-      <div className="flex items-center justify-end gap-1">
-        <Button variant="ghost" size="icon-sm" className="rounded-md" onClick={() => { setReplyMsg(m); setReplyText(""); setShowReplyModal(true) }}><Reply className="w-3.5 h-3.5" /></Button>
-        <Button variant="ghost" size="icon-sm" className="rounded-md" onClick={async () => {
-          try { await adminApi.markContactRead(m.id); refetch() } catch (e) { console.error(e) }
-        }}><CheckCheck className="w-3.5 h-3.5" /></Button>
-        <Button variant="ghost" size="icon-sm" className="rounded-md text-danger" onClick={async () => {
-          if (confirm("Delete this message?")) { try { await adminApi.deleteContact(m.id); refetch() } catch (e) { console.error(e) } }
-        }}><Trash2 className="w-3.5 h-3.5" /></Button>
-      </div>
-    )},
-  ]
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div><h1 className="text-2xl font-bold tracking-tight">Contact Messages</h1><p className="text-sm text-muted mt-1">User inquiries and support messages</p></div>
-        <Badge variant="danger" size="lg">
-          {data?.data.filter((m: any) => !m.read).length || 0} Unread
-        </Badge>
-      </div>
-      <div className="w-full max-w-xs"><AdminSearch value={search} onChange={setSearch} placeholder="Search messages..." /></div>
-      <div className="glass-card rounded-xl overflow-hidden">
-        <AdminTable columns={columns} data={filtered} keyField="id" />
+        <div>
+          <h1 className="text-2xl font-bold text-white">Contact Messages</h1>
+          <p className="text-sm text-[#A7B0C0] mt-1">User inquiries and support messages</p>
+        </div>
+        <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-[#EF4444]/10 text-[#EF4444] border border-[#EF4444]/20">
+          {sampleMessages.filter(m => !m.read).length} Unread
+        </span>
       </div>
 
-      <AdminModal open={showReplyModal} onClose={() => setShowReplyModal(false)} title={`Reply to: ${replyMsg?.name || ""}`} size="lg">
-        <div className="space-y-4">
-          {replyMsg && (
-            <div className="rounded-lg bg-card/50 p-3 border border-border text-xs">
-              <p className="font-medium text-muted mb-1">Original message:</p>
-              <p className="text-muted italic">&ldquo;{replyMsg.message}&rdquo;</p>
-            </div>
-          )}
-          <div>
-            <label className="block text-xs text-muted mb-1">Reply to: {replyMsg?.email}</label>
-            <textarea value={replyText} onChange={(e) => setReplyText(e.target.value)} rows={5} className="w-full px-3 py-2 rounded-lg bg-card border border-border text-xs outline-none focus:ring-2 focus:ring-primary/30 resize-y" placeholder="Type your reply..." />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" size="sm" onClick={() => setShowReplyModal(false)}>Cancel</Button>
-            <Button variant="gradient" size="sm" onClick={handleSendReply}>Send Reply</Button>
-          </div>
+      <div className="relative w-full max-w-xs">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A7B0C0]" />
+        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search messages..." className="w-full h-10 pl-10 pr-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+      </div>
+
+      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-white/[0.06]">
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">From</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Subject</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Status</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Date</th>
+                <th className="text-right p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((m, i) => (
+                <motion.tr
+                  key={m.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03 }}
+                  className={`border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors ${!m.read ? "bg-[#6D5EF5]/[0.02]" : ""}`}
+                >
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20 border border-white/[0.06] flex items-center justify-center text-[10px] font-bold text-white">
+                        {m.name.split(" ").map(n => n[0]).join("")}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-white">{m.name}</p>
+                        <p className="text-[10px] text-[#A7B0C0]">{m.email}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-2">
+                      {!m.read && <div className="w-2 h-2 rounded-full bg-[#6D5EF5]" />}
+                      <span className={`text-xs ${!m.read ? "text-white font-medium" : "text-[#A7B0C0]"}`}>{m.subject}</span>
+                    </div>
+                    <p className="text-[10px] text-[#A7B0C0] mt-0.5 truncate max-w-[250px]">{m.message}</p>
+                  </td>
+                  <td className="p-4">
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${
+                      m.read ? "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]" : "bg-[#6D5EF5]/10 text-[#6D5EF5] border-[#6D5EF5]/20"
+                    }`}>
+                      {m.read ? "Read" : "New"}
+                    </span>
+                  </td>
+                  <td className="p-4 text-xs text-[#A7B0C0]">{m.date}</td>
+                  <td className="p-4 text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#4CC9F0] transition-all"><Reply className="w-3.5 h-3.5" /></button>
+                      <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"><CheckCheck className="w-3.5 h-3.5" /></button>
+                      <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))}
+              {filtered.length === 0 && (
+                <tr><td colSpan={5} className="p-8 text-center text-xs text-[#A7B0C0]">No messages found</td></tr>
+              )}
+            </tbody>
+          </table>
         </div>
-      </AdminModal>
+      </div>
     </div>
   )
 }

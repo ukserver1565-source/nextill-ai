@@ -1,89 +1,276 @@
-import Link from "next/link"
-import { Sparkles, ArrowRight, ChevronRight } from "lucide-react"
-import { toolsRegistry } from "@/lib/tools/registry"
-import { Button } from "@/components/ui/button"
+"use client"
 
-const categoryColors: Record<string, string> = {
-  content: "from-blue-500 to-purple-600",
-  seo: "from-emerald-500 to-teal-600",
-  research: "from-amber-500 to-orange-600",
-  technical: "from-violet-500 to-indigo-600",
-  writing: "from-pink-500 to-rose-600",
+import Link from "next/link"
+import { motion } from "framer-motion"
+import {
+  Search, FileText, Shield, Sparkles, ArrowRight,
+  ChevronRight, ExternalLink, Zap, Star, Layers,
+  BookOpen, FileType, Activity, Globe, Clock, BarChart3,
+  TrendingUp, MessageSquare, Award, Edit, Check
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] } },
 }
 
-const categoryLabels: Record<string, string> = {
-  content: "Content",
-  seo: "SEO",
-  research: "Research",
-  technical: "Technical",
-  writing: "Writing",
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
+}
+
+const staggerItem = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+}
+
+const premiumTools = [
+  {
+    name: "Keyword Intelligence",
+    slug: "keyword-intelligence",
+    icon: Search,
+    color: "from-violet-500 to-indigo-600",
+    desc: "Discover high-value keywords with search volume, difficulty scores, trend data, and SERP analysis — all in one intelligent workflow.",
+    features: ["Search volume & difficulty", "Trend analysis", "SERP feature breakdown", "Export to CSV"],
+    badge: "Live",
+    badgeVariant: "success" as const,
+  },
+  {
+    name: "Post Generator",
+    slug: "post-generator",
+    icon: FileText,
+    color: "from-blue-500 to-purple-600",
+    desc: "Generate fully SEO-optimized blog posts from a topic. AI writes, formats, and optimizes for search in a single click.",
+    features: ["Full article generation", "SEO title & meta", "FAQ section", "Schema markup"],
+    badge: "Live",
+    badgeVariant: "success" as const,
+  },
+  {
+    name: "Plagiarism Checker",
+    slug: "plagiarism-checker",
+    icon: Shield,
+    color: "from-emerald-500 to-green-600",
+    desc: "Check content originality against billions of indexed web pages. Get detailed similarity reports with source URLs.",
+    features: ["Web-wide comparison", "Similarity scoring", "Source URL detection", "Detailed reports"],
+    badge: "Live",
+    badgeVariant: "success" as const,
+  },
+]
+
+const legacyTools = [
+  { name: "AI Detector", icon: Shield, migrated: "Post Generator" },
+  { name: "AI Humanizer", icon: Edit, migrated: "Post Generator" },
+  { name: "AI Writer", icon: FileText, migrated: "Post Generator" },
+  { name: "Article Rewriter", icon: Edit, migrated: "Post Generator" },
+  { name: "Backlink Checker", icon: ExternalLink, migrated: "Keyword Intelligence" },
+  { name: "Content Brief", icon: FileType, migrated: "Keyword Intelligence" },
+  { name: "FAQ Generator", icon: MessageSquare, migrated: "Post Generator" },
+  { name: "Grammar Checker", icon: Edit, migrated: "Post Generator" },
+  { name: "Internal Link Generator", icon: Layers, migrated: "Post Generator" },
+  { name: "Keyword Research", icon: Search, migrated: "Keyword Intelligence" },
+  { name: "Meta Description Generator", icon: FileType, migrated: "Post Generator" },
+  { name: "Rank Tracker", icon: TrendingUp, migrated: "Keyword Intelligence" },
+  { name: "Robots.txt Generator", icon: FileType, migrated: "Post Generator" },
+  { name: "Schema Generator", icon: Layers, migrated: "Post Generator" },
+  { name: "SEO Title Generator", icon: Award, migrated: "Post Generator" },
+  { name: "Sitemap Generator", icon: Layers, migrated: "Post Generator" },
+  { name: "Summarizer", icon: FileText, migrated: "Post Generator" },
+  { name: "Topical Map", icon: Layers, migrated: "Keyword Intelligence" },
+  { name: "Translator", icon: Globe, migrated: "Post Generator" },
+  { name: "Website Audit", icon: Activity, migrated: "Keyword Intelligence" },
+]
+
+const workflowMapping = {
+  "Keyword Intelligence": Search,
+  "Post Generator": FileText,
+  "Plagiarism Checker": Shield,
 }
 
 export default function ToolsPage() {
-  const tools = toolsRegistry
-
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
-      <header className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg gradient-primary flex items-center justify-center shrink-0">
-              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      {/* NAV */}
+      <header className="glass-topbar sticky top-0 z-50 h-16">
+        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <Link href="/"><span className="text-base sm:text-lg font-bold">Nextill<span className="text-primary-light"> AI</span></span></Link>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link href="/login"><Button variant="ghost" size="sm" className="text-xs sm:text-sm">Sign In</Button></Link>
-            <Link href="/signup"><Button variant="gradient" size="sm" className="text-xs sm:text-sm">Get Started</Button></Link>
+            <span className="text-lg font-bold tracking-tight">
+              <span className="gradient-primary-text">Nextill AI</span>
+            </span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/login">
+              <Button variant="ghost" size="sm">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/signup">
+              <Button variant="gradient" size="sm">
+                Get Started
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
 
-      <section className="w-full max-w-7xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
-        <div className="mb-6 sm:mb-8">
-          <Link href="/" className="text-[10px] sm:text-xs text-muted hover:text-foreground transition-colors">Home</Link>
-          <span className="text-[10px] sm:text-xs text-muted mx-1.5 sm:mx-2">/</span>
-          <span className="text-[10px] sm:text-xs text-foreground font-medium">All Tools</span>
+      {/* HERO */}
+      <motion.section
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+        className="px-4 pt-16 pb-12"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <Link href="/" className="text-xs text-muted hover:text-white transition-colors">
+              Home
+            </Link>
+            <span className="text-xs text-muted mx-2">/</span>
+            <span className="text-xs text-white/70 font-medium">All Tools</span>
+          </div>
+          <div className="max-w-2xl">
+            <Badge variant="info" className="mb-4 px-3 py-1 text-xs">
+              <Zap className="w-3 h-3 mr-1.5" />
+              21 Tools Consolidated into 3 Premium Workflows
+            </Badge>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">All Tools</h1>
+            <p className="text-muted mt-2 text-sm sm:text-base">
+              We&apos;ve consolidated 21 legacy tools into 3 powerful AI workflows. Experience the next generation of SEO and content creation.
+            </p>
+          </div>
         </div>
+      </motion.section>
 
-        <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">All 21 AI Tools</h1>
-        <p className="text-muted text-xs sm:text-sm mb-6 sm:mb-10">Use any tool instantly — no login required. Click to get started.</p>
-
-        {(["content", "seo", "research", "technical", "writing"] as const).map((category) => {
-          const catTools = tools.filter(t => t.category === category)
-          if (!catTools.length) return null
-          return (
-            <div key={category} className="mb-6 sm:mb-10">
-              <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 capitalize">{categoryLabels[category]} Tools</h2>
-              <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-                {catTools.map((tool) => (
+      {/* PREMIUM TOOLS */}
+      <motion.section
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+        className="px-4 pb-12"
+      >
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-xl font-bold mb-6">Premium Workflows</h2>
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          >
+            {premiumTools.map((tool) => {
+              const Icon = tool.icon
+              return (
+                <motion.div key={tool.slug} variants={staggerItem}>
                   <Link
-                    key={tool.slug}
-                    href={tool.route}
-                    className="glass-card rounded-lg sm:rounded-xl p-4 sm:p-5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all group"
+                    href={`/${tool.slug}`}
+                    className="glass-card rounded-2xl p-6 sm:p-8 h-full flex flex-col group hover:border-primary/30 transition-all duration-300 hover:-translate-y-1"
                   >
-                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br ${tool.color} flex items-center justify-center mb-2 sm:mb-3`}>
-                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                    <div className="flex items-start justify-between mb-4">
+                      <div
+                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center shadow-lg`}
+                      >
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <Badge variant={tool.badgeVariant} size="sm" showDot>
+                        {tool.badge}
+                      </Badge>
                     </div>
-                    <h3 className="font-semibold text-xs sm:text-sm group-hover:text-primary-light transition-colors">{tool.name}</h3>
-                    <p className="text-[10px] sm:text-xs text-muted mt-1 line-clamp-2">{tool.description}</p>
-                    <div className="flex items-center justify-between mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-border">
-                      <span className="text-[9px] sm:text-[10px] text-muted">{tool.creditsCost} credits</span>
-                      <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] text-primary-light">
-                        Open <ChevronRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                    <h3 className="text-lg font-bold group-hover:gradient-primary-text transition-all duration-300">
+                      {tool.name}
+                    </h3>
+                    <p className="text-sm text-muted mt-2 flex-1">{tool.desc}</p>
+                    <ul className="mt-4 space-y-2">
+                      {tool.features.map((f) => (
+                        <li key={f} className="text-xs text-muted flex items-center gap-2">
+                          <Check className="w-3 h-3 text-primary-light shrink-0" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
+                      <span className="text-xs text-muted">Free to try</span>
+                      <span className="inline-flex items-center gap-1 text-sm text-primary-light font-medium group-hover:gap-2 transition-all">
+                        Open Tool <ChevronRight className="w-4 h-4" />
                       </span>
                     </div>
                   </Link>
-                ))}
-              </div>
-            </div>
-          )
-        })}
-      </section>
+                </motion.div>
+              )
+            })}
+          </motion.div>
+        </div>
+      </motion.section>
 
-      <footer className="border-t border-border py-6 sm:py-8 px-3 sm:px-4">
-        <div className="max-w-7xl mx-auto text-center text-[10px] sm:text-xs text-muted">
-          &copy; {new Date().getFullYear()} Nextill AI. All rights reserved.
+      {/* LEGACY TOOLS MIGRATION */}
+      <motion.section
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="px-4 pb-20"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="glass-card rounded-2xl p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+              <div>
+                <h2 className="text-xl font-bold">Legacy Tools</h2>
+                <p className="text-sm text-muted mt-1">
+                  All 21 previous tools have been migrated into 3 consolidated workflows.
+                </p>
+              </div>
+              <Badge variant="info" size="lg" className="whitespace-nowrap">
+                <Check className="w-4 h-4 mr-1.5" />
+                Fully Consolidated
+              </Badge>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              {legacyTools.map((tool) => {
+                const Icon = tool.icon
+                const MigratedIcon = workflowMapping[tool.migrated as keyof typeof workflowMapping]
+                return (
+                  <div
+                    key={tool.name}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0">
+                      <Icon className="w-4 h-4 text-muted" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium truncate">{tool.name}</p>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        <span className="text-[10px] text-muted">via</span>
+                        <MigratedIcon className="w-3 h-3 text-primary-light" />
+                        <span className="text-[10px] text-primary-light truncate">{tool.migrated}</span>
+                      </div>
+                    </div>
+                    <Badge variant="success" size="sm" className="shrink-0">
+                      Migrated
+                    </Badge>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* FOOTER */}
+      <footer className="border-t border-border">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
+                <Sparkles className="w-3.5 h-3.5 text-white" />
+              </div>
+              <span className="text-sm font-bold gradient-primary-text">Nextill AI</span>
+            </Link>
+            <p className="text-xs text-muted">
+              &copy; {new Date().getFullYear()} Nextill AI. All rights reserved.
+            </p>
+          </div>
         </div>
       </footer>
     </div>

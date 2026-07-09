@@ -1,77 +1,52 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useRouter } from "next/navigation"
-import { quickActions } from "@/lib/data"
-import { cn } from "@/lib/utils"
-import {
-  FilePlus, UserCheck, RefreshCw, Languages, AlignLeft,
-  SpellCheck, SearchCheck, FileSearch, HelpCircle, ListTree,
-  Heading, FileText, Code,
-} from "lucide-react"
+import { FileText, FolderKanban, History } from "lucide-react"
+import Link from "next/link"
 
-const iconMap: Record<string, React.ElementType> = {
-  FilePlus, UserCheck, RefreshCw, Languages, AlignLeft,
-  SpellCheck, SearchCheck, FileSearch, HelpCircle, ListTree,
-  Heading, FileText, Code,
+const actions = [
+  { icon: FileText, label: "New Document", path: "/post-generator", color: "from-blue-500 to-purple-600" },
+  { icon: FolderKanban, label: "New Project", path: "/dashboard/projects", color: "from-violet-500 to-indigo-600" },
+  { icon: History, label: "View History", path: "/dashboard/history", color: "from-amber-500 to-orange-600" },
+]
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.06 },
+  },
 }
 
-const actionRoutes: Record<string, string> = {
-  "Create Article": "/ai-writer",
-  "Humanize": "/ai-humanizer",
-  "Rewrite": "/paraphraser",
-  "Translate": "/translator",
-  "Summarize": "/summarizer",
-  "Grammar Fix": "/grammar-checker",
-  "Check AI": "/ai-detector",
-  "Check Plagiarism": "/plagiarism-checker",
-  "Generate FAQ": "/faq-generator",
-  "Generate Outline": "/ai-writer",
-  "Generate Title": "/seo-title-generator",
-  "Generate Meta": "/meta-description-generator",
-  "Generate Schema": "/schema-generator",
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.25 } },
 }
 
 export function QuickActions() {
-  const router = useRouter()
-
   return (
-    <section>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold tracking-tight">Quick Actions</h2>
-        <button className="text-xs text-primary hover:underline">View All</button>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-2">
-        {quickActions.map((action, i) => {
-          const Icon = iconMap[action.icon]
-          if (!Icon) return null
-          return (
-            <motion.button
-              key={action.label}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.03, duration: 0.2 }}
-              onClick={() => {
-                const route = actionRoutes[action.label]
-                if (route) router.push(route)
-              }}
-              className={cn(
-                "flex flex-col items-center gap-2 p-3 rounded-xl glass-card hover:glass-card-hover transition-all duration-200 group cursor-pointer"
-              )}
-            >
-              <div className={cn(
-                "w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br group-hover:scale-110 transition-transform duration-200",
-                action.color
-              )}>
-                <Icon className="w-4 h-4 text-white" />
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="flex flex-wrap items-center gap-3"
+    >
+      <span className="text-xs text-[#A7B0C0] font-medium mr-1">Quick Actions:</span>
+      {actions.map((action) => {
+        const Icon = action.icon
+        return (
+          <motion.div key={action.label} variants={itemVariants}>
+            <Link href={action.path}>
+              <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] hover:border-white/[0.12] hover:bg-[#151C2E]/90 transition-all duration-200 group cursor-pointer">
+                <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center`}>
+                  <Icon className="w-3.5 h-3.5 text-white" />
+                </div>
+                <span className="text-xs font-medium text-white">{action.label}</span>
               </div>
-              <span className="text-[11px] font-medium text-center leading-tight">
-                {action.label}
-              </span>
-            </motion.button>
-          )
-        })}
-      </div>
-    </section>
+            </Link>
+          </motion.div>
+        )
+      })}
+    </motion.div>
   )
 }

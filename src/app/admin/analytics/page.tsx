@@ -1,20 +1,35 @@
 "use client"
 
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend,
-} from "recharts"
-import { useData, LoadingSkeleton, ErrorState } from "@/lib/hooks/use-admin-data"
-import { adminApi } from "@/lib/admin-api"
-import { formatCurrency } from "@/lib/admin-utils"
+import { useState } from "react"
+import { motion } from "framer-motion"
+import { Calendar, TrendingUp, Users, Eye, MousePointerClick } from "lucide-react"
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+
+const pageViewsData = Array.from({ length: 30 }, (_, i) => ({
+  date: `Day ${i + 1}`,
+  views: Math.floor(Math.random() * 8000) + 2000,
+}))
+
+const usersData = Array.from({ length: 12 }, (_, i) => ({
+  month: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][i],
+  users: Math.floor(Math.random() * 500) + 200,
+}))
+
+const topPages = [
+  { page: "/", views: 45230, avgTime: "3:45" },
+  { page: "/tools/ai-writer", views: 32100, avgTime: "5:12" },
+  { page: "/pricing", views: 28900, avgTime: "2:30" },
+  { page: "/login", views: 24500, avgTime: "1:15" },
+  { page: "/blog/seo-tips", views: 18300, avgTime: "4:20" },
+]
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="glass-card px-3 py-2 text-sm shadow-xl">
-      <p className="text-muted text-xs mb-1">{label}</p>
+    <div className="bg-[#151C2E]/95 backdrop-blur-xl border border-white/[0.06] rounded-lg px-3 py-2 shadow-xl">
+      <p className="text-[#A7B0C0] text-xs mb-1">{label}</p>
       {payload.map((entry: any, i: number) => (
-        <p key={i} className="flex items-center gap-2 text-xs font-medium">
+        <p key={i} className="flex items-center gap-2 text-xs font-medium text-white">
           <span className="w-2 h-2 rounded-full" style={{ background: entry.color }} />
           {entry.name}: {typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}
         </p>
@@ -24,96 +39,91 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 export default function AnalyticsPage() {
-  const { data: users, loading, error, refetch } = useData(() => adminApi.users({ limit: "100" }))
-  const { data: tools } = useData(() => adminApi.tools())
-
-  const usersArr = users?.data || []
-  const toolsArr = tools || []
-
-  const usersByPlan = [
-    { name: "Free", value: usersArr.filter((u: any) => (u.plan || u.plan_id) === "free").length, color: "#6b7280" },
-    { name: "Starter", value: usersArr.filter((u: any) => (u.plan || u.plan_id) === "starter").length, color: "#10b981" },
-    { name: "Pro", value: usersArr.filter((u: any) => (u.plan || u.plan_id) === "pro").length, color: "#6366f1" },
-    { name: "Agency", value: usersArr.filter((u: any) => (u.plan || u.plan_id) === "agency").length, color: "#8b5cf6" },
-    { name: "Enterprise", value: usersArr.filter((u: any) => (u.plan || u.plan_id) === "enterprise").length, color: "#f59e0b" },
-  ]
-
-  const monthlyRevenue = [
-    { month: "Jan", revenue: 1200 }, { month: "Feb", revenue: 1800 },
-    { month: "Mar", revenue: 2400 }, { month: "Apr", revenue: 2800 },
-    { month: "May", revenue: 3200 }, { month: "Jun", revenue: 4100 },
-  ]
-
-  const toolsUsageChart = toolsArr.map((t: any) => ({ name: t.name.replace(/_/g, " ").slice(0, 12), usage: t.usage_count }))
-
-  const conversionRate = ((usersArr.filter((u: any) => (u.plan || u.plan_id) !== "free").length / (usersArr.length || 1)) * 100).toFixed(1)
-
-  if (loading) return <LoadingSkeleton />
-  if (error) return <ErrorState message={error} onRetry={refetch} />
+  const [range, setRange] = useState("30d")
 
   return (
     <div className="space-y-6">
-      <div><h1 className="text-2xl font-bold tracking-tight">Analytics</h1><p className="text-sm text-muted mt-1">Dashboard analytics and insights</p></div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Analytics</h1>
+          <p className="text-sm text-[#A7B0C0] mt-1">Track page views, users, and engagement</p>
+        </div>
+        <div className="flex items-center gap-1 p-1 bg-[#090B16] rounded-xl border border-white/[0.06]">
+          {(["7d", "30d", "90d"] as const).map(r => (
+            <button key={r} onClick={() => setRange(r)} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${range === r ? "bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white" : "text-[#A7B0C0] hover:text-white"}`}>{r}</button>
+          ))}
+        </div>
+      </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Avg Users/Day", value: "124" },
-          { label: "Avg Users/Week", value: "845" },
-          { label: "Avg Users/Month", value: "3,240" },
-          { label: "Conversion Rate", value: `${conversionRate}%` },
-        ].map((m) => (
-          <div key={m.label} className="glass-card rounded-xl p-4 text-center">
-            <p className="text-xl font-bold">{m.value}</p>
-            <p className="text-[11px] text-muted mt-1">{m.label}</p>
-          </div>
-        ))}
+          { icon: Eye, label: "Page Views", value: "89,234", change: "+12.5%", color: "#6D5EF5" },
+          { icon: Users, label: "Unique Visitors", value: "45,678", change: "+8.3%", color: "#4CC9F0" },
+          { icon: MousePointerClick, label: "Avg. Session", value: "4m 32s", change: "+2.1%", color: "#22C55E" },
+          { icon: TrendingUp, label: "Bounce Rate", value: "32.1%", change: "-5.4%", color: "#F59E0B" },
+        ].map((stat, i) => {
+          const Icon = stat.icon
+          return (
+            <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4">
+              <Icon className="w-5 h-5 mb-2" style={{ color: stat.color }} />
+              <p className="text-xl font-bold text-white">{stat.value}</p>
+              <p className="text-[11px] text-[#A7B0C0]">{stat.label}</p>
+            </motion.div>
+          )
+        })}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div className="glass-card rounded-xl p-5">
-          <h3 className="text-sm font-semibold mb-4">Monthly Revenue</h3>
-          <div className="h-[250px]">
+        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+            <Eye className="w-4 h-4 text-[#6D5EF5]" /> Page Views (30 days)
+          </h3>
+          <div className="h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyRevenue}>
+              <LineChart data={pageViewsData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-                <XAxis dataKey="month" tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "#6b7280", fontSize: 11 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="date" tick={{ fill: "#A7B0C0", fontSize: 10 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "#A7B0C0", fontSize: 10 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="revenue" fill="#6366f1" radius={[4, 4, 0, 0]} name="Revenue" />
+                <Line type="monotone" dataKey="views" stroke="#6D5EF5" strokeWidth={2} dot={false} name="Views" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+            <Users className="w-4 h-4 text-[#4CC9F0]" /> Users per Month
+          </h3>
+          <div className="h-[280px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={usersData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                <XAxis dataKey="month" tick={{ fill: "#A7B0C0", fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "#A7B0C0", fontSize: 11 }} axisLine={false} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="users" fill="#4CC9F0" radius={[4, 4, 0, 0]} name="Users" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="glass-card rounded-xl p-5">
-          <h3 className="text-sm font-semibold mb-4">Users by Plan</h3>
-          <div className="h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={usersByPlan} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={4} dataKey="value">
-                  {usersByPlan.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-                <Legend wrapperStyle={{ fontSize: 11, color: "#9ca3af" }} iconType="circle" />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="glass-card rounded-xl p-5 xl:col-span-2">
-          <h3 className="text-sm font-semibold mb-4">Tool Usage</h3>
-          <div className="h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={toolsUsageChart} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" horizontal={false} />
-                <XAxis type="number" tick={{ fill: "#6b7280", fontSize: 10 }} axisLine={false} tickLine={false} />
-                <YAxis type="category" dataKey="name" tick={{ fill: "#6b7280", fontSize: 10 }} axisLine={false} tickLine={false} width={120} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="usage" fill="#06b6d4" radius={[0, 4, 4, 0]} name="Usage" />
-              </BarChart>
-            </ResponsiveContainer>
+        <div className="xl:col-span-2 bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-white mb-4">Top Pages</h3>
+          <div className="space-y-2">
+            {topPages.map((p, i) => (
+              <div key={i} className="flex items-center justify-between py-2.5 border-b border-white/[0.06] last:border-0">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-[#A7B0C0] w-5">{i + 1}</span>
+                  <span className="text-xs text-white font-medium">{p.page}</span>
+                </div>
+                <div className="flex items-center gap-6 text-xs text-[#A7B0C0]">
+                  <span>{p.views.toLocaleString()} views</span>
+                  <span>{p.avgTime} avg</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

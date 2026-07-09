@@ -1,87 +1,97 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { AdminModal } from "@/components/admin/admin-modal"
-import { FolderKanban, Plus } from "lucide-react"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { useData, LoadingSkeleton, ErrorState } from "@/lib/hooks/use-admin-data"
-import { adminApi } from "@/lib/admin-api"
+import { motion } from "framer-motion"
+import { Search, FolderKanban, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
 
-export default function AdminProjectsPage() {
-  const { data, loading, error, refetch } = useData(() => adminApi.projects())
-  const [showModal, setShowModal] = useState(false)
-  const [form, setForm] = useState({ name: "", domain: "", user_id: "" })
-  const projects = data?.data || []
+const sampleProjects = [
+  { id: 1, name: "TechBlog", owner: "Sarah Johnson", documents: 24, created: "2024-06-01", domain: "techblog.com" },
+  { id: 2, name: "HealthHub", owner: "Michael Chen", documents: 18, created: "2024-06-15", domain: "healthhub.io" },
+  { id: 3, name: "FinancePro", owner: "Emily Davis", documents: 32, created: "2024-05-20", domain: "financepro.com" },
+  { id: 4, name: "TravelGo", owner: "James Wilson", documents: 12, created: "2024-07-01", domain: "travelgo.net" },
+  { id: 5, name: "FoodieZone", owner: "Lisa Thompson", documents: 45, created: "2024-04-10", domain: "foodiezone.com" },
+  { id: 6, name: "FitLife", owner: "David Martinez", documents: 8, created: "2024-07-10", domain: "fitlife.org" },
+  { id: 7, name: "EduSmart", owner: "Anna Kim", documents: 28, created: "2024-05-01", domain: "edusmart.io" },
+  { id: 8, name: "GreenEarth", owner: "Robert Taylor", documents: 15, created: "2024-06-20", domain: "greenearth.com" },
+]
 
-  if (loading) return <LoadingSkeleton />
-  if (error) return <ErrorState message={error} onRetry={refetch} />
+const PAGE_SIZE = 8
 
-  const handleCreate = async () => {
-    if (!form.name) return
-    try {
-      await fetch("/api/admin/projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: form.name, domain: form.domain || undefined, user_id: form.user_id || undefined }),
-      })
-      setShowModal(false)
-      setForm({ name: "", domain: "", user_id: "" })
-      refetch()
-    } catch (e) { console.error(e) }
-  }
+export default function ProjectsPage() {
+  const [search, setSearch] = useState("")
+  const [page, setPage] = useState(1)
+
+  const filtered = sampleProjects.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.owner.toLowerCase().includes(search.toLowerCase()))
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div><h1 className="text-2xl font-bold tracking-tight">Projects</h1><p className="text-sm text-muted mt-1">All user projects across the platform</p></div>
-        <Button variant="gradient" size="sm" className="gap-1.5 rounded-lg" onClick={() => setShowModal(true)}><Plus className="w-4 h-4" /> New Project</Button>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {projects.map((p: any) => (
-          <div key={p.id} className="glass-card rounded-xl p-4 hover:glass-card-hover transition-all">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center text-white font-bold text-xs">{p.name.charAt(0)}</div>
-              <div>
-                <p className="text-sm font-semibold">{p.name}</p>
-                <p className="text-[10px] text-muted">{p.domain}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div><span className="text-muted">Articles</span><p className="font-medium">{p.articles}</p></div>
-              <div><span className="text-muted">Keywords</span><p className="font-medium">{p.keywords.toLocaleString()}</p></div>
-              <div><span className="text-muted">Traffic</span><p className="font-medium">{p.traffic}</p></div>
-              <div><span className="text-muted">SEO Score</span><p className="font-medium">{p.seo_score}</p></div>
-            </div>
-            <div className="mt-3">
-              <Progress value={p.seo_score} variant={p.seo_score >= 80 ? "success" : p.seo_score >= 60 ? "default" : "warning"} size="sm" />
-            </div>
-          </div>
-        ))}
+      <div>
+        <h1 className="text-2xl font-bold text-white">Projects</h1>
+        <p className="text-sm text-[#A7B0C0] mt-1">All user projects across the platform</p>
       </div>
 
-      <AdminModal open={showModal} onClose={() => setShowModal(false)} title="New Project" size="sm">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-xs text-muted mb-1">Project Name</label>
-            <Input value={form.name} onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))} placeholder="My Website" className="bg-card border-border text-xs" />
-          </div>
-          <div>
-            <label className="block text-xs text-muted mb-1">Domain</label>
-            <Input value={form.domain} onChange={(e) => setForm(f => ({ ...f, domain: e.target.value }))} placeholder="example.com" className="bg-card border-border text-xs" />
-          </div>
-          <div>
-            <label className="block text-xs text-muted mb-1">User ID (optional)</label>
-            <Input value={form.user_id} onChange={(e) => setForm(f => ({ ...f, user_id: e.target.value }))} placeholder="uuid..." className="bg-card border-border text-xs font-mono" />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" size="sm" onClick={() => setShowModal(false)}>Cancel</Button>
-            <Button variant="gradient" size="sm" onClick={handleCreate}>Create Project</Button>
-          </div>
+      <div className="relative w-full max-w-xs">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A7B0C0]" />
+        <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} placeholder="Search projects..." className="w-full h-10 pl-10 pr-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+      </div>
+
+      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-white/[0.06]">
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Project</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Owner</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Documents</th>
+                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Created</th>
+                <th className="text-right p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginated.map((proj, i) => (
+                <motion.tr key={proj.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
+                  className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors">
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] flex items-center justify-center text-sm font-bold text-white">
+                        {proj.name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-white">{proj.name}</p>
+                        <p className="text-[10px] text-[#A7B0C0]">{proj.domain}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-4 text-xs text-white">{proj.owner}</td>
+                  <td className="p-4 text-xs text-[#A7B0C0]">{proj.documents}</td>
+                  <td className="p-4 text-xs text-[#A7B0C0]">{proj.created}</td>
+                  <td className="p-4 text-right">
+                    <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#4CC9F0] transition-all">
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </button>
+                  </td>
+                </motion.tr>
+              ))}
+              {paginated.length === 0 && (
+                <tr><td colSpan={5} className="p-8 text-center text-xs text-[#A7B0C0]">No projects found</td></tr>
+              )}
+            </tbody>
+          </table>
         </div>
-      </AdminModal>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-[#A7B0C0]">Showing {(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}</p>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronLeft className="w-4 h-4" /></button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+            <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === p ? "bg-[#6D5EF5] text-white" : "bg-[#151C2E]/80 border border-white/[0.06] text-[#A7B0C0] hover:text-white"}`}>{p}</button>
+          ))}
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronRight className="w-4 h-4" /></button>
+        </div>
+      </div>
     </div>
   )
 }

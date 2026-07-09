@@ -1,13 +1,24 @@
 "use client"
 
 import { useState, useCallback } from "react"
+import Link from "next/link"
 import { useAuth } from "@/lib/auth/AuthProvider"
 import { getTool } from "@/lib/tools/registry"
 import { ToolLayout, FieldLabel, SelectField, RangeField, NumberField, ErrorBox } from "@/components/tools/tool-layout"
 import { ToolResult } from "@/components/tools/tool-result"
 import { ToolActions } from "@/components/tools/tool-actions"
 import { Input } from "@/components/ui/input"
+import { Sparkles } from "lucide-react"
 import type { ToolField } from "@/lib/tools/registry"
+
+const legacyTools = new Set([
+  "ai-humanizer", "ai-detector", "article-rewriter", "grammar-checker",
+  "summarizer", "translator", "keyword-research", "seo-title-generator",
+  "meta-description-generator", "schema-generator", "sitemap-generator",
+  "robots-txt-generator", "internal-link-generator", "content-brief",
+  "topical-map", "faq-generator", "website-audit", "rank-tracker",
+  "backlink-checker", "ai-writer",
+])
 
 interface GenericToolPageProps {
   slug: string
@@ -16,6 +27,7 @@ interface GenericToolPageProps {
 export function GenericToolPage({ slug }: GenericToolPageProps) {
   const { profile } = useAuth()
   const definition = getTool(slug)
+  const isLegacy = legacyTools.has(slug)
 
   const [formValues, setFormValues] = useState<Record<string, unknown>>(() => {
     if (!definition) return {}
@@ -208,6 +220,20 @@ export function GenericToolPage({ slug }: GenericToolPageProps) {
       }
     >
       <div className="space-y-4">
+        {isLegacy && (
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 sm:p-4">
+            <p className="text-xs text-amber-400 font-medium flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3 shrink-0" />
+              This legacy tool is being phased out.
+            </p>
+            <p className="text-[10px] text-amber-400/70 mt-1">
+              Try our new premium workflows:{" "}
+              <Link href="/keyword-intelligence" className="underline hover:text-amber-300">Keyword Intelligence</Link>,{" "}
+              <Link href="/post-generator" className="underline hover:text-amber-300">Post Generator</Link>, or{" "}
+              <Link href="/plagiarism-checker" className="underline hover:text-amber-300">Plagiarism Checker</Link>.
+            </p>
+          </div>
+        )}
         {definition.fields.map((field) => (
           <div key={field.key} className="space-y-1.5">
             <FieldLabel>
