@@ -13,7 +13,13 @@ export async function POST(req: Request) {
     const supabase = await createSupabaseServerClient()
     const { data: { user } } = await supabase.auth.getUser()
 
-    const result = await runPlagiarismCheck({ text })
+    const output = await runPlagiarismCheck({ text })
+
+    if (!output.success) {
+      return NextResponse.json({ error: output.error || "Plagiarism check failed" }, { status: 500 })
+    }
+
+    const result = output.result!
 
     if (user) {
       try {
@@ -23,16 +29,12 @@ export async function POST(req: Request) {
           text,
           word_count: result.wordCount,
           originality_score: result.originalityScore,
-          duplicate_risk: result.duplicateRisk,
-          matched_phrases: result.matchedPhrases,
-          sources: result.sources,
-          recommendation: result.recommendation,
           safe_to_publish: result.safeToPublish,
         })
       } catch { /* non-critical */ }
     }
 
-    return NextResponse.json({ ...result, saved: !!user })
+    return NextResponse.json({ ...result, saved: !!user, engine: output.engine })
   } catch (err) {
     return NextResponse.json({ error: "Plagiarism check failed", details: (err as Error).message }, { status: 500 })
   }

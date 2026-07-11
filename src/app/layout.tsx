@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { AuthProvider } from "@/lib/auth/AuthProvider"
+import { ScrollToTop } from "@/components/layout/scroll-to-top"
+import { NavigationProgressWrapper } from "@/components/layout/navigation-progress-wrapper"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -25,8 +27,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
-      <body className="bg-background text-foreground antialiased">
-        <AuthProvider>{children}</AuthProvider>
+      <body className="bg-background text-foreground antialiased" suppressHydrationWarning>
+        <AuthProvider>
+          <ScrollToTop />
+          <NavigationProgressWrapper />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )

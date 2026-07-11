@@ -2,13 +2,16 @@
 
 import { useAuth } from "@/lib/auth/AuthProvider"
 import { supabase } from "@/lib/supabase/client"
-import { Loader2, Search, FileText, FileSearch, Sparkles, FolderKanban, FileIcon, Zap, Activity } from "lucide-react"
+import { Search, FileText, FileSearch, Sparkles, FolderKanban, FileIcon, Zap, Activity } from "lucide-react"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { MetricCards } from "@/components/dashboard/metric-cards"
 import { AIToolCards } from "@/components/dashboard/ai-tool-cards"
 import { QuickActions } from "@/components/dashboard/quick-actions"
 import { CommandCenter } from "@/components/dashboard/command-center"
+import { PageSkeleton } from "@/components/ui/skeleton"
+import { Breadcrumbs } from "@/components/layout/breadcrumbs"
+import { BackButton } from "@/components/layout/back-button"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
@@ -23,22 +26,6 @@ const containerVariants = {
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-}
-
-function getGreeting() {
-  const hour = new Date().getHours()
-  if (hour < 12) return "Good morning"
-  if (hour < 17) return "Good afternoon"
-  return "Good evening"
-}
-
-function getFormattedDate() {
-  return new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  })
 }
 
 const workflows = [
@@ -68,31 +55,60 @@ const workflows = [
   },
 ]
 
-const statsData = [
-  { icon: FolderKanban, label: "Projects", value: "12", trend: "+2", up: true, color: "from-violet-500 to-indigo-600" },
-  { icon: FileIcon, label: "Documents", value: "47", trend: "+8", up: true, color: "from-blue-500 to-cyan-500" },
-  { icon: Zap, label: "Credits Used", value: "1,247", trend: "+12.5%", up: true, color: "from-amber-500 to-orange-600" },
-  { icon: Activity, label: "AI Runs", value: "3,892", trend: "+18.7%", up: true, color: "from-emerald-500 to-teal-600" },
-]
-
-const creditLimit = 5000
-
 export default function Dashboard() {
   const { profile } = useAuth()
   const [documents, setDocuments] = useState<any[]>([])
   const [credits, setCredits] = useState<any>(null)
+  const [creditLimit, setCreditLimit] = useState(5000)
+  const [statsData, setStatsData] = useState([
+    { icon: FolderKanban, label: "Projects", value: "0", trend: "+0", up: true, color: "from-violet-500 to-indigo-600" },
+    { icon: FileIcon, label: "Documents", value: "0", trend: "+0", up: true, color: "from-blue-500 to-cyan-500" },
+    { icon: Zap, label: "Credits Used", value: "0", trend: "+0", up: true, color: "from-amber-500 to-orange-600" },
+    { icon: Activity, label: "AI Runs", value: "0", trend: "+0", up: true, color: "from-emerald-500 to-teal-600" },
+  ])
   const [loading, setLoading] = useState(true)
+  const [clientDate, setClientDate] = useState("")
+
+  useEffect(() => {
+    const hour = new Date().getHours()
+    let greeting = "Good evening"
+    if (hour < 12) greeting = "Good morning"
+    else if (hour < 17) greeting = "Good afternoon"
+    setClientDate(greeting + "|" + new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    }))
+  }, [])
 
   useEffect(() => {
     if (!profile) return
     const uid = profile.user_id
     async function load() {
-      const [docRes, credRes] = await Promise.all([
+      const [docRes, credRes, projRes, usageRes, creditLogRes, planRes] = await Promise.all([
         supabase.from("documents").select("*").eq("user_id", uid).order("updated_at", { ascending: false }).limit(10),
         supabase.from("credits").select("balance").eq("user_id", uid).single(),
+        supabase.from("projects").select("id", { count: "exact", head: true }).eq("user_id", uid),
+        supabase.from("usage_logs").select("id", { count: "exact", head: true }).eq("user_id", uid),
+        supabase.from("credit_logs").select("amount, type").eq("user_id", uid).eq("type", "used"),
+        supabase.from("plans").select("credits").eq("name", profile?.plan || "free").maybeSingle(),
       ])
       setDocuments(docRes.data || [])
       setCredits(credRes.data as { balance: number } | null)
+      if (planRes.data?.credits) setCreditLimit(planRes.data.credits)
+
+      const projectCount = projRes.count || 0
+      const documentCount = docRes.count || 0
+      const creditsUsed = creditLogRes.data?.reduce((sum: number, log: any) => sum + Math.abs(log.amount), 0) || 0
+      const aiRuns = usageRes.count || 0
+
+      setStatsData([
+        { icon: FolderKanban, label: "Projects", value: projectCount.toLocaleString(), trend: projectCount > 0 ? `+${projectCount}` : "0", up: true, color: "from-violet-500 to-indigo-600" },
+        { icon: FileIcon, label: "Documents", value: documentCount.toLocaleString(), trend: documentCount > 0 ? `+${documentCount}` : "0", up: true, color: "from-blue-500 to-cyan-500" },
+        { icon: Zap, label: "Credits Used", value: creditsUsed.toLocaleString(), trend: creditsUsed > 0 ? `-${creditsUsed}` : "0", up: false, color: "from-amber-500 to-orange-600" },
+        { icon: Activity, label: "AI Runs", value: aiRuns.toLocaleString(), trend: aiRuns > 0 ? `+${aiRuns}` : "0", up: true, color: "from-emerald-500 to-teal-600" },
+      ])
       setLoading(false)
     }
     load()
@@ -100,8 +116,8 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" />
+      <div className="p-6">
+        <PageSkeleton />
       </div>
     )
   }
@@ -133,12 +149,14 @@ export default function Dashboard() {
       className="space-y-8 pb-24"
     >
       <motion.div variants={itemVariants}>
+        <BackButton />
+        <Breadcrumbs className="mb-4" />
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-white">
-              {getGreeting()}, {userName.split(" ")[0]}
+              {clientDate ? clientDate.split("|")[0] : "Hello"}, {userName.split(" ")[0]}
             </h1>
-            <p className="text-sm text-[#A7B0C0] mt-1">{getFormattedDate()}</p>
+            <p className="text-sm text-[#A7B0C0] mt-1">{clientDate ? clientDate.split("|")[1] : ""}</p>
           </div>
           <div className="flex items-center gap-2 bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl px-4 py-2.5">
             <Sparkles className="w-4 h-4 text-[#6D5EF5]" />

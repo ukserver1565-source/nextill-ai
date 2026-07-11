@@ -415,7 +415,7 @@ export function AIWriterPage() {
                   <div className="flex items-center gap-2 text-[10px] text-muted mt-1">
                     <span>{item.wordCount?.toLocaleString() || 0} words</span>
                     <span>·</span>
-                    <span>{new Date(item.createdAt).toLocaleDateString()}</span>
+                    <span>{new Date(item.createdAt).toLocaleDateString("en-US")}</span>
                   </div>
                   <button
                     onClick={e => { e.stopPropagation(); handleDelete(item.id) }}

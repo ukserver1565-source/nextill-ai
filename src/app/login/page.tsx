@@ -11,7 +11,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-  const [remember, setRemember] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -113,16 +112,7 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={remember}
-                    onChange={(e) => setRemember(e.target.checked)}
-                    className="w-4 h-4 rounded border-white/[0.06] bg-[#090B16] text-[#6D5EF5] focus:ring-[#6D5EF5]/40"
-                  />
-                  <span className="text-[#A7B0C0]">Remember me</span>
-                </label>
+              <div className="flex items-center justify-end text-sm">
                 <Link href="/reset-password" className="text-[#6D5EF5] hover:underline">
                   Forgot password?
                 </Link>
@@ -145,24 +135,14 @@ export default function LoginPage() {
 
             {/* Social Buttons */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="relative group">
-                <Button variant="outline" className="w-full" disabled>
-                  <Chrome className="w-4 h-4 mr-2" />
-                  Google
-                </Button>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#111827] text-xs text-[#A7B0C0] rounded border border-white/[0.06] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                  Coming soon
-                </div>
-              </div>
-              <div className="relative group">
-                <Button variant="outline" className="w-full" disabled>
-                  <Github className="w-4 h-4 mr-2" />
-                  GitHub
-                </Button>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#111827] text-xs text-[#A7B0C0] rounded border border-white/[0.06] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                  Coming soon
-                </div>
-              </div>
+              <Button variant="outline" className="w-full opacity-50 cursor-not-allowed" disabled>
+                <Chrome className="w-4 h-4 mr-2" />
+                Google
+              </Button>
+              <Button variant="outline" className="w-full opacity-50 cursor-not-allowed" disabled>
+                <Github className="w-4 h-4 mr-2" />
+                GitHub
+              </Button>
             </div>
 
             <p className="text-center text-sm text-[#A7B0C0]">

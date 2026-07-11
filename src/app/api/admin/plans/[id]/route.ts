@@ -8,7 +8,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     const plan = await planRepo.getById(id)
     return NextResponse.json(plan)
   } catch (err) {
-    return NextResponse.json({ error: "Plan not found", details: (err as Error).message }, { status: 404 })
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 }
 
@@ -30,6 +30,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     await planRepo.delete(id)
     return NextResponse.json({ success: true })
   } catch (err) {
-    return NextResponse.json({ error: "Failed to delete plan", details: (err as Error).message }, { status: 500 })
+    return NextResponse.json({ error: "Failed to delete plan" }, { status: 500 })
   }
 }

@@ -194,8 +194,8 @@ export default function SignupPage() {
                 />
                 <span className="text-sm text-[#A7B0C0]">
                   I accept the{" "}
-                  <span className="text-[#6D5EF5] hover:underline">Terms of Service</span> and{" "}
-                  <span className="text-[#6D5EF5] hover:underline">Privacy Policy</span>
+                  <Link href="/terms" className="text-[#6D5EF5] hover:underline">Terms of Service</Link> and{" "}
+                  <Link href="/privacy-policy" className="text-[#6D5EF5] hover:underline">Privacy Policy</Link>
                 </span>
               </label>
 

@@ -1,28 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Search, DollarSign, TrendingUp, CheckCircle, XCircle, ChevronLeft, ChevronRight, Download, RotateCcw } from "lucide-react"
-
-const samplePayments = [
-  { id: "PAY-001", user: "Sarah Johnson", email: "sarah@example.com", amount: 99, plan: "Pro", status: "completed", date: "2024-07-15", method: "Stripe" },
-  { id: "PAY-002", user: "Michael Chen", email: "michael@example.com", amount: 299, plan: "Enterprise", status: "completed", date: "2024-07-14", method: "Stripe" },
-  { id: "PAY-003", user: "Emily Davis", email: "emily@example.com", amount: 0, plan: "Free", status: "completed", date: "2024-07-14", method: "-" },
-  { id: "PAY-004", user: "James Wilson", email: "james@example.com", amount: 99, plan: "Pro", status: "pending", date: "2024-07-13", method: "PayPal" },
-  { id: "PAY-005", user: "Lisa Thompson", email: "lisa@example.com", amount: 49, plan: "Starter", status: "completed", date: "2024-07-12", method: "Stripe" },
-  { id: "PAY-006", user: "David Martinez", email: "david@example.com", amount: 99, plan: "Pro", status: "failed", date: "2024-07-11", method: "Stripe" },
-  { id: "PAY-007", user: "Anna Kim", email: "anna@example.com", amount: 0, plan: "Free", status: "completed", date: "2024-07-10", method: "-" },
-  { id: "PAY-008", user: "Robert Taylor", email: "robert@example.com", amount: 299, plan: "Enterprise", status: "completed", date: "2024-07-09", method: "PayPal" },
-  { id: "PAY-009", user: "Sophie Brown", email: "sophie@example.com", amount: 49, plan: "Starter", status: "pending", date: "2024-07-08", method: "Stripe" },
-  { id: "PAY-010", user: "Daniel Lee", email: "daniel@example.com", amount: 99, plan: "Pro", status: "completed", date: "2024-07-07", method: "Stripe" },
-]
-
-const metrics = [
-  { icon: DollarSign, label: "Total Revenue", value: "$994", change: "+18.7%", up: true, color: "#22C55E" },
-  { icon: TrendingUp, label: "Pending", value: "$148", change: "2 pending", up: false, color: "#F59E0B" },
-  { icon: CheckCircle, label: "Successful", value: "7", change: "+5", up: true, color: "#22C55E" },
-  { icon: XCircle, label: "Failed", value: "1", change: "-1", up: false, color: "#EF4444" },
-]
+import { Search, DollarSign, TrendingUp, CheckCircle, XCircle, ChevronLeft, ChevronRight, Download, RotateCcw, Loader2 } from "lucide-react"
 
 const statusStyles: Record<string, string> = {
   completed: "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20",
@@ -33,14 +13,105 @@ const statusStyles: Record<string, string> = {
 const PAGE_SIZE = 8
 
 export default function PaymentsPage() {
+  const [data, setData] = useState<any[]>([])
+  const [total, setTotal] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
 
-  const filtered = samplePayments.filter(p =>
-    p.user.toLowerCase().includes(search.toLowerCase()) || p.email.toLowerCase().includes(search.toLowerCase())
-  )
-  const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    setError("")
+    try {
+      const params = new URLSearchParams({ page: page.toString(), limit: PAGE_SIZE.toString() })
+      if (search) params.set("search", search)
+      const res = await fetch(`/api/admin/payments?${params}`)
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const json = await res.json()
+      setData(json.data || [])
+      setTotal(json.total || 0)
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }, [page, search])
+
+  useEffect(() => { fetchData() }, [fetchData])
+
+  const totalPages = Math.ceil(total / PAGE_SIZE)
+
+  const totalRevenue = data.reduce((s, p) => s + (p.status === "completed" ? Number(p.amount) : 0), 0)
+  const pendingAmount = data.reduce((s, p) => s + (p.status === "pending" ? Number(p.amount) : 0), 0)
+  const successfulCount = data.filter(p => p.status === "completed").length
+  const failedCount = data.filter(p => p.status === "failed").length
+
+  const metrics = [
+    { icon: DollarSign, label: "Total Revenue", value: `$${totalRevenue.toLocaleString()}`, change: `from ${data.length} records`, up: true, color: "#22C55E" },
+    { icon: TrendingUp, label: "Pending", value: `$${pendingAmount.toLocaleString()}`, change: `${data.filter(p => p.status === "pending").length} pending`, up: false, color: "#F59E0B" },
+    { icon: CheckCircle, label: "Successful", value: successfulCount.toString(), change: "completed", up: true, color: "#22C55E" },
+    { icon: XCircle, label: "Failed", value: failedCount.toString(), change: "failed", up: false, color: "#EF4444" },
+  ]
+
+  const handleExportCSV = () => {
+    const headers = ["ID", "User", "Email", "Amount", "Status", "Plan", "Date"]
+    const rows = data.map((p: any) => [
+      p.id, p.profiles?.full_name || "", p.profiles?.email || "",
+      p.amount, p.status, p.plan_slug || "",
+      p.created_at ? new Date(p.created_at).toLocaleDateString() : "",
+    ])
+    const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n")
+    const blob = new Blob([csv], { type: "text/csv" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `payments_export_${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleDownloadPayment = (p: any) => {
+    if (p.invoice_url) {
+      window.open(p.invoice_url, "_blank")
+      return
+    }
+    const receipt = [
+      "PAYMENT RECEIPT",
+      "=".repeat(40),
+      "",
+      `Payment ID: ${p.id}`,
+      `Date: ${p.created_at ? new Date(p.created_at).toLocaleString() : "N/A"}`,
+      `Status: ${p.status}`,
+      `Amount: $${Number(p.amount).toFixed(2)}`,
+      `Plan: ${p.plan_slug || "N/A"}`,
+      "",
+      `User: ${p.profiles?.full_name || "N/A"}`,
+      `Email: ${p.profiles?.email || "N/A"}`,
+      "",
+      "=".repeat(40),
+    ].join("\n")
+    const blob = new Blob([receipt], { type: "text/plain" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `receipt_${p.id?.slice(0, 8) || "payment"}.txt`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleRefund = async (id: string) => {
+    if (!window.confirm("Are you sure you want to refund this payment?")) return
+    try {
+      const res = await fetch(`/api/admin/payments/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "refunded" }),
+      })
+      if (!res.ok) throw new Error("Failed")
+      fetchData()
+    } catch (e) { console.error("[payments] refund error:", e) }
+  }
 
   return (
     <div className="space-y-6">
@@ -76,7 +147,7 @@ export default function PaymentsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A7B0C0]" />
           <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} placeholder="Search payments..." className="w-full h-10 pl-10 pr-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
         </div>
-        <button className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center gap-2 transition-all">
+        <button onClick={handleExportCSV} className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center gap-2 transition-all">
           <Download className="w-4 h-4" /> Export CSV
         </button>
       </div>
@@ -95,39 +166,44 @@ export default function PaymentsPage() {
               </tr>
             </thead>
             <tbody>
-              {paginated.map((p, i) => (
-                <motion.tr
-                  key={p.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.03 }}
-                  className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors"
-                >
-                  <td className="p-4 text-xs font-mono text-[#4CC9F0]">{p.id}</td>
-                  <td className="p-4">
-                    <p className="text-sm text-white">{p.user}</p>
-                    <p className="text-[11px] text-[#A7B0C0]">{p.email}</p>
-                  </td>
-                  <td className="p-4">
-                    <span className="text-sm font-bold text-white">${p.amount}</span>
-                    <span className="text-[10px] text-[#A7B0C0] ml-1">{p.plan}</span>
-                  </td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${statusStyles[p.status]}`}>{p.status}</span>
-                  </td>
-                  <td className="p-4 text-xs text-[#A7B0C0]">{p.date}</td>
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"><Download className="w-3.5 h-3.5" /></button>
-                      {p.status === "completed" && p.amount > 0 && (
-                        <button className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#F59E0B] hover:text-[#F59E0B] transition-all"><RotateCcw className="w-3.5 h-3.5" /></button>
-                      )}
-                    </div>
-                  </td>
-                </motion.tr>
-              ))}
-              {paginated.length === 0 && (
+              {loading ? (
+                <tr><td colSpan={6} className="p-12 text-center"><Loader2 className="w-6 h-6 text-[#6D5EF5] animate-spin mx-auto" /></td></tr>
+              ) : error ? (
+                <tr><td colSpan={6} className="p-8 text-center text-xs text-[#EF4444]">{error}</td></tr>
+              ) : data.length === 0 ? (
                 <tr><td colSpan={6} className="p-8 text-center text-xs text-[#A7B0C0]">No payments found</td></tr>
+              ) : (
+                data.map((p, i) => (
+                  <motion.tr
+                    key={p.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.03 }}
+                    className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors"
+                  >
+                    <td className="p-4 text-xs font-mono text-[#4CC9F0]">{p.id?.slice(0, 8)}...</td>
+                    <td className="p-4">
+                      <p className="text-sm text-white">{p.profiles?.full_name || "—"}</p>
+                      <p className="text-[11px] text-[#A7B0C0]">{p.profiles?.email || ""}</p>
+                    </td>
+                    <td className="p-4">
+                      <span className="text-sm font-bold text-white">${Number(p.amount).toFixed(2)}</span>
+                      <span className="text-[10px] text-[#A7B0C0] ml-1">{p.plan_slug}</span>
+                    </td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${statusStyles[p.status] || ""}`}>{p.status}</span>
+                    </td>
+                    <td className="p-4 text-xs text-[#A7B0C0]">{p.created_at ? new Date(p.created_at).toLocaleDateString() : "—"}</td>
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => handleDownloadPayment(p)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"><Download className="w-3.5 h-3.5" /></button>
+                        {p.status === "completed" && Number(p.amount) > 0 && (
+                          <button onClick={() => handleRefund(p.id)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#F59E0B] hover:text-[#F59E0B] transition-all"><RotateCcw className="w-3.5 h-3.5" /></button>
+                        )}
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))
               )}
             </tbody>
           </table>
@@ -135,13 +211,13 @@ export default function PaymentsPage() {
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="text-xs text-[#A7B0C0]">Showing {(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}</p>
+        <p className="text-xs text-[#A7B0C0]">{total === 0 ? "No results" : `Showing ${(page - 1) * PAGE_SIZE + 1}-${Math.min(page * PAGE_SIZE, total)} of ${total}`}</p>
         <div className="flex items-center gap-2">
           <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronLeft className="w-4 h-4" /></button>
           {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
             <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === p ? "bg-[#6D5EF5] text-white" : "bg-[#151C2E]/80 border border-white/[0.06] text-[#A7B0C0] hover:text-white"}`}>{p}</button>
           ))}
-          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronRight className="w-4 h-4" /></button>
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || totalPages === 0} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronRight className="w-4 h-4" /></button>
         </div>
       </div>
     </div>

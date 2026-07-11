@@ -3,10 +3,12 @@
 import { useAuth } from "@/lib/auth/AuthProvider"
 import { supabase } from "@/lib/supabase/client"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { FileText, Loader2, Clock, Trash2, FileIcon } from "lucide-react"
 
 export default function DashboardDocuments() {
   const { profile } = useAuth()
+  const router = useRouter()
   const [documents, setDocuments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -37,7 +39,7 @@ export default function DashboardDocuments() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {documents.map((doc) => (
-          <div key={doc.id} className="glass-card rounded-xl p-4 hover:glass-card-hover transition-all group">
+          <div key={doc.id} onClick={() => router.push(`/${doc.tool_slug || "post-generator"}?docId=${doc.id}`)} className="glass-card rounded-xl p-4 hover:glass-card-hover transition-all group cursor-pointer">
             <div className="flex items-start justify-between mb-3">
               <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
                 <FileIcon className="w-5 h-5 text-primary-light" />
@@ -49,7 +51,7 @@ export default function DashboardDocuments() {
             <h3 className="text-sm font-semibold mb-1 line-clamp-2">{doc.title}</h3>
             {doc.tool_slug && <p className="text-[10px] text-muted mb-2">via {doc.tool_slug}</p>}
             <div className="flex items-center gap-1 text-[10px] text-muted">
-              <Clock className="w-3 h-3" /> {doc.updated_at ? new Date(doc.updated_at).toLocaleDateString() : "N/A"}
+              <Clock className="w-3 h-3" /> {doc.updated_at ? new Date(doc.updated_at).toLocaleDateString("en-US") : "N/A"}
             </div>
           </div>
         ))}

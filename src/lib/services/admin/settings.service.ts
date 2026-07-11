@@ -22,7 +22,7 @@ function parseValue(value: string, type: string): any {
   switch (type) {
     case "number": return Number(value)
     case "boolean": return value === "true"
-    case "json": return JSON.parse(value)
+      case "json": try { return JSON.parse(value) } catch { return value }
     default: return value
   }
 }

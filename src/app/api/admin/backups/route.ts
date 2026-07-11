@@ -1,31 +1,27 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auditService } from "@/lib/services/admin/audit.service"
-import { adminSettingsService } from "@/lib/services/admin/settings.service"
-import { promptsService } from "@/lib/services/admin/prompts.service"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 
 export async function GET() {
   try {
-    const settings = await adminSettingsService.getAll()
-    const prompts = await promptsService.list()
-    return NextResponse.json({ settings, prompts })
+    const { data, error } = await supabaseAdmin.from("system_logs").select("*").ilike("action", "%backup%").order("created_at", { ascending: false }).limit(50)
+    if (error) throw new Error(error.message)
+    return NextResponse.json(data || [])
   } catch (err) {
-    return NextResponse.json({ error: "Failed to list backups", details: (err as Error).message }, { status: 500 })
+    return NextResponse.json({ error: "Failed to fetch backups", details: (err as Error).message }, { status: 500 })
   }
 }
 
 export async function POST() {
   try {
-    const settings = await adminSettingsService.getAll()
-    const prompts = await promptsService.list()
-    const backup = {
-      id: crypto.randomUUID(),
+    const { data, error } = await supabaseAdmin.from("system_logs").insert({
+      action: "backup_created",
+      details: JSON.stringify({ timestamp: new Date().toISOString() }),
+      status: "completed",
       created_at: new Date().toISOString(),
-      settings,
-      prompts,
-    }
-    await auditService.log("backup_created", { id: backup.id, prompt_count: prompts.length })
-    return NextResponse.json(backup)
+    }).select().single()
+    if (error) throw new Error(error.message)
+    return NextResponse.json(data, { status: 201 })
   } catch (err) {
-    return NextResponse.json({ error: "Failed to create backup", details: (err as Error).message }, { status: 500 })
+    return NextResponse.json({ error: "Failed to create backup" }, { status: 500 })
   }
 }

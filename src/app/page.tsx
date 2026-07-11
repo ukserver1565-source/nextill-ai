@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { StaggerContainer, StaggerItem } from "@/components/layout/stagger-wrapper"
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -63,42 +64,39 @@ const workflows = [
 ]
 
 const stats = [
-  { icon: BarChart3, value: "50K+", label: "Keywords Analyzed" },
-  { icon: FileText, value: "10K+", label: "Posts Generated" },
-  { icon: Activity, value: "99.9%", label: "Uptime" },
-  { icon: Star, value: "4.9/5", label: "Rating" },
+  { icon: BarChart3, value: "AI-Powered", label: "Keyword Analysis" },
+  { icon: FileText, value: "SEO Optimized", label: "Content Generation" },
+  { icon: Activity, value: "Real-time", label: "Plagiarism Checking" },
+  { icon: Star, value: "Enterprise", label: "Grade Security" },
 ]
 
 const templates = [
-  { icon: BookOpen, name: "Blog Post", desc: "Engaging blog content optimized for search" },
-  { icon: TrendingUp, name: "SEO Article", desc: "Deep-dive articles with keyword targeting" },
-  { icon: Star, name: "Product Review", desc: "Review content with pros, cons & ratings" },
-  { icon: Layers, name: "Tutorial", desc: "Step-by-step guides with clear instructions" },
-  { icon: FileType, name: "Guide", desc: "Comprehensive guides on any topic" },
-  { icon: ChevronRight, name: "Listicle", desc: "Scannable list-style content that ranks" },
+  { icon: BookOpen, name: "Blog Post", desc: "Engaging blog content optimized for search", href: "/post-generator" },
+  { icon: TrendingUp, name: "SEO Article", desc: "Deep-dive articles with keyword targeting", href: "/post-generator?template=seo-article" },
+  { icon: Star, name: "Product Review", desc: "Review content with pros, cons & ratings", href: "/post-generator?template=product-review" },
+  { icon: Layers, name: "Tutorial", desc: "Step-by-step guides with clear instructions", href: "/post-generator?template=tutorial" },
+  { icon: FileType, name: "Guide", desc: "Comprehensive guides on any topic", href: "/post-generator?template=guide" },
+  { icon: ChevronRight, name: "Listicle", desc: "Scannable list-style content that ranks", href: "/post-generator?template=listicle" },
 ]
 
-const testimonials = [
+const highlights = [
   {
-    quote: "Nextill AI transformed our content workflow. The keyword intelligence alone saves us hours every week.",
-    name: "Alex Rivera",
-    title: "SEO Director, GrowthMark",
-    rating: 5,
-    initials: "AR",
+    icon: Search,
+    title: "Keyword Intelligence",
+    desc: "Discover high-value keywords with real-time volume, difficulty scoring, and SERP feature analysis — all powered by AI.",
+    color: "from-violet-500 to-indigo-600",
   },
   {
-    quote: "The Post Generator produces content that reads like a human wrote it. Our organic traffic is up 3x.",
-    name: "Sarah Chen",
-    title: "Content Strategist, WebFlow",
-    rating: 5,
-    initials: "SC",
+    icon: FileText,
+    title: "Post Generator",
+    desc: "Generate full SEO-optimized blog posts with AI — including titles, meta descriptions, FAQ schema, and internal links.",
+    color: "from-blue-500 to-purple-600",
   },
   {
-    quote: "We run every piece of content through the Plagiarism Checker. It's accurate, fast, and gives us peace of mind.",
-    name: "Marcus Johnson",
-    title: "CEO, ContentScale",
-    rating: 5,
-    initials: "MJ",
+    icon: Shield,
+    title: "Plagiarism Checker",
+    desc: "Check content originality with detailed similarity scoring, source URL detection, and downloadable reports.",
+    color: "from-emerald-500 to-green-600",
   },
 ]
 
@@ -189,18 +187,17 @@ const footerColumns = [
   {
     title: "Resources",
     links: [
-      { label: "Documentation", href: "#" },
-      { label: "API Reference", href: "#" },
-      { label: "Changelog", href: "#" },
-      { label: "Status", href: "#" },
+      { label: "Documentation", href: "/docs" },
+      { label: "API Reference", href: "/docs/api" },
+      { label: "Changelog", href: "/changelog" },
+      { label: "Status", href: "/status" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Careers", href: "#" },
+      { label: "About", href: "/about" },
+      { label: "Blog", href: "/blog" },
       { label: "Contact", href: "/contact" },
     ],
   },
@@ -209,7 +206,6 @@ const footerColumns = [
     links: [
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms of Service", href: "/terms" },
-      { label: "Cookie Policy", href: "#" },
     ],
   },
 ]
@@ -221,10 +217,10 @@ const demos = [
     color: "from-violet-500 to-indigo-600",
     lines: [
       { label: "Keyword", value: "AI content writing tools", width: "w-48" },
-      { label: "Volume", value: "12,400 /mo", width: "w-28" },
-      { label: "Difficulty", value: "42 (Easy)", width: "w-28" },
-      { label: "Trend", value: "+18% (Rising)", width: "w-32" },
-      { label: "SERP Features", value: "Featured snippet, People also ask", width: "w-56" },
+      { label: "Volume", value: "Analyzing...", width: "w-28" },
+      { label: "Difficulty", value: "Calculating...", width: "w-28" },
+      { label: "Trend", value: "Loading...", width: "w-32" },
+      { label: "SERP Features", value: "Checking results...", width: "w-56" },
     ],
   },
   {
@@ -232,11 +228,11 @@ const demos = [
     icon: FileText,
     color: "from-blue-500 to-purple-600",
     lines: [
-      { label: "Title", value: "The Ultimate Guide to AI Content Writing", width: "w-full" },
-      { label: "Meta", value: "Discover how AI content writing tools...", width: "w-72" },
-      { label: "Sections", value: "Introduction, Benefits, How-To, FAQ", width: "w-56" },
-      { label: "Word Count", value: "2,450 words", width: "w-28" },
-      { label: "Read Time", value: "12 minutes", width: "w-28" },
+      { label: "Title", value: "Your SEO-Optimized Title", width: "w-full" },
+      { label: "Meta", value: "AI-generated meta description...", width: "w-72" },
+      { label: "Sections", value: "Generating outline...", width: "w-56" },
+      { label: "Word Count", value: "In progress...", width: "w-28" },
+      { label: "Read Time", value: "Calculating...", width: "w-28" },
     ],
   },
   {
@@ -244,11 +240,11 @@ const demos = [
     icon: Shield,
     color: "from-emerald-500 to-green-600",
     lines: [
-      { label: "Status", value: "95.2% Original", width: "w-36" },
-      { label: "Similarity", value: "4.8% matched", width: "w-32" },
-      { label: "Sources Found", value: "3 URLs", width: "w-24" },
-      { label: "Sentences Checked", value: "142", width: "w-24" },
-      { label: "Report", value: "Ready to download", width: "w-36" },
+      { label: "Status", value: "Scanning...", width: "w-36" },
+      { label: "Similarity", value: "Analyzing...", width: "w-32" },
+      { label: "Sources Found", value: "Searching...", width: "w-24" },
+      { label: "Sentences Checked", value: "In progress...", width: "w-24" },
+      { label: "Report", value: "Generating...", width: "w-36" },
     ],
   },
 ]
@@ -618,11 +614,13 @@ export default function HomePage() {
               const Icon = t.icon
               return (
                 <motion.div key={t.name} variants={staggerItem}>
-                  <div className="glass-card rounded-xl p-5 hover:border-primary/30 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer group">
-                    <Icon className="w-5 h-5 text-primary-light mb-3 group-hover:scale-110 transition-transform" />
-                    <h3 className="font-semibold">{t.name}</h3>
-                    <p className="text-xs text-muted mt-1">{t.desc}</p>
-                  </div>
+                  <Link href={t.href} className="block">
+                    <div className="glass-card rounded-xl p-5 hover:border-primary/30 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer group">
+                      <Icon className="w-5 h-5 text-primary-light mb-3 group-hover:scale-110 transition-transform" />
+                      <h3 className="font-semibold">{t.name}</h3>
+                      <p className="text-xs text-muted mt-1">{t.desc}</p>
+                    </div>
+                  </Link>
                 </motion.div>
               )
             })}
@@ -630,7 +628,7 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* TESTIMONIALS */}
+      {/* HIGHLIGHTS */}
       <motion.section
         variants={sectionVariants}
         initial="hidden"
@@ -640,9 +638,9 @@ export default function HomePage() {
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold">Trusted by Creators</h2>
+            <h2 className="text-3xl font-bold">Why Nextill AI</h2>
             <p className="text-muted mt-2 max-w-xl mx-auto">
-              See what our users say about transforming their workflow.
+              Three powerful workflows to supercharge your content creation.
             </p>
           </div>
           <motion.div
@@ -652,28 +650,20 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="grid grid-cols-1 md:grid-cols-3 gap-6"
           >
-            {testimonials.map((t) => (
-              <motion.div key={t.name} variants={staggerItem}>
-                <div className="glass-card rounded-2xl p-6 h-full flex flex-col">
-                  <div className="flex gap-0.5 mb-4">
-                    {Array.from({ length: t.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-                    ))}
-                  </div>
-                  <Quote className="w-6 h-6 text-primary-light/40 mb-3" />
-                  <p className="text-sm text-muted flex-1 leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
-                  <div className="mt-6 pt-4 border-t border-border flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full gradient-primary flex items-center justify-center text-xs font-bold">
-                      {t.initials}
+            {highlights.map((h) => {
+              const Icon = h.icon
+              return (
+                <motion.div key={h.title} variants={staggerItem}>
+                  <div className="glass-card rounded-2xl p-6 h-full flex flex-col">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${h.color} flex items-center justify-center mb-4 shadow-lg`}>
+                      <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <div>
-                      <p className="text-sm font-medium">{t.name}</p>
-                      <p className="text-xs text-muted">{t.title}</p>
-                    </div>
+                    <h3 className="text-lg font-bold mb-2">{h.title}</h3>
+                    <p className="text-sm text-muted flex-1 leading-relaxed">{h.desc}</p>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              )
+            })}
           </motion.div>
         </div>
       </motion.section>

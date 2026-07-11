@@ -1,21 +1,22 @@
 ﻿"use client"
 
-import { useState, useMemo, useCallback } from "react"
+import { useState, useMemo, useCallback, useEffect, useRef } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Select } from "@/components/ui/select"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   Search, TrendingUp, TrendingDown, Minus, Copy, Check, Star,
   ChevronUp, ChevronDown, Download, Heart, History, BarChart3, Globe,
   Hash, Target, MousePointerClick, MessageSquare, Layers, Network,
   Lightbulb, BookOpen, Loader2, Zap, PieChart, Filter, ExternalLink,
+  Sparkles, X, Clock, AlertTriangle,
 } from "lucide-react"
-/* ─── types ──────────────────────────────────────────────────── */
 
 interface KeywordIntelligenceResult {
   keywords: Array<{ keyword: string; volume: number; difficulty: number; intent: string; cpc: number; trend: string; competition: number }>
@@ -27,8 +28,6 @@ interface KeywordIntelligenceResult {
   stats: { totalKeywords: number; avgDifficulty: number; totalVolume: number; topPosition: string }
   engine: string
 }
-
-/* ─── helpers ───────────────────────────────────────────────── */
 
 function getDifficultyBarColor(d: number) {
   if (d <= 30) return "bg-[#22C55E]"
@@ -68,8 +67,6 @@ function TrendIcon({ trend }: { trend: string }) {
   return <Minus className="w-3.5 h-3.5 text-[#A7B0C0]" />
 }
 
-/* ─── animations ────────────────────────────────────────────── */
-
 const containerVariants = {
   hidden: { opacity: 0 },
   show: { opacity: 1, transition: { staggerChildren: 0.04 } },
@@ -80,7 +77,23 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
 }
 
-/* ─── StatCard ──────────────────────────────────────────────── */
+function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const [display, setDisplay] = useState(0)
+  useEffect(() => {
+    if (value === 0) { setDisplay(0); return }
+    const duration = 800
+    const steps = 30
+    const increment = value / steps
+    let current = 0
+    const timer = setInterval(() => {
+      current += increment
+      if (current >= value) { setDisplay(value); clearInterval(timer); return }
+      setDisplay(Math.round(current))
+    }, duration / steps)
+    return () => clearInterval(timer)
+  }, [value])
+  return <>{display}{suffix}</>
+}
 
 function StatCard({ icon: Icon, label, value, sub, trend }: {
   icon: React.ElementType; label: string; value: string; sub?: string; trend?: { dir: "up" | "down"; val: string }
@@ -88,9 +101,9 @@ function StatCard({ icon: Icon, label, value, sub, trend }: {
   return (
     <motion.div variants={itemVariants} className="relative group">
       <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#6D5EF5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="relative bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.12] transition-all duration-300">
+      <div className="relative bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/40 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.12] hover:shadow-lg hover:shadow-black/10 transition-all duration-300">
         <div className="flex items-start justify-between mb-3">
-          <div className="w-9 h-9 rounded-lg bg-[#6D5EF5]/10 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#6D5EF5]/15 to-[#8B5CF6]/10 flex items-center justify-center group-hover:scale-110 group-hover:rotate-[-4deg] transition-all duration-300">
             <Icon className="w-4 h-4 text-[#6D5EF5]" />
           </div>
           {trend && (
@@ -111,15 +124,13 @@ function StatCard({ icon: Icon, label, value, sub, trend }: {
   )
 }
 
-/* ─── DifficultyBar ─────────────────────────────────────────── */
-
 function DifficultyBar({ value }: { value: number }) {
   return (
     <div className="flex items-center gap-2 min-w-[88px]">
       <span className={cn("text-xs font-semibold tabular-nums w-7 text-right", getDifficultyTextColor(value))}>
         {value}
       </span>
-      <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+      <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden ring-1 ring-white/[0.03] p-[1px]">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: value + "%" }}
@@ -130,8 +141,6 @@ function DifficultyBar({ value }: { value: number }) {
     </div>
   )
 }
-
-/* ─── CopyBtn ───────────────────────────────────────────────── */
 
 function CopyBtn({ text }: { text: string }) {
   const [copied, setCopied] = useState(false)
@@ -145,8 +154,6 @@ function CopyBtn({ text }: { text: string }) {
   )
 }
 
-/* ─── FavBtn ────────────────────────────────────────────────── */
-
 function FavBtn() {
   const [fav, setFav] = useState(false)
   return (
@@ -159,17 +166,13 @@ function FavBtn() {
   )
 }
 
-/* ─── GlassCard ─────────────────────────────────────────────── */
-
 function GlassCard({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl", className)} {...props}>
+    <div className={cn("bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/40 backdrop-blur-xl border border-white/[0.06] rounded-xl", className)} {...props}>
       {children}
     </div>
   )
 }
-
-/* ─── countries / languages ─────────────────────────────────── */
 
 const countries = [
   { value: "us", label: "United States" }, { value: "uk", label: "United Kingdom" },
@@ -185,9 +188,8 @@ const languages = [
   { value: "ja", label: "Japanese" }, { value: "zh", label: "Chinese" },
 ]
 
-/* ─── page ──────────────────────────────────────────────────── */
-
 export default function KeywordIntelligencePage() {
+  const router = useRouter()
   const [keyword, setKeyword] = useState("")
   const [country, setCountry] = useState("us")
   const [language, setLanguage] = useState("en")
@@ -198,6 +200,19 @@ export default function KeywordIntelligencePage() {
   const [tab, setTab] = useState("keywords")
   const [result, setResult] = useState<KeywordIntelligenceResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [favsSaved, setFavsSaved] = useState(false)
+
+  const handleFavorites = useCallback(() => {
+    setFavsSaved(true)
+    if (result) {
+      try {
+        const existing = JSON.parse(localStorage.getItem("ki_favorites") || "[]")
+        existing.push({ keyword, savedAt: new Date().toISOString() })
+        localStorage.setItem("ki_favorites", JSON.stringify(existing))
+      } catch {}
+    }
+    setTimeout(() => setFavsSaved(false), 2000)
+  }, [result, keyword])
 
   const handleAnalyze = useCallback(async () => {
     if (!keyword.trim()) return
@@ -236,6 +251,28 @@ export default function KeywordIntelligencePage() {
     return rows
   }, [sortKey, sortDir, result?.keywords])
 
+  const handleExport = useCallback(() => {
+    if (!result) return
+    const exportData = {
+      keyword,
+      exportedAt: new Date().toISOString(),
+      keywords: result.keywords,
+      questions: result.questions,
+      longTail: result.longTail,
+      related: result.related,
+      lsiNlp: result.lsiNlp,
+      topicalMap: result.topicalMap,
+      stats: result.stats,
+    }
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `keyword-intelligence-${keyword.replace(/\s+/g, "-")}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [result, keyword])
+
   const handleSort = useCallback((key: typeof sortKey) => {
     setSortKey((prev) => {
       if (prev === key) { setSortDir((d) => (d === "asc" ? "desc" : "asc")); return key }
@@ -270,6 +307,7 @@ export default function KeywordIntelligencePage() {
       ? <ChevronUp className="inline w-3 h-3 ml-0.5 text-[#6D5EF5]" />
       : <ChevronDown className="inline w-3 h-3 ml-0.5 text-[#6D5EF5]" />
   }
+
   return (
     <div className="min-h-screen bg-[#090B16]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
@@ -278,11 +316,10 @@ export default function KeywordIntelligencePage() {
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
           className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
         >
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] flex items-center justify-center shadow-lg shadow-[#6D5EF5]/25">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] flex items-center justify-center shadow-xl shadow-[#6D5EF5]/25">
               <Search className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -291,35 +328,53 @@ export default function KeywordIntelligencePage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="hover:bg-white/[0.06]" onClick={handleExport} disabled={!result}>
               <Download className="w-4 h-4 mr-1.5" /> Export
             </Button>
-            <Button variant="ghost" size="sm">
-              <Heart className="w-4 h-4 mr-1.5" /> Favorites
-            </Button>
-            <Button variant="ghost" size="sm">
+            <div className="relative">
+              <Button variant="ghost" size="sm" className="hover:bg-white/[0.06]" onClick={handleFavorites}>
+                <Heart className="w-4 h-4 mr-1.5" /> Favorites
+              </Button>
+              <AnimatePresence>
+                {favsSaved && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] text-[#22C55E] bg-[#151C2E] border border-[#22C55E]/20 px-2.5 py-1 rounded-lg shadow-lg z-20"
+                  >
+                    Saved to local storage
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            <Button variant="ghost" size="sm" className="hover:bg-white/[0.06]" onClick={() => router.push("/dashboard/history")}>
               <History className="w-4 h-4 mr-1.5" /> History
             </Button>
           </div>
         </motion.div>
 
         {/* ── search bar ──────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <GlassCard className="p-1.5">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#A7B0C0]" />
+                <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-r from-[#6D5EF5]/0 via-[#6D5EF5]/0 to-[#6D5EF5]/0 focus-within:from-[#6D5EF5]/30 focus-within:via-[#8B5CF6]/20 focus-within:to-[#6D5EF5]/30 opacity-0 focus-within:opacity-100 transition-all duration-500 blur-sm pointer-events-none" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#A7B0C0] z-10" />
                 <Input
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleAnalyze()}
                   placeholder="Enter a seed keyword... e.g. SEO tools, content marketing"
-                  className="pl-12 h-12 bg-transparent border-0 text-base placeholder:text-[#A7B0C0]/60 focus:ring-0 w-full"
+                  className="relative pl-12 h-12 bg-transparent border-0 text-base placeholder:text-[#A7B0C0]/60 focus:ring-0 w-full"
                 />
+                {keyword && (
+                  <button onClick={() => setKeyword("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white/[0.06] flex items-center justify-center hover:bg-white/[0.12] transition-colors z-10"
+                  >
+                    <X className="w-3 h-3 text-[#5A6577]" />
+                  </button>
+                )}
               </div>
               <div className="flex items-center gap-2 px-2 sm:border-l border-white/[0.06]">
                 <Select value={country} onChange={setCountry} options={countries} className="w-32" />
@@ -330,7 +385,7 @@ export default function KeywordIntelligencePage() {
                 disabled={loading || !keyword.trim()}
                 variant="gradient"
                 size="lg"
-                className="shrink-0 h-12 px-6 rounded-lg"
+                className="shrink-0 h-12 px-6 rounded-lg shadow-lg shadow-[#6D5EF5]/20"
               >
                 {loading ? (
                   <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Analyzing</>
@@ -340,18 +395,24 @@ export default function KeywordIntelligencePage() {
               </Button>
             </div>
           </GlassCard>
+          <motion.p
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}
+            className="text-[10px] text-[#5A6577] mt-2 text-right"
+          >
+            Press <kbd className="px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/[0.08] font-mono text-[9px]">Enter</kbd> to analyze
+          </motion.p>
         </motion.div>
+
         {/* ── empty state ─────────────────────────────────── */}
         {!analyzed && !loading && !error && (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
+          <motion.div variants={containerVariants} initial="hidden" animate="show"
             className="flex flex-col items-center justify-center py-24 text-center"
           >
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#6D5EF5]/20 to-[#4CC9F0]/10 border border-white/[0.06] flex items-center justify-center mb-6">
+            <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}
+              className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#6D5EF5]/20 to-[#4CC9F0]/10 border border-white/[0.06] flex items-center justify-center mb-6"
+            >
               <Search className="w-10 h-10 text-[#6D5EF5]" />
-            </div>
+            </motion.div>
             <h2 className="text-xl font-semibold text-white mb-2">Enter a keyword to start your research</h2>
             <p className="text-sm text-[#A7B0C0] max-w-md mb-8">
               Uncover thousands of related keywords, questions, long-tail phrases, LSI terms, and topical clusters in seconds.
@@ -365,8 +426,8 @@ export default function KeywordIntelligencePage() {
               ].map((item) => {
                 const Icon = item.icon
                 return (
-                  <GlassCard key={item.label} className="p-4 text-center">
-                    <Icon className="w-5 h-5 text-[#4CC9F0] mx-auto mb-2" />
+                  <GlassCard key={item.label} className="p-4 text-center hover:border-[#6D5EF5]/20 transition-all group">
+                    <Icon className="w-5 h-5 text-[#4CC9F0] mx-auto mb-2 group-hover:scale-110 transition-transform" />
                     <p className="text-xs font-medium text-white">{item.label}</p>
                     <p className="text-[10px] text-[#A7B0C0] mt-0.5">{item.desc}</p>
                   </GlassCard>
@@ -381,23 +442,30 @@ export default function KeywordIntelligencePage() {
           <div className="space-y-5">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-28 rounded-xl bg-[#151C2E]/50 animate-pulse border border-white/[0.04]" />
+                <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+                  className="h-28 rounded-xl bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 animate-pulse border border-white/[0.04]"
+                />
               ))}
             </div>
-            <div className="h-10 rounded-xl bg-[#151C2E]/50 animate-pulse border border-white/[0.04]" />
+            <div className="h-10 rounded-xl bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 animate-pulse border border-white/[0.04]" />
             <div className="space-y-2">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-14 rounded-xl bg-[#151C2E]/50 animate-pulse border border-white/[0.04]" />
+                <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}
+                  className="h-14 rounded-xl bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 animate-pulse border border-white/[0.04]"
+                />
               ))}
             </div>
           </div>
         )}
+
         {/* ── error ───────────────────────────────────────── */}
         {error && !loading && (
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-            <Loader2 className="w-4 h-4 shrink-0" />
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-b from-red-500/10 to-transparent border border-red-500/20 text-red-400 text-sm"
+          >
+            <AlertTriangle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
-          </div>
+          </motion.div>
         )}
 
         {/* ── results ──────────────────────────────────────── */}
@@ -414,10 +482,12 @@ export default function KeywordIntelligencePage() {
 
             {/* engine warning */}
             {result.engine === "local" && (
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
-                <Loader2 className="w-4 h-4 shrink-0" />
+              <motion.div variants={itemVariants}
+                className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-b from-amber-500/10 to-transparent border border-amber-500/20 text-amber-400 text-sm"
+              >
+                <AlertTriangle className="w-4 h-4 shrink-0" />
                 <span>Running on local keyword engine. Add DataForSEO API in Admin Panel for live data.</span>
-              </div>
+              </motion.div>
             )}
 
             {/* tabs container */}
@@ -444,6 +514,7 @@ export default function KeywordIntelligencePage() {
                     ))}
                   </TabsList>
                 </div>
+
                 {/* ── Keywords Tab ────────────────────────────── */}
                 <TabsContent value="keywords" className="mt-0">
                   <div className="overflow-x-auto">
@@ -453,27 +524,23 @@ export default function KeywordIntelligencePage() {
                           <th className="text-left py-3 pl-4 pr-2 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider w-10">
                             <Filter className="w-3.5 h-3.5" />
                           </th>
-                          <th
-                            className="text-left py-3 pr-3 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider cursor-pointer hover:text-white transition-colors"
+                          <th className="text-left py-3 pr-3 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider cursor-pointer hover:text-white transition-colors"
                             onClick={() => handleSort("keyword")}
                           >
                             Keyword <SortIcon col="keyword" />
                           </th>
-                          <th
-                            className="text-right py-3 pr-3 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider cursor-pointer hover:text-white transition-colors"
+                          <th className="text-right py-3 pr-3 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider cursor-pointer hover:text-white transition-colors"
                             onClick={() => handleSort("volume")}
                           >
                             Volume <SortIcon col="volume" />
                           </th>
-                          <th
-                            className="text-right py-3 pr-3 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider cursor-pointer hover:text-white transition-colors"
+                          <th className="text-right py-3 pr-3 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider cursor-pointer hover:text-white transition-colors"
                             onClick={() => handleSort("difficulty")}
                           >
                             KD <SortIcon col="difficulty" />
                           </th>
                           <th className="text-left py-3 pr-3 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Intent</th>
-                          <th
-                            className="text-right py-3 pr-3 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider cursor-pointer hover:text-white transition-colors"
+                          <th className="text-right py-3 pr-3 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider cursor-pointer hover:text-white transition-colors"
                             onClick={() => handleSort("cpc")}
                           >
                             CPC <SortIcon col="cpc" />
@@ -513,7 +580,7 @@ export default function KeywordIntelligencePage() {
                             <td className="py-3 pr-4 text-right">
                               <Link
                                 href={"/post-generator?keyword=" + encodeURIComponent(k.keyword)}
-                                className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-md bg-[#6D5EF5]/10 text-[#6D5EF5] hover:bg-[#6D5EF5]/20 transition-colors"
+                                className="inline-flex items-center gap-1 px-3 py-1.5 text-[11px] font-medium rounded-lg bg-gradient-to-r from-[#6D5EF5]/10 to-[#8B5CF6]/10 text-[#6D5EF5] hover:from-[#6D5EF5]/20 hover:to-[#8B5CF6]/20 border border-[#6D5EF5]/20 transition-all"
                               >
                                 <Zap className="w-3 h-3" /> Generate
                                 <ExternalLink className="w-3 h-3" />
@@ -525,6 +592,7 @@ export default function KeywordIntelligencePage() {
                     </table>
                   </div>
                 </TabsContent>
+
                 {/* ── Questions Tab ───────────────────────────── */}
                 <TabsContent value="questions" className="mt-0 p-4 sm:p-5">
                   <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6">
@@ -537,9 +605,8 @@ export default function KeywordIntelligencePage() {
                         </div>
                         <div className="grid gap-2">
                           {group.items.map((item) => (
-                            <div
-                              key={item.question}
-                              className="flex items-center justify-between gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.12] transition-all group/item"
+                            <div key={item.question}
+                              className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-[#6D5EF5]/20 hover:bg-white/[0.04] transition-all group/item"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 <span className="w-6 h-6 rounded-full bg-[#6D5EF5]/10 flex items-center justify-center shrink-0">
@@ -561,14 +628,13 @@ export default function KeywordIntelligencePage() {
                     ))}
                   </motion.div>
                 </TabsContent>
+
                 {/* ── Long Tail Tab ───────────────────────────── */}
                 <TabsContent value="longtail" className="mt-0 p-4 sm:p-5">
                   <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid sm:grid-cols-2 gap-3">
                     {result.longTail.map((item) => (
-                      <motion.div
-                        key={item.keyword}
-                        variants={itemVariants}
-                        className="group p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-[#6D5EF5]/30 transition-all"
+                      <motion.div key={item.keyword} variants={itemVariants}
+                        className="group p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-[#6D5EF5]/30 hover:shadow-lg hover:shadow-black/10 transition-all"
                       >
                         <div className="flex items-start justify-between gap-2 mb-2">
                           <span className="text-sm font-medium text-white">{item.keyword}</span>
@@ -591,10 +657,8 @@ export default function KeywordIntelligencePage() {
                 <TabsContent value="related" className="mt-0 p-4 sm:p-5">
                   <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-1.5">
                     {result.related.map((item) => (
-                      <motion.div
-                        key={item.keyword}
-                        variants={itemVariants}
-                        className="flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-white/[0.03] transition-colors border-b border-white/[0.03] last:border-0"
+                      <motion.div key={item.keyword} variants={itemVariants}
+                        className="flex items-center justify-between gap-3 p-3.5 rounded-xl hover:bg-white/[0.03] transition-colors border-b border-white/[0.03] last:border-0"
                       >
                         <div className="flex items-center gap-3">
                           <Network className="w-4 h-4 text-[#4CC9F0]" />
@@ -602,7 +666,7 @@ export default function KeywordIntelligencePage() {
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-2">
-                            <div className="w-16 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                            <div className="w-16 h-1.5 rounded-full bg-white/[0.06] overflow-hidden ring-1 ring-white/[0.03] p-[1px]">
                               <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: item.relevance + "%" }}
@@ -618,12 +682,13 @@ export default function KeywordIntelligencePage() {
                     ))}
                   </motion.div>
                 </TabsContent>
+
                 {/* ── LSI & NLP Tab ───────────────────────────── */}
                 <TabsContent value="lsi" className="mt-0 p-4 sm:p-5">
                   <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {Object.entries(groupedLsi).map(([category, terms]) => (
                       <motion.div key={category} variants={itemVariants}>
-                        <GlassCard className="p-4">
+                        <GlassCard className="p-4 hover:border-[#6D5EF5]/20 transition-all group">
                           <div className="flex items-center gap-2 mb-3">
                             {category === "Entities" && <Globe className="w-4 h-4 text-[#4CC9F0]" />}
                             {category === "Concepts" && <Lightbulb className="w-4 h-4 text-[#F59E0B]" />}
@@ -634,9 +699,8 @@ export default function KeywordIntelligencePage() {
                           </div>
                           <div className="flex flex-wrap gap-1.5">
                             {terms.map((term) => (
-                              <span
-                                key={term}
-                                className="text-[11px] px-2 py-1 rounded-md bg-white/[0.04] border border-white/[0.06] text-[#A7B0C0] hover:bg-[#6D5EF5]/10 hover:text-white hover:border-[#6D5EF5]/30 transition-all cursor-default"
+                              <span key={term}
+                                className="text-[11px] px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/[0.06] text-[#A7B0C0] hover:bg-[#6D5EF5]/10 hover:text-white hover:border-[#6D5EF5]/30 transition-all cursor-default"
                               >
                                 {term}
                               </span>
@@ -655,7 +719,7 @@ export default function KeywordIntelligencePage() {
                       <motion.div key={cluster.topic} variants={itemVariants}>
                         <GlassCard className="p-4 hover:border-[#6D5EF5]/30 transition-all group">
                           <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/10 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                               <PieChart className="w-5 h-5 text-[#6D5EF5]" />
                             </div>
                             <div>

@@ -13,6 +13,7 @@ interface TopBarProps {
 
 export function TopBar({ onMenuClick }: TopBarProps) {
   const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
   const [notifOpen, setNotifOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [workspaceOpen, setWorkspaceOpen] = useState(false)
@@ -38,7 +39,10 @@ export function TopBar({ onMenuClick }: TopBarProps) {
         e.preventDefault()
         setSearchOpen(true)
       }
-      if (e.key === "Escape") setSearchOpen(false)
+      if (e.key === "Escape") {
+        setSearchOpen(false)
+        setSearchQuery("")
+      }
     }
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
@@ -92,7 +96,6 @@ export function TopBar({ onMenuClick }: TopBarProps) {
             className="relative p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors"
           >
             <Bell className="w-4 h-4" />
-            <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#EF4444] ring-2 ring-[#090B16]" />
           </button>
           {notifOpen && (
             <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-[#111827]/95 backdrop-blur-xl border border-white/[0.06] rounded-xl shadow-2xl z-50 overflow-hidden">
@@ -170,7 +173,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
 
       {searchOpen && (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-[12vh]">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSearchOpen(false)} />
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => { setSearchOpen(false); setSearchQuery("") }} />
           <div className="relative w-[calc(100%-2rem)] sm:w-full max-w-lg bg-[#111827]/95 backdrop-blur-2xl border border-white/[0.08] rounded-xl shadow-2xl overflow-hidden animate-in">
             <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.06]">
               <Search className="w-4 h-4 text-[#A7B0C0] shrink-0" />
@@ -178,6 +181,15 @@ export function TopBar({ onMenuClick }: TopBarProps) {
                 autoFocus
                 placeholder="Search tools, commands, documents..."
                 className="flex-1 bg-transparent text-sm text-white placeholder:text-[#A7B0C0] focus:outline-none"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && searchQuery.trim()) {
+                    router.push(`/dashboard/history?search=${encodeURIComponent(searchQuery.trim())}`)
+                    setSearchOpen(false)
+                    setSearchQuery("")
+                  }
+                }}
               />
               <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-[#A7B0C0] bg-[#090B16] rounded border border-white/[0.06]">
                 ESC

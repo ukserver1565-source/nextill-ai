@@ -67,7 +67,7 @@ export default function DashboardCredits() {
               <p className={`text-xs font-bold ${log.type === "added" ? "text-success" : log.type === "removed" ? "text-danger" : "text-warning"}`}>
                 {log.type === "added" ? "+" : "-"}{log.amount}
               </p>
-              <p className="text-[10px] text-muted">{new Date(log.created_at).toLocaleDateString()}</p>
+              <p className="text-[10px] text-muted">{new Date(log.created_at).toLocaleDateString("en-US")}</p>
             </div>
           </div>
         ))}

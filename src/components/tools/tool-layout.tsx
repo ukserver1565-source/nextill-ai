@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { ArrowLeft, Loader2, Sparkles } from "lucide-react"
+import { FadeIn } from "@/components/layout/animations"
 
 interface ToolLayoutProps {
   title: string
@@ -21,6 +22,7 @@ export function ToolLayout({ title, description, creditsCost, guestLimit, icon, 
   const { profile } = useAuth()
 
   return (
+    <FadeIn>
     <div className="min-h-screen bg-background overflow-x-hidden">
       <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 lg:py-6 space-y-4 sm:space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -71,6 +73,7 @@ export function ToolLayout({ title, description, creditsCost, guestLimit, icon, 
         </div>
       </div>
     </div>
+    </FadeIn>
   )
 }
 

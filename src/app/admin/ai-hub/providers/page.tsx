@@ -1,52 +1,142 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Bot, Brain, Cpu, Globe, Search, Plus, Check, X, Settings, Zap, Edit3, Trash2, ChevronDown, ChevronUp, Loader2 } from "lucide-react"
+import { Bot, Brain, Cpu, Globe, Search, Plus, Check, X, Settings, Zap, Trash2, Loader2 } from "lucide-react"
 
-const sampleProviders = [
-  { id: 1, name: "Gemini", slug: "gemini", icon: Globe, enabled: true, priority: 1, models: 3, latency: "180ms", usage: 8900, color: "from-blue-500 to-cyan-500", baseUrl: "https://generativelanguage.googleapis.com", defaultModel: "gemini-pro" },
-  { id: 2, name: "OpenAI", slug: "openai", icon: Bot, enabled: true, priority: 2, models: 5, latency: "245ms", usage: 45230, color: "from-emerald-500 to-teal-500", baseUrl: "https://api.openai.com/v1", defaultModel: "gpt-4o" },
-  { id: 3, name: "Claude", slug: "anthropic", icon: Brain, enabled: true, priority: 3, models: 3, latency: "380ms", usage: 12400, color: "from-purple-500 to-pink-500", baseUrl: "https://api.anthropic.com/v1", defaultModel: "claude-3-opus" },
-  { id: 4, name: "DeepSeek", slug: "deepseek", icon: Cpu, enabled: true, priority: 4, models: 2, latency: "320ms", usage: 5100, color: "from-orange-500 to-red-500", baseUrl: "https://api.deepseek.com/v1", defaultModel: "deepseek-chat" },
-  { id: 5, name: "Perplexity", slug: "perplexity", icon: Globe, enabled: true, priority: 5, models: 2, latency: "290ms", usage: 3700, color: "from-[#4CC9F0] to-blue-500", baseUrl: "https://api.perplexity.ai", defaultModel: "sonar-pro" },
-  { id: 6, name: "Mistral", slug: "mistral", icon: Brain, enabled: false, priority: 6, models: 2, latency: "—", usage: 0, color: "from-zinc-500 to-zinc-600", baseUrl: "https://api.mistral.ai/v1", defaultModel: "mistral-large" },
-  { id: 7, name: "Grok", slug: "grok", icon: Cpu, enabled: true, priority: 7, models: 1, latency: "410ms", usage: 1200, color: "from-rose-500 to-pink-600", baseUrl: "https://api.x.ai/v1", defaultModel: "grok-1" },
-  { id: 8, name: "OpenRouter", slug: "openrouter", icon: Globe, enabled: true, priority: 8, models: 10, latency: "265ms", usage: 6800, color: "from-amber-500 to-yellow-600", baseUrl: "https://openrouter.ai/api/v1", defaultModel: "openrouter/auto" },
-  { id: 9, name: "Together AI", slug: "together", icon: Cpu, enabled: true, priority: 9, models: 4, latency: "310ms", usage: 2900, color: "from-violet-500 to-purple-600", baseUrl: "https://api.together.xyz/v1", defaultModel: "mistralai/Mixtral-8x7B-Instruct-v0.1" },
-  { id: 10, name: "Groq", slug: "groq", icon: Zap, enabled: true, priority: 10, models: 3, latency: "150ms", usage: 4500, color: "from-[#6D5EF5] to-[#8B5CF6]", baseUrl: "https://api.groq.com/openai/v1", defaultModel: "llama3-70b-8192" },
-  { id: 11, name: "Cohere", slug: "cohere", icon: Brain, enabled: false, priority: 11, models: 2, latency: "—", usage: 0, color: "from-sky-500 to-indigo-600", baseUrl: "https://api.cohere.ai/v1", defaultModel: "command-r" },
-  { id: 12, name: "Custom LLM", slug: "custom", icon: Settings, enabled: true, priority: 12, models: 1, latency: "—", usage: 0, color: "from-zinc-400 to-zinc-600", baseUrl: "http://localhost:11434/v1", defaultModel: "custom-model" },
-]
+const providerIcons: Record<string, any> = {
+  "openai": Bot, "claude": Brain, "gemini": Globe, "deepseek": Cpu,
+  "perplexity": Globe, "mistral": Brain, "grok": Cpu, "openrouter": Globe,
+  "groq": Cpu, "together": Cpu,
+}
+const providerColors: Record<string, string> = {
+  "openai": "from-emerald-500 to-teal-500", "claude": "from-purple-500 to-pink-500",
+  "gemini": "from-blue-500 to-cyan-500", "deepseek": "from-orange-500 to-red-500",
+  "perplexity": "from-[#4CC9F0] to-blue-500", "mistral": "from-zinc-500 to-zinc-600",
+  "grok": "from-rose-500 to-pink-600", "openrouter": "from-amber-500 to-yellow-600",
+  "groq": "from-[#6D5EF5] to-[#8B5CF6]", "together": "from-violet-500 to-purple-600",
+}
 
 export default function AIHubProvidersPage() {
-  const [providers, setProviders] = useState(sampleProviders)
+  const [providers, setProviders] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
   const [search, setSearch] = useState("")
-  const [expanded, setExpanded] = useState<number | null>(null)
-  const [testResult, setTestResult] = useState<{ id: number; success: boolean; latency?: string } | null>(null)
-  const [testing, setTesting] = useState<number | null>(null)
+  const [expanded, setExpanded] = useState<string | null>(null)
+  const [testResult, setTestResult] = useState<{ id: string; success: boolean; latency?: string } | null>(null)
+  const [testing, setTesting] = useState<string | null>(null)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [addForm, setAddForm] = useState({ name: "", slug: "openai", base_url: "", default_model: "" })
+  const [expandedForms, setExpandedForms] = useState<Record<string, { base_url: string; default_model: string; status: string }>>({})
+  const [saving, setSaving] = useState(false)
+
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    setError("")
+    try {
+      const res = await fetch("/api/admin/ai/providers")
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const json = await res.json()
+      setProviders(Array.isArray(json) ? json : json.data || [])
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => { fetchData() }, [fetchData])
+
+  useEffect(() => {
+    const forms: Record<string, { base_url: string; default_model: string; status: string }> = {}
+    for (const p of providers) {
+      forms[p.id] = { base_url: p.base_url || "", default_model: p.default_model || "", status: p.status || "" }
+    }
+    setExpandedForms(forms)
+  }, [providers])
 
   const filtered = providers.filter(p =>
-    p.name.toLowerCase().includes(search.toLowerCase())
+    (p.name || "").toLowerCase().includes(search.toLowerCase())
   )
 
-  const handleToggle = (id: number) => {
+  const handleToggle = async (id: string) => {
     setProviders(prev => prev.map(p => p.id === id ? { ...p, enabled: !p.enabled } : p))
-  }
+    try {
+      await fetch(`/api/admin/ai/providers/${id}/toggle`, { method: "POST" })
+    } catch (e) { console.error("[ai-providers] error:", e) }
 
-  const handleTest = (id: number) => {
+
+  const handleTest = async (id: string) => {
     setTesting(id)
     setTestResult(null)
-    setTimeout(() => {
-      const success = Math.random() > 0.3
-      setTestResult({ id, success, latency: success ? `${Math.floor(100 + Math.random() * 400)}ms` : undefined })
+    try {
+      const res = await fetch("/api/admin/ai/providers/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      })
+      const json = await res.json()
+      setTestResult({ id, success: json.success ?? res.ok, latency: json.latency_ms ? `${json.latency_ms}ms` : undefined })
+    } catch {
+      setTestResult({ id, success: false })
+    } finally {
       setTesting(null)
-    }, 1500)
+    }
   }
 
-  const updateProvider = (id: number, updates: Partial<typeof sampleProviders[0]>) => {
-    setProviders(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p))
+  const handleDelete = async (id: string) => {
+    try {
+      await fetch(`/api/admin/ai/providers/${id}`, { method: "DELETE" })
+      setProviders(prev => prev.filter(p => p.id !== id))
+    } catch (e) { console.error("[ai-providers] error:", e) }
+
+
+  const handleAdd = async () => {
+    setSaving(true)
+    try {
+      const res = await fetch("/api/admin/ai/providers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: addForm.name,
+          slug: addForm.slug,
+          base_url: addForm.base_url || null,
+          default_model: addForm.default_model || null,
+          enabled: true,
+        }),
+      })
+      if (!res.ok) throw new Error("Failed")
+      setShowAddModal(false)
+      fetchData()
+    } catch {}
+    setSaving(false)
   }
+
+  const handleSaveProvider = async (id: string) => {
+    const form = expandedForms[id]
+    if (!form) return
+    setSaving(true)
+    try {
+      const res = await fetch(`/api/admin/ai/providers/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          base_url: form.base_url,
+          default_model: form.default_model,
+        }),
+      })
+      if (!res.ok) throw new Error("Failed")
+      fetchData()
+    } catch {}
+    setSaving(false)
+  }
+
+  const updateExpandedForm = (id: string, field: string, value: string) => {
+    setExpandedForms(prev => ({ ...prev, [id]: { ...prev[id], [field]: value } }))
+  }
+
+  const getIcon = (slug: string) => providerIcons[slug?.toLowerCase()] || Bot
+  const getColor = (slug: string) => providerColors[slug?.toLowerCase()] || "from-[#6D5EF5] to-[#8B5CF6]"
 
   return (
     <div className="space-y-6">
@@ -55,7 +145,10 @@ export default function AIHubProvidersPage() {
           <h1 className="text-2xl font-bold text-white">AI Providers</h1>
           <p className="text-sm text-[#A7B0C0] mt-1">Manage provider connections, base URLs, and test connectivity</p>
         </div>
-        <button className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20">
+        <button
+          onClick={() => { setAddForm({ name: "", slug: "openai", base_url: "", default_model: "" }); setShowAddModal(true) }}
+          className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20"
+        >
           <Plus className="w-4 h-4" /> Add Provider
         </button>
       </div>
@@ -71,149 +164,221 @@ export default function AIHubProvidersPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {filtered.length === 0 && (
-          <div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
-            <Bot className="w-12 h-12 text-[#A7B0C0] mb-4" />
-            <p className="text-sm font-medium text-[#A7B0C0] mb-1">No providers found</p>
-            <p className="text-xs text-[#A7B0C0]">Try a different search term</p>
-          </div>
-        )}
-        {filtered.map((p, i) => {
-          const Icon = p.icon
-          const isExpanded = expanded === p.id
-          return (
-            <motion.div
-              key={p.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.03 }}
-              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl hover:border-white/[0.12] transition-all"
-            >
-              <div className="p-5">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br ${p.color}`}>
-                      <Icon className="w-5 h-5 text-white" />
+      {loading && (
+        <div className="flex flex-col items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 text-[#6D5EF5] animate-spin mb-4" />
+          <p className="text-sm text-[#A7B0C0]">Loading providers...</p>
+        </div>
+      )}
+
+      {!loading && error && (
+        <div className="flex flex-col items-center justify-center py-20">
+          <X className="w-12 h-12 text-[#EF4444] mb-4" />
+          <p className="text-sm font-medium text-[#EF4444] mb-1">Failed to load providers</p>
+          <p className="text-xs text-[#A7B0C0]">{error}</p>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {filtered.length === 0 && (
+            <div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
+              <Bot className="w-12 h-12 text-[#A7B0C0] mb-4" />
+              <p className="text-sm font-medium text-[#A7B0C0] mb-1">No providers found</p>
+              <p className="text-xs text-[#A7B0C0]">{providers.length === 0 ? "Add a provider to get started" : "Try a different search term"}</p>
+            </div>
+          )}
+          {filtered.map((p: any, i: number) => {
+            const Icon = getIcon(p.slug)
+            const color = getColor(p.slug)
+            const isExpanded = expanded === p.id
+            const latency = p.latency_ms ? `${p.latency_ms}ms` : "—"
+            const usage = p.usage_count ?? 0
+            const ef = expandedForms[p.id] || { base_url: "", default_model: "", status: "" }
+            return (
+              <motion.div
+                key={p.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.03 }}
+                className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl hover:border-white/[0.12] transition-all"
+              >
+                <div className="p-5">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br ${color}`}>
+                        <Icon className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-white">{p.name}</h3>
+                        <span className="text-[10px] text-[#A7B0C0]">Model: {p.default_model || "—"}</span>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-sm font-semibold text-white">{p.name}</h3>
-                      <span className="text-[10px] text-[#A7B0C0]">Priority: {p.priority} · {p.models} models</span>
+                    <button
+                      onClick={() => handleToggle(p.id)}
+                      className={`relative w-10 h-5 rounded-full transition-all ${p.enabled ? "bg-gradient-to-r from-[#6D5EF5] to-[#8B5CF6]" : "bg-white/[0.06]"}`}
+                    >
+                      <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${p.enabled ? "left-5" : "left-0.5"}`} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap mb-4">
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${
+                      p.enabled ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]"
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${p.enabled ? "bg-[#22C55E]" : "bg-[#A7B0C0]"}`} />
+                      {p.enabled ? "Enabled" : "Disabled"}
+                    </span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${
+                      latency !== "—" ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]"
+                    }`}>
+                      {latency !== "—" ? latency : "N/A"}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#A7B0C0]">Usage</span>
+                      <span className="text-white font-medium">{usage.toLocaleString()}</span>
                     </div>
-                  </div>
-                  <button
-                    onClick={() => handleToggle(p.id)}
-                    className={`relative w-10 h-5 rounded-full transition-all ${p.enabled ? "bg-gradient-to-r from-[#6D5EF5] to-[#8B5CF6]" : "bg-white/[0.06]"}`}
-                  >
-                    <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all ${p.enabled ? "left-5" : "left-0.5"}`} />
-                  </button>
-                </div>
-
-                <div className="flex items-center gap-2 flex-wrap mb-4">
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${
-                    p.enabled ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]"
-                  }`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${p.enabled ? "bg-[#22C55E]" : "bg-[#A7B0C0]"}`} />
-                    {p.enabled ? "Enabled" : "Disabled"}
-                  </span>
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${
-                    p.latency !== "—" ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]"
-                  }`}>
-                    {p.latency !== "—" ? `${p.latency}` : "N/A"}
-                  </span>
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-[#A7B0C0]">Usage</span>
-                    <span className="text-white font-medium">{p.usage.toLocaleString()}</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-[#6D5EF5] to-[#8B5CF6]"
-                      style={{ width: `${Math.min(100, (p.usage / 50000) * 100)}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/[0.06]">
-                  <button
-                    onClick={() => setExpanded(isExpanded ? null : p.id)}
-                    className="flex-1 h-8 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center justify-center gap-1.5 transition-all"
-                  >
-                    <Settings className="w-3.5 h-3.5" /> Configure
-                  </button>
-                  <button
-                    onClick={() => handleTest(p.id)}
-                    disabled={testing === p.id}
-                    className="h-8 px-3 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center gap-1.5 transition-all disabled:opacity-50"
-                  >
-                    {testing === p.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5" />}
-                    Test
-                  </button>
-                  <button className="h-8 px-3 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#EF4444] hover:bg-[#EF4444]/10 transition-all">
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                {testResult?.id === p.id && (
-                  <div className={`mt-3 flex items-center gap-1.5 text-xs font-medium ${testResult.success ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
-                    {testResult.success ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
-                    {testResult.success ? `Connected! Latency: ${testResult.latency}` : "Connection failed"}
-                  </div>
-                )}
-              </div>
-
-              {isExpanded && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  className="border-t border-white/[0.06] p-5 space-y-4 bg-white/[0.02]"
-                >
-                  <div>
-                    <label className="block text-xs text-[#A7B0C0] mb-1">Base URL</label>
-                    <input
-                      type="text"
-                      defaultValue={p.baseUrl}
-                      className="w-full h-11 bg-[#090B16] border border-white/[0.06] rounded-xl px-4 text-sm text-white placeholder:text-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 transition-colors"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs text-[#A7B0C0] mb-1">Default Model</label>
-                      <select
-                        defaultValue={p.defaultModel}
-                        className="w-full h-11 bg-[#090B16] border border-white/[0.06] rounded-xl px-4 text-sm text-white focus:outline-none focus:border-[#6D5EF5]/50 transition-colors"
-                      >
-                        <option value={p.defaultModel}>{p.defaultModel}</option>
-                        <option value="gpt-4">gpt-4</option>
-                        <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-[#A7B0C0] mb-1">Priority</label>
-                      <input
-                        type="number"
-                        defaultValue={p.priority}
-                        className="w-full h-11 bg-[#090B16] border border-white/[0.06] rounded-xl px-4 text-sm text-white focus:outline-none focus:border-[#6D5EF5]/50 transition-colors"
+                    <div className="w-full h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-[#6D5EF5] to-[#8B5CF6]"
+                        style={{ width: `${Math.min(100, (usage / 50000) * 100)}%` }}
                       />
                     </div>
                   </div>
-                  <div className="flex items-center justify-between pt-2">
-                    <label className="flex items-center gap-2 text-xs text-[#A7B0C0] cursor-pointer">
-                      <input type="checkbox" defaultChecked={p.enabled} className="rounded border-white/[0.06] bg-[#090B16]" />
-                      Enabled
-                    </label>
-                    <button className="h-9 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20">
-                      Save Changes
+
+                  <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/[0.06]">
+                    <button
+                      onClick={() => setExpanded(isExpanded ? null : p.id)}
+                      className="flex-1 h-8 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      <Settings className="w-3.5 h-3.5" /> Configure
+                    </button>
+                    <button
+                      onClick={() => handleTest(p.id)}
+                      disabled={testing === p.id}
+                      className="h-8 px-3 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center gap-1.5 transition-all disabled:opacity-50"
+                    >
+                      {testing === p.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5" />}
+                      Test
+                    </button>
+                    <button
+                      onClick={() => handleDelete(p.id)}
+                      className="h-8 px-3 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#EF4444] hover:bg-[#EF4444]/10 transition-all"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
-                </motion.div>
-              )}
-            </motion.div>
-          )
-        })}
-      </div>
+
+                  {testResult?.id === p.id && (() => {
+                    const tr = testResult!
+                    return (
+                      <div className={`mt-3 flex items-center gap-1.5 text-xs font-medium ${tr.success ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
+                        {tr.success ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                        {tr.success ? `Connected! Latency: ${tr.latency}` : "Connection failed"}
+                      </div>
+                    )
+                  })()}
+                </div>
+
+                {isExpanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    className="border-t border-white/[0.06] p-5 space-y-4 bg-white/[0.02]"
+                  >
+                    <div>
+                      <label className="block text-xs text-[#A7B0C0] mb-1">Base URL</label>
+                      <input
+                        type="text"
+                        value={ef.base_url}
+                        onChange={(e) => updateExpandedForm(p.id, "base_url", e.target.value)}
+                        className="w-full h-11 bg-[#090B16] border border-white/[0.06] rounded-xl px-4 text-sm text-white placeholder:text-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 transition-colors"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs text-[#A7B0C0] mb-1">Default Model</label>
+                        <input
+                          type="text"
+                          value={ef.default_model}
+                          onChange={(e) => updateExpandedForm(p.id, "default_model", e.target.value)}
+                          className="w-full h-11 bg-[#090B16] border border-white/[0.06] rounded-xl px-4 text-sm text-white focus:outline-none focus:border-[#6D5EF5]/50 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-[#A7B0C0] mb-1">Status</label>
+                        <input
+                          type="text"
+                          value={ef.status}
+                          readOnly
+                          className="w-full h-11 bg-[#090B16] border border-white/[0.06] rounded-xl px-4 text-sm text-white focus:outline-none transition-colors opacity-60"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between pt-2">
+                      <label className="flex items-center gap-2 text-xs text-[#A7B0C0] cursor-pointer">
+                        <input type="checkbox" checked={p.enabled} readOnly className="rounded border-white/[0.06] bg-[#090B16]" />
+                        Enabled
+                      </label>
+                      <button
+                        onClick={() => handleSaveProvider(p.id)}
+                        disabled={saving}
+                        className="h-9 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                        Save Changes
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </motion.div>
+            )
+          })}
+        </div>
+      )}
+
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#151C2E] border border-white/[0.06] rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl"
+          >
+            <h2 className="text-lg font-semibold text-white mb-1">Add Provider</h2>
+            <p className="text-xs text-[#A7B0C0] mb-5">Connect a new AI provider</p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs text-[#A7B0C0] mb-1.5">Name</label>
+                <input type="text" value={addForm.name} onChange={(e) => setAddForm(f => ({ ...f, name: e.target.value }))} placeholder="My Provider" className="w-full h-11 bg-[#090B16] border border-white/[0.06] rounded-xl px-4 text-sm text-white placeholder:text-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 transition-colors" />
+              </div>
+              <div>
+                <label className="block text-xs text-[#A7B0C0] mb-1.5">Slug</label>
+                <select value={addForm.slug} onChange={(e) => setAddForm(f => ({ ...f, slug: e.target.value }))} className="w-full h-11 bg-[#090B16] border border-white/[0.06] rounded-xl px-4 text-sm text-white focus:outline-none focus:border-[#6D5EF5]/50 transition-colors">
+                  {Object.keys(providerIcons).map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-[#A7B0C0] mb-1.5">Base URL</label>
+                <input type="text" value={addForm.base_url} onChange={(e) => setAddForm(f => ({ ...f, base_url: e.target.value }))} placeholder="https://api.openai.com/v1" className="w-full h-11 bg-[#090B16] border border-white/[0.06] rounded-xl px-4 text-sm text-white placeholder:text-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 transition-colors" />
+              </div>
+              <div>
+                <label className="block text-xs text-[#A7B0C0] mb-1.5">Default Model</label>
+                <input type="text" value={addForm.default_model} onChange={(e) => setAddForm(f => ({ ...f, default_model: e.target.value }))} placeholder="gpt-4o" className="w-full h-11 bg-[#090B16] border border-white/[0.06] rounded-xl px-4 text-sm text-white placeholder:text-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 transition-colors" />
+              </div>
+              <div className="flex justify-end gap-3 pt-3">
+                <button onClick={() => setShowAddModal(false)} className="h-10 px-4 rounded-xl border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white transition-colors">Cancel</button>
+                <button onClick={handleAdd} disabled={saving || !addForm.name} className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50 flex items-center gap-2">
+                  {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  Add Provider
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   )
 }

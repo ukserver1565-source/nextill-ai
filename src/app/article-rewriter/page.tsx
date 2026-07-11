@@ -1,3 +1,5 @@
+"use client"
+
 import { LegacyBanner } from "@/components/tools/legacy-banner"
 import { GenericToolPage } from "@/components/tools/generic-tool-page"
 

@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
-  const fetchProfile = useCallback(async (userId: string) => {
+  const fetchProfile = useCallback(async (userId: string, retryCount = 0) => {
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
@@ -51,6 +51,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .maybeSingle()
     if (error) {
       console.log("[AuthProvider] fetchProfile ERROR:", error.message)
+      if (retryCount < 1) {
+        console.log("[AuthProvider] Retrying profile fetch in 2s...")
+        await new Promise((r) => setTimeout(r, 2000))
+        return fetchProfile(userId, retryCount + 1)
+      }
     }
     setProfile(data as UserProfile | null)
   }, [])

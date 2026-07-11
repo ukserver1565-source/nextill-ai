@@ -13,12 +13,14 @@ export default function ContactPage() {
   const [message, setMessage] = useState("")
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
+  const [formError, setFormError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim() || !email.trim() || !message.trim()) return
     setSending(true)
-    await supabase.from("contact_messages").insert({
+    setFormError("")
+    const { error } = await supabase.from("contact_messages").insert({
       name: name.trim(),
       email: email.trim(),
       subject: subject.trim() || null,
@@ -26,7 +28,11 @@ export default function ContactPage() {
       user_id: profile?.user_id || null,
     })
     setSending(false)
-    setSent(true)
+    if (error) {
+      setFormError(error.message || "Failed to send message. Please try again.")
+    } else {
+      setSent(true)
+    }
   }
 
   if (sent) {
@@ -50,6 +56,11 @@ export default function ContactPage() {
           <p className="text-muted text-sm sm:text-base">Have a question or need help? Send us a message.</p>
         </div>
         <form onSubmit={handleSubmit} className="glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6 space-y-3 sm:space-y-4">
+          {formError && (
+            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400">
+              {formError}
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="text-[10px] sm:text-xs font-medium mb-1 sm:mb-1.5 block">Name</label>

@@ -1,5 +1,4 @@
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { settingsRepo } from "./settings-repo"
 
 export interface HealthCheck {
   label: string
@@ -9,34 +8,67 @@ export interface HealthCheck {
   responseTime: number
 }
 
+function calcUptime(responseTime: number, maxMs: number = 2000): number {
+  if (responseTime === 0) return 0
+  const ratio = Math.min(responseTime / maxMs, 1)
+  return Math.round((1 - ratio * 0.5) * 10000) / 100
+}
+
 export const systemHealthRepo = {
   async check(): Promise<HealthCheck[]> {
     const checks: HealthCheck[] = []
 
     try {
       const start = Date.now()
-      await supabaseAdmin.from("profiles").select("count", { count: "exact", head: true })
-      checks.push({ label: "Database", status: "operational", uptime: 99.99, lastChecked: "now", responseTime: Date.now() - start })
+      const { error } = await supabaseAdmin.from("profiles").select("count", { count: "exact", head: true })
+      if (error) throw error
+      const rt = Date.now() - start
+      checks.push({ label: "Database", status: "operational", uptime: calcUptime(rt), lastChecked: "now", responseTime: rt })
     } catch {
-      checks.push({ label: "Database", status: "down", uptime: 99.9, lastChecked: "now", responseTime: 0 })
+      checks.push({ label: "Database", status: "down", uptime: 0, lastChecked: "now", responseTime: 0 })
     }
 
     try {
       const start = Date.now()
-      await settingsRepo.get()
-      checks.push({ label: "API Server", status: "operational", uptime: 99.97, lastChecked: "now", responseTime: Date.now() - start })
+      const { error } = await supabaseAdmin.from("site_settings").select("id", { count: "exact", head: true })
+      if (error) throw error
+      const rt = Date.now() - start
+      checks.push({ label: "API Server", status: "operational", uptime: calcUptime(rt), lastChecked: "now", responseTime: rt })
     } catch {
-      checks.push({ label: "API Server", status: "degraded", uptime: 99.5, lastChecked: "now", responseTime: 0 })
+      checks.push({ label: "API Server", status: "degraded", uptime: 0, lastChecked: "now", responseTime: 0 })
     }
 
-    checks.push(
-      { label: "Redis Cache", status: "operational", uptime: 100, lastChecked: "now", responseTime: 3 },
-      { label: "AI Provider - OpenAI", status: "operational", uptime: 98.5, lastChecked: "now", responseTime: 340 },
-      { label: "AI Provider - Anthropic", status: "degraded", uptime: 95.2, lastChecked: "now", responseTime: 890 },
-      { label: "AI Provider - Google", status: "operational", uptime: 99.1, lastChecked: "now", responseTime: 280 },
-      { label: "File Storage", status: "operational", uptime: 99.95, lastChecked: "now", responseTime: 45 },
-      { label: "CDN", status: "operational", uptime: 100, lastChecked: "now", responseTime: 18 },
-    )
+    try {
+      const start = Date.now()
+      const { data: providers } = await supabaseAdmin.from("ai_providers").select("slug, status").eq("enabled", true)
+      const activeProviders = (providers || []).filter((p: any) => p.status === "active")
+      const totalEnabled = (providers || []).length
+      const status = totalEnabled === 0 ? "operational" : activeProviders.length === totalEnabled ? "operational" : activeProviders.length > 0 ? "degraded" : "down"
+      const rt = Date.now() - start
+      checks.push({ label: "AI Providers", status, uptime: totalEnabled > 0 ? Math.round((activeProviders.length / totalEnabled) * 10000) / 100 : 100, lastChecked: "now", responseTime: rt })
+    } catch {
+      checks.push({ label: "AI Providers", status: "down", uptime: 0, lastChecked: "now", responseTime: 0 })
+    }
+
+    try {
+      const start = Date.now()
+      const { error } = await supabaseAdmin.from("workflow_runs").select("id", { count: "exact", head: true })
+      if (error) throw error
+      const rt = Date.now() - start
+      checks.push({ label: "Workflow Queue", status: "operational", uptime: calcUptime(rt), lastChecked: "now", responseTime: rt })
+    } catch {
+      checks.push({ label: "Workflow Queue", status: "degraded", uptime: 0, lastChecked: "now", responseTime: 0 })
+    }
+
+    try {
+      const start = Date.now()
+      const { error } = await supabaseAdmin.from("documents").select("id", { count: "exact", head: true })
+      if (error) throw error
+      const rt = Date.now() - start
+      checks.push({ label: "File Storage", status: "operational", uptime: calcUptime(rt), lastChecked: "now", responseTime: rt })
+    } catch {
+      checks.push({ label: "File Storage", status: "degraded", uptime: 0, lastChecked: "now", responseTime: 0 })
+    }
 
     return checks
   },
