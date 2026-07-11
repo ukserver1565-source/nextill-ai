@@ -196,16 +196,8 @@ export default function BlogPage() {
                       <button onClick={() => handleDelete(post.id)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
-                </motion.tr>
+              </motion.tr>
               ))}
-              {posts.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="p-12 text-center">
-                    <FileText className="w-8 h-8 text-[#A7B0C0] mx-auto mb-3" />
-                    <p className="text-xs text-[#A7B0C0]">No blog posts found</p>
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>

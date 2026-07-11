@@ -50,9 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .eq("user_id", userId)
       .maybeSingle()
     if (error) {
-      console.log("[AuthProvider] fetchProfile ERROR:", error.message)
       if (retryCount < 1) {
-        console.log("[AuthProvider] Retrying profile fetch in 2s...")
         await new Promise((r) => setTimeout(r, 2000))
         return fetchProfile(userId, retryCount + 1)
       }
@@ -61,18 +59,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    console.log("[AuthProvider] useEffect — getting session...")
     supabase.auth.getSession().then(async ({ data: { session: s } }) => {
-      console.log("[AuthProvider] getSession result:", s ? `user=${s.user.email}` : "null")
       setSession(s)
       setUser(s?.user ?? null)
       if (s?.user) await fetchProfile(s.user.id)
       setLoading(false)
     })
 
-    console.log("[AuthProvider] subscribing to onAuthStateChange...")
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
-      console.log("[AuthProvider] onAuthStateChange event:", event, s ? `user=${s.user.email}` : "null")
       setSession(s)
       setUser(s?.user ?? null)
       if (s?.user) fetchProfile(s.user.id)
@@ -80,7 +74,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
 
     return () => {
-      console.log("[AuthProvider] cleanup — unsubscribing")
       subscription.unsubscribe()
     }
   }, [fetchProfile])

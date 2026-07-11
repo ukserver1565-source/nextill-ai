@@ -52,7 +52,7 @@ export default function ContactPage() {
       await fetch(`/api/admin/contact/${id}`, { method: "PATCH" })
       setMessages(prev => prev.map(m => m.id === id ? { ...m, read: true } : m))
     } catch (e) { console.error("[contact] error:", e) }
-
+  }
 
   const handleDelete = async (id: string) => {
     try {
@@ -60,7 +60,7 @@ export default function ContactPage() {
       setMessages(prev => prev.filter(m => m.id !== id))
       setTotal(prev => prev - 1)
     } catch (e) { console.error("[contact] error:", e) }
-
+  }
 
   const unreadCount = messages.filter(m => !m.read).length
 

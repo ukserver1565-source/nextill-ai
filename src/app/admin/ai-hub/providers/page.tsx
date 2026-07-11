@@ -64,7 +64,7 @@ export default function AIHubProvidersPage() {
     try {
       await fetch(`/api/admin/ai/providers/${id}/toggle`, { method: "POST" })
     } catch (e) { console.error("[ai-providers] error:", e) }
-
+  }
 
   const handleTest = async (id: string) => {
     setTesting(id)
@@ -89,7 +89,7 @@ export default function AIHubProvidersPage() {
       await fetch(`/api/admin/ai/providers/${id}`, { method: "DELETE" })
       setProviders(prev => prev.filter(p => p.id !== id))
     } catch (e) { console.error("[ai-providers] error:", e) }
-
+  }
 
   const handleAdd = async () => {
     setSaving(true)
@@ -108,7 +108,7 @@ export default function AIHubProvidersPage() {
       if (!res.ok) throw new Error("Failed")
       setShowAddModal(false)
       fetchData()
-    } catch {}
+    } catch (e) { console.error("[ai-providers] add error:", e) }
     setSaving(false)
   }
 
@@ -127,7 +127,7 @@ export default function AIHubProvidersPage() {
       })
       if (!res.ok) throw new Error("Failed")
       fetchData()
-    } catch {}
+    } catch (e) { console.error("[ai-providers] save error:", e) }
     setSaving(false)
   }
 

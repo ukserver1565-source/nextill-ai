@@ -56,7 +56,6 @@ async function sendViaSmtp(payload: EmailPayload): Promise<{ ok: boolean; error?
 
 export async function sendEmail(payload: EmailPayload): Promise<{ ok: boolean; error?: string }> {
   if (!isConfigured()) {
-    console.log("[Email] Email provider not configured. Skipping send to", payload.to)
     return { ok: false, error: "Email provider not configured" }
   }
 

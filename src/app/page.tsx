@@ -187,17 +187,16 @@ const footerColumns = [
   {
     title: "Resources",
     links: [
-      { label: "Documentation", href: "/docs" },
-      { label: "API Reference", href: "/docs/api" },
-      { label: "Changelog", href: "/changelog" },
-      { label: "Status", href: "/status" },
+      { label: "All Tools", href: "/tools" },
+      { label: "Features", href: "/features" },
+      { label: "Pricing", href: "/pricing" },
     ],
   },
   {
     title: "Company",
     links: [
       { label: "About", href: "/about" },
-      { label: "Blog", href: "/blog" },
+      { label: "Tools", href: "/tools" },
       { label: "Contact", href: "/contact" },
     ],
   },

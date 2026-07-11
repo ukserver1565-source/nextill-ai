@@ -116,9 +116,19 @@ export function TopBar({ onMenuClick }: TopBarProps) {
             className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] border border-transparent hover:border-white/[0.06] transition-all text-xs"
           >
             <Globe className="w-3.5 h-3.5" />
-            <span className="font-medium">{profile?.full_name?.split(" ")[0] || "My"}'s Workspace</span>
+            <span className="font-medium">Default Workspace</span>
             <ChevronDown className="w-3 h-3" />
           </button>
+          {workspaceOpen && (
+            <div className="absolute right-0 top-full mt-2 w-52 bg-[#111827]/95 backdrop-blur-xl border border-white/[0.06] rounded-xl shadow-2xl z-50 overflow-hidden">
+              <div className="p-1">
+                <div className="flex items-center gap-2 px-3 py-2 text-sm text-white bg-[#151C2E] rounded-lg">
+                  <Globe className="w-4 h-4" />
+                  Default Workspace
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#22C55E]/10 border border-[#22C55E]/20">

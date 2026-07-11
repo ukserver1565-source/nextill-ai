@@ -248,11 +248,11 @@ export function AIWriterPage() {
                         </div>
                       )}
 
-                      {article.outline.length > 0 && (
+                      {article.outline?.length > 0 && (
                         <div>
                           <p className="text-xs font-semibold text-muted mb-2">Outline</p>
                           <div className="flex flex-wrap gap-1.5">
-                            {article.outline.map((item, i) => (
+                            {article.outline?.map((item, i) => (
                               <span key={i} className="text-[10px] px-2 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 break-words">{item}</span>
                             ))}
                           </div>
@@ -260,7 +260,7 @@ export function AIWriterPage() {
                       )}
 
                       <div ref={contentRef} className="w-full max-w-full overflow-x-auto break-words text-xs sm:text-sm leading-relaxed space-y-3">
-                        {article.content.split("\n").map((line, i) => {
+                        {(article.content || "").split("\n").map((line, i) => {
                           if (line.startsWith("### ")) return <h3 key={i} className="text-sm sm:text-base font-semibold mt-4 mb-1">{line.replace("### ", "")}</h3>
                           if (line.startsWith("## ")) return <h2 key={i} className="text-base sm:text-lg font-bold mt-5 mb-2">{line.replace("## ", "")}</h2>
                           if (line.startsWith("# ")) return <h1 key={i} className="text-lg sm:text-xl font-bold mt-6 mb-3">{line.replace("# ", "")}</h1>
@@ -280,10 +280,10 @@ export function AIWriterPage() {
                         })}
                       </div>
 
-                      {article.faqs.length > 0 && (
+                      {(article.faqs?.length ?? 0) > 0 && (
                         <div className="space-y-2">
                           <p className="text-sm font-semibold">Frequently Asked Questions</p>
-                          {article.faqs.map((faq, i) => (
+                          {article.faqs?.map((faq, i) => (
                             <div key={i} className="glass-card rounded-lg p-3 border border-border/50">
                               <p className="text-xs sm:text-sm font-medium mb-1">{faq.question}</p>
                               <p className="text-xs text-muted">{faq.answer}</p>
@@ -292,18 +292,18 @@ export function AIWriterPage() {
                         </div>
                       )}
 
-                      {(article.pros.length > 0 || article.cons.length > 0) && (
+                      {((article.pros?.length ?? 0) > 0 || (article.cons?.length ?? 0) > 0) && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {article.pros.length > 0 && (
+                          {(article.pros?.length ?? 0) > 0 && (
                             <div className="glass-card rounded-lg p-3 border border-green-500/30 bg-green-500/5">
                               <p className="text-xs font-semibold text-success mb-2">Pros</p>
-                              {article.pros.map((p, i) => <p key={i} className="text-xs py-0.5">+ {p}</p>)}
+                              {article.pros?.map((p, i) => <p key={i} className="text-xs py-0.5">+ {p}</p>)}
                             </div>
                           )}
-                          {article.cons.length > 0 && (
+                          {(article.cons?.length ?? 0) > 0 && (
                             <div className="glass-card rounded-lg p-3 border border-red-500/30 bg-red-500/5">
                               <p className="text-xs font-semibold text-danger mb-2">Cons</p>
-                              {article.cons.map((c, i) => <p key={i} className="text-xs py-0.5">- {c}</p>)}
+                              {article.cons?.map((c, i) => <p key={i} className="text-xs py-0.5">- {c}</p>)}
                             </div>
                           )}
                         </div>
@@ -322,9 +322,9 @@ export function AIWriterPage() {
                         </div>
                       )}
 
-                      {article.tags.length > 0 && (
+                      {(article.tags?.length ?? 0) > 0 && (
                         <div className="flex flex-wrap gap-1.5">
-                          {article.tags.map((tag, i) => (
+                          {article.tags?.map((tag, i) => (
                             <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-muted/20 text-muted border border-border/30">{tag}</span>
                           ))}
                         </div>
@@ -337,19 +337,19 @@ export function AIWriterPage() {
                         </details>
                       )}
 
-                      {article.internalLinks.length > 0 && (
+                      {(article.internalLinks?.length ?? 0) > 0 && (
                         <div className="text-[10px] text-muted">
                           <p className="font-semibold mb-1">Internal Link Suggestions</p>
-                          {article.internalLinks.map((l, i) => (
+                          {article.internalLinks?.map((l, i) => (
                             <p key={i} className="py-0.5">[{l.anchor}] → /{l.path}</p>
                           ))}
                         </div>
                       )}
 
-                      {article.externalLinks.length > 0 && (
+                      {(article.externalLinks?.length ?? 0) > 0 && (
                         <div className="text-[10px] text-muted">
                           <p className="font-semibold mb-1">External Authority Suggestions</p>
-                          {article.externalLinks.map((l, i) => (
+                          {article.externalLinks?.map((l, i) => (
                             <p key={i} className="py-0.5">[{l.anchor}] → ({l.url})</p>
                           ))}
                         </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Zap, Activity, Server, Cpu, TrendingUp, Loader2, Inbox } from "lucide-react"
+import { Zap, Activity, Server, TrendingUp, Loader2, Inbox } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { supabase } from "@/lib/supabase/client"
 
@@ -27,7 +27,6 @@ export default function PerformancePage() {
     { icon: Zap, label: "Avg Response Time", value: "—", change: "", up: true, color: "#22C55E" },
     { icon: Activity, label: "Error Rate", value: "—", change: "", up: true, color: "#4CC9F0" },
     { icon: Server, label: "Total Requests", value: "—", change: "", up: true, color: "#6D5EF5" },
-    { icon: Cpu, label: "Memory Usage", value: "—", change: "", up: true, color: "#F59E0B" },
   ])
   const [performanceData, setPerformanceData] = useState<any[]>([])
 
@@ -52,13 +51,10 @@ export default function PerformancePage() {
         ? Math.round(allLogs.reduce((sum, l) => sum + (l.latency_ms || 0), 0) / totalRequests)
         : 0
 
-      const memPercent = "—"
-
       setMetrics([
         { icon: Zap, label: "Avg Response Time", value: totalRequests > 0 ? `${avgLatency}ms` : "—", change: totalRequests > 0 ? `${totalRequests} total` : "", up: true, color: "#22C55E" },
         { icon: Activity, label: "Error Rate", value: `${errorRate}%`, change: `${failedRequests} failed`, up: failedRequests === 0, color: "#4CC9F0" },
         { icon: Server, label: "Total Requests", value: totalRequests.toLocaleString(), change: `last 7 days`, up: true, color: "#6D5EF5" },
-        { icon: Cpu, label: "Memory Usage", value: memPercent, change: "", up: true, color: "#F59E0B" },
       ])
 
       const hourlyData: Record<string, { requests: number; totalLatency: number }> = {}
@@ -87,7 +83,7 @@ export default function PerformancePage() {
         <p className="text-sm text-[#A7B0C0] mt-1">System performance and metrics monitoring</p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {metrics.map((m, i) => {
           const Icon = m.icon
           return (

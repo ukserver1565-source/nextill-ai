@@ -64,7 +64,7 @@ export default function AIHubModelsPage() {
       })
       setModels(prev => prev.map((m: any) => ({ ...m, is_default: m.id === id })))
     } catch (e) { console.error("[ai-models] error:", e) }
-
+  }
 
   const handleToggle = async (id: string) => {
     setModels(prev => prev.map((m: any) => m.id === id ? { ...m, is_enabled: !m.is_enabled } : m))
@@ -75,7 +75,7 @@ export default function AIHubModelsPage() {
       await fetch(`/api/admin/ai/models/${id}`, { method: "DELETE" })
       setModels(prev => prev.filter((m: any) => m.id !== id))
     } catch (e) { console.error("[ai-models] error:", e) }
-
+  }
 
   const openEdit = (m: any) => {
     setEditItem(m)
@@ -107,7 +107,7 @@ export default function AIHubModelsPage() {
       if (!res.ok) throw new Error("Failed")
       setShowAddModal(false)
       fetchData()
-    } catch {}
+    } catch (e) { console.error("[ai-models] error:", e) }
     setSaving(false)
   }
 
@@ -130,7 +130,7 @@ export default function AIHubModelsPage() {
       if (!res.ok) throw new Error("Failed")
       setShowEditModal(false)
       fetchData()
-    } catch {}
+    } catch (e) { console.error("[ai-models] error:", e) }
     setSaving(false)
   }
 

@@ -23,10 +23,10 @@ const features = [
 ]
 
 const stats = [
-  { icon: Zap, value: "50K+", label: "Keywords Analyzed" },
-  { icon: FileText, value: "10K+", label: "Posts Generated" },
-  { icon: Users, value: "5K+", label: "Active Users" },
-  { icon: Award, value: "99.9%", label: "Uptime SLA" },
+  { icon: Zap, value: "Thousands", label: "Keywords Analyzed" },
+  { icon: FileText, value: "Growing", label: "Posts Generated" },
+  { icon: Users, value: "Trusted By", label: "Active Users" },
+  { icon: Award, value: "Reliable", label: "Uptime SLA" },
 ]
 
 export default function AboutPage() {

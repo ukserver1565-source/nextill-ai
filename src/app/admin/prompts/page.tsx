@@ -56,7 +56,7 @@ export default function PromptsPage() {
       if (!res.ok) throw new Error("Failed")
       setPrompts(prev => prev.filter(p => p.id !== id))
     } catch (e) { console.error("[prompts] error:", e) }
-
+  }
 
   const openCreate = () => {
     setEditingPrompt(null)
@@ -91,7 +91,7 @@ export default function PromptsPage() {
       if (!res.ok) throw new Error("Failed")
       await fetchPrompts()
     } catch (e) { console.error("[prompts] error:", e) }
-
+  }
 
   const handleSave = async () => {
     setSaving(true)

@@ -142,7 +142,7 @@ export default function ModelsPage() {
       if (!res.ok) throw new Error("Failed")
       await fetchModels()
     } catch (e) { console.error("[models] error:", e) }
-
+  }
 
   const handleDelete = async (id: string) => {
     try {
@@ -151,7 +151,7 @@ export default function ModelsPage() {
       setDeleteId(null)
       await fetchModels()
     } catch (e) { console.error("[models] error:", e) }
-
+  }
 
   return (
     <div className="space-y-6">

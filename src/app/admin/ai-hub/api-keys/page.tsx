@@ -80,7 +80,7 @@ export default function AIHubApiKeysPage() {
       await fetch(`/api/admin/ai/api-keys/${id}`, { method: "DELETE" })
       setKeys(prev => prev.filter(k => k.id !== id))
     } catch (e) { console.error("[ai-api-keys] error:", e) }
-
+  }
 
   const handleAdd = async () => {
     setSaving(true)
@@ -99,7 +99,7 @@ export default function AIHubApiKeysPage() {
       if (!res.ok) throw new Error("Failed")
       setShowAddModal(false)
       fetchData()
-    } catch {}
+    } catch (e) { console.error("[ai-api-keys] add error:", e) }
     setSaving(false)
   }
 
@@ -117,7 +117,7 @@ export default function AIHubApiKeysPage() {
       if (!res.ok) throw new Error("Failed")
       setShowEditModal(false)
       fetchData()
-    } catch {}
+    } catch (e) { console.error("[ai-api-keys] edit error:", e) }
     setSaving(false)
   }
 
@@ -134,7 +134,7 @@ export default function AIHubApiKeysPage() {
       setShowRotateModal(false)
       setRotateKey("")
       fetchData()
-    } catch {}
+    } catch (e) { console.error("[ai-api-keys] rotate error:", e) }
     setSaving(false)
   }
 
@@ -429,3 +429,4 @@ export default function AIHubApiKeysPage() {
     </div>
   )
 }
+

@@ -209,7 +209,7 @@ export default function KeywordIntelligencePage() {
         const existing = JSON.parse(localStorage.getItem("ki_favorites") || "[]")
         existing.push({ keyword, savedAt: new Date().toISOString() })
         localStorage.setItem("ki_favorites", JSON.stringify(existing))
-      } catch {}
+      } catch (e) { console.error("[keyword] fetch error:", e) }
     }
     setTimeout(() => setFavsSaved(false), 2000)
   }, [result, keyword])
@@ -632,7 +632,7 @@ export default function KeywordIntelligencePage() {
                 {/* ── Long Tail Tab ───────────────────────────── */}
                 <TabsContent value="longtail" className="mt-0 p-4 sm:p-5">
                   <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid sm:grid-cols-2 gap-3">
-                    {result.longTail.map((item) => (
+                    {result.longTail?.map((item) => (
                       <motion.div key={item.keyword} variants={itemVariants}
                         className="group p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-[#6D5EF5]/30 hover:shadow-lg hover:shadow-black/10 transition-all"
                       >
@@ -656,7 +656,7 @@ export default function KeywordIntelligencePage() {
                 {/* ── Related Tab ──────────────────────────────── */}
                 <TabsContent value="related" className="mt-0 p-4 sm:p-5">
                   <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-1.5">
-                    {result.related.map((item) => (
+                    {result.related?.map((item) => (
                       <motion.div key={item.keyword} variants={itemVariants}
                         className="flex items-center justify-between gap-3 p-3.5 rounded-xl hover:bg-white/[0.03] transition-colors border-b border-white/[0.03] last:border-0"
                       >
@@ -715,7 +715,7 @@ export default function KeywordIntelligencePage() {
                 {/* ── Topical Map Tab ──────────────────────────── */}
                 <TabsContent value="topical" className="mt-0 p-4 sm:p-5">
                   <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid sm:grid-cols-2 gap-4">
-                    {result.topicalMap.map((cluster) => (
+                    {result.topicalMap?.map((cluster) => (
                       <motion.div key={cluster.topic} variants={itemVariants}>
                         <GlassCard className="p-4 hover:border-[#6D5EF5]/30 transition-all group">
                           <div className="flex items-center gap-3 mb-4">

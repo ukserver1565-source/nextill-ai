@@ -64,7 +64,7 @@ export default function ProvidersPage() {
       if (!res.ok) throw new Error("Failed")
       setProviders(prev => prev.map(prov => prov.id === p.id ? { ...prov, is_enabled: !prov.is_enabled } : prov))
     } catch (e) { console.error("[providers] error:", e) }
-
+  }
 
   const handleTest = async (id: string) => {
     setTestStatus(s => ({ ...s, [id]: "testing" }))
@@ -86,7 +86,7 @@ export default function ProvidersPage() {
       if (!res.ok) throw new Error("Failed")
       fetchProviders()
     } catch (e) { console.error("[providers] error:", e) }
-
+  }
 
   const openAdd = () => {
     setEditItem(null)
@@ -133,7 +133,7 @@ export default function ProvidersPage() {
       }
       setShowModal(false)
       fetchProviders()
-    } catch {}
+    } catch (e) { console.error("[providers] error:", e) }
     setSaving(false)
   }
 

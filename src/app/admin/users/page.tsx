@@ -124,7 +124,7 @@ export default function UsersPage() {
         })
         if (!res.ok) throw new Error("Failed")
         fetchUsers()
-      } catch {}
+      } catch (e) { console.error("[users] role error:", e) }
     } else if (action === "change_status") {
       const newStatus = window.prompt("Enter new status (active/suspended/inactive):", user.status || "active")
       if (!newStatus) return
@@ -134,7 +134,7 @@ export default function UsersPage() {
         })
         if (!res.ok) throw new Error("Failed")
         fetchUsers()
-      } catch {}
+      } catch (e) { console.error("[users] status error:", e) }
     } else if (action === "add_credits") {
       const amount = window.prompt("Enter credits to add:")
       if (!amount) return
@@ -144,7 +144,7 @@ export default function UsersPage() {
         })
         if (!res.ok) throw new Error("Failed")
         fetchUsers()
-      } catch {}
+      } catch (e) { console.error("[users] credits error:", e) }
     } else if (action === "suspend") {
       const newStatus = user.status === "suspended" ? "active" : "suspended"
       try {
@@ -153,7 +153,7 @@ export default function UsersPage() {
         })
         if (!res.ok) throw new Error("Failed")
         fetchUsers()
-      } catch {}
+      } catch (e) { console.error("[users] suspend error:", e) }
     }
   }
 

@@ -81,7 +81,7 @@ export default function ApiKeysPage() {
       await fetch(`/api/admin/api-keys/${id}`, { method: "DELETE" })
       setKeys(prev => prev.filter(k => k.id !== id))
     } catch (e) { console.error("[api-keys] error:", e) }
-
+  }
 
   const handleRotate = async (id: string) => {
     if (!window.confirm("Are you sure you want to rotate this API key? The current key will be replaced.")) return
@@ -90,7 +90,7 @@ export default function ApiKeysPage() {
       if (!res.ok) throw new Error("Failed")
       fetchData()
     } catch (e) { console.error("[api-keys] error:", e) }
-
+  }
 
   const openCreate = () => {
     setEditingKey(null)

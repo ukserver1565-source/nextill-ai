@@ -59,7 +59,7 @@ export default function ToolsPage() {
       if (!res.ok) throw new Error("Failed")
       setTools(prev => prev.map(t => t.id === tool.id ? { ...t, is_enabled: !t.is_enabled } : t))
     } catch (e) { console.error("[tools] toggle error:", e) }
-
+  }
 
   const openSettings = (tool: ToolSetting) => {
     setEditTool(tool)

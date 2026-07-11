@@ -50,7 +50,7 @@ export default function DocumentsPage() {
       a.click()
       URL.revokeObjectURL(url)
     } catch (e) { console.error("[documents] error:", e) }
-
+  }
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this document?")) return
@@ -59,7 +59,7 @@ export default function DocumentsPage() {
       if (!res.ok) throw new Error("Failed")
       fetchData()
     } catch (e) { console.error("[documents] error:", e) }
-
+  }
 
   return (
     <div className="space-y-6">
