@@ -158,13 +158,6 @@ export async function handleToolApi(req: Request, toolSlug: string) {
       }
     }
 
-    // Increment usage count (best-effort)
-    await tryDb(() =>
-      supabaseAdmin.from("tool_settings")
-        .update({ usage_count: ((toolConfig.usage_count as number) ?? 0) + 1 })
-        .eq("tool_slug", toolSlug)
-    )
-
     return NextResponse.json({
       success: result.success,
       type: result.type,

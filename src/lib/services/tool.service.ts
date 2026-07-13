@@ -1,7 +1,7 @@
 import { toolRepo, type ToolSettingRow } from "@/lib/repositories/tool-repo"
 import { creditRepo } from "@/lib/repositories/credit-repo"
 import { profileRepo } from "@/lib/repositories/profile-repo"
-import { supabase } from "@/lib/supabase/client"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 import type { UpdateToolInput } from "@/lib/validations/tool.schema"
 
 export interface ToolUsageResult {
@@ -38,7 +38,7 @@ export const toolService = {
     return { success: true, creditsUsed: tool.credits_cost }
   },
   async logUsage(userId: string | null, guestId: string | null, toolSlug: string, creditsUsed: number, inputChars?: number, outputChars?: number) {
-    await supabase.from("usage_logs").insert({
+    await supabaseAdmin.from("usage_logs").insert({
       user_id: userId, guest_id: guestId, tool_slug: toolSlug,
       credits_used: creditsUsed, input_chars: inputChars || 0, output_chars: outputChars || 0,
     })

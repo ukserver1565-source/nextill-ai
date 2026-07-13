@@ -17,8 +17,11 @@ export const contentService = {
     return projectRepo.list(params)
   },
   async getProject(id: string) {
-    const result = await projectRepo.list({ page: 1, limit: 1, filter: { id } })
-    return result.data[0] || null
+    try {
+      return await projectRepo.getById(id)
+    } catch {
+      return null
+    }
   },
   async createProject(userId: string, data: CreateProjectInput) {
     return projectRepo.create({ user_id: userId, name: data.name, domain: data.domain })
