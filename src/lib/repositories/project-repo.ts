@@ -6,27 +6,30 @@ export interface ProjectRow {
   user_id: string
   name: string
   domain: string | null
-  articles: number
-  keywords: number
   seo_score: number
-  traffic: string | null
-  status: string
+  pulse_score: number
   created_at: string
   updated_at: string
 }
 
 export const projectRepo = {
   async list(params: PaginationParams) {
-    let query = supabaseAdmin.from("projects")      .select("*, profiles!inner(full_name,email)", { count: "exact" })
+    let query = supabaseAdmin.from("projects").select("*", { count: "exact" })
     if (params.search) {
-      query = query.or(`name.ilike.%${params.search}%,profiles.full_name.ilike.%${params.search}%`)
+      query = query.or(`name.ilike.%${params.search}%,domain.ilike.%${params.search}%`)
     }
     query = query.order("updated_at", { ascending: false })
     const from = (params.page - 1) * params.limit
     query = query.range(from, from + params.limit - 1)
     const { data, error, count } = await query
     if (error) throw new Error(`Failed to fetch projects: ${error.message}`)
-    return { data: data as any[], total: count || 0, page: params.page, limit: params.limit }
+    return { data: (data || []) as ProjectRow[], total: count || 0, page: params.page, limit: params.limit }
+  },
+
+  async getById(id: string) {
+    const { data, error } = await supabaseAdmin.from("projects").select("*").eq("id", id).single()
+    if (error) throw new Error(`Project not found: ${error.message}`)
+    return data as ProjectRow
   },
 
   async create(project: { user_id: string; name: string; domain?: string }) {

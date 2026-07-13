@@ -47,9 +47,8 @@ export const adminService = {
     const tools = await toolRepo.list()
 
     const topTools = tools
-      .sort((a, b) => b.usage_count - a.usage_count)
       .slice(0, 5)
-      .map((t) => ({ name: t.tool_name, count: t.usage_count }))
+      .map((t) => ({ name: t.tool_name, count: 0 }))
 
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)

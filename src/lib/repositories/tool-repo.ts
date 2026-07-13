@@ -11,18 +11,19 @@ export interface ToolSettingRow {
   credits_cost: number
   default_model: string | null
   prompt_template: string | null
-  usage_count: number
+  created_at: string
+  updated_at: string
 }
 
 export const toolRepo = {
   async list() {
     const { data, error } = await supabaseAdmin.from("tool_settings").select("*").order("tool_name")
     if (error) throw new Error(`Failed to fetch tools: ${error.message}`)
-    return data as ToolSettingRow[]
+    return (data || []) as ToolSettingRow[]
   },
 
   async update(id: string, updates: Partial<ToolSettingRow>) {
-    const { data, error } = await supabaseAdmin.from("tool_settings").update(updates).eq("id", id).select().single()
+    const { data, error } = await supabaseAdmin.from("tool_settings").update({ ...updates, updated_at: new Date().toISOString() }).eq("id", id).select().single()
     if (error) throw new Error(`Failed to update tool: ${error.message}`)
     return data as ToolSettingRow
   },

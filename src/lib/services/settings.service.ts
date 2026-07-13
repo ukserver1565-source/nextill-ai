@@ -3,21 +3,19 @@ import { contactRepo } from "@/lib/repositories/contact-repo"
 import { couponRepo } from "@/lib/repositories/coupon-repo"
 import { adminLogRepo } from "@/lib/repositories/admin-log-repo"
 import type { PaginationParams } from "@/lib/validation/admin-schemas"
-import type { CreateContactMessageInput } from "@/lib/validations/contact.schema"
-import type { CreateCouponInput, UpdateCouponInput } from "@/lib/validations/coupon.schema"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 
 export const settingsService = {
   async getSettings() {
-    return settingsRepo.get()
+    return settingsRepo.getAll()
   },
-  async updateSetting(key: string, value: any) {
-    return settingsRepo.update({ [key]: value })
+  async updateSetting(key: string, value: unknown) {
+    return settingsRepo.set(key, value)
   },
   async getContactMessages(params: PaginationParams) {
     return contactRepo.list(params)
   },
-  async createContactMessage(data: CreateContactMessageInput) {
+  async createContactMessage(data: { name: string; email: string; subject: string; message: string }) {
     const { error } = await supabaseAdmin.from("contact_messages").insert(data)
     if (error) throw new Error(`Failed to create message: ${error.message}`)
   },
@@ -30,16 +28,16 @@ export const settingsService = {
   async getCoupons() {
     return couponRepo.list()
   },
-  async createCoupon(data: CreateCouponInput) {
-    return couponRepo.create(data as any)
+  async createCoupon(data: { code: string; discount_type: "percentage" | "fixed"; discount_value: number; usage_limit?: number; expires_at?: string; is_active?: boolean }) {
+    return couponRepo.create(data)
   },
-  async updateCoupon(id: string, data: UpdateCouponInput) {
+  async updateCoupon(id: string, data: Record<string, unknown>) {
     return couponRepo.update(id, data)
   },
   async deleteCoupon(id: string) {
     return couponRepo.delete(id)
   },
-  async logAdminAction(adminUserId: string, action: string, targetType?: string, targetId?: string, metadata?: Record<string, any>) {
+  async logAdminAction(adminUserId: string, action: string, targetType?: string, targetId?: string, metadata?: Record<string, unknown>) {
     await adminLogRepo.log(adminUserId, action, targetType || "", targetId, metadata)
   },
 }

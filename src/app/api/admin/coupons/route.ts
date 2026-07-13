@@ -15,7 +15,14 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const parsed = createCouponSchema.parse(body)
-    const coupon = await couponRepo.create(parsed)
+    const coupon = await couponRepo.create({
+      code: parsed.code,
+      discount_type: parsed.discount_type,
+      discount_value: parsed.discount_value,
+      usage_limit: parsed.usage_limit,
+      is_active: parsed.is_active,
+      ...(parsed.expires_at ? { expires_at: parsed.expires_at } : {}),
+    })
     return NextResponse.json(coupon, { status: 201 })
   } catch (err) {
     return NextResponse.json({ error: "Failed to create coupon", details: (err as Error).message }, { status: 400 })

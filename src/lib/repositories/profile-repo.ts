@@ -3,17 +3,16 @@ import type { PaginationParams } from "@/lib/validation/admin-schemas"
 
 export interface ProfileRow {
   id: string
-  email: string
-  name: string
-  role: "user" | "admin" | "super_admin"
-  plan_id: string
-  status: "active" | "suspended" | "inactive"
-  avatar_url: string | null
+  user_id: string
+  email: string | null
+  full_name: string | null
+  role: string
+  plan: string
   credits: number
-  credits_used: number
-  articles_generated: number
+  avatar_url: string | null
+  status: "active" | "suspended" | "inactive"
   created_at: string
-  last_login: string | null
+  updated_at: string
 }
 
 export const profileRepo = {
@@ -23,13 +22,13 @@ export const profileRepo = {
       .select("*", { count: "exact" })
 
     if (params.search) {
-      query = query.or(`name.ilike.%${params.search}%,email.ilike.%${params.search}%`)
+      query = query.or(`full_name.ilike.%${params.search}%,email.ilike.%${params.search}%`)
     }
     if (params.filter?.role) {
       query = query.eq("role", params.filter.role)
     }
-    if (params.filter?.plan_id) {
-      query = query.eq("plan_id", params.filter.plan_id)
+    if (params.filter?.plan) {
+      query = query.eq("plan", params.filter.plan)
     }
     if (params.filter?.status) {
       query = query.eq("status", params.filter.status)
@@ -44,7 +43,7 @@ export const profileRepo = {
 
     const { data, error, count } = await query
     if (error) throw new Error(`Failed to fetch profiles: ${error.message}`)
-    return { data: data as ProfileRow[], total: count || 0, page: params.page, limit: params.limit }
+    return { data: (data || []) as ProfileRow[], total: count || 0, page: params.page, limit: params.limit }
   },
 
   async getById(id: string) {
@@ -65,24 +64,25 @@ export const profileRepo = {
   },
 
   async getStats() {
-    const { data: all, error: e1 } = await supabaseAdmin.from("profiles").select("role,plan_id,status,credits,credits_used,last_login")
+    const { data: all, error: e1 } = await supabaseAdmin.from("profiles").select("role,plan,status,credits")
     if (e1) throw new Error(`Failed to fetch stats: ${e1.message}`)
 
-    const now = new Date()
-    const oneDayAgo = new Date(now.getTime() - 86400000).toISOString()
-    const activeToday = all?.filter((u) => u.last_login && u.last_login >= oneDayAgo).length || 0
-    const premium = all?.filter((u) => u.plan_id !== "free" && u.status === "active").length || 0
-    const free = all?.filter((u) => u.plan_id === "free" && u.status === "active").length || 0
-    const totalCredits = all?.reduce((s, u) => s + u.credits, 0) || 0
-    const totalUsed = all?.reduce((s, u) => s + u.credits_used, 0) || 0
+    const premium = all?.filter((u) => u.plan !== "free" && u.status === "active").length || 0
+    const free = all?.filter((u) => u.plan === "free" && u.status === "active").length || 0
+    const totalCredits = all?.reduce((s, u) => s + (u.credits || 0), 0) || 0
+
+    const { count: totalUsed } = await supabaseAdmin
+      .from("credit_logs")
+      .select("id", { count: "exact", head: true })
+      .eq("type", "used")
 
     return {
       total: all?.length || 0,
-      activeToday,
+      activeToday: 0,
       premium,
       free,
       totalCredits,
-      totalUsed,
+      totalUsed: totalUsed || 0,
     }
   },
 }

@@ -4,23 +4,19 @@ export interface PlanRow {
   id: string
   name: string
   slug: string
-  price: number
-  currency: string
-  monthly_credits: number
-  tool_access: string[]
-  max_projects: number
-  max_users: number
-  priority: string
-  enabled: boolean
-  description: string
+  price_monthly: number
+  price_yearly: number
+  credits: number
+  features: unknown
+  is_active: boolean
   created_at: string
 }
 
 export const planRepo = {
   async list() {
-    const { data, error } = await supabaseAdmin.from("plans").select("*").order("price", { ascending: true })
+    const { data, error } = await supabaseAdmin.from("plans").select("*").order("price_monthly", { ascending: true })
     if (error) throw new Error(`Failed to fetch plans: ${error.message}`)
-    return data as PlanRow[]
+    return (data || []) as PlanRow[]
   },
 
   async getById(id: string) {
@@ -29,8 +25,16 @@ export const planRepo = {
     return data as PlanRow
   },
 
-  async create(plan: Omit<PlanRow, "created_at">) {
-    const { data, error } = await supabaseAdmin.from("plans").insert(plan).select().single()
+  async create(plan: { name: string; slug: string; price_monthly: number; price_yearly?: number; credits: number; features?: unknown; is_active?: boolean }) {
+    const { data, error } = await supabaseAdmin.from("plans").insert({
+      name: plan.name,
+      slug: plan.slug,
+      price_monthly: plan.price_monthly,
+      price_yearly: plan.price_yearly ?? plan.price_monthly * 10,
+      credits: plan.credits,
+      features: plan.features || [],
+      is_active: plan.is_active ?? true,
+    }).select().single()
     if (error) throw new Error(`Failed to create plan: ${error.message}`)
     return data as PlanRow
   },

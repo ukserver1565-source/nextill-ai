@@ -1,61 +1,51 @@
 import { z } from "zod"
 
-export const userRoleSchema = z.enum(["user", "admin", "super_admin"])
+export const userRoleSchema = z.enum(["free_user", "admin", "super_admin"])
 export const userPlanSchema = z.enum(["free", "starter", "pro", "agency", "enterprise"])
 export const userStatusSchema = z.enum(["active", "suspended", "inactive"])
 export const paymentStatusSchema = z.enum(["pending", "completed", "failed", "refunded"])
 export const blogStatusSchema = z.enum(["draft", "published"])
 export const couponTypeSchema = z.enum(["percentage", "fixed"])
-export const toolNameSchema = z.enum([
-  "ai_writer", "ai_humanizer", "ai_detector", "plagiarism_checker",
-  "seo_title_generator", "meta_description_generator", "keyword_research",
-  "website_audit", "rank_tracker", "backlink_analyzer",
-])
 
 export const updateUserSchema = z.object({
-  name: z.string().min(1).max(100).optional(),
+  full_name: z.string().min(1).max(100).optional(),
+  email: z.string().email().optional(),
   role: userRoleSchema.optional(),
-  plan_id: userPlanSchema.optional(),
+  plan: userPlanSchema.optional(),
   status: userStatusSchema.optional(),
   credits: z.number().int().min(0).optional(),
 })
 
 export const createPlanSchema = z.object({
-  id: z.string().min(1),
   name: z.string().min(1).max(100),
-  slug: userPlanSchema,
-  price: z.number().min(0),
-  currency: z.string().default("USD"),
-  monthly_credits: z.number().int().min(0),
-  tool_access: z.array(toolNameSchema),
-  max_projects: z.number().int().min(1),
-  max_users: z.number().int().min(1),
-  priority: z.enum(["low", "medium", "high", "urgent"]),
-  enabled: z.boolean().default(true),
-  description: z.string(),
+  slug: z.string().min(1).max(50),
+  price_monthly: z.number().min(0),
+  price_yearly: z.number().min(0).optional(),
+  credits: z.number().int().min(0),
+  features: z.array(z.string()).optional(),
+  is_active: z.boolean().default(true),
 })
 
 export const updatePlanSchema = createPlanSchema.partial()
 
 export const createCouponSchema = z.object({
   code: z.string().min(3).max(50),
-  type: couponTypeSchema,
-  value: z.number().min(0),
-  expiry_date: z.string(),
-  usage_limit: z.number().int().min(1),
-  active: z.boolean().default(true),
+  discount_type: couponTypeSchema,
+  discount_value: z.number().min(0),
+  usage_limit: z.number().int().min(0).default(0),
+  expires_at: z.string().nullable().optional(),
+  is_active: z.boolean().default(true),
 })
 
 export const createBlogPostSchema = z.object({
   title: z.string().min(1).max(200),
   slug: z.string().min(1).max(200),
-  category: z.string(),
+  excerpt: z.string().optional(),
   content: z.string().optional(),
+  category_id: z.string().nullable().optional(),
+  status: blogStatusSchema.default("draft"),
   seo_title: z.string().max(200).optional(),
   meta_description: z.string().max(300).optional(),
-  status: blogStatusSchema,
-  author: z.string(),
-  image_url: z.string().nullable().optional(),
 })
 
 export const updateBlogPostSchema = createBlogPostSchema.partial()
@@ -83,18 +73,13 @@ export const updateToolSchema = z.object({
 })
 
 export const updateModelSchema = z.object({
-  enabled: z.boolean().optional(),
-  api_key_placeholder: z.string().optional(),
-  fallback: z.boolean().optional(),
-})
-
-export const updateSettingsSchema = z.object({
-  site_name: z.string().optional(),
-  primary_color: z.string().optional(),
-  free_daily_limits: z.number().int().min(0).optional(),
-  maintenance_mode: z.boolean().optional(),
-  maintenance_message: z.string().optional(),
-  contact_email: z.string().email().optional(),
+  model_name: z.string().optional(),
+  is_enabled: z.boolean().optional(),
+  is_default: z.boolean().optional(),
+  cost_input: z.number().min(0).optional(),
+  cost_output: z.number().min(0).optional(),
+  temperature: z.number().min(0).max(2).optional(),
+  max_tokens: z.number().int().min(1).optional(),
 })
 
 export const paginationSchema = z.object({

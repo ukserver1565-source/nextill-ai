@@ -7,7 +7,7 @@ export interface ContactRow {
   email: string
   subject: string
   message: string
-  read: boolean
+  status: "unread" | "read" | "replied"
   created_at: string
 }
 
@@ -17,19 +17,19 @@ export const contactRepo = {
     if (params.search) {
       query = query.or(`name.ilike.%${params.search}%,subject.ilike.%${params.search}%`)
     }
-    if (params.filter?.read) {
-      query = query.eq("read", params.filter.read === "true")
+    if (params.filter?.status) {
+      query = query.eq("status", params.filter.status)
     }
     query = query.order("created_at", { ascending: false })
     const from = (params.page - 1) * params.limit
     query = query.range(from, from + params.limit - 1)
     const { data, error, count } = await query
     if (error) throw new Error(`Failed to fetch messages: ${error.message}`)
-    return { data: data as ContactRow[], total: count || 0, page: params.page, limit: params.limit }
+    return { data: (data || []) as ContactRow[], total: count || 0, page: params.page, limit: params.limit }
   },
 
   async markAsRead(id: string) {
-    const { error } = await supabaseAdmin.from("contact_messages").update({ read: true }).eq("id", id)
+    const { error } = await supabaseAdmin.from("contact_messages").update({ status: "read" }).eq("id", id)
     if (error) throw new Error(`Failed to mark message as read: ${error.message}`)
   },
 

@@ -17,11 +17,14 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const parsed = createBlogPostSchema.parse(body)
     const post = await blogRepo.create({
-      ...parsed,
-      content: parsed.content ?? null,
-      seo_title: parsed.seo_title ?? null,
-      meta_description: parsed.meta_description ?? null,
-      image_url: parsed.image_url ?? null,
+      title: parsed.title,
+      slug: parsed.slug,
+      ...(parsed as any).excerpt ? { excerpt: (parsed as any).excerpt } : {},
+      ...(parsed as any).content ? { content: (parsed as any).content } : {},
+      ...(parsed as any).category_id ? { category_id: (parsed as any).category_id } : {},
+      status: (parsed as any).status || "draft",
+      ...(parsed as any).seo_title ? { seo_title: (parsed as any).seo_title } : {},
+      ...(parsed as any).meta_description ? { meta_description: (parsed as any).meta_description } : {},
     })
     return NextResponse.json(post, { status: 201 })
   } catch (err) {

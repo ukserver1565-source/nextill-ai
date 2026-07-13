@@ -4,12 +4,12 @@ import type { PaginationParams } from "@/lib/validation/admin-schemas"
 export interface PaymentRow {
   id: string
   user_id: string
+  plan_slug: string
   amount: number
   currency: string
-  plan_id: string
   status: "pending" | "completed" | "failed" | "refunded"
-  method: string
-  invoice_url: string | null
+  provider: string
+  provider_payment_id: string | null
   created_at: string
 }
 
@@ -17,16 +17,16 @@ export const paymentRepo = {
   async list(params: PaginationParams) {
     let query = supabaseAdmin
       .from("payments")
-      .select("*, profiles!inner(full_name,email)", { count: "exact" })
+      .select("*", { count: "exact" })
 
     if (params.search) {
-      query = query.or(`profiles.full_name.ilike.%${params.search}%,profiles.email.ilike.%${params.search}%`)
+      query = query.or(`plan_slug.ilike.%${params.search}%,provider.ilike.%${params.search}%`)
     }
     if (params.filter?.status) {
       query = query.eq("status", params.filter.status)
     }
-    if (params.filter?.plan_id) {
-      query = query.eq("plan_id", params.filter.plan_id)
+    if (params.filter?.plan_slug) {
+      query = query.eq("plan_slug", params.filter.plan_slug)
     }
 
     const sortCol = params.sort_by || "created_at"
@@ -38,7 +38,7 @@ export const paymentRepo = {
 
     const { data, error, count } = await query
     if (error) throw new Error(`Failed to fetch payments: ${error.message}`)
-    return { data: data as any[], total: count || 0, page: params.page, limit: params.limit }
+    return { data: (data || []) as PaymentRow[], total: count || 0, page: params.page, limit: params.limit }
   },
 
   async getStats() {
@@ -46,10 +46,10 @@ export const paymentRepo = {
     if (error) throw new Error(`Failed to fetch payment stats: ${error.message}`)
 
     const completed = data?.filter((p) => p.status === "completed") || []
-    const totalRevenue = completed.reduce((s, p) => s + p.amount, 0)
+    const totalRevenue = completed.reduce((s, p) => s + Number(p.amount), 0)
     const monthlyRevenue = completed
       .filter((p) => p.created_at?.startsWith(new Date().toISOString().slice(0, 7)))
-      .reduce((s, p) => s + p.amount, 0)
+      .reduce((s, p) => s + Number(p.amount), 0)
 
     return { totalRevenue, monthlyRevenue, totalTransactions: data?.length || 0, completedCount: completed.length }
   },
