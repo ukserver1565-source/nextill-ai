@@ -28,6 +28,7 @@ export default function PromptsPage() {
   const [formContent, setFormContent] = useState("")
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState("")
+  const [actionError, setActionError] = useState("")
 
   const fetchPrompts = useCallback(async () => {
     setLoading(true)
@@ -51,11 +52,12 @@ export default function PromptsPage() {
   const filtered = filterCat === "all" ? prompts : prompts.filter(p => p.tool_slug === filterCat)
 
   const handleDelete = async (id: string) => {
+    setActionError("")
     try {
       const res = await fetch(`/api/admin/prompts/${id}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("Failed")
+      if (!res.ok) throw new Error("Failed to delete")
       setPrompts(prev => prev.filter(p => p.id !== id))
-    } catch (e) { console.error("[prompts] error:", e) }
+    } catch (e: any) { setActionError(e.message) }
   }
 
   const openCreate = () => {
@@ -77,6 +79,7 @@ export default function PromptsPage() {
   }
 
   const handleCopy = async (p: Prompt) => {
+    setActionError("")
     try {
       const res = await fetch("/api/admin/prompts", {
         method: "POST",
@@ -88,9 +91,9 @@ export default function PromptsPage() {
           variables: p.variables || [],
         }),
       })
-      if (!res.ok) throw new Error("Failed")
+      if (!res.ok) throw new Error("Failed to copy")
       await fetchPrompts()
-    } catch (e) { console.error("[prompts] error:", e) }
+    } catch (e: any) { setActionError(e.message) }
   }
 
   const handleSave = async () => {
@@ -265,6 +268,11 @@ export default function PromptsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      {actionError && (
+        <div className="fixed bottom-4 right-4 bg-[#EF4444]/90 backdrop-blur-xl text-white text-xs px-4 py-2.5 rounded-xl shadow-lg z-50">
+          {actionError}
+        </div>
+      )}
     </div>
   )
 }

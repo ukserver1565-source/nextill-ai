@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Bot, Brain, Cpu, Globe, Search, Plus, Check, X, Settings, Zap, Trash2, Loader2 } from "lucide-react"
+import { Bot, Brain, Cpu, Globe, Search, Plus, Check, X, Settings, Zap, Trash2, Loader2, XCircle } from "lucide-react"
 
 const providerIcons: Record<string, any> = {
   "openai": Bot, "claude": Brain, "gemini": Globe, "deepseek": Cpu,
@@ -29,6 +29,7 @@ export default function AIHubProvidersPage() {
   const [addForm, setAddForm] = useState({ name: "", slug: "openai", base_url: "", default_model: "" })
   const [expandedForms, setExpandedForms] = useState<Record<string, { base_url: string; default_model: string; status: string }>>({})
   const [saving, setSaving] = useState(false)
+  const [actionError, setActionError] = useState("")
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -60,10 +61,11 @@ export default function AIHubProvidersPage() {
   )
 
   const handleToggle = async (id: string) => {
+    setActionError("")
     setProviders(prev => prev.map(p => p.id === id ? { ...p, enabled: !p.enabled } : p))
     try {
       await fetch(`/api/admin/ai/providers/${id}/toggle`, { method: "POST" })
-    } catch (e) { console.error("[ai-providers] error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to toggle provider") }
   }
 
   const handleTest = async (id: string) => {
@@ -85,13 +87,15 @@ export default function AIHubProvidersPage() {
   }
 
   const handleDelete = async (id: string) => {
+    setActionError("")
     try {
       await fetch(`/api/admin/ai/providers/${id}`, { method: "DELETE" })
       setProviders(prev => prev.filter(p => p.id !== id))
-    } catch (e) { console.error("[ai-providers] error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to delete provider") }
   }
 
   const handleAdd = async () => {
+    setActionError("")
     setSaving(true)
     try {
       const res = await fetch("/api/admin/ai/providers", {
@@ -108,13 +112,14 @@ export default function AIHubProvidersPage() {
       if (!res.ok) throw new Error("Failed")
       setShowAddModal(false)
       fetchData()
-    } catch (e) { console.error("[ai-providers] add error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to add provider") }
     setSaving(false)
   }
 
   const handleSaveProvider = async (id: string) => {
     const form = expandedForms[id]
     if (!form) return
+    setActionError("")
     setSaving(true)
     try {
       const res = await fetch(`/api/admin/ai/providers/${id}`, {
@@ -127,7 +132,7 @@ export default function AIHubProvidersPage() {
       })
       if (!res.ok) throw new Error("Failed")
       fetchData()
-    } catch (e) { console.error("[ai-providers] save error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to save provider") }
     setSaving(false)
   }
 
@@ -377,6 +382,15 @@ export default function AIHubProvidersPage() {
               </div>
             </div>
           </motion.div>
+        </div>
+      )}
+
+      {actionError && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#EF4444]/10 border border-[#EF4444]/20 backdrop-blur-xl text-white text-xs px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2">
+          {actionError}
+          <button onClick={() => setActionError("")} className="text-[#A7B0C0] hover:text-white">
+            <XCircle className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
     </div>

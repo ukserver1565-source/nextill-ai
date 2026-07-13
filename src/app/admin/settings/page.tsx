@@ -13,6 +13,8 @@ export default function SettingsPage() {
   const [defaultCredits, setDefaultCredits] = useState(5000)
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState("")
 
   useEffect(() => {
     fetch("/api/admin/settings")
@@ -29,7 +31,8 @@ export default function SettingsPage() {
   }, [])
 
   const handleSave = async () => {
-    setLoading(true)
+    setSaving(true)
+    setSaveError("")
     try {
       const res = await fetch("/api/admin/settings", {
         method: "PATCH",
@@ -45,8 +48,8 @@ export default function SettingsPage() {
       if (!res.ok) throw new Error("Failed")
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
-    } catch (e) { console.error("[settings] handleSave:", e) } finally {
-      setLoading(false)
+    } catch (e: any) { setSaveError(e.message || "Failed to save") } finally {
+      setSaving(false)
     }
   }
 
@@ -108,8 +111,9 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <button onClick={handleSave} disabled={loading} className="h-11 px-6 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50">
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} {saved ? "Saved!" : "Save Settings"}
+          {saveError && <p className="text-xs text-[#EF4444]">{saveError}</p>}
+          <button onClick={handleSave} disabled={saving} className="h-11 px-6 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} {saved ? "Saved!" : "Save Settings"}
           </button>
         </div>
       )}

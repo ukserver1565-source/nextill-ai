@@ -24,6 +24,28 @@ export const userService = {
     await profileRepo.delete(id)
   },
 
+  async create(data: { email: string; name?: string; role?: string; plan_id?: string }) {
+    const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      email: data.email,
+      email_confirm: true,
+    })
+    if (authError) throw new Error(`Failed to create auth user: ${authError.message}`)
+    const userId = authUser.user.id
+
+    const { error: profileError } = await supabaseAdmin.from("profiles").insert({
+      user_id: userId,
+      email: data.email,
+      full_name: data.name || null,
+      role: data.role || "user",
+      plan: data.plan_id || "free",
+      credits: 0,
+      status: "active",
+    })
+    if (profileError) throw new Error(`Failed to create profile: ${profileError.message}`)
+
+    return { id: userId, email: data.email }
+  },
+
   async addCredits(userId: string, amount: number, description?: string) {
     const { error } = await supabaseAdmin.rpc("add_credits", {
       p_user_id: userId,

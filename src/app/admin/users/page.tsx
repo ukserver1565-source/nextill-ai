@@ -20,6 +20,8 @@ export default function UsersPage() {
   const [formState, setFormState] = useState({ email: "", name: "", role: "user", plan_id: "free" })
   const [saving, setSaving] = useState(false)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [plans, setPlans] = useState<{ slug: string; name: string }[]>([])
+  const [menuError, setMenuError] = useState("")
   const menuRef = useRef<HTMLDivElement>(null)
 
   const fetchUsers = useCallback(async () => {
@@ -43,6 +45,15 @@ export default function UsersPage() {
   }, [page, search, planFilter, statusFilter])
 
   useEffect(() => { fetchUsers() }, [fetchUsers])
+
+  useEffect(() => {
+    fetch("/api/admin/plans")
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) setPlans(data.map((p: any) => ({ slug: p.slug || p.name?.toLowerCase(), name: p.name })))
+      })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -115,6 +126,7 @@ export default function UsersPage() {
 
   const handleMenuAction = async (user: any, action: string) => {
     setOpenMenuId(null)
+    setMenuError("")
     if (action === "change_role") {
       const newRole = window.prompt("Enter new role (user/admin):", user.role || "user")
       if (!newRole) return
@@ -122,9 +134,9 @@ export default function UsersPage() {
         const res = await fetch(`/api/admin/users/${user.id}`, {
           method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role: newRole }),
         })
-        if (!res.ok) throw new Error("Failed")
+        if (!res.ok) throw new Error("Failed to update role")
         fetchUsers()
-      } catch (e) { console.error("[users] role error:", e) }
+      } catch (e: any) { setMenuError(e.message) }
     } else if (action === "change_status") {
       const newStatus = window.prompt("Enter new status (active/suspended/inactive):", user.status || "active")
       if (!newStatus) return
@@ -132,9 +144,9 @@ export default function UsersPage() {
         const res = await fetch(`/api/admin/users/${user.id}`, {
           method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: newStatus }),
         })
-        if (!res.ok) throw new Error("Failed")
+        if (!res.ok) throw new Error("Failed to update status")
         fetchUsers()
-      } catch (e) { console.error("[users] status error:", e) }
+      } catch (e: any) { setMenuError(e.message) }
     } else if (action === "add_credits") {
       const amount = window.prompt("Enter credits to add:")
       if (!amount) return
@@ -142,18 +154,18 @@ export default function UsersPage() {
         const res = await fetch(`/api/admin/users/${user.id}`, {
           method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ credits: (user.credits || 0) + Number(amount) }),
         })
-        if (!res.ok) throw new Error("Failed")
+        if (!res.ok) throw new Error("Failed to add credits")
         fetchUsers()
-      } catch (e) { console.error("[users] credits error:", e) }
+      } catch (e: any) { setMenuError(e.message) }
     } else if (action === "suspend") {
       const newStatus = user.status === "suspended" ? "active" : "suspended"
       try {
         const res = await fetch(`/api/admin/users/${user.id}`, {
           method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: newStatus }),
         })
-        if (!res.ok) throw new Error("Failed")
+        if (!res.ok) throw new Error("Failed to update status")
         fetchUsers()
-      } catch (e) { console.error("[users] suspend error:", e) }
+      } catch (e: any) { setMenuError(e.message) }
     }
   }
 
@@ -189,11 +201,7 @@ export default function UsersPage() {
         </div>
         <select value={planFilter} onChange={(e) => { setPlanFilter(e.target.value); setPage(1) }} className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-xs text-white outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
           <option value="all">All Plans</option>
-          <option value="free">Free</option>
-          <option value="starter">Starter</option>
-          <option value="pro">Pro</option>
-          <option value="enterprise">Enterprise</option>
-          <option value="agency">Agency</option>
+          {plans.map(p => <option key={p.slug} value={p.slug}>{p.name}</option>)}
         </select>
         <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1) }} className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-xs text-white outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
           <option value="all">All Status</option>
@@ -329,11 +337,7 @@ export default function UsersPage() {
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-[#A7B0C0]">Plan</label>
                   <select value={formState.plan_id} onChange={e => setFormState(f => ({ ...f, plan_id: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
-                    <option value="free">Free</option>
-                    <option value="starter">Starter</option>
-                    <option value="pro">Pro</option>
-                    <option value="enterprise">Enterprise</option>
-                    <option value="agency">Agency</option>
+                    {plans.length > 0 ? plans.map(p => <option key={p.slug} value={p.slug}>{p.name}</option>) : <option value="free">Free</option>}
                   </select>
                 </div>
               </div>
@@ -346,6 +350,11 @@ export default function UsersPage() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {menuError && (
+        <div className="fixed bottom-4 right-4 bg-[#EF4444]/90 backdrop-blur-xl text-white text-xs px-4 py-2.5 rounded-xl shadow-lg z-50">
+          {menuError}
         </div>
       )}
     </div>

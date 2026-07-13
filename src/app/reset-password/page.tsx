@@ -38,7 +38,7 @@ export default function ResetPasswordPage() {
         setRecoveryMode(true)
         setChecking(false)
         window.history.replaceState(null, "", "/reset-password")
-      })
+      }).catch(() => setChecking(false))
       return
     }
 
@@ -60,7 +60,7 @@ export default function ResetPasswordPage() {
         setRecoveryMode(true)
         setChecking(false)
         window.history.replaceState(null, "", "/reset-password")
-      })
+      }).catch(() => setChecking(false))
       return
     }
 

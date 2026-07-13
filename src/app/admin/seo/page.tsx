@@ -14,6 +14,7 @@ export default function SEOPage() {
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState("")
 
   useEffect(() => {
     fetch("/api/admin/settings")
@@ -46,7 +47,7 @@ export default function SEOPage() {
       if (!res.ok) throw new Error("Failed")
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
-    } catch (e) { console.error("[seo] handleSave:", e) } finally {
+    } catch (e: any) { setSaveError(e.message || "Failed to save") } finally {
       setSaving(false)
     }
   }
@@ -106,6 +107,7 @@ export default function SEOPage() {
             </div>
           </div>
 
+          {saveError && <p className="text-xs text-[#EF4444]">{saveError}</p>}
           <button onClick={handleSave} disabled={saving} className="h-11 px-6 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} {saved ? "Saved!" : "Save SEO Settings"}
           </button>

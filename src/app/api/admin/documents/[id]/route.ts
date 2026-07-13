@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server"
 import { documentsRepo } from "@/lib/repositories/documents.repository"
 
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params
+    const doc = await documentsRepo.getById(id)
+    return NextResponse.json(doc)
+  } catch (err) {
+    return NextResponse.json({ error: "Document not found" }, { status: 404 })
+  }
+}
+
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params

@@ -20,15 +20,17 @@ export default function DashboardSettings() {
   const saveProfile = async () => {
     if (!profile) return
     setSaving(true)
-    const { error } = await supabase
-      .from("profiles")
-      .update({ full_name: fullName })
-      .eq("user_id", profile.user_id)
-    if (!error) {
-      setSaved(true)
-      refreshProfile()
-      setTimeout(() => setSaved(false), 2000)
-    }
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ full_name: fullName })
+        .eq("user_id", profile.user_id)
+      if (!error) {
+        setSaved(true)
+        refreshProfile()
+        setTimeout(() => setSaved(false), 2000)
+      }
+    } catch {}
     setSaving(false)
   }
 
@@ -66,7 +68,7 @@ export default function DashboardSettings() {
         <div className="flex items-center justify-between py-2">
           <div>
             <p className="text-xs font-medium">Role</p>
-            <p className="text-[10px] text-muted capitalize">{profile?.role || "free_user"}</p>
+            <p className="text-[10px] text-muted capitalize">{profile?.role || "user"}</p>
           </div>
           <span className="text-xs font-medium capitalize px-2 py-1 rounded-full bg-primary/10 text-primary">{profile?.plan || "free"}</span>
         </div>

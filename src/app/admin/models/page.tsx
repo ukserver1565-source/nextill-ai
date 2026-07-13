@@ -47,6 +47,7 @@ export default function ModelsPage() {
   const [formDefault, setFormDefault] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState("")
+  const [actionError, setActionError] = useState("")
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
   const fetchModels = useCallback(async () => {
@@ -133,24 +134,26 @@ export default function ModelsPage() {
   }
 
   const handleStar = async (m: AIModel) => {
+    setActionError("")
     try {
       const res = await fetch(`/api/admin/models/${m.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ is_default: true }),
       })
-      if (!res.ok) throw new Error("Failed")
+      if (!res.ok) throw new Error("Failed to set default")
       await fetchModels()
-    } catch (e) { console.error("[models] error:", e) }
+    } catch (e: any) { setActionError(e.message) }
   }
 
   const handleDelete = async (id: string) => {
+    setActionError("")
     try {
       const res = await fetch(`/api/admin/models/${id}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("Failed")
+      if (!res.ok) throw new Error("Failed to delete")
       setDeleteId(null)
       await fetchModels()
-    } catch (e) { console.error("[models] error:", e) }
+    } catch (e: any) { setActionError(e.message) }
   }
 
   return (
@@ -357,6 +360,11 @@ export default function ModelsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      {actionError && (
+        <div className="fixed bottom-4 right-4 bg-[#EF4444]/90 backdrop-blur-xl text-white text-xs px-4 py-2.5 rounded-xl shadow-lg z-50">
+          {actionError}
+        </div>
+      )}
     </div>
   )
 }

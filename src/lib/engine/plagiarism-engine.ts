@@ -92,6 +92,22 @@ export function runPlagiarismLocal(text: string): PlagiarismResult {
   const sentList = sentences(text)
   const paragraphCount = paraList.length
   const sentenceCount = sentList.length
+
+  if (wordCount < 30) {
+    return {
+      originalityScore: 100,
+      wordCount,
+      characterCount,
+      paragraphCount,
+      sentenceCount,
+      matches: [],
+      duplicateParagraphs: [],
+      repeatedPhrases: [],
+      repeatedSentences: [],
+      highlightedText: [],
+      safeToPublish: true,
+    }
+  }
   const words = tokenize(text)
   const matches: PlagiarismMatch[] = []
   const highlightedText: PlagiarismResult["highlightedText"] = []

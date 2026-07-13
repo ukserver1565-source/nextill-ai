@@ -16,12 +16,14 @@ export default function DashboardBillingPage() {
     if (!profile) return
     const uid = profile.user_id
     async function load() {
-      const [subRes, payRes] = await Promise.all([
-        supabase.from("subscriptions").select("*").eq("user_id", uid).eq("status", "active").single(),
-        supabase.from("payments").select("*").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).single(),
-      ])
-      setSubscription(subRes.data)
-      setRecentPayment(payRes.data)
+      try {
+        const [subRes, payRes] = await Promise.all([
+          supabase.from("subscriptions").select("*").eq("user_id", uid).eq("status", "active").single(),
+          supabase.from("payments").select("*").eq("user_id", uid).order("created_at", { ascending: false }).limit(1).single(),
+        ])
+        setSubscription(subRes.data)
+        setRecentPayment(payRes.data)
+      } catch {}
       setLoading(false)
     }
     load()

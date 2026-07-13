@@ -11,6 +11,7 @@ export default function EmailsPage() {
   const [editKey, setEditKey] = useState<string | null>(null)
   const [editValue, setEditValue] = useState("")
   const [saving, setSaving] = useState(false)
+  const [actionError, setActionError] = useState("")
 
   const fetchTemplates = useCallback(async () => {
     setLoading(true)
@@ -38,16 +39,19 @@ export default function EmailsPage() {
   const handleSave = async () => {
     if (!editKey) return
     setSaving(true)
+    setActionError("")
     try {
-      await fetch("/api/admin/email", {
+      const res = await fetch("/api/admin/email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [editKey]: editValue }),
       })
+      if (!res.ok) throw new Error("Failed to save")
       setEditKey(null)
       fetchTemplates()
-    } catch (e) { console.error("[emails] error:", e) }
-    setSaving(false)
+    } catch (e: any) { setActionError(e.message) } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -127,6 +131,7 @@ export default function EmailsPage() {
                   className="w-full bg-[#090B16] border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white font-mono placeholder:text-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 transition-colors resize-none"
                 />
               </div>
+              {actionError && <p className="text-xs text-[#EF4444] text-center">{actionError}</p>}
               <div className="flex justify-end gap-3 pt-2">
                 <button onClick={() => setEditKey(null)} className="h-10 px-4 rounded-xl border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white transition-colors">Cancel</button>
                 <button onClick={handleSave} disabled={saving} className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50 flex items-center gap-2">

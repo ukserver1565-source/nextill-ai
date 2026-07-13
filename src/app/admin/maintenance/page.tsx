@@ -8,6 +8,7 @@ export default function MaintenancePage() {
   const [message, setMessage] = useState("We are currently performing scheduled maintenance. We'll be back shortly.")
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState("")
 
   useEffect(() => {
     fetch("/api/admin/settings")
@@ -22,27 +23,31 @@ export default function MaintenancePage() {
 
   const handleToggle = async () => {
     setSaving(true)
+    setSaveError("")
     try {
-      await fetch("/api/admin/settings", {
+      const res = await fetch("/api/admin/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ maintenance_mode: (!maintenanceMode).toString() }),
       })
+      if (!res.ok) throw new Error("Failed")
       setMaintenanceMode(!maintenanceMode)
-    } catch (e) { console.error("[maintenance] error:", e) } finally {
+    } catch (e: any) { setSaveError(e.message || "Failed to toggle") } finally {
       setSaving(false)
     }
   }
 
   const handleSaveMessage = async () => {
     setSaving(true)
+    setSaveError("")
     try {
-      await fetch("/api/admin/settings", {
+      const res = await fetch("/api/admin/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ maintenance_message: message }),
       })
-    } catch (e) { console.error("[maintenance] error:", e) } finally {
+      if (!res.ok) throw new Error("Failed")
+    } catch (e: any) { setSaveError(e.message || "Failed to save") } finally {
       setSaving(false)
     }
   }
@@ -94,6 +99,7 @@ export default function MaintenancePage() {
               </div>
             </div>
           )}
+          {saveError && <p className="text-xs text-[#EF4444]">{saveError}</p>}
         </div>
       )}
     </div>

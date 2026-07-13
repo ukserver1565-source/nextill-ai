@@ -31,33 +31,41 @@ export default function DashboardProjects() {
   const createProject = async () => {
     if (!newName.trim() || !profile) return
     setCreating(true)
-    const { data, error } = await supabase
-      .from("projects")
-      .insert({ user_id: profile.user_id, name: newName.trim(), domain: newDomain.trim() || null })
-      .select()
-      .single()
-    if (!error && data) {
-      setProjects([data, ...projects])
-      setNewName("")
-      setNewDomain("")
-    }
+    try {
+      const { data, error } = await supabase
+        .from("projects")
+        .insert({ user_id: profile.user_id, name: newName.trim(), domain: newDomain.trim() || null })
+        .select()
+        .single()
+      if (!error && data) {
+        setProjects([data, ...projects])
+        setNewName("")
+        setNewDomain("")
+      }
+    } catch {}
     setCreating(false)
   }
 
   const deleteProject = async (id: string) => {
     if (!confirm("Delete this project?")) return
-    await supabase.from("projects").delete().eq("id", id)
-    setProjects(projects.filter((p) => p.id !== id))
-    if (selectedProject?.id === id) setSelectedProject(null)
+    try {
+      await supabase.from("projects").delete().eq("id", id)
+      setProjects(projects.filter((p) => p.id !== id))
+      if (selectedProject?.id === id) setSelectedProject(null)
+    } catch {}
   }
 
   const openProject = async (project: any) => {
     setSelectedProject(project)
-    const { count } = await supabase
-      .from("documents")
-      .select("*", { count: "exact", head: true })
-      .eq("project_id", project.id)
-    setProjectDocCount(count ?? 0)
+    try {
+      const { count } = await supabase
+        .from("documents")
+        .select("*", { count: "exact", head: true })
+        .eq("project_id", project.id)
+      setProjectDocCount(count ?? 0)
+    } catch {
+      setProjectDocCount(0)
+    }
   }
 
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-muted" /></div>

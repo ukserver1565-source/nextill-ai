@@ -16,25 +16,26 @@ export default function UnauthorizedPage() {
       if (!session) {
         setHref("/login")
         setLabel("Go to Login")
-      } else {
-        supabase
-          .from("profiles")
-          .select("role")
-          .eq("user_id", session.user.id)
-          .single()
-          .then(({ data }) => {
-            const role = (data as { role?: string } | null)?.role
-            if (role === "admin" || role === "super_admin") {
-              setHref("/admin/login")
-              setLabel("Go to Admin Login")
-            } else {
-              setHref("/dashboard")
-              setLabel("Go to Dashboard")
-            }
-          })
+        setLoading(false)
+        return
       }
-      setLoading(false)
-    })
+      supabase
+        .from("profiles")
+        .select("role")
+        .eq("user_id", session.user.id)
+        .single()
+        .then(({ data }) => {
+          const role = (data as { role?: string } | null)?.role
+          if (role === "admin" || role === "super_admin") {
+            setHref("/admin/login")
+            setLabel("Go to Admin Login")
+          } else {
+            setHref("/dashboard")
+            setLabel("Go to Dashboard")
+          }
+          setLoading(false)
+        }, () => setLoading(false))
+    }, () => setLoading(false))
   }, [])
 
   return (

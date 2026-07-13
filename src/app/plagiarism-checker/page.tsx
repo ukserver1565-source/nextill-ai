@@ -198,6 +198,7 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
   const uniqueWords = Math.max(totalWords - matchedWords, 0)
   const [copied, setCopied] = useState("")
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState("")
 
   const handleDownload = useCallback(() => {
     let report = `Plagiarism Report - Nextill AI\nOriginality Score: ${result.originalityScore}%\nStatus: ${result.safeToPublish ? "Safe to Publish" : "Needs Review"}\nWords Checked: ${result.wordCount}\n\nRecommendation: ${result.recommendation}\n\n`
@@ -236,6 +237,7 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
   }, [result])
 
   const handleSaveReport = useCallback(async () => {
+    setSaveError("")
     setSaving(true)
     try {
       const res = await fetch("/api/user/plagiarism-reports", {
@@ -253,7 +255,7 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
         setCopied("save")
         setTimeout(() => setCopied(""), 2000)
       }
-    } catch (e) { console.error("[plagiarism] save error:", e) }
+    } catch (e) { setSaveError("Failed to save report. Please try again.") }
     setSaving(false)
   }, [result])
 
@@ -413,6 +415,17 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
           <RefreshCw className="w-4 h-4" /> New Check
         </button>
       </motion.div>
+      {saveError && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444] text-xs"
+        >
+          <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+          <span>{saveError}</span>
+          <button onClick={() => setSaveError("")} className="ml-auto shrink-0">
+            <X className="w-3.5 h-3.5 hover:opacity-70 transition-opacity" />
+          </button>
+        </motion.div>
+      )}
     </motion.div>
   )
 }

@@ -49,7 +49,10 @@ export default function ToolsPage() {
 
   useEffect(() => { fetchTools() }, [fetchTools])
 
+  const [toggleError, setToggleError] = useState("")
+
   const toggleTool = async (tool: ToolSetting) => {
+    setToggleError("")
     try {
       const res = await fetch(`/api/admin/tools/${tool.id}`, {
         method: "PATCH",
@@ -58,7 +61,7 @@ export default function ToolsPage() {
       })
       if (!res.ok) throw new Error("Failed")
       setTools(prev => prev.map(t => t.id === tool.id ? { ...t, is_enabled: !t.is_enabled } : t))
-    } catch (e) { console.error("[tools] toggle error:", e) }
+    } catch (e: any) { setToggleError(e.message || "Failed to toggle tool") }
   }
 
   const openSettings = (tool: ToolSetting) => {
@@ -71,9 +74,12 @@ export default function ToolsPage() {
     })
   }
 
+  const [saveError, setSaveError] = useState("")
+
   const saveSettings = async () => {
     if (!editTool) return
     setSaving(true)
+    setSaveError("")
     try {
       const res = await fetch(`/api/admin/tools/${editTool.id}`, {
         method: "PATCH",
@@ -83,7 +89,7 @@ export default function ToolsPage() {
       if (!res.ok) throw new Error("Failed")
       setTools(prev => prev.map(t => t.id === editTool.id ? { ...t, ...editForm } : t))
       setEditTool(null)
-    } catch (e) { console.error("[tools] save error:", e) } finally {
+    } catch (e: any) { setSaveError(e.message || "Failed to save settings") } finally {
       setSaving(false)
     }
   }
@@ -192,7 +198,13 @@ export default function ToolsPage() {
                 Save
               </button>
             </div>
+            {saveError && <p className="text-xs text-[#EF4444] text-center">{saveError}</p>}
           </div>
+        </div>
+      )}
+      {toggleError && (
+        <div className="fixed bottom-4 right-4 bg-[#EF4444]/90 backdrop-blur-xl text-white text-xs px-4 py-2.5 rounded-xl shadow-lg z-50">
+          {toggleError}
         </div>
       )}
     </div>

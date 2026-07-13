@@ -118,14 +118,14 @@ export function analyzeKeywordsLocal(text: string): KeywordResult {
     return "informational"
   }
 
-  const keywords: KeywordData[] = topKeywords.map((k, i) => ({
+  const keywords: KeywordData[] = topKeywords.map((k) => ({
     keyword: k.keyword,
-    volume: null as unknown as number,
-    difficulty: Math.round(Math.min(95, Math.max(5, (1 - k.score / (topKeywords[0]?.score || 1)) * 80 + 10))),
-    cpc: null,
+    volume: 0,
+    difficulty: 0,
+    cpc: 0,
     intent: getIntent(k.keyword),
-    trend: "stable",
-    competition: Math.round(Math.min(1, (1 - i / topKeywords.length) * 0.8) * 100) / 100,
+    trend: "stable" as const,
+    competition: 0,
   }))
 
   // Generate question-based keywords
@@ -136,8 +136,8 @@ export function analyzeKeywordsLocal(text: string): KeywordResult {
     const qw = questionWords[Math.floor(Math.random() * questionWords.length)]
     questions.push({
       question: `${qw.charAt(0).toUpperCase() + qw.slice(1)} ${qw === "How" ? "to" : "does"} ${w} ${["work", "help", "compare", "cost", "benefit", "improve"][Math.floor(Math.random() * 6)]}?`,
-      volume: null as unknown as number,
-      difficulty: Math.round(Math.random() * 50 + 20),
+      volume: 0,
+      difficulty: 0,
       topic: w,
     })
   }
@@ -152,8 +152,8 @@ export function analyzeKeywordsLocal(text: string): KeywordResult {
       const suffix = suffixes[Math.floor(Math.random() * suffixes.length)]
       longTail.push({
         keyword: `${prefix} ${k.keyword} ${suffix}`.trim(),
-        volume: null as unknown as number,
-        difficulty: Math.round(Math.min(95, k.difficulty + Math.floor(Math.random() * 20 - 10))),
+        volume: 0,
+        difficulty: 0,
         parentKeyword: k.keyword,
       })
     }
@@ -168,8 +168,8 @@ export function analyzeKeywordsLocal(text: string): KeywordResult {
       seen.add(pair)
       related.push({
         keyword: pair,
-        relevance: Math.round(Math.random() * 40 + 60),
-        volume: null as unknown as number,
+        relevance: 0,
+        volume: 0,
       })
     }
   }
@@ -205,16 +205,16 @@ export function analyzeKeywordsLocal(text: string): KeywordResult {
   }
 
   // Stats
-  const avgDifficulty = Math.round(keywords.reduce((s, k) => s + k.difficulty, 0) / Math.max(1, keywords.length))
-  const topPosition = keywords.length > 0 ? keywords[0].keyword : "N/A"
+  const avgDifficulty = 0
+  const topPosition = "N/A"
 
   return {
-    keywords: keywords.map(k => ({ ...k, volume: 0, cpc: 0 })),
-    questions: questions.map(q => ({ ...q, volume: 0 })),
-    longTail: longTail.map(l => ({ ...l, volume: 0 })),
-    related: related.slice(0, 15).map(r => ({ ...r, volume: 0 })),
+    keywords: keywords.map(k => ({ ...k })),
+    questions: questions.map(q => ({ ...q })),
+    longTail: longTail.map(l => ({ ...l })),
+    related: related.slice(0, 15).map(r => ({ ...r })),
     lsiNlp: lsiNlp.slice(0, 20),
-    topicalMap: topicalMap.map(t => ({ ...t, volume: 0 })),
+    topicalMap: topicalMap.map(t => ({ ...t })),
     stats: {
       totalKeywords: keywords.length,
       avgDifficulty,

@@ -47,19 +47,25 @@ export default function ContactPage() {
     return () => clearTimeout(t)
   }, [search])
 
+  const [actionError, setActionError] = useState("")
+
   const handleMarkRead = async (id: string) => {
+    setActionError("")
     try {
-      await fetch(`/api/admin/contact/${id}`, { method: "PATCH" })
+      const res = await fetch(`/api/admin/contact/${id}`, { method: "PATCH" })
+      if (!res.ok) throw new Error("Failed to mark as read")
       setMessages(prev => prev.map(m => m.id === id ? { ...m, read: true } : m))
-    } catch (e) { console.error("[contact] error:", e) }
+    } catch (e: any) { setActionError(e.message) }
   }
 
   const handleDelete = async (id: string) => {
+    setActionError("")
     try {
-      await fetch(`/api/admin/contact/${id}`, { method: "DELETE" })
+      const res = await fetch(`/api/admin/contact/${id}`, { method: "DELETE" })
+      if (!res.ok) throw new Error("Failed to delete")
       setMessages(prev => prev.filter(m => m.id !== id))
       setTotal(prev => prev - 1)
-    } catch (e) { console.error("[contact] error:", e) }
+    } catch (e: any) { setActionError(e.message) }
   }
 
   const unreadCount = messages.filter(m => !m.read).length
@@ -174,6 +180,11 @@ export default function ContactPage() {
           </div>
         )}
       </div>
+      {actionError && (
+        <div className="fixed bottom-4 right-4 bg-[#EF4444]/90 backdrop-blur-xl text-white text-xs px-4 py-2.5 rounded-xl shadow-lg z-50">
+          {actionError}
+        </div>
+      )}
     </div>
   )
 }

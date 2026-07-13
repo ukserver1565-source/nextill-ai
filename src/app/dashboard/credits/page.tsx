@@ -20,7 +20,7 @@ export default function DashboardCredits() {
       setCredits(credRes.data as { balance: number } | null)
       setLogs(logRes.data || [])
       setLoading(false)
-    })
+    }).catch(() => setLoading(false))
   }, [profile])
 
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-muted" /></div>

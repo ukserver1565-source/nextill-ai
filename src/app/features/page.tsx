@@ -125,7 +125,7 @@ export default function FeaturesPage() {
             <div className="relative z-10">
               <h2 className="text-2xl sm:text-3xl font-bold">Ready to Transform Your Workflow?</h2>
               <p className="text-muted mt-3 max-w-lg mx-auto">
-                Start for free with 100 AI credits. No credit card required.
+                Start for free with credits included. No credit card required.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-white font-semibold text-base hover:opacity-90 transition-all">

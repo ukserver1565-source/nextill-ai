@@ -1,7 +1,6 @@
 "use server"
 
 import { createSupabaseServerClient } from "@/lib/supabase/server"
-import { supabaseAdmin } from "@/lib/supabase/admin"
 import { revalidatePath } from "next/cache"
 
 export async function login(formData: FormData) {
@@ -21,22 +20,9 @@ export async function login(formData: FormData) {
     .eq("user_id", verifiedUser.id)
     .maybeSingle()
 
-  let role = ((profile as { role?: string } | null)?.role || "").toLowerCase()
+  const role = ((profile as { role?: string } | null)?.role || "").toLowerCase()
 
-  if (!profile && email === "admin@adultpulse.co.uk") {
-    const { error: insertErr } = await supabaseAdmin
-      .from("profiles")
-      .upsert({
-        user_id: verifiedUser.id,
-        email: verifiedUser.email,
-        full_name: "Admin",
-        role: "admin",
-        plan: "pro",
-        credits: 999999,
-        status: "active",
-      }, { onConflict: "user_id" })
-    if (!insertErr) role = "admin"
-  }
+
 
   revalidatePath("/", "layout")
 

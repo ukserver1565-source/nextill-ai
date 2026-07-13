@@ -125,6 +125,16 @@ function StatCard({ icon: Icon, label, value, sub, trend }: {
 }
 
 function DifficultyBar({ value }: { value: number }) {
+  if (value === 0) {
+    return (
+      <div className="flex items-center gap-2 min-w-[88px]">
+        <span className="text-xs text-[#5A6577] tabular-nums w-7 text-right">—</span>
+        <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden ring-1 ring-white/[0.03] p-[1px]">
+          <div className="h-full rounded-full bg-white/[0.06] w-0" />
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="flex items-center gap-2 min-w-[88px]">
       <span className={cn("text-xs font-semibold tabular-nums w-7 text-right", getDifficultyTextColor(value))}>
@@ -201,15 +211,21 @@ export default function KeywordIntelligencePage() {
   const [result, setResult] = useState<KeywordIntelligenceResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [favsSaved, setFavsSaved] = useState(false)
+  const [favError, setFavError] = useState("")
 
   const handleFavorites = useCallback(() => {
     setFavsSaved(true)
+    setFavError("")
     if (result) {
       try {
         const existing = JSON.parse(localStorage.getItem("ki_favorites") || "[]")
         existing.push({ keyword, savedAt: new Date().toISOString() })
         localStorage.setItem("ki_favorites", JSON.stringify(existing))
-      } catch (e) { console.error("[keyword] fetch error:", e) }
+      } catch (e) {
+        setFavsSaved(false)
+        setFavError("Failed to save favorites. Please try again.")
+        setTimeout(() => setFavError(""), 3000)
+      }
     }
     setTimeout(() => setFavsSaved(false), 2000)
   }, [result, keyword])
@@ -324,7 +340,7 @@ export default function KeywordIntelligencePage() {
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Keyword Intelligence</h1>
-              <p className="text-sm text-[#A7B0C0] mt-0.5">Deep keyword research powered by NLP and multi-source SERP data</p>
+              <p className="text-sm text-[#A7B0C0] mt-0.5">NLP-powered keyword extraction and content analysis. Connect DataForSEO API for live search metrics.</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -344,6 +360,16 @@ export default function KeywordIntelligencePage() {
                     className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] text-[#22C55E] bg-[#151C2E] border border-[#22C55E]/20 px-2.5 py-1 rounded-lg shadow-lg z-20"
                   >
                     Saved to local storage
+                  </motion.div>
+                )}
+                {favError && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] text-[#EF4444] bg-[#151C2E] border border-[#EF4444]/20 px-2.5 py-1 rounded-lg shadow-lg z-20"
+                  >
+                    {favError}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -414,16 +440,16 @@ export default function KeywordIntelligencePage() {
               <Search className="w-10 h-10 text-[#6D5EF5]" />
             </motion.div>
             <h2 className="text-xl font-semibold text-white mb-2">Enter a keyword to start your research</h2>
-            <p className="text-sm text-[#A7B0C0] max-w-md mb-8">
-              Uncover thousands of related keywords, questions, long-tail phrases, LSI terms, and topical clusters in seconds.
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-xl">
-              {[
-                { icon: BarChart3, label: "Volume & CPC", desc: "Search volume & cost data" },
-                { icon: Target, label: "Difficulty Scores", desc: "Competition analysis" },
-                { icon: MessageSquare, label: "Question Mining", desc: "People also ask" },
-                { icon: Layers, label: "Topic Clusters", desc: "Content architecture" },
-              ].map((item) => {
+              <p className="text-sm text-[#A7B0C0] max-w-md mb-8">
+                Extract related keywords, questions, long-tail phrases, LSI terms, and topical clusters from your content using NLP analysis.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-xl">
+                {[
+                  { icon: Hash, label: "Keyword Extraction", desc: "NLP-based keyword discovery" },
+                  { icon: Target, label: "Intent Analysis", desc: "Search intent classification" },
+                  { icon: MessageSquare, label: "Question Mining", desc: "Related questions extraction" },
+                  { icon: Layers, label: "Topic Clusters", desc: "Content architecture mapping" },
+                ].map((item) => {
                 const Icon = item.icon
                 return (
                   <GlassCard key={item.label} className="p-4 text-center hover:border-[#6D5EF5]/20 transition-all group">
@@ -474,10 +500,10 @@ export default function KeywordIntelligencePage() {
 
             {/* overview stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <StatCard icon={Hash} label="Total Keywords" value={String(result.stats.totalKeywords)} sub="Expanded from seed" trend={{ dir: "up", val: "12.4%" }} />
-              <StatCard icon={BarChart3} label="Avg Difficulty" value={result.stats.avgDifficulty + "%"} sub="Moderate competition" trend={{ dir: "down", val: "3.2%" }} />
-              <StatCard icon={Globe} label="Total Volume" value={(result.stats.totalVolume / 1000).toFixed(1) + "K"} sub="Monthly searches" trend={{ dir: "up", val: "8.7%" }} />
-              <StatCard icon={Target} label="Top Position" value={result.stats.topPosition} sub={(result.keywords[0]?.volume ?? 0).toLocaleString() + " /mo"} trend={{ dir: "up", val: "5.1%" }} />
+              <StatCard icon={Hash} label="Total Keywords" value={String(result.stats.totalKeywords)} sub="Extracted from content" />
+              <StatCard icon={BarChart3} label="Avg Difficulty" value="—" sub="Requires DataForSEO API" />
+              <StatCard icon={Globe} label="Total Volume" value="—" sub="Requires DataForSEO API" />
+              <StatCard icon={Target} label="Top Keyword" value={result.stats.topPosition === "N/A" ? "—" : result.stats.topPosition} sub="No live position data" />
             </div>
 
             {/* engine warning */}
@@ -486,7 +512,7 @@ export default function KeywordIntelligencePage() {
                 className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-b from-amber-500/10 to-transparent border border-amber-500/20 text-amber-400 text-sm"
               >
                 <AlertTriangle className="w-4 h-4 shrink-0" />
-                <span>Running on local keyword engine. Add DataForSEO API in Admin Panel for live data.</span>
+                <span>Running on local NLP engine — volume, CPC, difficulty, and trend data unavailable. Add DataForSEO API in Admin Panel for live search metrics.</span>
               </motion.div>
             )}
 
@@ -564,7 +590,7 @@ export default function KeywordIntelligencePage() {
                               </div>
                             </td>
                             <td className="py-3 pr-3 text-right">
-                              <span className="text-white font-medium tabular-nums">{k.volume.toLocaleString()}</span>
+                              <span className="text-[#5A6577] font-medium tabular-nums">{k.volume > 0 ? k.volume.toLocaleString() : "—"}</span>
                             </td>
                             <td className="py-3 pr-3 text-right"><DifficultyBar value={k.difficulty} /></td>
                             <td className="py-3 pr-3">
@@ -574,7 +600,7 @@ export default function KeywordIntelligencePage() {
                               </Badge>
                             </td>
                             <td className="py-3 pr-3 text-right">
-                              <span className="text-white font-medium tabular-nums">${k.cpc.toFixed(2)}</span>
+                              <span className="text-[#5A6577] font-medium tabular-nums">{k.cpc > 0 ? `$${k.cpc.toFixed(2)}` : "—"}</span>
                             </td>
                             <td className="py-3 pr-3 text-center"><TrendIcon trend={k.trend} /></td>
                             <td className="py-3 pr-4 text-right">
@@ -615,10 +641,8 @@ export default function KeywordIntelligencePage() {
                                 <span className="text-sm text-white truncate">{item.question}</span>
                               </div>
                               <div className="flex items-center gap-3 shrink-0">
-                                <span className="text-xs text-[#A7B0C0] tabular-nums">{item.volume.toLocaleString()}/mo</span>
-                                <Badge variant={item.difficulty <= 30 ? "success" : item.difficulty <= 60 ? "warning" : "danger"} size="sm">
-                                  KD {item.difficulty}
-                                </Badge>
+                                <span className="text-xs text-[#5A6577] tabular-nums">{item.volume > 0 ? `${item.volume.toLocaleString()}/mo` : "—"}</span>
+                                <Badge variant="outline" size="sm" className="text-[#5A6577]">KD —</Badge>
                                 <CopyBtn text={item.question} />
                               </div>
                             </div>
@@ -642,7 +666,7 @@ export default function KeywordIntelligencePage() {
                         </div>
                         <div className="flex items-center gap-3">
                           <DifficultyBar value={item.difficulty} />
-                          <Badge variant="outline" size="sm" className="text-[#A7B0C0]">{item.volume.toLocaleString()}/mo</Badge>
+                          <Badge variant="outline" size="sm" className="text-[#5A6577]">{item.volume > 0 ? `${item.volume.toLocaleString()}/mo` : "—"}</Badge>
                         </div>
                         <div className="mt-2.5 flex items-center gap-1.5 text-[11px] text-[#A7B0C0]">
                           <span>Parent:</span>
@@ -669,12 +693,12 @@ export default function KeywordIntelligencePage() {
                             <div className="w-16 h-1.5 rounded-full bg-white/[0.06] overflow-hidden ring-1 ring-white/[0.03] p-[1px]">
                               <motion.div
                                 initial={{ width: 0 }}
-                                animate={{ width: item.relevance + "%" }}
+                                animate={{ width: "0%" }}
                                 transition={{ duration: 0.6, ease: "easeOut" }}
                                 className="h-full rounded-full bg-gradient-to-r from-[#6D5EF5] to-[#4CC9F0]"
                               />
                             </div>
-                            <span className="text-xs font-medium text-white tabular-nums">{item.relevance}%</span>
+                            <span className="text-xs text-[#5A6577] tabular-nums">co-occurrence</span>
                           </div>
                           <CopyBtn text={item.keyword} />
                         </div>

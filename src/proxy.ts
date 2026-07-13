@@ -75,25 +75,8 @@ export async function proxy(request: NextRequest) {
     .eq("user_id", user.id)
     .maybeSingle()
 
-  let role = ((profile as { role?: string } | null)?.role || "").toLowerCase()
+  const role = ((profile as { role?: string } | null)?.role || "").toLowerCase()
   debug("role:", role)
-
-  if (!role && user.email === "admin@adultpulse.co.uk") {
-    debug("auto-creating profile for admin@adultpulse.co.uk")
-    const { error: insertErr } = await supabaseAdmin
-      .from("profiles")
-      .upsert({
-        user_id: user.id,
-        email: user.email,
-        full_name: "Admin",
-        role: "admin",
-        plan: "pro",
-        credits: 999999,
-        status: "active",
-      }, { onConflict: "user_id" })
-    debug("profile created:", insertErr ? "FAILED: " + insertErr.message : "OK")
-    role = "admin"
-  }
 
   if (!role) {
     if (guestAccessible.has(pathname)) return NextResponse.next()

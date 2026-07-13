@@ -48,7 +48,11 @@ export default function ReportsPage() {
 
   useEffect(() => {
     fetchData()
-    async function loadStats() {
+    loadStats()
+  }, [fetchData])
+
+  async function loadStats() {
+    try {
       const now = new Date()
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
       const [{ count: totalUsers }, { count: monthUsers }, { data: users }, { data: payments }] = await Promise.all([
@@ -60,9 +64,8 @@ export default function ReportsPage() {
       setStats({ total: totalUsers || 0, thisMonth: monthUsers || 0 })
       setUserRows(users || [])
       setPaymentRows(payments || [])
-    }
-    loadStats()
-  }, [fetchData])
+    } catch {}
+  }
 
   const handleExportCSV = (type: string) => {
     const ts = new Date().toISOString().slice(0, 10)

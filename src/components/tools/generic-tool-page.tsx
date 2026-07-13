@@ -47,19 +47,12 @@ export function GenericToolPage({ slug }: GenericToolPageProps) {
   const [error, setError] = useState("")
   const [wordCount, setWordCount] = useState(0)
 
-  if (!definition) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted">Tool not found: {slug}</p>
-      </div>
-    )
-  }
-
   const updateField = (key: string, value: unknown) => {
     setFormValues(prev => ({ ...prev, [key]: value }))
   }
 
   const handleGenerate = useCallback(async () => {
+    if (!definition) return
     setLoading(true)
     setError("")
     setResult(null)
@@ -128,6 +121,32 @@ export function GenericToolPage({ slug }: GenericToolPageProps) {
     }
   }, [profile, result, formValues, slug])
 
+  const handleClearAll = useCallback(() => {
+    if (!definition) {
+      handleClear()
+      return
+    }
+    handleClear()
+    setFormValues(() => {
+      const vals: Record<string, unknown> = {}
+      for (const field of definition.fields) {
+        vals[field.key] = field.default ?? (field.type === "number" || field.type === "range" ? field.min ?? 0 : "")
+      }
+      for (const setting of definition.settings || []) {
+        vals[`_${setting.key}`] = setting.default
+      }
+      return vals
+    })
+  }, [definition, handleClear])
+
+  if (!definition) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted">Tool not found: {slug}</p>
+      </div>
+    )
+  }
+
   const requiredFields = definition.fields.filter(f => f.required)
   const isDisabled = loading || requiredFields.some(f => !formValues[f.key] || String(formValues[f.key]).trim() === "")
 
@@ -181,21 +200,6 @@ export function GenericToolPage({ slug }: GenericToolPageProps) {
         )
     }
   }
-
-  const handleClearAll = useCallback(() => {
-    handleClear()
-    setFormValues(() => {
-      if (!definition) return {}
-      const vals: Record<string, unknown> = {}
-      for (const field of definition.fields) {
-        vals[field.key] = field.default ?? (field.type === "number" || field.type === "range" ? field.min ?? 0 : "")
-      }
-      for (const setting of definition.settings || []) {
-        vals[`_${setting.key}`] = setting.default
-      }
-      return vals
-    })
-  }, [definition, handleClear])
 
   return (
     <ToolLayout

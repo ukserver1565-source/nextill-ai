@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { motion } from "framer-motion"
-import { Bot, Brain, Cpu, Globe, Search, Plus, Star, Edit3, Trash2, Check, X, Loader2 } from "lucide-react"
+import { Bot, Brain, Cpu, Globe, Search, Plus, Star, Edit3, Trash2, Check, X, Loader2, XCircle } from "lucide-react"
 
 const providerColors: Record<string, string> = {
   "openai": "from-emerald-500 to-teal-500", "claude": "from-purple-500 to-pink-500",
@@ -29,6 +29,7 @@ export default function AIHubModelsPage() {
   const [editItem, setEditItem] = useState<any>(null)
   const [form, setForm] = useState({ name: "", provider: "openai", temperature: 0.7, maxTokens: 4096, streaming: true, enabled: true })
   const [saving, setSaving] = useState(false)
+  const [actionError, setActionError] = useState("")
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -56,6 +57,7 @@ export default function AIHubModelsPage() {
   })
 
   const handleSetDefault = async (id: string) => {
+    setActionError("")
     try {
       await fetch("/api/admin/ai/models/set-default", {
         method: "POST",
@@ -63,7 +65,7 @@ export default function AIHubModelsPage() {
         body: JSON.stringify({ id }),
       })
       setModels(prev => prev.map((m: any) => ({ ...m, is_default: m.id === id })))
-    } catch (e) { console.error("[ai-models] error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to set default model") }
   }
 
   const handleToggle = async (id: string) => {
@@ -71,10 +73,11 @@ export default function AIHubModelsPage() {
   }
 
   const handleDelete = async (id: string) => {
+    setActionError("")
     try {
       await fetch(`/api/admin/ai/models/${id}`, { method: "DELETE" })
       setModels(prev => prev.filter((m: any) => m.id !== id))
-    } catch (e) { console.error("[ai-models] error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to delete model") }
   }
 
   const openEdit = (m: any) => {
@@ -91,6 +94,7 @@ export default function AIHubModelsPage() {
   }
 
   const handleAdd = async () => {
+    setActionError("")
     setSaving(true)
     try {
       const res = await fetch("/api/admin/ai/models", {
@@ -107,12 +111,13 @@ export default function AIHubModelsPage() {
       if (!res.ok) throw new Error("Failed")
       setShowAddModal(false)
       fetchData()
-    } catch (e) { console.error("[ai-models] error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to add model") }
     setSaving(false)
   }
 
   const handleEditSave = async () => {
     if (!editItem) return
+    setActionError("")
     setSaving(true)
     try {
       const res = await fetch("/api/admin/ai/models", {
@@ -130,7 +135,7 @@ export default function AIHubModelsPage() {
       if (!res.ok) throw new Error("Failed")
       setShowEditModal(false)
       fetchData()
-    } catch (e) { console.error("[ai-models] error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to save model") }
     setSaving(false)
   }
 
@@ -354,6 +359,15 @@ export default function AIHubModelsPage() {
               </div>
             </div>
           </motion.div>
+        </div>
+      )}
+
+      {actionError && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#EF4444]/10 border border-[#EF4444]/20 backdrop-blur-xl text-white text-xs px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2">
+          {actionError}
+          <button onClick={() => setActionError("")} className="text-[#A7B0C0] hover:text-white">
+            <XCircle className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
     </div>

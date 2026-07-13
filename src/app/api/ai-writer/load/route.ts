@@ -64,7 +64,7 @@ export async function GET(req: Request) {
 }
 
 function parseDocument(doc: Record<string, unknown>) {
-  let content = doc.content as string
+  const content = doc.content as string
   let parsed = { html: "", metaTitle: "", metaDescription: "", slug: "", excerpt: "", outline: [], tags: [], categories: [], schemaJson: "", articleType: "", seoScore: 0, readabilityScore: 0, settings: {} }
 
   if (content) {

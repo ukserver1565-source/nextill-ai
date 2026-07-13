@@ -567,6 +567,7 @@ function PostGeneratorContent() {
   const [pipelineStepStatuses, setPipelineStepStatuses] = useState<Record<string, "pending" | "running" | "completed" | "failed">>({})
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(null)
   const [copied, setCopied] = useState("")
+  const [saveError, setSaveError] = useState("")
   const [showPipeline, setShowPipeline] = useState(true)
   const abortRef = useRef<AbortController | null>(null)
   const outputRef = useRef<HTMLDivElement>(null)
@@ -702,6 +703,7 @@ function PostGeneratorContent() {
 
   const handleSave = useCallback(async () => {
     if (!result) return
+      setSaveError("")
       let saved = []
       try { saved = JSON.parse(localStorage.getItem("savedPosts") || "[]") } catch { saved = [] }
     const entry = { id: Date.now(), title: result.h1, slug: result.slug, date: new Date().toISOString() }
@@ -717,7 +719,7 @@ function PostGeneratorContent() {
           tool_slug: "post-generator",
         }),
       })
-    } catch (e) { console.error("[post-generator] save error:", e) }
+    } catch (e) { setSaveError("Failed to save document. Please try again.") }
     setCopied("saved")
     setTimeout(() => setCopied(""), 2000)
   }, [result])
@@ -1134,6 +1136,18 @@ function PostGeneratorContent() {
                 loading={isGenerating}
                 hasResult
               />
+
+              {saveError && (
+                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+                  className="mx-8 mt-3 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-[#EF4444]/10 border border-[#EF4444]/20 text-[#EF4444] text-xs"
+                >
+                  <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{saveError}</span>
+                  <button onClick={() => setSaveError("")} className="ml-auto shrink-0">
+                    <X className="w-3.5 h-3.5 hover:opacity-70 transition-opacity" />
+                  </button>
+                </motion.div>
+              )}
 
               <div className="p-8 space-y-6">
                 {/* Tabs */}

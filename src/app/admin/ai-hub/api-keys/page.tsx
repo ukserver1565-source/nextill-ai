@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Bot, Brain, Cpu, Globe, Key, Plus, RefreshCw, Trash2, Eye, EyeOff, Check, X, Loader2, Edit3, Zap } from "lucide-react"
+import { Bot, Brain, Cpu, Globe, Key, Plus, RefreshCw, Trash2, Eye, EyeOff, Check, X, Loader2, Edit3, Zap, XCircle } from "lucide-react"
 
 const providerIcons: Record<string, any> = {
   "openai": Bot, "claude": Brain, "gemini": Globe, "deepseek": Cpu,
@@ -37,6 +37,7 @@ export default function AIHubApiKeysPage() {
   const [form, setForm] = useState({ name: "", provider: "OpenAI", key: "", enabled: true })
   const [rotateKey, setRotateKey] = useState("")
   const [saving, setSaving] = useState(false)
+  const [actionError, setActionError] = useState("")
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -76,13 +77,15 @@ export default function AIHubApiKeysPage() {
   }
 
   const handleDelete = async (id: string) => {
+    setActionError("")
     try {
       await fetch(`/api/admin/ai/api-keys/${id}`, { method: "DELETE" })
       setKeys(prev => prev.filter(k => k.id !== id))
-    } catch (e) { console.error("[ai-api-keys] error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to delete API key") }
   }
 
   const handleAdd = async () => {
+    setActionError("")
     setSaving(true)
     try {
       const res = await fetch("/api/admin/ai/api-keys", {
@@ -99,12 +102,13 @@ export default function AIHubApiKeysPage() {
       if (!res.ok) throw new Error("Failed")
       setShowAddModal(false)
       fetchData()
-    } catch (e) { console.error("[ai-api-keys] add error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to add API key") }
     setSaving(false)
   }
 
   const handleEditSave = async () => {
     if (!editItem) return
+    setActionError("")
     setSaving(true)
     try {
       const payload: any = { name: form.name, is_enabled: form.enabled }
@@ -117,12 +121,13 @@ export default function AIHubApiKeysPage() {
       if (!res.ok) throw new Error("Failed")
       setShowEditModal(false)
       fetchData()
-    } catch (e) { console.error("[ai-api-keys] edit error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to save API key") }
     setSaving(false)
   }
 
   const handleRotate = async () => {
     if (!editItem || !rotateKey) return
+    setActionError("")
     setSaving(true)
     try {
       const res = await fetch("/api/admin/ai/api-keys/rotate", {
@@ -134,7 +139,7 @@ export default function AIHubApiKeysPage() {
       setShowRotateModal(false)
       setRotateKey("")
       fetchData()
-    } catch (e) { console.error("[ai-api-keys] rotate error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to rotate API key") }
     setSaving(false)
   }
 
@@ -424,6 +429,15 @@ export default function AIHubApiKeysPage() {
               </div>
             </div>
           </motion.div>
+        </div>
+      )}
+
+      {actionError && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#EF4444]/10 border border-[#EF4444]/20 backdrop-blur-xl text-white text-xs px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2">
+          {actionError}
+          <button onClick={() => setActionError("")} className="text-[#A7B0C0] hover:text-white">
+            <XCircle className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
     </div>

@@ -35,28 +35,29 @@ export default function AnalyticsPage() {
   useEffect(() => {
     async function load() {
       setLoading(true)
-      const daysAgo = range === "7d" ? 7 : range === "90d" ? 90 : 30
-      const cutoff = new Date()
-      cutoff.setDate(cutoff.getDate() - daysAgo)
-      const cutoffStr = cutoff.toISOString()
+      try {
+        const daysAgo = range === "7d" ? 7 : range === "90d" ? 90 : 30
+        const cutoff = new Date()
+        cutoff.setDate(cutoff.getDate() - daysAgo)
+        const cutoffStr = cutoff.toISOString()
 
-      const [usageRes, usersRes, docsRes] = await Promise.all([
-        supabase.from("usage_logs").select("created_at, tool_slug, user_id, guest_id").gte("created_at", cutoffStr),
-        supabase.from("profiles").select("created_at").gte("created_at", cutoffStr),
-        supabase.from("documents").select("tool_slug, created_at").gte("created_at", cutoffStr),
-      ])
+        const [usageRes, usersRes, docsRes] = await Promise.all([
+          supabase.from("usage_logs").select("created_at, tool_slug, user_id, guest_id").gte("created_at", cutoffStr),
+          supabase.from("profiles").select("created_at").gte("created_at", cutoffStr),
+          supabase.from("documents").select("tool_slug, created_at").gte("created_at", cutoffStr),
+        ])
 
-      const logs = usageRes.data || []
-      setTotalPageViews(logs.length)
+        const logs = usageRes.data || []
+        setTotalPageViews(logs.length)
 
-      const uniqueUserIds = new Set(logs.filter(l => l.user_id).map(l => l.user_id))
-      const uniqueGuestIds = new Set(logs.filter(l => l.guest_id).map(l => l.guest_id))
-      setUniqueVisitors(uniqueUserIds.size + uniqueGuestIds.size)
+        const uniqueUserIds = new Set(logs.filter(l => l.user_id).map(l => l.user_id))
+        const uniqueGuestIds = new Set(logs.filter(l => l.guest_id).map(l => l.guest_id))
+        setUniqueVisitors(uniqueUserIds.size + uniqueGuestIds.size)
 
-      const toolCounts: Record<string, number> = {}
-      logs.forEach(l => { if (l.tool_slug) toolCounts[l.tool_slug] = (toolCounts[l.tool_slug] || 0) + 1 })
-      const sorted = Object.entries(toolCounts).sort((a, b) => b[1] - a[1]).slice(0, 5)
-      setTopPages(sorted.map(([slug, views]) => ({ page: `/tools/${slug}`, views, avgTime: "—" })))
+        const toolCounts: Record<string, number> = {}
+        logs.forEach(l => { if (l.tool_slug) toolCounts[l.tool_slug] = (toolCounts[l.tool_slug] || 0) + 1 })
+        const sorted = Object.entries(toolCounts).sort((a, b) => b[1] - a[1]).slice(0, 5)
+        setTopPages(sorted.map(([slug, views]) => ({ page: `/tools/${slug}`, views, avgTime: "—" })))
 
       const dailyViews: Record<string, number> = {}
       logs.forEach(l => {
@@ -81,6 +82,7 @@ export default function AnalyticsPage() {
       setAvgSession(logs.length > 0 && uniqueUserIds.size > 0 ? `${Math.round(logs.length / uniqueUserIds.size)} hits/user` : "—")
       setBounceRate("—")
 
+      } catch {}
       setLoading(false)
     }
     load()

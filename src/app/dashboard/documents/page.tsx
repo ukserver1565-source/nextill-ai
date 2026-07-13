@@ -19,7 +19,7 @@ export default function DashboardDocuments() {
       .select("*")
       .eq("user_id", profile.user_id)
       .order("updated_at", { ascending: false })
-      .then(({ data }) => { setDocuments(data || []); setLoading(false) })
+      .then(({ data }) => { setDocuments(data || []); setLoading(false) }, () => setLoading(false))
   }, [profile])
 
   const deleteDoc = async (id: string) => {

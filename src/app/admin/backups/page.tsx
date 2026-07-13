@@ -30,6 +30,7 @@ export default function BackupsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [creating, setCreating] = useState(false)
+  const [actionError, setActionError] = useState("")
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -50,11 +51,12 @@ export default function BackupsPage() {
 
   const handleCreate = async () => {
     setCreating(true)
+    setActionError("")
     try {
       const res = await fetch("/api/admin/backups", { method: "POST" })
       if (!res.ok) throw new Error("Failed")
       fetchData()
-    } catch (e) { console.error("[backups] error:", e) } finally {
+    } catch (e: any) { setActionError(e.message || "Failed to create backup") } finally {
       setCreating(false)
     }
   }
@@ -70,6 +72,8 @@ export default function BackupsPage() {
           {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />} Create Backup
         </button>
       </div>
+
+      {actionError && <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4 text-xs text-[#EF4444]">{actionError}</div>}
 
       {loading ? (
         <div className="flex items-center justify-center py-20">

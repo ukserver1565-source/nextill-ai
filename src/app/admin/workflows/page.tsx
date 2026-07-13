@@ -11,6 +11,7 @@ export default function WorkflowsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [runningId, setRunningId] = useState<string | null>(null)
+  const [actionError, setActionError] = useState("")
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -52,7 +53,7 @@ export default function WorkflowsPage() {
         body: JSON.stringify({ [wf.key]: { trigger: "manual" } }),
       })
       await fetchData()
-    } catch (e) { console.error("[workflows] handleRun:", e) } finally {
+    } catch (e: any) { setActionError(e.message || "Failed to run workflow") } finally {
       setRunningId(null)
     }
   }
@@ -150,6 +151,15 @@ export default function WorkflowsPage() {
               </div>
             </motion.div>
           ))}
+        </div>
+      )}
+
+      {actionError && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl px-4 py-3 flex items-center gap-3 shadow-lg backdrop-blur-xl">
+          <p className="text-xs text-[#EF4444]">{actionError}</p>
+          <button onClick={() => setActionError("")} className="text-[#EF4444] hover:text-white transition-colors">
+            <XCircle className="w-4 h-4" />
+          </button>
         </div>
       )}
     </div>

@@ -40,6 +40,7 @@ export default function ProvidersPage() {
   const [editItem, setEditItem] = useState<AIProvider | null>(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
+  const [actionError, setActionError] = useState("")
 
   const fetchProviders = useCallback(async () => {
     setLoading(true)
@@ -59,11 +60,12 @@ export default function ProvidersPage() {
   useEffect(() => { fetchProviders() }, [fetchProviders])
 
   const handleToggle = async (p: AIProvider) => {
+    setActionError("")
     try {
       const res = await fetch(`/api/admin/providers/${p.id}/toggle`, { method: "POST" })
-      if (!res.ok) throw new Error("Failed")
+      if (!res.ok) throw new Error("Failed to toggle")
       setProviders(prev => prev.map(prov => prov.id === p.id ? { ...prov, is_enabled: !prov.is_enabled } : prov))
-    } catch (e) { console.error("[providers] error:", e) }
+    } catch (e: any) { setActionError(e.message) }
   }
 
   const handleTest = async (id: string) => {
@@ -81,11 +83,12 @@ export default function ProvidersPage() {
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this provider?")) return
+    setActionError("")
     try {
       const res = await fetch(`/api/admin/providers/${id}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("Failed")
+      if (!res.ok) throw new Error("Failed to delete")
       fetchProviders()
-    } catch (e) { console.error("[providers] error:", e) }
+    } catch (e: any) { setActionError(e.message) }
   }
 
   const openAdd = () => {
@@ -108,6 +111,7 @@ export default function ProvidersPage() {
 
   const handleSave = async () => {
     setSaving(true)
+    setActionError("")
     try {
       const payload = {
         name: form.name,
@@ -122,19 +126,20 @@ export default function ProvidersPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         })
-        if (!res.ok) throw new Error("Failed")
+        if (!res.ok) throw new Error("Failed to save")
       } else {
         const res = await fetch("/api/admin/providers", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         })
-        if (!res.ok) throw new Error("Failed")
+        if (!res.ok) throw new Error("Failed to save")
       }
       setShowModal(false)
       fetchProviders()
-    } catch (e) { console.error("[providers] error:", e) }
-    setSaving(false)
+    } catch (e: any) { setActionError(e.message) } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -263,6 +268,7 @@ export default function ProvidersPage() {
                 <input type="checkbox" checked={form.is_enabled} onChange={(e) => setForm(f => ({ ...f, is_enabled: e.target.checked }))} className="rounded border-white/[0.06] bg-[#090B16]" />
                 Enabled
               </label>
+              {actionError && <p className="text-xs text-[#EF4444] text-center">{actionError}</p>}
               <div className="flex justify-end gap-3 pt-3">
                 <button onClick={() => setShowModal(false)} className="h-10 px-4 rounded-xl border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white transition-colors">Cancel</button>
                 <button onClick={handleSave} disabled={saving || !form.name} className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50 flex items-center gap-2">

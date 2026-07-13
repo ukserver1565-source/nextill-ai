@@ -20,6 +20,7 @@ export default function EmailPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [testResult, setTestResult] = useState<string | null>(null)
+  const [saveError, setSaveError] = useState("")
 
   useEffect(() => {
     fetch("/api/admin/settings")
@@ -62,7 +63,7 @@ export default function EmailPage() {
       if (!res.ok) throw new Error("Failed")
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
-    } catch (e) { console.error("[email] handleSave:", e) } finally {
+    } catch (e: any) { setSaveError(e.message || "Failed to save") } finally {
       setSaving(false)
     }
   }
@@ -179,6 +180,8 @@ export default function EmailPage() {
               {testResult}
             </div>
           )}
+
+          {saveError && <p className="text-xs text-[#EF4444]">{saveError}</p>}
 
           <div className="flex items-center gap-3 pt-2">
             <button onClick={handleSave} disabled={saving} className="h-11 px-6 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50">

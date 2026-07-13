@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Search, FileText, ChevronLeft, ChevronRight, Download, Trash2, Loader2 } from "lucide-react"
+import { Search, FileText, ChevronLeft, ChevronRight, Download, Trash2, Loader2, XCircle } from "lucide-react"
 
 const PAGE_SIZE = 8
 
@@ -13,6 +13,7 @@ export default function DocumentsPage() {
   const [error, setError] = useState("")
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
+  const [actionError, setActionError] = useState("")
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -49,7 +50,7 @@ export default function DocumentsPage() {
       a.download = `${doc.title || "document"}.txt`
       a.click()
       URL.revokeObjectURL(url)
-    } catch (e) { console.error("[documents] error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to download document") }
   }
 
   const handleDelete = async (id: string) => {
@@ -58,7 +59,7 @@ export default function DocumentsPage() {
       const res = await fetch(`/api/admin/documents/${id}`, { method: "DELETE" })
       if (!res.ok) throw new Error("Failed")
       fetchData()
-    } catch (e) { console.error("[documents] error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to delete document") }
   }
 
   return (
@@ -135,6 +136,15 @@ export default function DocumentsPage() {
           <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || totalPages === 0} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronRight className="w-4 h-4" /></button>
         </div>
       </div>
+
+      {actionError && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl px-4 py-3 flex items-center gap-3 shadow-lg backdrop-blur-xl">
+          <p className="text-xs text-[#EF4444]">{actionError}</p>
+          <button onClick={() => setActionError("")} className="text-[#EF4444] hover:text-white transition-colors">
+            <XCircle className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   )
 }

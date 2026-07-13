@@ -120,24 +120,25 @@ export async function handleToolApi(req: Request, toolSlug: string) {
       // usage_logs table may not exist yet
     }
 
-    // Credit deduction + document save (best-effort for logged-in users)
+    // Credit deduction + document save for logged-in users
     if (userId && result.success) {
-      // Deduct credits via RPC
-      await tryDb(() =>
-        supabaseAdmin.rpc("deduct_credits", { p_user_id: userId, p_amount: creditsCost })
-      )
+      // Deduct credits via RPC (prevents negative balances)
+      const { data: deductData, error: deductErr } = await supabaseAdmin
+        .rpc("deduct_credits", { p_user_id: userId, p_amount: creditsCost })
 
-      // Log credit usage
-      await tryDb(() =>
-        supabaseAdmin.from("credit_logs").insert({
-          user_id: userId,
-          amount: creditsCost,
-          type: "used",
-          reason: `${toolSlug} usage`,
-        })
-      )
+      if (!deductErr && deductData) {
+        // Log credit usage only after successful deduction
+        await tryDb(() =>
+          supabaseAdmin.from("credit_logs").insert({
+            user_id: userId,
+            amount: creditsCost,
+            type: "used",
+            reason: `${toolSlug} usage`,
+          })
+        )
+      }
 
-      // Save document
+      // Save document regardless
       const topic = (input.topic || input.text || input.seed || input.url || input.domain || toolSlug) as string
       const contentStr = typeof result.content === "string" ? result.content : JSON.stringify(result.content, null, 2)
       await tryDb(() =>

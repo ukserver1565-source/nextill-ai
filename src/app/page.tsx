@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { StaggerContainer, StaggerItem } from "@/components/layout/stagger-wrapper"
+import { Loader2 } from "lucide-react"
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -100,79 +101,36 @@ const highlights = [
   },
 ]
 
-const plans = [
-  {
-    name: "Free",
-    price: "$0",
-    period: "/month",
-    features: [
-      "100 AI credits",
-      "Keyword Intelligence (10/day)",
-      "Post Generator (5/day)",
-      "Plagiarism Checker (5/day)",
-      "3 projects",
-    ],
-    cta: "Get Started",
-    href: "/signup",
-  },
-  {
-    name: "Pro",
-    price: "$29",
-    period: "/month",
-    features: [
-      "2,000 AI credits",
-      "All 3 premium workflows",
-      "Unlimited checks",
-      "Priority support",
-      "10 projects",
-      "Export to CSV & JSON",
-    ],
-    cta: "Start Pro",
-    href: "/signup",
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    price: "$99",
-    period: "/month",
-    features: [
-      "10,000 AI credits",
-      "Team collaboration",
-      "Custom AI models",
-      "Dedicated support",
-      "Unlimited projects",
-      "API access",
-    ],
-    cta: "Contact Sales",
-    href: "/contact",
-  },
-]
+interface Plan {
+  name: string; price: number; period: string; features: string[];
+  popular?: boolean; cta: string; href: string;
+}
 
 const faqs = [
-  {
-    q: "What is Nextill AI?",
-    a: "Nextill AI is a premium AI platform offering 3 powerful workflows: Keyword Intelligence for SEO research, Post Generator for AI content creation, and Plagiarism Checker for originality verification.",
-  },
-  {
-    q: "Can I use tools without signing up?",
-    a: "Yes! All 3 workflows are available for guest use with daily limits. Sign up for unlimited access and to save your work.",
-  },
-  {
-    q: "How do AI credits work?",
-    a: "Each workflow usage costs credits. Keyword Intelligence costs 2 credits, Post Generator costs 5 credits, and Plagiarism Checker costs 3 credits. Free users get 100 credits to start.",
-  },
-  {
-    q: "Can I save my work?",
-    a: "Logged-in users can save documents, track history, and manage projects. Guest usage is not saved — create an account to persist your work.",
-  },
-  {
-    q: "Is my data secure?",
-    a: "Absolutely. We use enterprise-grade encryption for all data. API keys are stored securely, and we never share your content or research data.",
-  },
-  {
-    q: "Can I upgrade or cancel anytime?",
-    a: "Yes. You can upgrade, downgrade, or cancel your subscription at any time. Pro and Enterprise plans are billed monthly with no lock-in contracts.",
-  },
+    {
+      q: "What is Nextill AI?",
+      a: "Nextill AI is a premium AI platform offering 3 powerful workflows: Keyword Intelligence for SEO research, Post Generator for AI content creation, and Plagiarism Checker for originality verification.",
+    },
+    {
+      q: "Can I use tools without signing up?",
+      a: "Yes! All 3 workflows are available for guest use with daily limits. Sign up for unlimited access and to save your work.",
+    },
+    {
+      q: "How do AI credits work?",
+      a: "Each workflow usage costs a small number of credits. Free users get a starter credit balance to begin. Upgrade your plan for more monthly credits.",
+    },
+    {
+      q: "Can I save my work?",
+      a: "Logged-in users can save documents, track history, and manage projects. Guest usage is not saved — create an account to persist your work.",
+    },
+    {
+      q: "Is my data secure?",
+      a: "Absolutely. We use enterprise-grade encryption for all data. API keys are stored securely, and we never share your content or research data.",
+    },
+    {
+      q: "Can I upgrade or cancel anytime?",
+      a: "Yes. You can upgrade, downgrade, or cancel your subscription at any time. Plans are billed monthly with no lock-in contracts.",
+    },
 ]
 
 const footerColumns = [
@@ -252,10 +210,37 @@ export default function HomePage() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [activeDemo, setActiveDemo] = useState(0)
+  const [plans, setPlans] = useState<Plan[]>([])
+  const [plansLoading, setPlansLoading] = useState(true)
 
   useEffect(() => {
     const t = setInterval(() => setActiveDemo((p) => (p + 1) % demos.length), 4000)
     return () => clearInterval(t)
+  }, [])
+
+  useEffect(() => {
+    fetch("/api/admin/plans")
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setPlans(data.map((p: any) => ({
+            name: p.name,
+            price: p.price || 0,
+            period: "/month",
+            features: [
+              p.description || "",
+              p.credits ? `${p.credits.toLocaleString()} credits` : "",
+              p.max_projects ? `${p.max_projects} projects` : "",
+              p.max_users ? `${p.max_users} users` : "",
+            ].filter(Boolean),
+            popular: p.name?.toLowerCase() === "pro",
+            cta: p.name?.toLowerCase() === "enterprise" ? "Contact Sales" : "Get Started",
+            href: p.name?.toLowerCase() === "enterprise" ? "/contact" : "/signup",
+          })))
+        }
+      })
+      .catch(() => {})
+      .finally(() => setPlansLoading(false))
   }, [])
 
   return (
@@ -347,7 +332,7 @@ export default function HomePage() {
           >
             <Badge variant="info" className="mb-6 px-4 py-1.5 text-sm">
               <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-              3 Premium AI Workflow Tools
+              AI-Powered SEO Tools
             </Badge>
           </motion.div>
           <motion.h1
@@ -393,9 +378,9 @@ export default function HomePage() {
           >
             {[
               { icon: Zap, label: "3 Premium Tools", desc: "Keyword, post & plagiarism" },
-              { icon: Globe, label: "Multi-language", desc: "50+ languages supported" },
+              { icon: Globe, label: "Multi-language", desc: "Broad language support" },
               { icon: Clock, label: "No Signup Required", desc: "Use instantly as guest" },
-              { icon: Award, label: "Free Credits", desc: "100 credits to start" },
+              { icon: Award, label: "Free Credits", desc: "Start with credits included" },
             ].map((s) => {
               const Icon = s.icon
               return (
@@ -683,54 +668,65 @@ export default function HomePage() {
               Start for free. Scale when you need more.
             </p>
           </div>
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
-          >
-            {plans.map((p) => (
-              <motion.div key={p.name} variants={staggerItem}>
-                <div
-                  className={`glass-card rounded-2xl p-6 sm:p-8 relative ${
-                    p.popular
-                      ? "border-primary/50 ring-1 ring-primary/30"
-                      : ""
-                  }`}
-                >
-                  {p.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <Badge variant="default" className="px-4 py-1 text-xs font-semibold">
-                        Most Popular
-                      </Badge>
+          {plansLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-6 h-6 text-primary-light animate-spin" />
+            </div>
+          ) : plans.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted">Pricing plans are not available right now.</p>
+              <Link href="/contact"><Button variant="glass" className="mt-4">Contact Us</Button></Link>
+            </div>
+          ) : (
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+            >
+              {plans.map((p) => (
+                <motion.div key={p.name} variants={staggerItem}>
+                  <div
+                    className={`glass-card rounded-2xl p-6 sm:p-8 relative ${
+                      p.popular
+                        ? "border-primary/50 ring-1 ring-primary/30"
+                        : ""
+                    }`}
+                  >
+                    {p.popular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                        <Badge variant="default" className="px-4 py-1 text-xs font-semibold">
+                          Most Popular
+                        </Badge>
+                      </div>
+                    )}
+                    <h3 className="text-lg font-bold">{p.name}</h3>
+                    <div className="mt-4 mb-6">
+                      <span className="text-4xl font-bold">${p.price}</span>
+                      <span className="text-muted text-sm ml-1">{p.period}</span>
                     </div>
-                  )}
-                  <h3 className="text-lg font-bold">{p.name}</h3>
-                  <div className="mt-4 mb-6">
-                    <span className="text-4xl font-bold">{p.price}</span>
-                    <span className="text-muted text-sm ml-1">{p.period}</span>
+                    <ul className="space-y-3 mb-8">
+                      {p.features.map((f) => (
+                        <li key={f} className="text-sm text-muted flex items-center gap-2.5">
+                          <Check className="w-4 h-4 text-primary-light shrink-0" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                    <Link href={p.href}>
+                      <Button
+                        variant={p.popular ? "gradient" : "glass"}
+                        className="w-full"
+                      >
+                        {p.cta}
+                      </Button>
+                    </Link>
                   </div>
-                  <ul className="space-y-3 mb-8">
-                    {p.features.map((f) => (
-                      <li key={f} className="text-sm text-muted flex items-center gap-2.5">
-                        <Check className="w-4 h-4 text-primary-light shrink-0" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href={p.href}>
-                    <Button
-                      variant={p.popular ? "gradient" : "glass"}
-                      className="w-full"
-                    >
-                      {p.cta}
-                    </Button>
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
         </div>
       </motion.section>
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Key, Plus, RefreshCw, Trash2, Eye, EyeOff, Edit3, Zap, Check, X, Loader2 } from "lucide-react"
+import { Key, Plus, RefreshCw, Trash2, Eye, EyeOff, Edit3, Zap, Check, X, Loader2, XCircle } from "lucide-react"
 
 interface ApiKey {
   id: string
@@ -39,6 +39,7 @@ export default function ApiKeysPage() {
   const [formApiKey, setFormApiKey] = useState("")
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState("")
+  const [actionError, setActionError] = useState("")
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -80,7 +81,7 @@ export default function ApiKeysPage() {
     try {
       await fetch(`/api/admin/api-keys/${id}`, { method: "DELETE" })
       setKeys(prev => prev.filter(k => k.id !== id))
-    } catch (e) { console.error("[api-keys] error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to delete API key") }
   }
 
   const handleRotate = async (id: string) => {
@@ -89,7 +90,7 @@ export default function ApiKeysPage() {
       const res = await fetch(`/api/admin/api-keys/${id}/rotate`, { method: "POST" })
       if (!res.ok) throw new Error("Failed")
       fetchData()
-    } catch (e) { console.error("[api-keys] error:", e) }
+    } catch (e: any) { setActionError(e.message || "Failed to rotate API key") }
   }
 
   const openCreate = () => {
@@ -299,6 +300,15 @@ export default function ApiKeysPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {actionError && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl px-4 py-3 flex items-center gap-3 shadow-lg backdrop-blur-xl">
+          <p className="text-xs text-[#EF4444]">{actionError}</p>
+          <button onClick={() => setActionError("")} className="text-[#EF4444] hover:text-white transition-colors">
+            <XCircle className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   )
 }
