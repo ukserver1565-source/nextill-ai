@@ -1,12 +1,5 @@
 import { createServerClient } from "@supabase/ssr"
-import { createClient as createServiceClient } from "@supabase/supabase-js"
 import { NextResponse, type NextRequest } from "next/server"
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const supabaseAdmin = createServiceClient(supabaseUrl, supabaseServiceKey, {
-  auth: { autoRefreshToken: false, persistSession: false },
-})
 
 const toolRoutes = [
   "/ai-writer", "/ai-humanizer", "/ai-detector", "/plagiarism-checker",
@@ -31,7 +24,6 @@ export async function proxy(request: NextRequest) {
 
   if (toolRoutes.some((r) => pathname === r || pathname.startsWith(r + "/"))) return NextResponse.next()
   if (pathname.startsWith("/api/tools")) return NextResponse.next()
-  if (pathname.startsWith("/api/debug")) return NextResponse.next()
 
   if (adminApiRoutes.some((r) => pathname.startsWith(r))) {
     const { supabase, response } = _createClient(request)
@@ -55,7 +47,6 @@ export async function proxy(request: NextRequest) {
   if (userErr || !user) {
     debug("no user, pathname:", pathname)
     if (guestAccessible.has(pathname)) return NextResponse.next()
-    if (toolRoutes.some((r) => pathname === r || pathname.startsWith(r + "/"))) return NextResponse.next()
     if (userRoutes.some((r) => pathname.startsWith(r))) {
       const url = new URL("/login", request.url)
       url.searchParams.set("redirect", pathname)
