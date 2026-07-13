@@ -17,7 +17,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    await auditService.log("backup_deleted", { id })
+    await auditService.log("backup_deleted", "backups", { id })
     return NextResponse.json({ success: true })
   } catch (err) {
     return NextResponse.json({ error: "Failed to delete backup", details: (err as Error).message }, { status: 500 })

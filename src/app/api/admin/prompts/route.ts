@@ -3,11 +3,11 @@ import { promptsService } from "@/lib/services/admin/prompts.service"
 
 export async function GET(req: NextRequest) {
   try {
-    const toolSlug = req.nextUrl.searchParams.get("tool_slug") || undefined
-    const data = await promptsService.list(toolSlug)
+    const category = req.nextUrl.searchParams.get("category") || req.nextUrl.searchParams.get("tool_slug") || undefined
+    const data = await promptsService.list(category)
     return NextResponse.json(data)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch prompts", details: (err as Error).message }, { status: 500 })
+    return NextResponse.json({ error: "Failed to fetch prompts" }, { status: 500 })
   }
 }
 

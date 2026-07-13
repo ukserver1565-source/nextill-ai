@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       )
 
     if (upsertError) throw new Error(upsertError.message)
-    await auditService.log("integration_updated", { id, enabled })
+    await auditService.log("integration_updated", "integrations", { id, enabled })
     return NextResponse.json({ success: true })
   } catch (err) {
     return NextResponse.json({ error: "Failed to update integration", details: (err as Error).message }, { status: 400 })

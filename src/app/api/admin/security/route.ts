@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     const perPage = Number(req.nextUrl.searchParams.get("perPage")) || 20
     const from = (page - 1) * perPage
     let query = supabaseAdmin
-      .from("security_events")
+      .from("security_logs")
       .select("*", { count: "exact" })
     if (eventType) query = query.eq("event_type", eventType)
     if (severity) query = query.eq("severity", severity)
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const { event_type, severity, message, metadata } = await req.json()
-    await auditService.systemLog(severity === "critical" ? "error" : "warn", message, "security", { event_type, ...metadata })
+    await auditService.systemLog(severity === "critical" ? "error" : "warn", message, { event_type, source: "security", ...metadata })
     return NextResponse.json({ success: true })
   } catch (err) {
     return NextResponse.json({ error: "Failed to create security event", details: (err as Error).message }, { status: 400 })

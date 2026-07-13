@@ -1,13 +1,13 @@
 import { supabaseAdmin } from "@/lib/supabase/admin"
 
 export const adminLogRepo = {
-  async log(adminId: string, action: string, entity: string, entityId?: string, details?: Record<string, any>) {
+  async log(adminUserId: string, action: string, targetType: string, targetId?: string, metadata?: Record<string, unknown>) {
     const { error } = await supabaseAdmin.from("admin_logs").insert({
-      admin_id: adminId,
+      admin_user_id: adminUserId,
       action,
-      entity,
-      entity_id: entityId,
-      details: details || {},
+      target_type: targetType,
+      target_id: targetId,
+      metadata: metadata || {},
     })
     if (error) console.error("Failed to log admin action:", error.message)
   },

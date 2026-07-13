@@ -1,37 +1,20 @@
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { createHash, randomBytes, createCipheriv, createDecipheriv } from "crypto"
-
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || createHash('sha256').update(String(process.env.SUPABASE_SERVICE_ROLE_KEY)).digest('hex').slice(0, 32)
-const IV_LENGTH = 16
-
-function encrypt(text: string) {
-  const iv = randomBytes(IV_LENGTH)
-  const cipher = createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv)
-  let encrypted = cipher.update(text, 'utf8', 'hex')
-  encrypted += cipher.final('hex')
-  return iv.toString('hex') + ':' + encrypted
-}
-
-function decrypt(text: string) {
-  const parts = text.split(':')
-  const iv = Buffer.from(parts.shift()!, 'hex')
-  const encrypted = parts.join(':')
-  const decipher = createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv)
-  let decrypted = decipher.update(encrypted, 'hex', 'utf8')
-  decrypted += decipher.final('utf8')
-  return decrypted
-}
 
 export interface AIProviderRow {
   id: string
   name: string
   slug: string
-  provider: string
-  api_key_encrypted: string | null
-  base_url: string | null
-  is_enabled: boolean
+  logo: string | null
+  enabled: boolean
   priority: number
-  config: Record<string, any>
+  base_url: string | null
+  default_model: string | null
+  status: "active" | "inactive" | "error"
+  latency_ms: number
+  usage_count: number
+  total_cost: number
+  last_used_at: string | null
+  config: Record<string, unknown>
   created_at: string
   updated_at: string
 }
@@ -41,69 +24,82 @@ export interface AIProviderWithModels extends AIProviderRow {
   api_key_preview: string | null
 }
 
-function maskKey(key: string | null): string | null {
-  if (!key) return null
-  if (key.length <= 8) return key.slice(0, 2) + "****"
-  return key.slice(0, 4) + "****" + key.slice(-4)
-}
-
 export const providersService = {
   async list(): Promise<AIProviderWithModels[]> {
-    const { data, error } = await supabaseAdmin
+    const { data: providers, error } = await supabaseAdmin
       .from("ai_providers")
-      .select("*, ai_models:ai_models(count)")
+      .select("*")
       .order("priority", { ascending: true })
       .order("name")
     if (error) throw new Error(`Failed to fetch providers: ${error.message}`)
-    return (data || []).map((p: any) => ({
-      ...p,
-      model_count: p.ai_models?.[0]?.count ?? 0,
-      api_key_preview: p.api_key_encrypted ? maskKey(decrypt(p.api_key_encrypted)) : null,
-      api_key_encrypted: undefined,
-      ai_models: undefined,
-    }))
+
+    const results: AIProviderWithModels[] = []
+    for (const p of providers || []) {
+      const { count } = await supabaseAdmin
+        .from("ai_models")
+        .select("id", { count: "exact", head: true })
+        .eq("provider_slug", p.slug)
+      const { data: apiKey } = await supabaseAdmin
+        .from("ai_api_keys")
+        .select("key_prefix")
+        .eq("provider_slug", p.slug)
+        .eq("is_enabled", true)
+        .limit(1)
+        .maybeSingle()
+      results.push({
+        ...p,
+        model_count: count || 0,
+        api_key_preview: apiKey?.key_prefix ? `${apiKey.key_prefix}...` : null,
+      })
+    }
+    return results
   },
 
   async get(id: string): Promise<AIProviderWithModels> {
     const { data, error } = await supabaseAdmin
       .from("ai_providers")
-      .select("*, ai_models:ai_models(count)")
+      .select("*")
       .eq("id", id)
       .single()
     if (error) throw new Error(`Failed to fetch provider: ${error.message}`)
+    const { count } = await supabaseAdmin
+      .from("ai_models")
+      .select("id", { count: "exact", head: true })
+      .eq("provider_slug", data.slug)
+    const { data: apiKey } = await supabaseAdmin
+      .from("ai_api_keys")
+      .select("key_prefix")
+      .eq("provider_slug", data.slug)
+      .eq("is_enabled", true)
+      .limit(1)
+      .maybeSingle()
     return {
       ...data,
-      model_count: (data as any).ai_models?.[0]?.count ?? 0,
-      api_key_preview: data.api_key_encrypted ? maskKey(decrypt(data.api_key_encrypted)) : null,
-      api_key_encrypted: undefined,
-      ai_models: undefined,
-    } as AIProviderWithModels
+      model_count: count || 0,
+      api_key_preview: apiKey?.key_prefix ? `${apiKey.key_prefix}...` : null,
+    }
   },
 
   async create(data: {
     name: string
     slug: string
-    provider: string
-    api_key?: string
     base_url?: string
+    default_model?: string
     priority?: number
-    config?: Record<string, any>
+    config?: Record<string, unknown>
   }) {
-    const payload: any = {
-      name: data.name,
-      slug: data.slug,
-      provider: data.provider,
-      base_url: data.base_url || null,
-      priority: data.priority ?? 0,
-      is_enabled: true,
-      config: data.config || {},
-    }
-    if (data.api_key) {
-      payload.api_key_encrypted = encrypt(data.api_key)
-    }
     const { data: created, error } = await supabaseAdmin
       .from("ai_providers")
-      .insert(payload)
+      .insert({
+        name: data.name,
+        slug: data.slug,
+        base_url: data.base_url || null,
+        default_model: data.default_model || null,
+        priority: data.priority ?? 0,
+        enabled: true,
+        status: "inactive",
+        config: data.config || {},
+      })
       .select()
       .single()
     if (error) throw new Error(`Failed to create provider: ${error.message}`)
@@ -112,24 +108,15 @@ export const providersService = {
 
   async update(id: string, data: {
     name?: string
-    slug?: string
-    provider?: string
-    api_key?: string
     base_url?: string
+    default_model?: string
     priority?: number
-    is_enabled?: boolean
-    config?: Record<string, any>
+    enabled?: boolean
+    config?: Record<string, unknown>
   }) {
-    const payload: any = { ...data }
-    if (data.api_key) {
-      payload.api_key_encrypted = encrypt(data.api_key)
-      delete payload.api_key
-    } else {
-      delete payload.api_key
-    }
     const { data: updated, error } = await supabaseAdmin
       .from("ai_providers")
-      .update(payload)
+      .update({ ...data, updated_at: new Date().toISOString() })
       .eq("id", id)
       .select()
       .single()
@@ -138,38 +125,51 @@ export const providersService = {
   },
 
   async delete(id: string) {
-    await supabaseAdmin.from("ai_models").delete().eq("provider_id", id)
+    const { data: provider } = await supabaseAdmin
+      .from("ai_providers")
+      .select("slug")
+      .eq("id", id)
+      .single()
+    if (provider) {
+      await supabaseAdmin.from("ai_models").delete().eq("provider_slug", provider.slug)
+      await supabaseAdmin.from("ai_api_keys").delete().eq("provider_slug", provider.slug)
+    }
     const { error } = await supabaseAdmin.from("ai_providers").delete().eq("id", id)
     if (error) throw new Error(`Failed to delete provider: ${error.message}`)
   },
 
-  async testConnection(id: string): Promise<{ latency: number; success: boolean }> {
-    const { data, error } = await supabaseAdmin
+  async testConnection(slug: string): Promise<{ latency: number; success: boolean }> {
+    const { data: provider, error } = await supabaseAdmin
       .from("ai_providers")
-      .select("provider, api_key_encrypted, base_url, config")
-      .eq("id", id)
+      .select("slug, base_url")
+      .eq("slug", slug)
       .single()
-    if (error || !data) throw new Error(`Provider not found: ${error?.message}`)
-    const apiKey = data.api_key_encrypted ? decrypt(data.api_key_encrypted) : null
-    if (!apiKey) throw new Error("No API key configured for this provider")
+    if (error || !provider) throw new Error(`Provider not found: ${error?.message}`)
+    const { data: apiKey } = await supabaseAdmin
+      .from("ai_api_keys")
+      .select("key_encrypted")
+      .eq("provider_slug", slug)
+      .eq("is_enabled", true)
+      .limit(1)
+      .maybeSingle()
+    if (!apiKey?.key_encrypted) throw new Error("No API key configured for this provider")
     const start = Date.now()
     try {
-      const response = await fetch(data.base_url || `https://api.${data.provider}.com/v1/models`, {
-        headers: { Authorization: `Bearer ${apiKey}` },
+      const baseUrl = (provider.base_url || "").replace(/\/+$/, "")
+      const response = await fetch(`${baseUrl}/models`, {
+        headers: { Authorization: `Bearer ${apiKey.key_encrypted}` },
         signal: AbortSignal.timeout(10000),
       })
-      const latency = Date.now() - start
-      return { latency, success: response.ok }
+      return { latency: Date.now() - start, success: response.ok }
     } catch {
-      const latency = Date.now() - start
-      return { latency, success: false }
+      return { latency: Date.now() - start, success: false }
     }
   },
 
   async setPriority(id: string, priority: number) {
     const { data, error } = await supabaseAdmin
       .from("ai_providers")
-      .update({ priority })
+      .update({ priority, updated_at: new Date().toISOString() })
       .eq("id", id)
       .select()
       .single()
@@ -180,12 +180,12 @@ export const providersService = {
   async toggle(id: string) {
     const { data: current } = await supabaseAdmin
       .from("ai_providers")
-      .select("is_enabled")
+      .select("enabled")
       .eq("id", id)
       .single()
     const { data, error } = await supabaseAdmin
       .from("ai_providers")
-      .update({ is_enabled: !current?.is_enabled })
+      .update({ enabled: !current?.enabled, updated_at: new Date().toISOString() })
       .eq("id", id)
       .select()
       .single()
@@ -197,7 +197,7 @@ export const providersService = {
     const { data, error } = await supabaseAdmin
       .from("ai_providers")
       .select("*")
-      .eq("is_enabled", true)
+      .eq("enabled", true)
       .order("priority", { ascending: true })
     if (error) throw new Error(`Failed to fetch fallback chain: ${error.message}`)
     return (data || []) as AIProviderRow[]

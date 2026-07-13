@@ -36,7 +36,7 @@ export const userService = {
       user_id: userId,
       email: data.email,
       full_name: data.name || null,
-      role: data.role || "user",
+      role: data.role || "free_user",
       plan: data.plan_id || "free",
       credits: 0,
       status: "active",
@@ -53,11 +53,11 @@ export const userService = {
     })
     if (error) throw new Error(`Failed to add credits: ${error.message}`)
 
-    await supabaseAdmin.from("credits").insert({
+    await supabaseAdmin.from("credit_logs").insert({
       user_id: userId,
       amount,
       type: "added",
-      description: description || null,
+      reason: description || null,
     })
   },
 

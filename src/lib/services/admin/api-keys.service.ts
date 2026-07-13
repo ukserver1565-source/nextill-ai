@@ -13,26 +13,18 @@ function encrypt(text: string) {
 }
 
 function decrypt(text: string) {
-  const parts = text.split(':')
-  const iv = Buffer.from(parts.shift()!, 'hex')
-  const encrypted = parts.join(':')
-  const decipher = createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv)
-  let decrypted = decipher.update(encrypted, 'hex', 'utf8')
-  decrypted += decipher.final('utf8')
-  return decrypted
-}
-
-export interface ApiKeyRow {
-  id: string
-  provider_id: string
-  name: string
-  key_encrypted: string
-  key_preview: string
-  is_enabled: boolean
-  last_tested_at: string | null
-  last_test_success: boolean | null
-  created_at: string
-  updated_at: string
+  if (!text || !text.includes(":")) return text
+  try {
+    const parts = text.split(':')
+    const iv = Buffer.from(parts.shift()!, 'hex')
+    const encrypted = parts.join(':')
+    const decipher = createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv)
+    let decrypted = decipher.update(encrypted, 'hex', 'utf8')
+    decrypted += decipher.final('utf8')
+    return decrypted
+  } catch {
+    return text
+  }
 }
 
 function maskKey(key: string | null): string {
@@ -41,49 +33,60 @@ function maskKey(key: string | null): string {
   return key.slice(0, 4) + "****" + key.slice(-4)
 }
 
+export interface AiApiKeyRow {
+  id: string
+  provider_slug: string
+  name: string
+  key_prefix: string
+  is_enabled: boolean
+  last_used_at: string | null
+  created_at: string
+  updated_at: string
+}
+
 export const apiKeysService = {
-  async list(providerId?: string) {
+  async list(providerSlug?: string) {
     let query = supabaseAdmin
-      .from("api_keys")
-      .select("id, provider_id, name, key_preview, is_enabled, last_tested_at, last_test_success, created_at, updated_at, providers:provider_id(name)")
-    if (providerId) query = query.eq("provider_id", providerId)
+      .from("ai_api_keys")
+      .select("id, provider_slug, name, key_prefix, is_enabled, last_used_at, created_at, updated_at")
+    if (providerSlug) query = query.eq("provider_slug", providerSlug)
     query = query.order("created_at", { ascending: false })
     const { data, error } = await query
     if (error) throw new Error(`Failed to fetch API keys: ${error.message}`)
-    return (data || []) as any[]
+    return (data || []) as AiApiKeyRow[]
   },
 
   async get(id: string) {
     const { data, error } = await supabaseAdmin
-      .from("api_keys")
-      .select("*, providers:provider_id(name)")
+      .from("ai_api_keys")
+      .select("id, provider_slug, name, key_prefix, is_enabled, last_used_at, created_at, updated_at")
       .eq("id", id)
       .single()
     if (error) throw new Error(`Failed to fetch API key: ${error.message}`)
-    return data as any
+    return data as AiApiKeyRow
   },
 
   async create(data: {
-    provider_id: string
+    provider_slug: string
     name: string
     key: string
     is_enabled?: boolean
   }) {
     const encrypted = encrypt(data.key)
-    const preview = maskKey(data.key)
+    const keyPrefix = data.key.slice(0, 8)
     const { data: created, error } = await supabaseAdmin
-      .from("api_keys")
+      .from("ai_api_keys")
       .insert({
-        provider_id: data.provider_id,
+        provider_slug: data.provider_slug,
         name: data.name,
         key_encrypted: encrypted,
-        key_preview: preview,
+        key_prefix: keyPrefix,
         is_enabled: data.is_enabled ?? true,
       })
-      .select()
+      .select("id, provider_slug, name, key_prefix, is_enabled, last_used_at, created_at, updated_at")
       .single()
     if (error) throw new Error(`Failed to create API key: ${error.message}`)
-    return created as ApiKeyRow
+    return created as AiApiKeyRow
   },
 
   async update(id: string, data: {
@@ -91,39 +94,39 @@ export const apiKeysService = {
     key?: string
     is_enabled?: boolean
   }) {
-    const payload: any = { ...data }
+    const payload: Record<string, unknown> = {}
+    if (data.name !== undefined) payload.name = data.name
+    if (data.is_enabled !== undefined) payload.is_enabled = data.is_enabled
     if (data.key) {
       payload.key_encrypted = encrypt(data.key)
-      payload.key_preview = maskKey(data.key)
-      delete payload.key
-    } else {
-      delete payload.key
+      payload.key_prefix = data.key.slice(0, 8)
     }
+    payload.updated_at = new Date().toISOString()
     const { data: updated, error } = await supabaseAdmin
-      .from("api_keys")
+      .from("ai_api_keys")
       .update(payload)
       .eq("id", id)
-      .select()
+      .select("id, provider_slug, name, key_prefix, is_enabled, last_used_at, created_at, updated_at")
       .single()
     if (error) throw new Error(`Failed to update API key: ${error.message}`)
-    return updated as ApiKeyRow
+    return updated as AiApiKeyRow
   },
 
   async delete(id: string) {
-    const { error } = await supabaseAdmin.from("api_keys").delete().eq("id", id)
+    const { error } = await supabaseAdmin.from("ai_api_keys").delete().eq("id", id)
     if (error) throw new Error(`Failed to delete API key: ${error.message}`)
   },
 
   async rotate(id: string, newKey: string) {
     const { data: existing } = await supabaseAdmin
-      .from("api_keys")
-      .select("id, provider_id, name")
+      .from("ai_api_keys")
+      .select("id, provider_slug, name")
       .eq("id", id)
       .single()
     if (!existing) throw new Error("API key not found")
     await this.delete(id)
     return this.create({
-      provider_id: existing.provider_id,
+      provider_slug: existing.provider_slug,
       name: existing.name + " (rotated)",
       key: newKey,
     })
@@ -131,17 +134,22 @@ export const apiKeysService = {
 
   async test(id: string): Promise<{ success: boolean; latency: number }> {
     const { data, error } = await supabaseAdmin
-      .from("api_keys")
-      .select("key_encrypted, providers:provider_id(base_url, provider)")
+      .from("ai_api_keys")
+      .select("key_encrypted, provider_slug")
       .eq("id", id)
       .single()
     if (error || !data) throw new Error(`API key not found: ${error?.message}`)
     const apiKey = decrypt(data.key_encrypted)
-    const provider = (data as any).providers
+    const { data: provider } = await supabaseAdmin
+      .from("ai_providers")
+      .select("base_url, slug")
+      .eq("slug", data.provider_slug)
+      .single()
     const start = Date.now()
     let success = false
     try {
-      const response = await fetch(provider?.base_url || `https://api.${provider?.provider || "openai"}.com/v1/models`, {
+      const baseUrl = (provider?.base_url || `https://api.openai.com/v1`).replace(/\/+$/, "")
+      const response = await fetch(`${baseUrl}/models`, {
         headers: { Authorization: `Bearer ${apiKey}` },
         signal: AbortSignal.timeout(10000),
       })
@@ -150,27 +158,23 @@ export const apiKeysService = {
       success = false
     }
     const latency = Date.now() - start
-    await supabaseAdmin.from("api_keys").update({
-      last_tested_at: new Date().toISOString(),
-      last_test_success: success,
-    }).eq("id", id)
     return { success, latency }
   },
 
   async toggle(id: string) {
     const { data: current } = await supabaseAdmin
-      .from("api_keys")
+      .from("ai_api_keys")
       .select("is_enabled")
       .eq("id", id)
       .single()
     if (!current) throw new Error("API key not found")
     const { data: updated, error } = await supabaseAdmin
-      .from("api_keys")
-      .update({ is_enabled: !current.is_enabled })
+      .from("ai_api_keys")
+      .update({ is_enabled: !current.is_enabled, updated_at: new Date().toISOString() })
       .eq("id", id)
-      .select()
+      .select("id, provider_slug, name, key_prefix, is_enabled, last_used_at, created_at, updated_at")
       .single()
     if (error) throw new Error(`Failed to toggle API key: ${error.message}`)
-    return updated as ApiKeyRow
+    return updated as AiApiKeyRow
   },
 }

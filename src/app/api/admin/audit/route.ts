@@ -14,8 +14,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { action, details, user_id } = await req.json()
-    await auditService.log(action, details, user_id)
+    const { action, section, details, user_id } = await req.json()
+    await auditService.log(action, section || "general", details, user_id)
     return NextResponse.json({ success: true })
   } catch (err) {
     return NextResponse.json({ error: "Failed to create audit log", details: (err as Error).message }, { status: 400 })
