@@ -3,8 +3,8 @@ import { modelsService } from "@/lib/services/admin/models.service"
 
 export async function GET(req: NextRequest) {
   try {
-    const providerId = req.nextUrl.searchParams.get("provider_id") || undefined
-    const data = await modelsService.list(providerId)
+    const providerSlug = req.nextUrl.searchParams.get("provider_slug") || req.nextUrl.searchParams.get("provider_id") || undefined
+    const data = await modelsService.list(providerSlug)
     return NextResponse.json(data)
   } catch (err) {
     return NextResponse.json({ error: "Failed to fetch models", details: (err as Error).message }, { status: 500 })

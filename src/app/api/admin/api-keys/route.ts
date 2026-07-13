@@ -3,8 +3,8 @@ import { apiKeysService } from "@/lib/services/admin/api-keys.service"
 
 export async function GET(req: NextRequest) {
   try {
-    const providerId = req.nextUrl.searchParams.get("provider_id") || undefined
-    const data = await apiKeysService.list(providerId)
+    const providerSlug = req.nextUrl.searchParams.get("provider_slug") || req.nextUrl.searchParams.get("provider_id") || undefined
+    const data = await apiKeysService.list(providerSlug)
     return NextResponse.json(data)
   } catch (err) {
     return NextResponse.json({ error: "Failed to fetch API keys", details: (err as Error).message }, { status: 500 })

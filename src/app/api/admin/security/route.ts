@@ -5,7 +5,6 @@ import { auditService } from "@/lib/services/admin/audit.service"
 export async function GET(req: NextRequest) {
   try {
     const eventType = req.nextUrl.searchParams.get("event_type") || undefined
-    const severity = req.nextUrl.searchParams.get("severity") || undefined
     const page = Number(req.nextUrl.searchParams.get("page")) || 1
     const perPage = Number(req.nextUrl.searchParams.get("perPage")) || 20
     const from = (page - 1) * perPage
@@ -13,7 +12,6 @@ export async function GET(req: NextRequest) {
       .from("security_logs")
       .select("*", { count: "exact" })
     if (eventType) query = query.eq("event_type", eventType)
-    if (severity) query = query.eq("severity", severity)
     query = query.order("created_at", { ascending: false }).range(from, from + perPage - 1)
     const { data, error, count } = await query
     if (error) throw new Error(error.message)

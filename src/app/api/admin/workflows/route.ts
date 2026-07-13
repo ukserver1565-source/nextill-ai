@@ -4,50 +4,30 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 export async function GET() {
   try {
     const { data, error } = await supabaseAdmin
-      .from("admin_settings")
+      .from("workflow_settings")
       .select("*")
-      .eq("category", "workflow")
-      .order("key", { ascending: true })
+      .order("workflow_name", { ascending: true })
     if (error) throw new Error(error.message)
     return NextResponse.json(data || [])
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch workflows", details: (err as Error).message }, { status: 500 })
+    return NextResponse.json({ error: "Failed to fetch workflows" }, { status: 500 })
   }
 }
 
-export async function POST(req: NextRequest) {
+export async function PATCH(req: NextRequest) {
   try {
     const body = await req.json()
-    const results: any[] = []
-    for (const [key, value] of Object.entries(body)) {
-      const resolvedType = typeof value === "boolean" ? "boolean" : typeof value === "number" ? "number" : typeof value === "object" ? "json" : "string"
-      const stringValue = resolvedType === "json" ? JSON.stringify(value) : String(value)
-      const { data: existing } = await supabaseAdmin
-        .from("admin_settings")
-        .select("id")
-        .eq("key", key)
-        .maybeSingle()
-      if (existing) {
-        const { data, error } = await supabaseAdmin
-          .from("admin_settings")
-          .update({ value: stringValue, type: resolvedType, updated_at: new Date().toISOString() })
-          .eq("key", key)
-          .select()
-          .single()
-        if (error) throw new Error(error.message)
-        results.push(data)
-      } else {
-        const { data, error } = await supabaseAdmin
-          .from("admin_settings")
-          .insert({ key, value: stringValue, type: resolvedType, category: "workflow" })
-          .select()
-          .single()
-        if (error) throw new Error(error.message)
-        results.push(data)
-      }
-    }
-    return NextResponse.json(results)
+    const { id, ...updates } = body
+    if (!id) return NextResponse.json({ error: "Missing workflow id" }, { status: 400 })
+    const { data, error } = await supabaseAdmin
+      .from("workflow_settings")
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .select()
+      .single()
+    if (error) throw new Error(error.message)
+    return NextResponse.json(data)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to update workflow", details: (err as Error).message }, { status: 400 })
+    return NextResponse.json({ error: "Failed to update workflow" }, { status: 400 })
   }
 }

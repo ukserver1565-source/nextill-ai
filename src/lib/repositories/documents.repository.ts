@@ -66,10 +66,10 @@ export const documentsRepo = {
   async listAll(params: PaginationParams) {
     let query = supabaseAdmin
       .from("documents")
-      .select("*, profiles!inner(full_name,email)", { count: "exact" })
+      .select("*", { count: "exact" })
 
     if (params.search) {
-      query = query.or(`title.ilike.%${params.search}%,profiles.full_name.ilike.%${params.search}%`)
+      query = query.ilike("title", `%${params.search}%`)
     }
 
     const sortCol = params.sort_by || "created_at"
@@ -81,7 +81,7 @@ export const documentsRepo = {
 
     const { data, error, count } = await query
     if (error) throw new Error(`Failed to fetch documents: ${error.message}`)
-    return { data: data as any[], total: count || 0, page: params.page, limit: params.limit }
+    return { data: (data || []) as DocumentRow[], total: count || 0, page: params.page, limit: params.limit }
   },
 
   async getById(id: string) {
