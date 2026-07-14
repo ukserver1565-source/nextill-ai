@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Shield, ToggleLeft, Clock, Save, AlertTriangle, Loader2, Inbox } from "lucide-react"
-import { supabase } from "@/lib/supabase/client"
+import { Shield, ToggleLeft, Clock, Save, AlertTriangle, Loader2, Inbox, XCircle } from "lucide-react"
 
 export default function SecurityPage() {
   const [rateLimiting, setRateLimiting] = useState(true)
@@ -13,6 +12,7 @@ export default function SecurityPage() {
   const [saving, setSaving] = useState(false)
   const [securityLogs, setSecurityLogs] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [saveError, setSaveError] = useState("")
 
   useEffect(() => {
     async function load() {
@@ -26,12 +26,13 @@ export default function SecurityPage() {
           if (data.sessionTimeout) setSessionTimeout(Number(data.sessionTimeout))
         }
       } catch { /* use defaults */ }
-      const { data } = await supabase
-        .from("security_events")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(20)
-      setSecurityLogs(data || [])
+      try {
+        const logsRes = await fetch("/api/admin/security?perPage=20")
+        if (logsRes.ok) {
+          const logsJson = await logsRes.json()
+          setSecurityLogs(logsJson.data || [])
+        }
+      } catch { /* leave empty */ }
       setLoading(false)
     }
     load()
@@ -46,8 +47,9 @@ export default function SecurityPage() {
 
   const handleSave = async () => {
     setSaving(true)
+    setSaveError("")
     try {
-      await fetch("/api/admin/settings", {
+      const res = await fetch("/api/admin/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -56,9 +58,13 @@ export default function SecurityPage() {
           sessionTimeout: String(sessionTimeout),
         }),
       })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
-    } catch { /* ignore */ } finally {
+    } catch (err: any) {
+      setSaveError(err.message || "Failed to save settings")
+      setTimeout(() => setSaveError(""), 4000)
+    } finally {
       setSaving(false)
     }
   }
@@ -109,6 +115,12 @@ export default function SecurityPage() {
           <button onClick={handleSave} disabled={saving} className="h-11 px-6 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} {saved ? "Saved!" : "Save Settings"}
           </button>
+          {saveError && (
+            <div className="flex items-center gap-2 text-xs text-[#EF4444] mt-2">
+              <XCircle className="w-3.5 h-3.5" />
+              <span>{saveError}</span>
+            </div>
+          )}
         </div>
 
         <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6">

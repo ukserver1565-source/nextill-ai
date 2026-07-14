@@ -6,13 +6,12 @@ import { useState, useEffect } from "react"
 import {
   Search, FileText, Shield, Sparkles, ArrowRight, Check,
   Menu, X, BarChart3, Star, Zap, Globe, Clock, Award,
-  BookOpen, Layers, ChevronDown, Quote, ChevronRight,
-  TrendingUp, Users, Activity, ExternalLink, FileType
+  BookOpen, Layers, ChevronDown, ChevronRight,
+  TrendingUp, Users, Activity, ExternalLink, FileType, Loader2
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { StaggerContainer, StaggerItem } from "@/components/layout/stagger-wrapper"
-import { Loader2 } from "lucide-react"
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -37,10 +36,10 @@ const scaleIn = {
 const workflows = [
   {
     icon: Search,
-    name: "Keyword Intelligence",
+    name: "Domain Intelligence",
     desc: "Discover high-value keywords with volume, difficulty & SERP analysis powered by AI.",
     features: ["Search volume & trends", "Keyword difficulty scoring", "SERP feature analysis"],
-    slug: "keyword-intelligence",
+    slug: "domain-overview",
     color: "from-violet-500 to-indigo-600",
     glow: "shadow-violet-500/20",
   },
@@ -55,7 +54,7 @@ const workflows = [
   },
   {
     icon: Shield,
-    name: "Plagiarism Checker",
+    name: "Plagiarism & Authenticity",
     desc: "Check content originality against billions of web sources with detailed similarity reports.",
     features: ["Web-wide comparison", "Similarity scoring", "Source URL detection"],
     slug: "plagiarism-checker",
@@ -83,7 +82,7 @@ const templates = [
 const highlights = [
   {
     icon: Search,
-    title: "Keyword Intelligence",
+    title: "Domain Intelligence",
     desc: "Discover high-value keywords with real-time volume, difficulty scoring, and SERP feature analysis — all powered by AI.",
     color: "from-violet-500 to-indigo-600",
   },
@@ -95,7 +94,7 @@ const highlights = [
   },
   {
     icon: Shield,
-    title: "Plagiarism Checker",
+    title: "Plagiarism & Authenticity",
     desc: "Check content originality with detailed similarity scoring, source URL detection, and downloadable reports.",
     color: "from-emerald-500 to-green-600",
   },
@@ -137,9 +136,9 @@ const footerColumns = [
   {
     title: "Product",
     links: [
-      { label: "Keyword Intelligence", href: "/keyword-intelligence" },
+      { label: "Domain Intelligence", href: "/domain-overview" },
       { label: "Post Generator", href: "/post-generator" },
-      { label: "Plagiarism Checker", href: "/plagiarism-checker" },
+      { label: "Plagiarism & Authenticity", href: "/plagiarism-checker" },
     ],
   },
   {
@@ -169,7 +168,7 @@ const footerColumns = [
 
 const demos = [
   {
-    name: "Keyword Intelligence",
+    name: "Domain Intelligence",
     icon: Search,
     color: "from-violet-500 to-indigo-600",
     lines: [
@@ -219,7 +218,7 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
-    fetch("/api/admin/plans")
+    fetch("/api/public/plans")
       .then(r => r.json())
       .then(data => {
         if (Array.isArray(data)) {

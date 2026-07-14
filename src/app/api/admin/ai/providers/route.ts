@@ -5,13 +5,17 @@ export async function GET() {
   try {
     const { data, error } = await supabaseAdmin
       .from("ai_providers")
-      .select("*, ai_models:ai_models(count)")
+      .select("*")
       .order("priority", { ascending: true })
       .order("name")
     if (error) throw new Error(error.message)
     return NextResponse.json(data || [])
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch providers", details: (err as Error).message }, { status: 500 })
+    const msg = (err as Error)?.message || ""
+    if (msg.includes("does not exist") || msg.includes("Could not find the table")) {
+      return NextResponse.json([])
+    }
+    return NextResponse.json({ error: "Failed to fetch providers" }, { status: 500 })
   }
 }
 
@@ -23,30 +27,35 @@ export async function POST(req: NextRequest) {
       .insert({
         name: body.name,
         slug: body.slug || body.name.toLowerCase().replace(/\s+/g, "_"),
-        provider: body.provider || body.name,
         base_url: body.base_url || null,
-        is_enabled: body.is_enabled ?? true,
+        enabled: body.enabled ?? body.is_enabled ?? true,
         priority: body.priority ?? 0,
         config: body.config || {},
-        api_key_encrypted: body.api_key_encrypted || null,
       })
       .select()
       .single()
     if (error) throw new Error(error.message)
     return NextResponse.json(data)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to create provider", details: (err as Error).message }, { status: 400 })
+    const msg = (err as Error)?.message || ""
+    if (msg.includes("does not exist") || msg.includes("Could not find the table")) {
+      return NextResponse.json({ error: "Providers table not found. Run migration 006." }, { status: 503 })
+    }
+    return NextResponse.json({ error: "Failed to create provider" }, { status: 400 })
   }
 }
 
 export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json()
-    await supabaseAdmin.from("ai_models").delete().eq("provider_id", id)
+    const { data: provider } = await supabaseAdmin.from("ai_providers").select("slug").eq("id", id).single()
+    if (provider) {
+      await supabaseAdmin.from("ai_models").delete().eq("provider_slug", provider.slug)
+    }
     const { error } = await supabaseAdmin.from("ai_providers").delete().eq("id", id)
     if (error) throw new Error(error.message)
     return NextResponse.json({ success: true })
   } catch (err) {
-    return NextResponse.json({ error: "Failed to delete provider", details: (err as Error).message }, { status: 400 })
+    return NextResponse.json({ error: "Failed to delete provider" }, { status: 400 })
   }
 }

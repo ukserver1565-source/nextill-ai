@@ -59,7 +59,7 @@ export default function WorkflowsPage() {
   }
 
   const handleSettings = (wf: any) => {
-    router.push(`/admin/workflows/${wf.slug}`)
+    router.push(`/admin/integrations`)
   }
 
   return (

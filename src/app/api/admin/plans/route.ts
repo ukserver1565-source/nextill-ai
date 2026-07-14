@@ -2,11 +2,17 @@ import { NextRequest, NextResponse } from "next/server"
 import { planRepo } from "@/lib/repositories/plan-repo"
 import { createPlanSchema } from "@/lib/validation/admin-schemas"
 
+function isTableMissing(err: unknown): boolean {
+  const msg = (err as Error)?.message || ""
+  return msg.includes("does not exist") || msg.includes("Could not find the table") || msg.includes("schema cache")
+}
+
 export async function GET() {
   try {
     const plans = await planRepo.list()
     return NextResponse.json(plans)
   } catch (err) {
+    if (isTableMissing(err)) return NextResponse.json([])
     return NextResponse.json({ error: "Failed to fetch plans", details: (err as Error).message }, { status: 500 })
   }
 }

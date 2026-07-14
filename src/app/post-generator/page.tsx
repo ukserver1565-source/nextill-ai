@@ -683,7 +683,7 @@ function PostGeneratorContent() {
       `Slug: ${result.slug}`,
       "",
       "--- FAQ ---",
-      ...result.faqs.map((f) => `Q: ${f.question}\nA: ${f.answer}`),
+      ...(result.faqs || []).map((f) => `Q: ${f.question}\nA: ${f.answer}`),
       "",
       "--- Schema ---",
       JSON.stringify(result.schemaJson, null, 2),
@@ -984,7 +984,7 @@ function PostGeneratorContent() {
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-[#5A6577]">Words</span>
-                    <span className="text-sm font-semibold text-white">{result.wordCount.toLocaleString()}</span>
+                    <span className="text-sm font-semibold text-white">{(result.wordCount || 0).toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-[#5A6577]">Reading Time</span>
@@ -1215,7 +1215,7 @@ function PostGeneratorContent() {
                       {activeTab === "Article" && (
                         <div className="flex items-center gap-2 text-[11px] text-[#5A6577] bg-[#090B16]/40 border border-white/[0.04] rounded-lg px-3 py-1.5">
                           <FileText className="w-3 h-3" />
-                          <span>{result.wordCount.toLocaleString()} words</span>
+                          <span>{(result.wordCount || 0).toLocaleString()} words</span>
                           <span className="w-1 h-1 rounded-full bg-white/[0.12]" />
                           <Clock className="w-3 h-3" />
                           <span>{result.readingTime} min read</span>
@@ -1238,7 +1238,7 @@ function PostGeneratorContent() {
                             <div className="absolute -left-3 top-0 bottom-0 w-[3px] bg-gradient-to-b from-[#6D5EF5]/40 to-transparent rounded-full" />
                             <p className="text-sm text-[#A7B0C0] leading-[1.85] pl-3 italic">{result.intro}</p>
                           </motion.div>
-                          {result.sections.map((section, i) => (
+                          {(result.sections || []).map((section, i) => (
                             <motion.div key={i} variants={itemVariants} className="space-y-4 pt-1">
                               <div className="flex items-center gap-3">
                                 <div className="w-1 h-6 rounded-full bg-[#6D5EF5]/50" />
@@ -1271,7 +1271,7 @@ function PostGeneratorContent() {
                               </div>
                             </motion.div>
                           )}
-                          {result.internalLinks.length > 0 && (
+                          {(result.internalLinks || []).length > 0 && (
                             <motion.div variants={itemVariants} className="bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 border border-white/[0.06] rounded-2xl p-5 shadow-sm">
                               <div className="flex items-center gap-2 mb-4">
                                 <div className="w-7 h-7 rounded-lg bg-[#6D5EF5]/10 flex items-center justify-center">
@@ -1280,7 +1280,7 @@ function PostGeneratorContent() {
                                 <h3 className="text-xs font-semibold text-[#5A6577] uppercase tracking-wider">Internal Links</h3>
                               </div>
                               <div className="space-y-2.5">
-                                {result.internalLinks.map((link, i) => (
+                                {(result.internalLinks || []).map((link, i) => (
                                   <motion.div
                                     key={i}
                                     initial={{ opacity: 0, x: -8 }}
@@ -1350,7 +1350,7 @@ function PostGeneratorContent() {
                           <motion.div variants={itemVariants} className="space-y-1.5">
                             <label className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">Tags</label>
                             <div className="flex flex-wrap gap-2">
-                              {result.tags.map((tag, i) => (
+                              {(result.tags || []).map((tag, i) => (
                                 <motion.span
                                   key={i}
                                   initial={{ opacity: 0, scale: 0.9 }}
@@ -1366,7 +1366,7 @@ function PostGeneratorContent() {
                           <motion.div variants={itemVariants} className="space-y-1.5">
                             <label className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">Categories</label>
                             <div className="flex flex-wrap gap-2">
-                              {result.categorySuggestions.map((cat, i) => (
+                              {(result.categorySuggestions || []).map((cat, i) => (
                                 <motion.span
                                   key={i}
                                   initial={{ opacity: 0, scale: 0.9 }}
@@ -1389,8 +1389,8 @@ function PostGeneratorContent() {
                           animate="visible"
                           className="space-y-2"
                         >
-                          {result.faqs.length > 0 ? (
-                            result.faqs.map((faq, i) => (
+                          {(result.faqs || []).length > 0 ? (
+                            (result.faqs || []).map((faq, i) => (
                               <motion.div key={i} variants={itemVariants}>
                                 <FaqItem
                                   question={faq.question}
@@ -1502,7 +1502,7 @@ function PostGeneratorContent() {
                           <motion.div variants={itemVariants} className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 border border-white/[0.06] rounded-xl p-4">
                             <div className="grid grid-cols-2 gap-4">
                               <div className="text-center">
-                                <p className="text-2xl font-bold text-white">{result.wordCount.toLocaleString()}</p>
+                                <p className="text-2xl font-bold text-white">{(result.wordCount || 0).toLocaleString()}</p>
                                 <p className="text-[10px] text-[#5A6577] uppercase tracking-wider mt-1">Word Count</p>
                               </div>
                               <div className="text-center">

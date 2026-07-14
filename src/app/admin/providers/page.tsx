@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Plus, Edit3, Trash2, Play, ToggleLeft, Cpu, Bot, Brain, Globe, Loader2, Server, Check, X } from "lucide-react"
+import { Plus, Edit3, Trash2, Play, ToggleLeft, Cpu, Bot, Brain, Globe, Loader2, Server, Check, X, Shield } from "lucide-react"
 
 interface AIProvider {
   id: string
@@ -20,6 +20,8 @@ interface AIProvider {
 
 const providerIcons: Record<string, any> = {
   openai: Bot, anthropic: Brain, google: Globe, deepseek: Cpu,
+  gemini: Globe, semrush: Globe, copyleaks: Shield, originality: Shield,
+  gptzero: Brain, pagespeed: Globe, languagetool: Cpu,
 }
 
 const providerColors: Record<string, string> = {
@@ -27,6 +29,13 @@ const providerColors: Record<string, string> = {
   anthropic: "from-purple-500 to-pink-600",
   google: "from-blue-500 to-cyan-600",
   deepseek: "from-orange-500 to-red-500",
+  gemini: "from-blue-500 to-indigo-600",
+  semrush: "from-orange-500 to-amber-600",
+  copyleaks: "from-red-500 to-pink-600",
+  originality: "from-violet-500 to-purple-600",
+  gptzero: "from-teal-500 to-cyan-600",
+  pagespeed: "from-green-500 to-emerald-600",
+  languagetool: "from-blue-400 to-blue-600",
 }
 
 const emptyForm = { name: "", slug: "openai", provider_type: "openai", base_url: "", is_enabled: true }
@@ -229,11 +238,12 @@ export default function ProvidersPage() {
       )}
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowModal(false)}>
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="bg-[#151C2E] border border-white/[0.06] rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-lg font-semibold text-white mb-1">{editItem ? "Edit Provider" : "Add Provider"}</h2>
             <p className="text-xs text-[#A7B0C0] mb-5">{editItem ? "Update provider configuration" : "Connect a new AI provider"}</p>
@@ -249,6 +259,13 @@ export default function ProvidersPage() {
                   <option value="anthropic">anthropic</option>
                   <option value="google">google</option>
                   <option value="deepseek">deepseek</option>
+                  <option value="gemini">gemini</option>
+                  <option value="semrush">semrush</option>
+                  <option value="copyleaks">copyleaks</option>
+                  <option value="originality">originality</option>
+                  <option value="gptzero">gptzero</option>
+                  <option value="pagespeed">pagespeed</option>
+                  <option value="languagetool">languagetool</option>
                 </select>
               </div>
               <div>
@@ -258,6 +275,13 @@ export default function ProvidersPage() {
                   <option value="anthropic">Anthropic</option>
                   <option value="google">Google</option>
                   <option value="deepseek">DeepSeek</option>
+                  <option value="gemini">Google Gemini</option>
+                  <option value="semrush">Semrush</option>
+                  <option value="copyleaks">Copyleaks</option>
+                  <option value="originality">Originality.ai</option>
+                  <option value="gptzero">GPTZero</option>
+                  <option value="pagespeed">PageSpeed Insights</option>
+                  <option value="languagetool">LanguageTool</option>
                 </select>
               </div>
               <div>

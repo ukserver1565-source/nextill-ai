@@ -81,7 +81,6 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
         <div className="relative">
           <button className="relative p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors">
             <Bell className="w-4 h-4" />
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#EF4444] text-[8px] font-bold text-white flex items-center justify-center shadow-lg shadow-[#EF4444]/30">3</span>
           </button>
         </div>
 

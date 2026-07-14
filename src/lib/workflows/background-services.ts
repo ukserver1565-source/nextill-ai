@@ -148,7 +148,7 @@ export function createWorkflowRunner(workflowSlug: string) {
 
   activeRuns.set(runId, run)
 
-  return { runId, promise: runPromise }
+  return runner
 }
 
 export async function trackWorkflowRun(runId: string): Promise<WorkflowRun | null> {

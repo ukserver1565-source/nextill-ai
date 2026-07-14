@@ -1,17 +1,28 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
+import { safeQuery } from "@/lib/supabase/safe-query"
+
+function isTableMissing(err: unknown): boolean {
+  const msg = (err as Error)?.message || ""
+  return msg.includes("does not exist") || msg.includes("Could not find the table") || msg.includes("schema cache")
+}
+
+interface SettingRow {
+  key: string
+  value: unknown
+}
 
 export async function GET() {
   try {
-    const { data, error } = await supabaseAdmin.from("site_settings").select("*").order("key")
-    if (error) throw new Error(error.message)
-    const settings: Record<string, any> = {}
+    const { data } = await safeQuery<SettingRow>(() => supabaseAdmin.from("site_settings").select("*").order("key"))
+    const settings: Record<string, unknown> = {}
     for (const row of (data || [])) {
-      settings[row.key] = row.value
+      if (row && row.key) settings[row.key] = row.value
     }
     return NextResponse.json(settings)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch settings" }, { status: 500 })
+    if (isTableMissing(err)) return NextResponse.json({})
+    return NextResponse.json({ error: "Failed to fetch settings", details: (err as Error).message }, { status: 500 })
   }
 }
 

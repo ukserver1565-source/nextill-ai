@@ -14,7 +14,7 @@ export default function CouponsPage() {
   const [page, setPage] = useState(1)
   const [showModal, setShowModal] = useState(false)
   const [editingCoupon, setEditingCoupon] = useState<any | null>(null)
-  const [formState, setFormState] = useState({ code: "", type: "percentage", value: 0, expiry_date: "", usage_limit: 0, active: true })
+  const [formState, setFormState] = useState({ code: "", discount_type: "percentage" as "percentage" | "fixed", discount_value: 0, expires_at: "", usage_limit: 0, is_active: true })
   const [saving, setSaving] = useState(false)
 
   const fetchCoupons = useCallback(async () => {
@@ -40,16 +40,16 @@ export default function CouponsPage() {
 
   const openCreate = () => {
     setEditingCoupon(null)
-    setFormState({ code: "", type: "percentage", value: 0, expiry_date: "", usage_limit: 0, active: true })
+    setFormState({ code: "", discount_type: "percentage", discount_value: 0, expires_at: "", usage_limit: 0, is_active: true })
     setShowModal(true)
   }
 
   const openEdit = (coupon: any) => {
     setEditingCoupon(coupon)
     setFormState({
-      code: coupon.code || "", type: coupon.type || "percentage", value: coupon.value || 0,
-      expiry_date: coupon.expiry_date ? coupon.expiry_date.slice(0, 10) : "",
-      usage_limit: coupon.usage_limit || 0, active: coupon.active ?? true,
+      code: coupon.code || "", discount_type: coupon.discount_type || "percentage", discount_value: coupon.discount_value || 0,
+      expires_at: coupon.expires_at ? coupon.expires_at.slice(0, 10) : "",
+      usage_limit: coupon.usage_limit || 0, is_active: coupon.is_active ?? true,
     })
     setShowModal(true)
   }
@@ -167,12 +167,12 @@ export default function CouponsPage() {
                       <button onClick={() => navigator.clipboard.writeText(c.code)} className="p-1 rounded hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"><Copy className="w-3 h-3" /></button>
                     </div>
                   </td>
-                  <td className="p-4 text-sm font-bold text-white">{c.type === "percentage" ? `${c.value}%` : `$${c.value}`}</td>
+                  <td className="p-4 text-sm font-bold text-white">{c.discount_type === "percentage" ? `${c.discount_value}%` : `$${c.discount_value}`}</td>
                   <td className="p-4 text-xs text-[#A7B0C0]">{c.usage_count ?? 0}/{c.usage_limit ?? "∞"}</td>
-                  <td className="p-4 text-xs text-[#A7B0C0]">{c.expiry_date ? new Date(c.expiry_date).toLocaleDateString() : "Never"}</td>
+                  <td className="p-4 text-xs text-[#A7B0C0]">{c.expires_at ? new Date(c.expires_at).toLocaleDateString() : "Never"}</td>
                   <td className="p-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${c.active ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20"}`}>
-                      {c.active ? "Active" : "Inactive"}
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${c.is_active ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20"}`}>
+                      {c.is_active ? "Active" : "Inactive"}
                     </span>
                   </td>
                   <td className="p-4 text-right">
@@ -219,20 +219,20 @@ export default function CouponsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-[#A7B0C0]">Type</label>
-                  <select value={formState.type} onChange={e => setFormState(f => ({ ...f, type: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
+                  <select value={formState.discount_type} onChange={e => setFormState(f => ({ ...f, discount_type: e.target.value as "percentage" | "fixed" }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
                     <option value="percentage">Percentage</option>
                     <option value="fixed">Fixed</option>
                   </select>
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-[#A7B0C0]">Value</label>
-                  <input type="number" value={formState.value} onChange={e => setFormState(f => ({ ...f, value: Number(e.target.value) }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
+                  <input type="number" value={formState.discount_value} onChange={e => setFormState(f => ({ ...f, discount_value: Number(e.target.value) }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-[#A7B0C0]">Expiry Date</label>
-                  <input type="date" value={formState.expiry_date} onChange={e => setFormState(f => ({ ...f, expiry_date: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
+                  <input type="date" value={formState.expires_at} onChange={e => setFormState(f => ({ ...f, expires_at: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-[#A7B0C0]">Usage Limit</label>
@@ -241,8 +241,8 @@ export default function CouponsPage() {
               </div>
               <div className="flex items-center gap-3 pt-1">
                 <label className="text-xs font-medium text-[#A7B0C0]">Active</label>
-                <button onClick={() => setFormState(f => ({ ...f, active: !f.active }))} className={`relative w-11 h-6 rounded-full transition-colors ${formState.active ? "bg-[#22C55E]" : "bg-white/[0.06]"}`}>
-                  <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform ${formState.active ? "translate-x-5.5" : "translate-x-0.5"}`} />
+                <button onClick={() => setFormState(f => ({ ...f, is_active: !f.is_active }))} className={`relative w-11 h-6 rounded-full transition-colors ${formState.is_active ? "bg-[#22C55E]" : "bg-white/[0.06]"}`}>
+                  <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform ${formState.is_active ? "translate-x-5.5" : "translate-x-0.5"}`} />
                 </button>
               </div>
             </div>

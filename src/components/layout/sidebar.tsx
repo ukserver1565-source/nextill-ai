@@ -10,7 +10,7 @@ import Link from "next/link"
 import {
   LayoutDashboard, Search, FileText, Shield, FolderKanban,
   File, Clock, Sparkles, Layers, Settings,
-  PanelLeftClose, PanelLeft, ChevronRight, Zap, HelpCircle,
+  PanelLeftClose, PanelLeft, ChevronRight, Zap, LogOut,
 } from "lucide-react"
 
 const iconMap: Record<string, React.ElementType> = {
@@ -181,7 +181,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
               onClick={signOut}
               className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-xs text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors"
             >
-              <HelpCircle className="w-3.5 h-3.5" />
+              <LogOut className="w-3.5 h-3.5" />
               Sign Out
             </button>
           </div>
@@ -194,7 +194,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
             className="p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors mx-auto block"
             title="Sign Out"
           >
-            <HelpCircle className="w-4 h-4" />
+            <LogOut className="w-4 h-4" />
           </button>
         </div>
       )}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Settings, CheckCircle, XCircle, Loader2, Link, X } from "lucide-react"
+import { Settings, CheckCircle, XCircle, Loader2, Link, X, Save } from "lucide-react"
 
 interface IntegrationSetting {
   id: string
@@ -32,6 +32,37 @@ export default function IntegrationsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [settingsItem, setSettingsItem] = useState<IntegrationSetting | null>(null)
+  const [settingsEnabled, setSettingsEnabled] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState("")
+
+  const openSettings = (item: IntegrationSetting) => {
+    setSettingsItem(item)
+    setSettingsEnabled(item.is_enabled)
+    setSaveError("")
+  }
+
+  const handleSaveSettings = async () => {
+    if (!settingsItem) return
+    setSaving(true)
+    setSaveError("")
+    try {
+      const res = await fetch("/api/admin/integrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: settingsItem.provider_slug, enabled: settingsEnabled }),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      setIntegrations(prev => prev.map(i =>
+        i.provider_slug === settingsItem.provider_slug ? { ...i, is_enabled: settingsEnabled } : i
+      ))
+      setSettingsItem(null)
+    } catch (err: any) {
+      setSaveError(err.message || "Failed to save settings")
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const fetchData = useCallback(async () => {
     setLoading(true)

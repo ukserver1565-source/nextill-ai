@@ -6,19 +6,19 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     const { id } = await params
     const { data: current, error: fetchErr } = await supabaseAdmin
       .from("ai_providers")
-      .select("enabled")
+      .select("id, enabled")
       .eq("id", id)
       .single()
-    if (fetchErr) throw new Error(fetchErr.message)
+    if (fetchErr || !current) throw new Error("Provider not found")
     const { data, error } = await supabaseAdmin
       .from("ai_providers")
-      .update({ enabled: !current.enabled })
+      .update({ enabled: !current.enabled, updated_at: new Date().toISOString() })
       .eq("id", id)
       .select()
       .single()
     if (error) throw new Error(error.message)
     return NextResponse.json(data)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to toggle provider", details: (err as Error).message }, { status: 400 })
+    return NextResponse.json({ error: "Failed to toggle provider" }, { status: 400 })
   }
 }

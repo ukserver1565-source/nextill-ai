@@ -16,17 +16,23 @@ export default function NewProjectPage() {
   const [domain, setDomain] = useState("")
   const [description, setDescription] = useState("")
   const [creating, setCreating] = useState(false)
+  const [error, setError] = useState("")
 
   const handleCreate = async () => {
     if (!name.trim() || !profile) return
     setCreating(true)
+    setError("")
     const { data, error } = await supabase
       .from("projects")
       .insert({ user_id: profile.user_id, name: name.trim(), domain: domain.trim() || null, description: description.trim() || null })
       .select()
       .single()
     setCreating(false)
-    if (!error && data) router.push(`/dashboard/projects`)
+    if (error) {
+      setError(error.message || "Failed to create project. Please try again.")
+    } else if (data) {
+      router.push(`/dashboard/projects`)
+    }
   }
 
   return (
@@ -55,6 +61,11 @@ export default function NewProjectPage() {
           <label className="text-xs font-medium text-muted">Description (optional)</label>
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className="w-full px-3 py-2 bg-black/40 border border-muted/20 rounded-lg text-sm focus:outline-none focus:border-primary-light/40 resize-none" />
         </div>
+        {error && (
+          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400">
+            {error}
+          </div>
+        )}
         <Button variant="gradient" className="w-full" onClick={handleCreate} disabled={creating || !name.trim()}>
           {creating ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</> : "Create Project"}
         </Button>

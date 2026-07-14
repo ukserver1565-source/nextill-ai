@@ -39,14 +39,14 @@ export default function AdminDashboard() {
   const [date, setDate] = useState("")
   useEffect(() => { setDate(new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })) }, [])
 
-  const statCards = overview
+  const statCards = overview?.stats
     ? [
-        { icon: Users, label: "Total Users", value: overview.stats.totalUsers.toLocaleString(), change: `+${overview.stats.activeToday} today`, up: true, color: "#6D5EF5" },
-        { icon: UserCheck, label: "Active Today", value: overview.stats.activeToday.toLocaleString(), change: `${overview.stats.premiumUsers} premium`, up: true, color: "#22C55E" },
-        { icon: DollarSign, label: "Total Revenue", value: `$${overview.stats.totalRevenue.toLocaleString()}`, change: `$${overview.stats.monthlyRevenue} this month`, up: true, color: "#F59E0B" },
-        { icon: FileText, label: "Projects", value: overview.stats.totalProjects.toLocaleString(), change: `${overview.stats.totalTransactions} transactions`, up: true, color: "#4CC9F0" },
-        { icon: Sparkles, label: "Credits Used", value: overview.stats.totalUsed.toLocaleString(), change: `${overview.stats.totalCredits} remaining`, up: true, color: "#8B5CF6" },
-        { icon: Activity, label: "Free Users", value: overview.stats.freeUsers.toLocaleString(), change: `${overview.stats.premiumUsers} premium`, up: true, color: "#EF4444" },
+        { icon: Users, label: "Total Users", value: (overview.stats.totalUsers ?? 0).toLocaleString(), change: `+${overview.stats.activeToday ?? 0} today`, up: true, color: "#6D5EF5" },
+        { icon: UserCheck, label: "Active Today", value: (overview.stats.activeToday ?? 0).toLocaleString(), change: `${overview.stats.premiumUsers ?? 0} premium`, up: true, color: "#22C55E" },
+        { icon: DollarSign, label: "Total Revenue", value: `$${(overview.stats.totalRevenue ?? 0).toLocaleString()}`, change: `$${overview.stats.monthlyRevenue ?? 0} this month`, up: true, color: "#F59E0B" },
+        { icon: FileText, label: "Projects", value: (overview.stats.totalProjects ?? 0).toLocaleString(), change: `${overview.stats.totalTransactions ?? 0} transactions`, up: true, color: "#4CC9F0" },
+        { icon: Sparkles, label: "Credits Used", value: (overview.stats.totalUsed ?? 0).toLocaleString(), change: `${overview.stats.totalCredits ?? 0} remaining`, up: true, color: "#8B5CF6" },
+        { icon: Activity, label: "Free Users", value: (overview.stats.freeUsers ?? 0).toLocaleString(), change: `${overview.stats.premiumUsers ?? 0} premium`, up: true, color: "#EF4444" },
       ]
     : []
 

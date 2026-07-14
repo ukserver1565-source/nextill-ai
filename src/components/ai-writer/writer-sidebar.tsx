@@ -70,7 +70,7 @@ export function WriterSidebar({ seo, readability, provider, wordCount }: WriterS
           </div>
 
           <div className="space-y-2">
-            {seo.keywordDensity.length > 0 && (
+            {(seo.keywordDensity || []).length > 0 && (
               <div>
                 <p className="text-[10px] text-muted mb-1">Keyword Density</p>
                 {seo.keywordDensity.map(k => (
@@ -82,7 +82,7 @@ export function WriterSidebar({ seo, readability, provider, wordCount }: WriterS
               </div>
             )}
 
-            {seo.missingKeywords.length > 0 && (
+            {(seo.missingKeywords || []).length > 0 && (
               <div>
                 <p className="text-[10px] text-muted mb-1 flex items-center gap-1">
                   <XCircle className="w-3 h-3 text-danger" /> Missing Keywords
@@ -93,7 +93,7 @@ export function WriterSidebar({ seo, readability, provider, wordCount }: WriterS
               </div>
             )}
 
-            {seo.lsiKeywords.length > 0 && (
+            {(seo.lsiKeywords || []).length > 0 && (
               <div>
                 <p className="text-[10px] text-muted mb-1">LSI Keywords Found</p>
                 <div className="flex flex-wrap gap-1">
@@ -104,7 +104,7 @@ export function WriterSidebar({ seo, readability, provider, wordCount }: WriterS
               </div>
             )}
 
-            {seo.suggestions.length > 0 && (
+            {(seo.suggestions || []).length > 0 && (
               <div>
                 <p className="text-[10px] text-muted mb-1 flex items-center gap-1">
                   <AlertTriangle className="w-3 h-3 text-yellow-500" /> Suggestions

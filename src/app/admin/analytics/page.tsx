@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
-import { Calendar, TrendingUp, Users, Eye, MousePointerClick, Loader2, Inbox } from "lucide-react"
+import { Calendar, TrendingUp, Users, Eye, MousePointerClick, Loader2, Inbox, XCircle } from "lucide-react"
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { supabase } from "@/lib/supabase/client"
 
@@ -31,59 +31,76 @@ export default function AnalyticsPage() {
   const [topPages, setTopPages] = useState<any[]>([])
   const [pageViewsData, setPageViewsData] = useState<any[]>([])
   const [usersData, setUsersData] = useState<any[]>([])
+  const [loadError, setLoadError] = useState("")
 
   useEffect(() => {
     async function load() {
       setLoading(true)
+      setLoadError("")
       try {
         const daysAgo = range === "7d" ? 7 : range === "90d" ? 90 : 30
         const cutoff = new Date()
         cutoff.setDate(cutoff.getDate() - daysAgo)
         const cutoffStr = cutoff.toISOString()
 
-        const [usageRes, usersRes, docsRes] = await Promise.all([
+        const [usageRes, usersRes] = await Promise.all([
           supabase.from("usage_logs").select("created_at, tool_slug, user_id, guest_id").gte("created_at", cutoffStr),
           supabase.from("profiles").select("created_at").gte("created_at", cutoffStr),
-          supabase.from("documents").select("tool_slug, created_at").gte("created_at", cutoffStr),
         ])
+
+        if (usageRes.error) throw new Error(usageRes.error.message)
+        if (usersRes.error) throw new Error(usersRes.error.message)
 
         const logs = usageRes.data || []
         setTotalPageViews(logs.length)
 
         const uniqueUserIds = new Set(logs.filter(l => l.user_id).map(l => l.user_id))
         const uniqueGuestIds = new Set(logs.filter(l => l.guest_id).map(l => l.guest_id))
-        setUniqueVisitors(uniqueUserIds.size + uniqueGuestIds.size)
+        const totalVisitors = uniqueUserIds.size + uniqueGuestIds.size
+        setUniqueVisitors(totalVisitors)
 
         const toolCounts: Record<string, number> = {}
         logs.forEach(l => { if (l.tool_slug) toolCounts[l.tool_slug] = (toolCounts[l.tool_slug] || 0) + 1 })
         const sorted = Object.entries(toolCounts).sort((a, b) => b[1] - a[1]).slice(0, 5)
         setTopPages(sorted.map(([slug, views]) => ({ page: `/tools/${slug}`, views, avgTime: "—" })))
 
-      const dailyViews: Record<string, number> = {}
-      logs.forEach(l => {
-        const day = l.created_at?.slice(0, 10) || "unknown"
-        dailyViews[day] = (dailyViews[day] || 0) + 1
-      })
-      const dailyArr = Object.entries(dailyViews).sort((a, b) => a[0].localeCompare(b[0])).map(([date, views]) => ({ date, views }))
-      setPageViewsData(dailyArr.length > 0 ? dailyArr : [])
+        const dailyViews: Record<string, number> = {}
+        logs.forEach(l => {
+          const day = l.created_at?.slice(0, 10) || "unknown"
+          dailyViews[day] = (dailyViews[day] || 0) + 1
+        })
+        const dailyArr = Object.entries(dailyViews).sort((a, b) => a[0].localeCompare(b[0])).map(([date, views]) => ({ date, views }))
+        setPageViewsData(dailyArr.length > 0 ? dailyArr : [])
 
-      const monthlyUsers: Record<string, number> = {}
-      const allUsers = usersRes.data || []
-      allUsers.forEach((u: any) => {
-        const month = u.created_at?.slice(0, 7) || "unknown"
-        monthlyUsers[month] = (monthlyUsers[month] || 0) + 1
-      })
-      const monthArr = Object.entries(monthlyUsers).sort((a, b) => a[0].localeCompare(b[0])).map(([month, users]) => ({
-        month: new Date(month + "-01").toLocaleString("en-US", { month: "short" }),
-        users,
-      }))
-      setUsersData(monthArr.length > 0 ? monthArr : [])
+        const monthlyUsers: Record<string, number> = {}
+        const allUsers = usersRes.data || []
+        allUsers.forEach((u: any) => {
+          const month = u.created_at?.slice(0, 7) || "unknown"
+          monthlyUsers[month] = (monthlyUsers[month] || 0) + 1
+        })
+        const monthArr = Object.entries(monthlyUsers).sort((a, b) => a[0].localeCompare(b[0])).map(([month, users]) => ({
+          month: new Date(month + "-01").toLocaleString("en-US", { month: "short" }),
+          users,
+        }))
+        setUsersData(monthArr.length > 0 ? monthArr : [])
 
-      setAvgSession(logs.length > 0 && uniqueUserIds.size > 0 ? `${Math.round(logs.length / uniqueUserIds.size)} hits/user` : "—")
-      setBounceRate("—")
+        setAvgSession(logs.length > 0 && totalVisitors > 0 ? `${Math.round(logs.length / totalVisitors)} hits/visitor` : "—")
 
-      } catch {}
-      setLoading(false)
+        // Bounce rate approximation: visitors with only 1 event / total visitors
+        const visitorEvents: Record<string, number> = {}
+        logs.forEach(l => {
+          const key = l.user_id || l.guest_id || "unknown"
+          visitorEvents[key] = (visitorEvents[key] || 0) + 1
+        })
+        const singleEventVisitors = Object.values(visitorEvents).filter(c => c === 1).length
+        const bounce = totalVisitors > 0 ? ((singleEventVisitors / totalVisitors) * 100).toFixed(1) : "0.0"
+        setBounceRate(`${bounce}%`)
+
+      } catch (err: any) {
+        setLoadError(err.message || "Failed to load analytics data")
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [range])
@@ -108,6 +125,13 @@ export default function AnalyticsPage() {
           ))}
         </div>
       </div>
+
+      {loadError && (
+        <div className="flex items-center gap-2 bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl px-4 py-2.5 text-xs text-[#EF4444]">
+          <XCircle className="w-3.5 h-3.5" />
+          <span>{loadError}</span>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {statCards.map((stat, i) => {

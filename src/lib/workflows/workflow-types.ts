@@ -98,4 +98,9 @@ export interface PlagiarismCheckerResult {
   safeToPublish: boolean
   wordCount: number
   engine: string
+  aiDetection?: {
+    score: number
+    label: string
+    sentences: { text: string; score: number }[]
+  }
 }

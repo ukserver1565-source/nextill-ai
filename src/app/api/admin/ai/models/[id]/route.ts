@@ -17,13 +17,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (body.max_tokens !== undefined) payload.max_tokens = body.max_tokens
     if (body.config !== undefined) payload.config = body.config
     if (body.temperature !== undefined) payload.temperature = body.temperature
-    const { data, error } = await supabaseAdmin
+    const { data } = await supabaseAdmin
       .from("ai_models")
       .update(payload)
       .eq("id", id)
       .select()
       .single()
-    if (error) throw new Error(error.message)
     return NextResponse.json(data)
   } catch (err) {
     return NextResponse.json({ error: "Failed to update model", details: (err as Error).message }, { status: 400 })

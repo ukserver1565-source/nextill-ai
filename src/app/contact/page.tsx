@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Mail, MessageSquare, Send, Loader2 } from "lucide-react"
 import { supabase } from "@/lib/supabase/client"
 import { useAuth } from "@/lib/auth/AuthProvider"
@@ -10,6 +10,11 @@ export default function ContactPage() {
   const [name, setName] = useState(profile?.full_name || "")
   const [email, setEmail] = useState(user?.email || "")
   const [subject, setSubject] = useState("")
+
+  useEffect(() => {
+    if (profile?.full_name) setName(profile.full_name)
+    if (user?.email) setEmail(user.email)
+  }, [profile, user])
   const [message, setMessage] = useState("")
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Zap, Activity, Server, TrendingUp, Loader2, Inbox } from "lucide-react"
+import { Zap, Activity, Server, TrendingUp, Loader2, Inbox, XCircle } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { supabase } from "@/lib/supabase/client"
 
@@ -29,49 +29,56 @@ export default function PerformancePage() {
     { icon: Server, label: "Total Requests", value: "—", change: "", up: true, color: "#6D5EF5" },
   ])
   const [performanceData, setPerformanceData] = useState<any[]>([])
+  const [loadError, setLoadError] = useState("")
 
   useEffect(() => {
     async function load() {
       setLoading(true)
-      const cutoff = new Date()
-      cutoff.setDate(cutoff.getDate() - 7)
-      const cutoffStr = cutoff.toISOString()
+      setLoadError("")
+      try {
+        // Fetch summary metrics from the performance API
+        const perfRes = await fetch("/api/admin/performance")
+        if (perfRes.ok) {
+          const perfData = await perfRes.json()
+          setMetrics([
+            { icon: Zap, label: "Avg Response Time", value: perfData.avgLatency > 0 ? `${perfData.avgLatency}ms` : "—", change: perfData.totalRequests > 0 ? `${perfData.totalRequests} total (24h)` : "", up: true, color: "#22C55E" },
+            { icon: Activity, label: "Error Rate", value: `${perfData.errorRate}%`, change: `${perfData.failedRequests} failed`, up: perfData.failedRequests === 0, color: "#4CC9F0" },
+            { icon: Server, label: "Total Requests", value: (perfData.totalRequests || 0).toLocaleString(), change: `last 24h`, up: true, color: "#6D5EF5" },
+          ])
+        }
 
-      const { data: logs } = await supabase
-        .from("ai_logs")
-        .select("latency_ms, cost, success, created_at")
-        .gte("created_at", cutoffStr)
-        .order("created_at", { ascending: true })
+        // Fetch chart data (hourly breakdown) via direct query with error handling
+        const cutoff = new Date()
+        cutoff.setDate(cutoff.getDate() - 7)
+        const cutoffStr = cutoff.toISOString()
 
-      const allLogs = logs || []
-      const totalRequests = allLogs.length
-      const failedRequests = allLogs.filter(l => !l.success).length
-      const errorRate = totalRequests > 0 ? ((failedRequests / totalRequests) * 100).toFixed(2) : "0.00"
-      const avgLatency = totalRequests > 0
-        ? Math.round(allLogs.reduce((sum, l) => sum + (l.latency_ms || 0), 0) / totalRequests)
-        : 0
+        const { data: logs, error: logsError } = await supabase
+          .from("ai_logs")
+          .select("latency_ms, cost, success, created_at")
+          .gte("created_at", cutoffStr)
+          .order("created_at", { ascending: true })
 
-      setMetrics([
-        { icon: Zap, label: "Avg Response Time", value: totalRequests > 0 ? `${avgLatency}ms` : "—", change: totalRequests > 0 ? `${totalRequests} total` : "", up: true, color: "#22C55E" },
-        { icon: Activity, label: "Error Rate", value: `${errorRate}%`, change: `${failedRequests} failed`, up: failedRequests === 0, color: "#4CC9F0" },
-        { icon: Server, label: "Total Requests", value: totalRequests.toLocaleString(), change: `last 7 days`, up: true, color: "#6D5EF5" },
-      ])
+        if (logsError) throw new Error(logsError.message)
 
-      const hourlyData: Record<string, { requests: number; totalLatency: number }> = {}
-      allLogs.forEach(l => {
-        const hour = l.created_at?.slice(0, 13) || "unknown"
-        if (!hourlyData[hour]) hourlyData[hour] = { requests: 0, totalLatency: 0 }
-        hourlyData[hour].requests++
-        hourlyData[hour].totalLatency += l.latency_ms || 0
-      })
-      const chartData = Object.entries(hourlyData).map(([hour, data]) => ({
-        hour: hour.slice(11, 13) + ":00",
-        responseTime: data.requests > 0 ? Math.round(data.totalLatency / data.requests) : 0,
-        requests: data.requests,
-      }))
-      setPerformanceData(chartData.length > 0 ? chartData : [])
-
-      setLoading(false)
+        const allLogs = logs || []
+        const hourlyData: Record<string, { requests: number; totalLatency: number }> = {}
+        allLogs.forEach(l => {
+          const hour = l.created_at?.slice(0, 13) || "unknown"
+          if (!hourlyData[hour]) hourlyData[hour] = { requests: 0, totalLatency: 0 }
+          hourlyData[hour].requests++
+          hourlyData[hour].totalLatency += l.latency_ms || 0
+        })
+        const chartData = Object.entries(hourlyData).map(([hour, data]) => ({
+          hour: hour.slice(11, 13) + ":00",
+          responseTime: data.requests > 0 ? Math.round(data.totalLatency / data.requests) : 0,
+          requests: data.requests,
+        }))
+        setPerformanceData(chartData.length > 0 ? chartData : [])
+      } catch (err: any) {
+        setLoadError(err.message || "Failed to load performance data")
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [])
@@ -82,6 +89,13 @@ export default function PerformancePage() {
         <h1 className="text-2xl font-bold text-white">Performance</h1>
         <p className="text-sm text-[#A7B0C0] mt-1">System performance and metrics monitoring</p>
       </div>
+
+      {loadError && (
+        <div className="flex items-center gap-2 bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl px-4 py-2.5 text-xs text-[#EF4444]">
+          <XCircle className="w-3.5 h-3.5" />
+          <span>{loadError}</span>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {metrics.map((m, i) => {

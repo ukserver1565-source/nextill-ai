@@ -3,17 +3,19 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 
 export async function GET(req: NextRequest) {
   try {
-    const providerId = req.nextUrl.searchParams.get("provider_id") || undefined
-    let query = supabaseAdmin
-      .from("ai_models")
-      .select("*, providers:provider_id(name, slug)")
-    if (providerId) query = query.eq("provider_id", providerId)
-    query = query.order("display_name", { ascending: true })
+    const providerSlug = req.nextUrl.searchParams.get("provider_slug") || req.nextUrl.searchParams.get("provider_id") || undefined
+    let query = supabaseAdmin.from("ai_models").select("*")
+    if (providerSlug) query = query.eq("provider_slug", providerSlug)
+    query = query.order("model_name", { ascending: true })
     const { data, error } = await query
     if (error) throw new Error(error.message)
     return NextResponse.json(data || [])
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch models", details: (err as Error).message }, { status: 500 })
+    const msg = (err as Error)?.message || ""
+    if (msg.includes("does not exist") || msg.includes("Could not find the table")) {
+      return NextResponse.json([])
+    }
+    return NextResponse.json({ error: "Failed to fetch models" }, { status: 500 })
   }
 }
 
@@ -21,18 +23,11 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     if (body.id) {
-      const payload: any = {}
-      if (body.provider_id !== undefined) payload.provider_id = body.provider_id
-      if (body.display_name !== undefined) payload.display_name = body.display_name
-      if (body.model_name !== undefined) payload.model_name = body.model_name
-      if (body.provider_model_id !== undefined) payload.provider_model_id = body.provider_model_id
-      if (body.is_enabled !== undefined) payload.is_enabled = body.is_enabled
-      if (body.is_default !== undefined) payload.is_default = body.is_default
-      if (body.cost_input !== undefined) payload.cost_input = body.cost_input
-      if (body.cost_output !== undefined) payload.cost_output = body.cost_output
-      if (body.max_tokens !== undefined) payload.max_tokens = body.max_tokens
-      if (body.config !== undefined) payload.config = body.config
-      if (body.temperature !== undefined) payload.temperature = body.temperature
+      const allowed = ["model_name", "is_enabled", "is_default", "is_fallback", "cost_input", "cost_output", "max_tokens", "temperature", "provider_slug"]
+      const payload: Record<string, unknown> = {}
+      for (const key of allowed) {
+        if (body[key] !== undefined) payload[key] = body[key]
+      }
       const { data, error } = await supabaseAdmin
         .from("ai_models")
         .update(payload)
@@ -45,23 +40,26 @@ export async function POST(req: NextRequest) {
     const { data, error } = await supabaseAdmin
       .from("ai_models")
       .insert({
-        provider_id: body.provider_id,
-        display_name: body.display_name,
-        model_name: body.model_name || body.display_name,
-        provider_model_id: body.provider_model_id || body.display_name,
+        provider: body.provider || body.provider_slug || "unknown",
+        provider_slug: body.provider_slug || body.provider_id || null,
+        model_name: body.model_name || "New Model",
         is_enabled: body.is_enabled ?? true,
         is_default: body.is_default ?? false,
         cost_input: body.cost_input ?? 0,
         cost_output: body.cost_output ?? 0,
         max_tokens: body.max_tokens ?? 4096,
-        config: body.config || {},
+        temperature: body.temperature ?? 0.7,
       })
       .select()
       .single()
     if (error) throw new Error(error.message)
     return NextResponse.json(data)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to save model", details: (err as Error).message }, { status: 400 })
+    const msg = (err as Error)?.message || ""
+    if (msg.includes("does not exist") || msg.includes("Could not find the table")) {
+      return NextResponse.json({ error: "Models table not found. Run migration 006." }, { status: 503 })
+    }
+    return NextResponse.json({ error: "Failed to save model" }, { status: 400 })
   }
 }
 
@@ -72,6 +70,6 @@ export async function DELETE(req: NextRequest) {
     if (error) throw new Error(error.message)
     return NextResponse.json({ success: true })
   } catch (err) {
-    return NextResponse.json({ error: "Failed to delete model", details: (err as Error).message }, { status: 400 })
+    return NextResponse.json({ error: "Failed to delete model" }, { status: 400 })
   }
 }

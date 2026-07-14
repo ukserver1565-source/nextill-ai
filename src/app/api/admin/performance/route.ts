@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
+import { safeQuery, safeCount } from "@/lib/supabase/safe-query"
+
+interface AiLogEntry {
+  latency_ms: number | null
+  success: boolean | null
+  cost: number | null
+}
 
 export async function GET() {
   try {
@@ -10,9 +17,9 @@ export async function GET() {
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
 
     const [aiLogsRecent, aiLogsWeek, usageLogsRecent] = await Promise.all([
-      supabaseAdmin.from("ai_logs").select("latency_ms, success, cost").gte("created_at", oneDayAgo.toISOString()),
-      supabaseAdmin.from("ai_logs").select("latency_ms, success, cost").gte("created_at", oneWeekAgo.toISOString()),
-      supabaseAdmin.from("usage_logs").select("id", { count: "exact", head: true }).gte("created_at", oneDayAgo.toISOString()),
+      safeQuery<AiLogEntry>(() => supabaseAdmin.from("ai_logs").select("latency_ms, success, cost").gte("created_at", oneDayAgo.toISOString())),
+      safeQuery<AiLogEntry>(() => supabaseAdmin.from("ai_logs").select("latency_ms, success, cost").gte("created_at", oneWeekAgo.toISOString())),
+      safeCount(() => supabaseAdmin.from("usage_logs").select("id", { count: "exact", head: true }).gte("created_at", oneDayAgo.toISOString())),
     ])
 
     const recentLogs = aiLogsRecent.data || []

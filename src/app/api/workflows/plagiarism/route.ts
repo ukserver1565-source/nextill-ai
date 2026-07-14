@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     if (!text || typeof text !== "string") {
       return NextResponse.json({ error: "Text content is required" }, { status: 400 })
     }
-    const result = await runPlagiarismCheck({ text })
+    const result = await runPlagiarismCheck({ text, runAiDetection: true })
     return NextResponse.json(result)
   } catch (err) {
     console.error("[plagiarism] API error:", err)

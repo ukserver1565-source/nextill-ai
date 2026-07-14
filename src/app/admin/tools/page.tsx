@@ -10,7 +10,6 @@ interface ToolSetting {
   tool_name: string
   is_enabled: boolean
   credits_cost: number
-  usage_count: number
   default_model: string | null
   guest_daily_limit: number
   free_daily_limit: number
@@ -150,7 +149,6 @@ export default function ToolsPage() {
                 <h3 className="text-sm font-semibold text-white">{tool.tool_name}</h3>
                 <div className="mt-2 flex items-center gap-3 text-[10px] text-[#A7B0C0]">
                   <span>{tool.credits_cost} credits</span>
-                  <span>{tool.usage_count.toLocaleString()} uses</span>
                 </div>
                 <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between">
                   <span className={`text-[10px] font-medium ${tool.is_enabled ? "text-[#22C55E]" : "text-[#A7B0C0]"}`}>

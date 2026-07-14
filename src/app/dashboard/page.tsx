@@ -31,9 +31,9 @@ const itemVariants = {
 const workflows = [
   {
     icon: Search,
-    title: "Keyword Intelligence",
+    title: "Domain Intelligence",
     desc: "Discover high-value keywords with volume, difficulty & SERP analysis",
-    path: "/keyword-intelligence",
+    path: "/domain-overview",
     gradient: "from-violet-500 to-indigo-600",
     credits: 2,
   },
@@ -47,7 +47,7 @@ const workflows = [
   },
   {
     icon: FileSearch,
-    title: "Plagiarism Checker",
+    title: "Plagiarism & Authenticity",
     desc: "Check content originality against billions of web sources",
     path: "/plagiarism-checker",
     gradient: "from-red-500 to-pink-600",
@@ -86,30 +86,35 @@ export default function Dashboard() {
     if (!profile) return
     const uid = profile.user_id
     async function load() {
-      const [docRes, credRes, projRes, usageRes, creditLogRes, planRes] = await Promise.all([
-        supabase.from("documents").select("*").eq("user_id", uid).order("updated_at", { ascending: false }).limit(10),
-        supabase.from("credits").select("balance").eq("user_id", uid).single(),
-        supabase.from("projects").select("id", { count: "exact", head: true }).eq("user_id", uid),
-        supabase.from("usage_logs").select("id", { count: "exact", head: true }).eq("user_id", uid),
-        supabase.from("credit_logs").select("amount, type").eq("user_id", uid).eq("type", "used"),
-        supabase.from("plans").select("credits").eq("name", profile?.plan || "free").maybeSingle(),
-      ])
-      setDocuments(docRes.data || [])
-      setCredits(credRes.data as { balance: number } | null)
-      if (planRes.data?.credits) setCreditLimit(planRes.data.credits)
+      try {
+        const [docRes, credRes, projRes, usageRes, creditLogRes, planRes] = await Promise.all([
+          supabase.from("documents").select("*").eq("user_id", uid).order("updated_at", { ascending: false }).limit(10),
+          supabase.from("credits").select("balance").eq("user_id", uid).single(),
+          supabase.from("projects").select("id", { count: "exact", head: true }).eq("user_id", uid),
+          supabase.from("usage_logs").select("id", { count: "exact", head: true }).eq("user_id", uid),
+          supabase.from("credit_logs").select("amount, type").eq("user_id", uid).eq("type", "used"),
+          supabase.from("plans").select("credits").eq("name", profile?.plan || "free").maybeSingle(),
+        ])
+        setDocuments(docRes.data || [])
+        setCredits(credRes.data as { balance: number } | null)
+        if (planRes.data?.credits) setCreditLimit(planRes.data.credits)
 
-      const projectCount = projRes.count || 0
-      const documentCount = docRes.count || 0
-      const creditsUsed = creditLogRes.data?.reduce((sum: number, log: any) => sum + Math.abs(log.amount), 0) || 0
-      const aiRuns = usageRes.count || 0
+        const projectCount = projRes.count || 0
+        const documentCount = docRes.count || 0
+        const creditsUsed = creditLogRes.data?.reduce((sum: number, log: any) => sum + Math.abs(log.amount), 0) || 0
+        const aiRuns = usageRes.count || 0
 
-      setStatsData([
-        { icon: FolderKanban, label: "Projects", value: projectCount.toLocaleString(), trend: projectCount > 0 ? `+${projectCount}` : "0", up: true, color: "from-violet-500 to-indigo-600" },
-        { icon: FileIcon, label: "Documents", value: documentCount.toLocaleString(), trend: documentCount > 0 ? `+${documentCount}` : "0", up: true, color: "from-blue-500 to-cyan-500" },
-        { icon: Zap, label: "Credits Used", value: creditsUsed.toLocaleString(), trend: creditsUsed > 0 ? `-${creditsUsed}` : "0", up: false, color: "from-amber-500 to-orange-600" },
-        { icon: Activity, label: "AI Runs", value: aiRuns.toLocaleString(), trend: aiRuns > 0 ? `+${aiRuns}` : "0", up: true, color: "from-emerald-500 to-teal-600" },
-      ])
-      setLoading(false)
+        setStatsData([
+          { icon: FolderKanban, label: "Projects", value: projectCount.toLocaleString(), trend: projectCount > 0 ? `+${projectCount}` : "0", up: true, color: "from-violet-500 to-indigo-600" },
+          { icon: FileIcon, label: "Documents", value: documentCount.toLocaleString(), trend: documentCount > 0 ? `+${documentCount}` : "0", up: true, color: "from-blue-500 to-cyan-500" },
+          { icon: Zap, label: "Credits Used", value: creditsUsed.toLocaleString(), trend: creditsUsed > 0 ? `-${creditsUsed}` : "0", up: false, color: "from-amber-500 to-orange-600" },
+          { icon: Activity, label: "AI Runs", value: aiRuns.toLocaleString(), trend: aiRuns > 0 ? `+${aiRuns}` : "0", up: true, color: "from-emerald-500 to-teal-600" },
+        ])
+      } catch (err) {
+        console.error("Failed to load dashboard data:", err)
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [profile])
@@ -125,7 +130,7 @@ export default function Dashboard() {
   const userName = profile?.full_name || profile?.email || "User"
   const creditBalance = credits?.balance ?? profile?.credits ?? 0
   const creditUsed = creditLimit - creditBalance
-  const creditPercent = Math.round((creditUsed / creditLimit) * 100)
+  const creditPercent = creditLimit > 0 ? Math.round((creditUsed / creditLimit) * 100) : 0
 
   const docTypeColors: Record<string, string> = {
     blog: "bg-blue-500/20 text-blue-400",

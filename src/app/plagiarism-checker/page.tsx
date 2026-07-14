@@ -220,7 +220,7 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
 
   const handleShare = useCallback(async () => {
     if (navigator.share) {
-      await navigator.share({ title: "Plagiarism Report - Nextill AI", text: `My content scored ${result.originalityScore}% originality on Nextill AI.` })
+      await navigator.share({ title: "Plagiarism Report - Nextill AI", text: `My content scored ${result.originalityScore}% originality on Nextill AI. AI-likelihood: ${result.aiDetection?.label || "N/A"}.` })
     } else {
       navigator.clipboard.writeText(`Plagiarism Report - Nextill AI\nScore: ${result.originalityScore}%`)
       setCopied("share")
@@ -244,7 +244,7 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: `Plagiarism Report - ${result.originalityScore}% Original`,
+          title: `Plagiarism & Authenticity Report - ${result.originalityScore}% Original`,
           content: result.matchedPhrases.map(p => `"${p.text}" — ${p.similarity}% (${p.source || "Unknown"})`).join("\n"),
           score: result.originalityScore,
           sources: result.sources,
@@ -496,6 +496,7 @@ function PlagiarismCheckerContent() {
         safeToPublish: content.safeToPublish ?? score >= 80,
         wordCount: content.wordCount || json.wordCount || text.split(/\s+/).filter(Boolean).length,
         engine: json.localEngine ? "local" : "ai",
+        aiDetection: json.aiDetection || undefined,
       }
       setResult(plagiarismResult)
     } catch (err: any) {
@@ -507,7 +508,12 @@ function PlagiarismCheckerContent() {
 
   const handleFileUpload = useCallback((file: File | null) => {
     if (!file) return
+    if (!file.name.endsWith(".txt")) {
+      setError("Only .txt files are supported. Please convert your file to plain text before uploading.")
+      return
+    }
     setFileName(file.name)
+    setError("")
     const reader = new FileReader()
     reader.onload = (ev) => {
       const content = ev.target?.result
@@ -559,7 +565,7 @@ function PlagiarismCheckerContent() {
                   <FileSearch className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold tracking-tight text-white">Plagiarism Checker</h1>
+                  <h1 className="text-lg font-bold tracking-tight text-white">Plagiarism & Authenticity</h1>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
                     <p className="text-xs text-[#5A6577]">Originality scanner</p>
@@ -617,7 +623,7 @@ function PlagiarismCheckerContent() {
                         isDragOver ? "border-[#6D5EF5] bg-[#6D5EF5]/8 shadow-lg shadow-[#6D5EF5]/10" : "border-white/[0.08] hover:border-white/[0.15] bg-white/[0.02] hover:bg-white/[0.03]"
                       }`}
                     >
-                      <input ref={fileInputRef} type="file" accept=".txt,.docx,.pdf" onChange={handleFileChange} className="hidden" />
+                      <input ref={fileInputRef} type="file" accept=".txt" onChange={handleFileChange} className="hidden" />
                       {fileName ? (
                         <div className="text-center">
                           <div className="w-14 h-14 rounded-xl bg-[#22C55E]/10 border border-[#22C55E]/20 flex items-center justify-center mx-auto mb-4">
@@ -632,7 +638,7 @@ function PlagiarismCheckerContent() {
                             <FileUp className="w-6 h-6 text-[#6D5EF5]" />
                           </div>
                           <p className="text-sm text-white font-medium mb-1">Drop file here or click to browse</p>
-                          <p className="text-xs text-[#A7B0C0]">Supports .txt, .docx, and .pdf files</p>
+                          <p className="text-xs text-[#A7B0C0]">Supports .txt files only</p>
                         </>
                       )}
                     </div>
@@ -759,7 +765,7 @@ export default function PlagiarismCheckerPage() {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/10 border border-[#6D5EF5]/20 flex items-center justify-center">
             <Loader2 className="w-5 h-5 text-[#6D5EF5] animate-spin" />
           </div>
-          <p className="text-sm text-[#5A6577]">Loading Plagiarism Checker...</p>
+          <p className="text-sm text-[#5A6577]">Loading Plagiarism & Authenticity...</p>
         </div>
       </div>
     }>

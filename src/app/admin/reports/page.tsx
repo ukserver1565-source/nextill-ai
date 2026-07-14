@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { FileText, FileSpreadsheet, Download, Users, DollarSign, BarChart3, Cpu, Loader2, Inbox } from "lucide-react"
-import { supabase } from "@/lib/supabase/client"
+import { FileText, FileSpreadsheet, Download, Users, DollarSign, BarChart3, Cpu, Loader2, Inbox, XCircle } from "lucide-react"
 
 const reportTypes = [
   { icon: Users, label: "User Reports", desc: "User registration, activity, and plan distribution", color: "from-[#6D5EF5] to-[#8B5CF6]" },
@@ -27,6 +26,7 @@ export default function ReportsPage() {
   const [reports, setReports] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const [statsError, setStatsError] = useState("")
   const [stats, setStats] = useState({ total: 0, thisMonth: 0 })
   const [userRows, setUserRows] = useState<any[]>([])
   const [paymentRows, setPaymentRows] = useState<any[]>([])
@@ -52,19 +52,36 @@ export default function ReportsPage() {
   }, [fetchData])
 
   async function loadStats() {
+    setStatsError("")
     try {
-      const now = new Date()
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
-      const [{ count: totalUsers }, { count: monthUsers }, { data: users }, { data: payments }] = await Promise.all([
-        supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", monthStart),
-        supabase.from("profiles").select("id, email, name, plan_id, status, created_at"),
-        supabase.from("payments").select("id, amount, status, plan_slug, created_at"),
+      const [reportsRes, usersRes, paymentsRes] = await Promise.all([
+        fetch("/api/admin/reports"),
+        fetch("/api/admin/users?limit=1000"),
+        fetch("/api/admin/payments?limit=1000"),
       ])
-      setStats({ total: totalUsers || 0, thisMonth: monthUsers || 0 })
-      setUserRows(users || [])
-      setPaymentRows(payments || [])
-    } catch {}
+
+      if (reportsRes.ok) {
+        const reportData = await reportsRes.json()
+        setStats({ total: reportData.users?.total || 0, thisMonth: 0 })
+      }
+
+      if (usersRes.ok) {
+        const usersJson = await usersRes.json()
+        const users = usersJson.data || []
+        setUserRows(users)
+        const now = new Date()
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+        const monthUsers = users.filter((u: any) => u.created_at >= monthStart).length
+        setStats(prev => ({ ...prev, thisMonth: monthUsers }))
+      }
+
+      if (paymentsRes.ok) {
+        const paymentsJson = await paymentsRes.json()
+        setPaymentRows(paymentsJson.data || [])
+      }
+    } catch (err: any) {
+      setStatsError(err.message || "Failed to load stats")
+    }
   }
 
   const handleExportCSV = (type: string) => {
@@ -123,6 +140,13 @@ export default function ReportsPage() {
           </motion.div>
         ))}
       </div>
+
+      {statsError && (
+        <div className="flex items-center gap-2 bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl px-4 py-2.5 text-xs text-[#EF4444]">
+          <XCircle className="w-3.5 h-3.5" />
+          <span>Stats load error: {statsError}</span>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {reportTypes.map((r, i) => {

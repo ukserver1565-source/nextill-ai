@@ -11,7 +11,7 @@ export default function PricingPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/admin/plans")
+        const res = await fetch("/api/public/plans")
         if (!res.ok) throw new Error("Failed to load")
         const json = await res.json()
         const data = Array.isArray(json) ? json : json.data || []
