@@ -93,7 +93,7 @@ export default function Dashboard() {
           supabase.from("projects").select("id", { count: "exact", head: true }).eq("user_id", uid),
           supabase.from("usage_logs").select("id", { count: "exact", head: true }).eq("user_id", uid),
           supabase.from("credit_logs").select("amount, type").eq("user_id", uid).eq("type", "used"),
-          supabase.from("plans").select("credits").eq("name", profile?.plan || "free").maybeSingle(),
+          supabase.from("plans").select("credits").eq("slug", profile?.plan || "free").maybeSingle(),
         ])
         setDocuments(docRes.data || [])
         setCredits(credRes.data as { balance: number } | null)
@@ -128,7 +128,7 @@ export default function Dashboard() {
   }
 
   const userName = profile?.full_name || profile?.email || "User"
-  const creditBalance = credits?.balance ?? profile?.credits ?? 0
+  const creditBalance = profile?.credits ?? credits?.balance ?? 0
   const creditUsed = creditLimit - creditBalance
   const creditPercent = creditLimit > 0 ? Math.round((creditUsed / creditLimit) * 100) : 0
 

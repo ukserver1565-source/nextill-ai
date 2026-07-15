@@ -18,7 +18,8 @@ interface ToolSetting {
 }
 
 const toolIcons: Record<string, any> = {
-  ai_writer: PenSquare, keyword_research: Search, post_generator: PenSquare,
+  "keyword-intelligence": Search, "domain-intelligence": Search, "post-generator": PenSquare,
+  "plagiarism-checker": FileSearch, ai_writer: PenSquare, keyword_research: Search,
   plagiarism_checker: FileSearch, seo_analyzer: Search, rank_tracker: TrendingUp,
   backlink_analyzer: Share2, website_audit: Shield, ai_humanizer: PenSquare,
 }

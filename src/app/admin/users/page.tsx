@@ -17,7 +17,7 @@ export default function UsersPage() {
   const [page, setPage] = useState(1)
   const [showModal, setShowModal] = useState(false)
   const [editingUser, setEditingUser] = useState<any | null>(null)
-  const [formState, setFormState] = useState({ email: "", name: "", role: "user", plan_id: "free" })
+  const [formState, setFormState] = useState({ email: "", name: "", password: "", role: "free_user", plan: "free" })
   const [saving, setSaving] = useState(false)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [plans, setPlans] = useState<{ slug: string; name: string }[]>([])
@@ -30,7 +30,7 @@ export default function UsersPage() {
     try {
       const params = new URLSearchParams({ page: page.toString(), limit: PAGE_SIZE.toString() })
       if (search) params.set("search", search)
-      if (planFilter !== "all") params.set("filter[plan_id]", planFilter)
+      if (planFilter !== "all") params.set("filter[plan]", planFilter)
       if (statusFilter !== "all") params.set("filter[status]", statusFilter)
       const res = await fetch(`/api/admin/users?${params}`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -69,13 +69,13 @@ export default function UsersPage() {
 
   const openCreate = () => {
     setEditingUser(null)
-    setFormState({ email: "", name: "", role: "user", plan_id: "free" })
+    setFormState({ email: "", name: "", password: "", role: "free_user", plan: "free" })
     setShowModal(true)
   }
 
   const openEdit = (user: any) => {
     setEditingUser(user)
-    setFormState({ email: user.email || "", name: user.name || "", role: user.role || "user", plan_id: user.plan_id || "free" })
+    setFormState({ email: user.email || "", name: user.full_name || user.name || "", password: "", role: user.role || "free_user", plan: user.plan || "free" })
     setShowModal(true)
   }
 
@@ -251,8 +251,8 @@ export default function UsersPage() {
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${planColors[user.plan_id?.toLowerCase()] || planColors.free}`}>
-                        {user.plan_id || "free"}
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${planColors[user.plan?.toLowerCase()] || planColors.free}`}>
+                        {user.plan || "free"}
                       </span>
                     </td>
                     <td className="p-4">
@@ -326,17 +326,23 @@ export default function UsersPage() {
                 <label className="text-xs font-medium text-[#A7B0C0]">Name</label>
                 <input value={formState.name} onChange={e => setFormState(f => ({ ...f, name: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
               </div>
+              {!editingUser && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-[#A7B0C0]">Password</label>
+                  <input type="password" value={formState.password} onChange={e => setFormState(f => ({ ...f, password: e.target.value }))} placeholder="Leave empty for auto-generated" className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-[#A7B0C0]">Role</label>
                   <select value={formState.role} onChange={e => setFormState(f => ({ ...f, role: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
-                    <option value="user">User</option>
+                    <option value="free_user">User</option>
                     <option value="admin">Admin</option>
                   </select>
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-[#A7B0C0]">Plan</label>
-                  <select value={formState.plan_id} onChange={e => setFormState(f => ({ ...f, plan_id: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
+                  <select value={formState.plan} onChange={e => setFormState(f => ({ ...f, plan: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
                     {plans.length > 0 ? plans.map(p => <option key={p.slug} value={p.slug}>{p.name}</option>) : <option value="free">Free</option>}
                   </select>
                 </div>

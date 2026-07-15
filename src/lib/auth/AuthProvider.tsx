@@ -55,6 +55,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return fetchProfile(userId, retryCount + 1)
       }
     }
+    // If profile doesn't exist yet (trigger may not have fired), create a minimal one from auth metadata
+    if (!data && !error) {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const metaName = user.user_metadata?.full_name || user.user_metadata?.name || ""
+        setProfile({
+          id: "",
+          user_id: userId,
+          full_name: metaName,
+          email: user.email || null,
+          role: "free_user",
+          plan: "free",
+          credits: 0,
+          avatar_url: null,
+          status: "active",
+          created_at: new Date().toISOString(),
+        } as UserProfile)
+        return
+      }
+    }
     setProfile(data as UserProfile | null)
   }, [])
 
