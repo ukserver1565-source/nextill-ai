@@ -530,7 +530,7 @@ function KeywordsTab({ domain, keywords, filters, setFilters, page, setPage }: {
           <div className="p-12 text-center">
             <Search className="w-8 h-8 text-[#A7B0C0]/40 mx-auto mb-3" />
             <p className="text-sm text-[#A7B0C0]">No keyword data available</p>
-            <p className="text-xs text-[#A7B0C0]/60 mt-1">Connect Semrush to see organic keywords for this domain</p>
+            <p className="text-xs text-[#A7B0C0]/60 mt-1">Live Semrush keyword metrics are unavailable. Connect Semrush from Admin → Providers.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -541,6 +541,7 @@ function KeywordsTab({ domain, keywords, filters, setFilters, page, setPage }: {
                   <th className="text-center py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Position</th>
                   <th className="text-right py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Volume</th>
                   <th className="text-right py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">CPC</th>
+                  <th className="text-center py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Trend</th>
                   <th className="text-center py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Actions</th>
                 </tr>
               </thead>
@@ -562,6 +563,15 @@ function KeywordsTab({ domain, keywords, filters, setFilters, page, setPage }: {
                     </td>
                     <td className="py-3 px-3 text-right text-[#A7B0C0]">{kw.volume?.toLocaleString() ?? "—"}</td>
                     <td className="py-3 px-3 text-right text-[#A7B0C0]">{kw.cpc != null ? `$${kw.cpc.toFixed(2)}` : "—"}</td>
+                    <td className="py-3 px-3 text-center">
+                      {kw.trend && kw.trend.length > 0 ? (
+                        <div className="flex items-end justify-center gap-px h-4">
+                          {kw.trend.slice(-6).map((v, i) => (
+                            <div key={i} className="w-1 bg-[#6D5EF5] rounded-t" style={{ height: `${Math.max(2, (v / Math.max(...kw.trend!.slice(-6))) * 16)}px` }} />
+                          ))}
+                        </div>
+                      ) : "—"}
+                    </td>
                     <td className="py-3 px-3">
                       <div className="flex items-center justify-center gap-1">
                         <button

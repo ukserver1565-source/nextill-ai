@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Zap, Activity, Server, TrendingUp, Loader2, Inbox, XCircle } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { supabase } from "@/lib/supabase/client"
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null
@@ -36,7 +35,7 @@ export default function PerformancePage() {
       setLoading(true)
       setLoadError("")
       try {
-        // Fetch summary metrics from the performance API
+        // Fetch all data from the performance API (server-side uses service_role)
         const perfRes = await fetch("/api/admin/performance")
         if (perfRes.ok) {
           const perfData = await perfRes.json()
@@ -45,35 +44,16 @@ export default function PerformancePage() {
             { icon: Activity, label: "Error Rate", value: `${perfData.errorRate}%`, change: `${perfData.failedRequests} failed`, up: perfData.failedRequests === 0, color: "#4CC9F0" },
             { icon: Server, label: "Total Requests", value: (perfData.totalRequests || 0).toLocaleString(), change: `last 24h`, up: true, color: "#6D5EF5" },
           ])
+
+          // Use chart data from the API response
+          if (perfData.chartData && Array.isArray(perfData.chartData)) {
+            setPerformanceData(perfData.chartData)
+          }
+        } else if (perfRes.status === 401 || perfRes.status === 403) {
+          setLoadError("Authentication required")
+        } else {
+          setLoadError(`Server returned HTTP ${perfRes.status}`)
         }
-
-        // Fetch chart data (hourly breakdown) via direct query with error handling
-        const cutoff = new Date()
-        cutoff.setDate(cutoff.getDate() - 7)
-        const cutoffStr = cutoff.toISOString()
-
-        const { data: logs, error: logsError } = await supabase
-          .from("ai_logs")
-          .select("latency_ms, cost, success, created_at")
-          .gte("created_at", cutoffStr)
-          .order("created_at", { ascending: true })
-
-        if (logsError) throw new Error(logsError.message)
-
-        const allLogs = logs || []
-        const hourlyData: Record<string, { requests: number; totalLatency: number }> = {}
-        allLogs.forEach(l => {
-          const hour = l.created_at?.slice(0, 13) || "unknown"
-          if (!hourlyData[hour]) hourlyData[hour] = { requests: 0, totalLatency: 0 }
-          hourlyData[hour].requests++
-          hourlyData[hour].totalLatency += l.latency_ms || 0
-        })
-        const chartData = Object.entries(hourlyData).map(([hour, data]) => ({
-          hour: hour.slice(11, 13) + ":00",
-          responseTime: data.requests > 0 ? Math.round(data.totalLatency / data.requests) : 0,
-          requests: data.requests,
-        }))
-        setPerformanceData(chartData.length > 0 ? chartData : [])
       } catch (err: any) {
         setLoadError(err.message || "Failed to load performance data")
       } finally {

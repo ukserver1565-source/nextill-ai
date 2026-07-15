@@ -17,7 +17,10 @@ const TIMEOUT_MS = 15000
 
 // Semrush export column sets
 const DOMAIN_RANKS_COLS = "Db,Dn,Ad,Ch,Nr,Or,Ot,Op,Dr,Ur"
+// domain_organic: Ph=keyword, Po=position, Nq=volume, Cp=CPC, Ur=url, Tr=traffic, Trend=trend
 const DOMAIN_ORGANIC_COLS = "Ph,Po,Nq,Cp,Ur,Tr,Trend"
+// phrase_this: Ph=keyword, Nq=volume, Cp=CPC, Co=competition, Nr=results, Trend=trend
+const KEYWORD_OVERVIEW_COLS = "Ph,Nq,Cp,Co,Nr,Trend"
 const DOMAIN_BACKLINK_COLS = "as,ua,ul,dp,at,lt,td"
 const DOMAIN_COMPETITORS_COLS = "Cr,Dn,In,Or"
 
@@ -200,21 +203,22 @@ export class SemrushProvider implements IDomainOverviewProvider, IKeywordProvide
         type: "phrase_this",
         phrase: keyword,
         database: country,
-        export_columns: "Ph,Nq,Cp,Co,Nr,Trend",
+        export_columns: KEYWORD_OVERVIEW_COLS,
       })
       const rows = parseCSV(csv)
       if (rows.length < 2) return { data: null, error: "No data for this keyword", provider: this.name, latencyMs: Date.now() - start }
 
       const r = rows[1]
+      // phrase_this columns: Ph, Nq, Cp, Co, Nr, Trend
       const overview: KeywordOverview = {
         keyword: r[0] || keyword,
-        volume: numOrNull(r[1]),
+        volume: numOrNull(r[1]),       // Nq = search volume
         globalVolume: null,
         intent: null,
-        difficulty: null,
-        cpc: numOrNull(r[2]),
-        competition: numOrNull(r[3]),
-        trend: trendToArray(r[5]),
+        difficulty: null,               // Not available in phrase_this; requires separate endpoint
+        cpc: numOrNull(r[2]),           // Cp = cost per click
+        competition: numOrNull(r[3]),   // Co = competitive density (0-1)
+        trend: trendToArray(r[5]),      // Trend = 12-month trend
         questions: null,
         variations: null,
         clusters: null,
@@ -245,21 +249,22 @@ export class SemrushProvider implements IDomainOverviewProvider, IKeywordProvide
         display_offset: String((pagination.page - 1) * pagination.pageSize),
       })
       const rows = parseCSV(csv)
+      // Columns: Ph,Po,Nq,Cp,Ur,Tr,Trend
       const keywords: KeywordRow[] = []
       for (let i = 1; i < rows.length; i++) {
         const r = rows[i]
         keywords.push({
           id: `semrush-${domain}-${i}`,
-          keyword: r[0] || "",
-          intent: null,
-          volume: numOrNull(r[2]),
-          kd: null,
-          cpc: numOrNull(r[3]),
-          competition: null,
+          keyword: r[0] || "",          // Ph = phrase/keyword
+          intent: null,                 // Not available in domain_organic
+          volume: numOrNull(r[2]),      // Nq = number of queries (volume)
+          kd: null,                     // Not available in domain_organic
+          cpc: numOrNull(r[3]),         // Cp = cost per click
+          competition: null,            // Not available in domain_organic
           serpFeatures: null,
-          trend: trendToArray(r[6]),
-          position: numOrNull(r[1]),
-          url: r[4] || null,
+          trend: trendToArray(r[6]),    // Trend = 12-month trend
+          position: numOrNull(r[1]),    // Po = organic position
+          url: r[4] || null,            // Ur = ranking URL
           lastUpdated: null,
         })
       }

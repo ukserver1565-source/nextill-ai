@@ -91,12 +91,25 @@ export async function runPostGenerator(input: {
 
   // Step 3: ai_writer
   runner.startStep(2)
-  const prompt = JSON.stringify({
-    task: "post_generator", primaryKeyword, articleType, wordCount,
-    language, country, tone, audience,
-    instructions: "Write a comprehensive, SEO-optimized article with proper structure and engaging content.",
+  const prompt = `Write a comprehensive, SEO-optimized ${articleType} article about "${primaryKeyword}".
+
+REQUIREMENTS:
+- Target word count: ${wordCount} words (minimum ${wordCount} words, aim for ${Math.round(wordCount * 1.1)})
+- Language: ${language}
+- Tone: ${tone}
+- Audience: ${audience}
+- Include an engaging introduction
+- Use proper H2 and H3 headings
+- Include practical examples and actionable advice
+- Write naturally and conversationally
+- Do NOT include meta descriptions or titles — just the article body
+- The article MUST be at least ${wordCount} words long. Count carefully. Do not stop short.
+- Start with an H1 title, then write the full article body with multiple sections.
+
+Write the complete article now:`
+  const writerResult = await generateText("post-generator", prompt, {
+    maxTokens: Math.max(8192, Math.ceil(wordCount * 2)),
   })
-  const writerResult = await generateText("post-generator", prompt)
   const usingLocal = isLocalEngine(writerResult.provider)
   let articleContent: string
 

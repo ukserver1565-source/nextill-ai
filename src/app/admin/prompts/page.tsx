@@ -6,12 +6,15 @@ import { FileText, Plus, Edit3, Copy, Trash2, Loader2, FileSearch, X } from "luc
 
 interface Prompt {
   id: string
-  tool_slug: string
+  slug: string
   name: string
-  content: string
-  version: number
+  category: string
+  prompt_text: string
+  default_model: string | null
+  temperature: number | null
+  max_tokens: number | null
   is_active: boolean
-  variables: string[]
+  version: number
   created_at: string
   updated_at: string
 }
@@ -47,9 +50,9 @@ export default function PromptsPage() {
 
   useEffect(() => { fetchPrompts() }, [fetchPrompts])
 
-  const categories = useMemo(() => Array.from(new Set(prompts.map(p => p.tool_slug))), [prompts])
+  const categories = useMemo(() => Array.from(new Set(prompts.map(p => p.category))), [prompts])
 
-  const filtered = filterCat === "all" ? prompts : prompts.filter(p => p.tool_slug === filterCat)
+  const filtered = filterCat === "all" ? prompts : prompts.filter(p => p.category === filterCat)
 
   const handleDelete = async (id: string) => {
     setActionError("")
@@ -72,8 +75,8 @@ export default function PromptsPage() {
   const openEdit = (p: Prompt) => {
     setEditingPrompt(p)
     setFormName(p.name)
-    setFormSlug(p.tool_slug)
-    setFormContent(p.content)
+    setFormSlug(p.category)
+    setFormContent(p.prompt_text)
     setSaveError("")
     setModalOpen(true)
   }
@@ -85,10 +88,10 @@ export default function PromptsPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          tool_slug: p.tool_slug,
+          slug: p.slug + "-copy",
           name: `${p.name} (Copy)`,
-          content: p.content,
-          variables: p.variables || [],
+          category: p.category,
+          prompt_text: p.prompt_text,
         }),
       })
       if (!res.ok) throw new Error("Failed to copy")
@@ -102,8 +105,9 @@ export default function PromptsPage() {
     try {
       const body: any = {
         name: formName,
-        tool_slug: formSlug,
-        content: formContent,
+        slug: formSlug,
+        category: formSlug,
+        prompt_text: formContent,
       }
       if (editingPrompt) {
         body.id = editingPrompt.id
@@ -192,7 +196,7 @@ export default function PromptsPage() {
                     </div>
                   </td>
                   <td className="p-4">
-                    <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#3B82F6]/10 text-[#3B82F6] border border-[#3B82F6]/20">{p.tool_slug}</span>
+                    <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#3B82F6]/10 text-[#3B82F6] border border-[#3B82F6]/20">{p.category}</span>
                   </td>
                   <td className="p-4 text-xs font-mono text-white">v{p.version}</td>
                   <td className="p-4">
@@ -246,7 +250,7 @@ export default function PromptsPage() {
                     className="w-full h-10 px-3 rounded-xl bg-[#090B16] border border-white/[0.06] text-white text-sm outline-none focus:border-[#6D5EF5] transition-colors" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#A7B0C0] mb-1.5">Category (tool_slug)</label>
+                  <label className="block text-xs font-medium text-[#A7B0C0] mb-1.5">Category</label>
                   <input value={formSlug} onChange={(e) => setFormSlug(e.target.value)} placeholder="e.g. blog-writer" disabled={!!editingPrompt}
                     className="w-full h-10 px-3 rounded-xl bg-[#090B16] border border-white/[0.06] text-white text-sm outline-none focus:border-[#6D5EF5] transition-colors disabled:opacity-50" />
                 </div>

@@ -3,13 +3,13 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 
 export async function GET(req: NextRequest) {
   try {
-    const toolSlug = req.nextUrl.searchParams.get("tool_slug") || undefined
+    const category = req.nextUrl.searchParams.get("category") || undefined
     let query = supabaseAdmin
-      .from("prompts")
+      .from("prompt_templates")
       .select("*")
-      .order("tool_slug", { ascending: true })
+      .order("category", { ascending: true })
       .order("version", { ascending: false })
-    if (toolSlug) query = query.eq("tool_slug", toolSlug)
+    if (category) query = query.eq("category", category)
     const { data, error } = await query
     if (error) throw new Error(error.message)
     return NextResponse.json(data || [])
@@ -22,21 +22,23 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     if (body.id) {
+      // Update existing
       const { data: existing } = await supabaseAdmin
-        .from("prompts")
+        .from("prompt_templates")
         .select("*")
         .eq("id", body.id)
         .single()
       if (!existing) throw new Error("Prompt not found")
-      const payload: any = {}
+      const payload: Record<string, unknown> = { updated_at: new Date().toISOString() }
       if (body.name !== undefined) payload.name = body.name
-      if (body.content !== undefined) {
-        payload.content = body.content
+      if (body.content !== undefined || body.prompt_text !== undefined) {
+        payload.prompt_text = body.content || body.prompt_text
         payload.version = (existing.version || 0) + 1
       }
+      if (body.category !== undefined) payload.category = body.category
       if (body.is_active !== undefined) payload.is_active = body.is_active
       const { data, error } = await supabaseAdmin
-        .from("prompts")
+        .from("prompt_templates")
         .update(payload)
         .eq("id", body.id)
         .select()
@@ -44,21 +46,22 @@ export async function POST(req: NextRequest) {
       if (error) throw new Error(error.message)
       return NextResponse.json(data)
     }
+    // Create new
     const { data: latest } = await supabaseAdmin
-      .from("prompts")
+      .from("prompt_templates")
       .select("version")
-      .eq("tool_slug", body.tool_slug)
+      .eq("category", body.category || "general")
       .order("version", { ascending: false })
       .limit(1)
     const nextVersion = (latest && latest.length > 0 ? latest[0].version : 0) + 1
     const { data, error } = await supabaseAdmin
-      .from("prompts")
+      .from("prompt_templates")
       .insert({
-        tool_slug: body.tool_slug,
+        slug: (body.name || "prompt").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 50),
         name: body.name,
-        content: body.content || "",
+        category: body.category || "general",
+        prompt_text: body.content || body.prompt_text || "",
         version: nextVersion,
-        variables: body.variables || [],
         is_active: body.is_active ?? true,
       })
       .select()
@@ -73,7 +76,7 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json()
-    const { error } = await supabaseAdmin.from("prompts").delete().eq("id", id)
+    const { error } = await supabaseAdmin.from("prompt_templates").delete().eq("id", id)
     if (error) throw new Error(error.message)
     return NextResponse.json({ success: true })
   } catch (err) {

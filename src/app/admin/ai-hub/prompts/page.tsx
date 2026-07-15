@@ -52,7 +52,7 @@ export default function AIHubPromptsPage() {
         body: JSON.stringify({
           name: `${original.name} (Copy)`,
           category: original.category,
-          content: original.content,
+          content: original.prompt_text || original.content,
         }),
       })
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -107,7 +107,7 @@ export default function AIHubPromptsPage() {
 
   const startEditing = (p: any) => {
     setEditing(p.id)
-    setEditForm({ name: p.name || "", category: p.category || categories[0], content: p.content || p.prompt_text || "" })
+    setEditForm({ name: p.name || "", category: p.category || categories[0], content: p.prompt_text || p.content || "" })
   }
 
   return (

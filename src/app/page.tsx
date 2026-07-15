@@ -67,16 +67,16 @@ const stats = [
   { icon: BarChart3, value: "AI-Powered", label: "Keyword Analysis" },
   { icon: FileText, value: "SEO Optimized", label: "Content Generation" },
   { icon: Activity, value: "Real-time", label: "Plagiarism Checking" },
-  { icon: Star, value: "Enterprise", label: "Grade Security" },
+  { icon: Star, value: "Secure", label: "by Design" },
 ]
 
 const templates = [
-  { icon: BookOpen, name: "Blog Post", desc: "Engaging blog content optimized for search", href: "/post-generator" },
-  { icon: TrendingUp, name: "SEO Article", desc: "Deep-dive articles with keyword targeting", href: "/post-generator?template=seo-article" },
-  { icon: Star, name: "Product Review", desc: "Review content with pros, cons & ratings", href: "/post-generator?template=product-review" },
-  { icon: Layers, name: "Tutorial", desc: "Step-by-step guides with clear instructions", href: "/post-generator?template=tutorial" },
-  { icon: FileType, name: "Guide", desc: "Comprehensive guides on any topic", href: "/post-generator?template=guide" },
-  { icon: ChevronRight, name: "Listicle", desc: "Scannable list-style content that ranks", href: "/post-generator?template=listicle" },
+  { icon: BookOpen, name: "Blog Post", desc: "Conversational, informational blog content", href: "/post-generator" },
+  { icon: TrendingUp, name: "SEO Article", desc: "Keyword-focused with metadata and FAQs", href: "/post-generator" },
+  { icon: Star, name: "Product Review", desc: "Features, pros, cons, and verdict", href: "/post-generator" },
+  { icon: Layers, name: "Tutorial", desc: "Step-by-step guide with examples", href: "/post-generator" },
+  { icon: FileType, name: "Comprehensive Guide", desc: "In-depth topic coverage", href: "/post-generator" },
+  { icon: ChevronRight, name: "Listicle", desc: "Numbered list format for easy scanning", href: "/post-generator" },
 ]
 
 const highlights = [
@@ -171,36 +171,39 @@ const demos = [
     name: "Domain Intelligence",
     icon: Search,
     color: "from-violet-500 to-indigo-600",
+    badge: "Example Preview",
     lines: [
-      { label: "Keyword", value: "AI content writing tools", width: "w-48" },
-      { label: "Volume", value: "Analyzing...", width: "w-28" },
-      { label: "Difficulty", value: "Calculating...", width: "w-28" },
-      { label: "Trend", value: "Loading...", width: "w-32" },
-      { label: "SERP Features", value: "Checking results...", width: "w-56" },
+      { label: "Keyword", value: "AI content writing tools" },
+      { label: "Volume", value: "12,100" },
+      { label: "Difficulty", value: "42/100" },
+      { label: "CPC", value: "$3.25" },
+      { label: "Trend", value: "↗ Rising" },
     ],
   },
   {
     name: "Post Generator",
     icon: FileText,
     color: "from-blue-500 to-purple-600",
+    badge: "Example Preview",
     lines: [
-      { label: "Title", value: "Your SEO-Optimized Title", width: "w-full" },
-      { label: "Meta", value: "AI-generated meta description...", width: "w-72" },
-      { label: "Sections", value: "Generating outline...", width: "w-56" },
-      { label: "Word Count", value: "In progress...", width: "w-28" },
-      { label: "Read Time", value: "Calculating...", width: "w-28" },
+      { label: "Title", value: "Complete Guide to AI Content Writing" },
+      { label: "Meta", value: "Discover the best AI writing tools..." },
+      { label: "Sections", value: "8 sections generated" },
+      { label: "Word Count", value: "2,048 words" },
+      { label: "Read Time", value: "9 min read" },
     ],
   },
   {
-    name: "Plagiarism Checker",
+    name: "Plagiarism & Authenticity",
     icon: Shield,
     color: "from-emerald-500 to-green-600",
+    badge: "Example Preview",
     lines: [
-      { label: "Status", value: "Scanning...", width: "w-36" },
-      { label: "Similarity", value: "Analyzing...", width: "w-32" },
-      { label: "Sources Found", value: "Searching...", width: "w-24" },
-      { label: "Sentences Checked", value: "In progress...", width: "w-24" },
-      { label: "Report", value: "Generating...", width: "w-36" },
+      { label: "Originality", value: "94% Original" },
+      { label: "AI Likelihood", value: "Likely human-written" },
+      { label: "Sources Checked", value: "2.4B web pages" },
+      { label: "Sentences", value: "142 analyzed" },
+      { label: "Status", value: "Safe to publish" },
     ],
   },
 ]
@@ -224,7 +227,7 @@ export default function HomePage() {
         if (Array.isArray(data)) {
           setPlans(data.map((p: any) => ({
             name: p.name,
-            price: p.price || 0,
+            price: p.price_monthly || p.price || 0,
             period: "/month",
             features: [
               p.description || "",
@@ -233,7 +236,7 @@ export default function HomePage() {
               p.max_users ? `${p.max_users} users` : "",
             ].filter(Boolean),
             popular: p.name?.toLowerCase() === "pro",
-            cta: p.name?.toLowerCase() === "enterprise" ? "Contact Sales" : "Get Started",
+            cta: p.name?.toLowerCase() === "enterprise" ? "Contact Sales" : "Choose Plan",
             href: p.name?.toLowerCase() === "enterprise" ? "/contact" : "/signup",
           })))
         }
@@ -455,18 +458,17 @@ export default function HomePage() {
                           </div>
                           <div>
                             <h3 className="font-semibold">{demo.name}</h3>
-                            <p className="text-xs text-muted">Real-time results preview</p>
+                            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/[0.06] text-[#A7B0C0] border border-white/[0.06]">{demo.badge}</span>
                           </div>
                         </div>
                         <div className="space-y-3">
                           {demo.lines.map((line) => (
                             <div
                               key={line.label}
-                              className="flex items-center gap-4 p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]"
+                              className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]"
                             >
-                              <span className="text-xs text-muted w-24 shrink-0">{line.label}</span>
-                              <div className={`h-2 rounded-full bg-gradient-to-r ${demo.color} ${line.width}`} />
-                              <span className="text-xs text-white/70 ml-auto">{line.value}</span>
+                              <span className="text-xs text-muted">{line.label}</span>
+                              <span className="text-xs text-white font-medium">{line.value}</span>
                             </div>
                           ))}
                         </div>
@@ -799,7 +801,7 @@ export default function HomePage() {
             <div className="relative z-10">
               <h2 className="text-2xl sm:text-3xl font-bold">Ready to Transform Your Workflow?</h2>
               <p className="text-muted mt-3 max-w-lg mx-auto">
-                Join thousands of creators using Nextill AI to work smarter, create faster, and rank higher.
+                Built for creators, marketers, and SEO teams to research, create, and optimize content in one workspace.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/signup">
