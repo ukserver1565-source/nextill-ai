@@ -4,6 +4,7 @@ import { Shield, Lock, Eye, Database, Mail, Globe, Share2, Cookie, Server, Alert
 import { BackButton } from "@/components/shared/back-button"
 import { PublicHeader } from "@/components/layout/public-header"
 import { PublicFooter } from "@/components/layout/public-footer"
+import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
     title: "Privacy Policy — Nextill AI",
     description:
       "Learn how Nextill AI collects, uses, protects, and manages your personal information.",
-    url: "https://nextill.ai/privacy-policy",
+    url: `${getSiteUrl()}/privacy-policy`,
   },
 }
 

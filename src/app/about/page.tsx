@@ -4,6 +4,7 @@ import { Sparkles, Search, FileText, Shield, Zap, Users, Award } from "lucide-re
 import { BackButton } from "@/components/shared/back-button"
 import { PublicHeader } from "@/components/layout/public-header"
 import { PublicFooter } from "@/components/layout/public-footer"
+import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
   title: "About",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
     title: "About Nextill AI — AI-Powered SEO & Content Platform",
     description:
       "Learn about Nextill AI and our mission to democratize premium AI content tools for creators and businesses.",
-    url: "https://nextill.ai/about",
+    url: `${getSiteUrl()}/about`,
   },
 }
 

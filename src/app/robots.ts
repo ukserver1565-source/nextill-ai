@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next"
+import { getSiteUrl } from "@/lib/site-url"
 
-const baseUrl = "https://nextill.ai"
+const baseUrl = getSiteUrl()
 
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -4,6 +4,7 @@ import { Sparkles, FileText, CheckCircle, CreditCard, AlertTriangle, Mail, Scale
 import { BackButton } from "@/components/shared/back-button"
 import { PublicHeader } from "@/components/layout/public-header"
 import { PublicFooter } from "@/components/layout/public-footer"
+import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
   title: "Terms of Service",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
     title: "Terms of Service — Nextill AI",
     description:
       "Read the terms and conditions that govern your use of the Nextill AI platform.",
-    url: "https://nextill.ai/terms",
+    url: `${getSiteUrl()}/terms`,
   },
 }
 

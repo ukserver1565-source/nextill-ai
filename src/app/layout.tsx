@@ -3,6 +3,7 @@ import localFont from "next/font/local"
 import { AuthProvider } from "@/lib/auth/AuthProvider"
 import { ScrollToTop } from "@/components/layout/scroll-to-top"
 import { NavigationProgressWrapper } from "@/components/layout/navigation-progress-wrapper"
+import { getSiteUrl } from "@/lib/site-url"
 import "./globals.css"
 
 const geistSans = localFont({
@@ -16,6 +17,8 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   display: "swap",
 })
+
+const siteUrl = getSiteUrl()
 
 export const metadata: Metadata = {
   title: {
@@ -35,11 +38,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Nextill AI" }],
   creator: "Nextill AI",
-  metadataBase: new URL("https://nextill.ai"),
+  metadataBase: new URL(siteUrl),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://nextill.ai",
+    url: siteUrl,
     siteName: "Nextill AI",
     title: "Nextill AI — AI-Powered SEO & Content Platform",
     description:

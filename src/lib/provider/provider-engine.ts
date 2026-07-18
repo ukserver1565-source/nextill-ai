@@ -100,7 +100,7 @@ async function callProviderApi(
       case "openrouter": {
         url = `${baseUrl}/chat/completions`
         headers["Authorization"] = `Bearer ${apiKey}`
-        headers["HTTP-Referer"] = process.env.NEXT_PUBLIC_APP_URL ?? "https://nextill.ai"
+        headers["HTTP-Referer"] = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://www.adultpulse.co.uk"
         headers["X-Title"] = "Nextill AI"
         body = {
           model: modelId,

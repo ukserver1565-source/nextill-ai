@@ -3,13 +3,15 @@
 import { useState, useEffect } from "react"
 import { Save, Search, FileCode, BarChart3, Loader2 } from "lucide-react"
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.adultpulse.co.uk"
+
 export default function SEOPage() {
   const [form, setForm] = useState({
     metaTitle: "Nextill AI - AI-Powered SEO & Content Platform",
     metaDescription: "Nextill AI helps you generate SEO-optimized content with AI. Tools include AI writer, keyword research, and rank tracking.",
     googleAnalyticsId: "G-XXXXXXXXXX",
-    robotsTxt: "User-agent: *\nAllow: /\n\nSitemap: https://nextill.ai/sitemap.xml",
-    sitemapUrl: "https://nextill.ai/sitemap.xml",
+    robotsTxt: `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml`,
+    sitemapUrl: `${siteUrl}/sitemap.xml`,
   })
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(true)
