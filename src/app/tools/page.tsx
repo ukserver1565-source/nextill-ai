@@ -124,11 +124,11 @@ export default function ToolsPage() {
           <div className="max-w-2xl">
             <Badge variant="info" className="mb-4 px-3 py-1 text-xs">
               <Zap className="w-3 h-3 mr-1.5" />
-              21 Tools Consolidated into 3 Premium Workflows
+              20 Tools Consolidated into 3 Premium Workflows
             </Badge>
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">All Tools</h1>
             <p className="text-muted mt-2 text-sm sm:text-base">
-              We&apos;ve consolidated 21 legacy tools into 3 powerful AI workflows. Experience the next generation of SEO and content creation.
+              We&apos;ve consolidated 20 legacy tools into 3 powerful AI workflows. Experience the next generation of SEO and content creation.
             </p>
           </div>
         </div>
@@ -248,7 +248,7 @@ export default function ToolsPage() {
               <div>
                 <h2 className="text-xl font-bold">Legacy Tools</h2>
                 <p className="text-sm text-muted mt-1">
-                  All 21 previous tools have been migrated into 3 consolidated workflows.
+                  All 20 previous tools have been migrated into 3 consolidated workflows.
                 </p>
               </div>
               <Badge variant="info" size="lg" className="whitespace-nowrap">

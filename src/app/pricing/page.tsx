@@ -39,6 +39,41 @@ const defaultCreditCosts: WorkflowCost[] = [
   { workflow_slug: "plagiarism-checker", credits_cost: 4 },
 ]
 
+const FALLBACK_PLANS: Plan[] = [
+  {
+    id: "fallback-free", name: "Free", slug: "free",
+    price_monthly: 0, price_yearly: 0, credits: 100, is_active: true,
+    is_popular: false, badge: null, sort_order: 0, support_level: "community",
+    exports: ["txt"], max_projects: 1, max_documents: 10, max_article_length: 1500,
+    max_reports_per_month: 1, report_history_days: 7,
+    features: ["1 Domain Intelligence check/day", "1 Post Generator test/day", "1 Plagiarism check/day", "1 project", "10 documents"],
+  },
+  {
+    id: "fallback-starter", name: "Starter", slug: "starter",
+    price_monthly: 19, price_yearly: 190, credits: 2000, is_active: true,
+    is_popular: false, badge: null, sort_order: 1, support_level: "email",
+    exports: ["txt", "markdown"], max_projects: 5, max_documents: 50, max_article_length: 2000,
+    max_reports_per_month: 20, report_history_days: 30,
+    features: ["Domain Intelligence — basic analysis", "Post Generator — up to 2,000 words", "SEO title, meta, FAQ, schema", "5 projects", "50 documents", "Email support"],
+  },
+  {
+    id: "fallback-pro", name: "Pro", slug: "pro",
+    price_monthly: 49, price_yearly: 490, credits: 7500, is_active: true,
+    is_popular: true, badge: "MOST POPULAR", sort_order: 2, support_level: "priority",
+    exports: ["pdf", "csv", "txt", "markdown"], max_projects: 25, max_documents: 500, max_article_length: 5000,
+    max_reports_per_month: 100, report_history_days: 365,
+    features: ["Everything in Starter", "Domain Intelligence — full live metrics", "Competitor & backlink analysis", "Post Generator — up to 5,000 words", "25 projects", "500 documents", "Priority email support"],
+  },
+  {
+    id: "fallback-business", name: "Business", slug: "business",
+    price_monthly: 99, price_yearly: 990, credits: 20000, is_active: true,
+    is_popular: false, badge: null, sort_order: 3, support_level: "priority",
+    exports: ["pdf", "csv", "txt", "markdown"], max_projects: 100, max_documents: 5000, max_article_length: 10000,
+    max_reports_per_month: 500, report_history_days: 9999,
+    features: ["Everything in Pro", "Post Generator — up to 10,000 words", "100 projects", "5,000 documents", "Unlimited report history", "Priority support"],
+  },
+]
+
 export default function PricingPage() {
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
@@ -52,17 +87,16 @@ export default function PricingPage() {
     try {
       const res = await fetch("/api/public/plans")
       const json = await res.json()
-      if (!res.ok || json?.error) {
-        console.error("Plans API error:", json?.error || `HTTP ${res.status}`)
-      }
-      if (Array.isArray(json)) {
+      if (Array.isArray(json) && json.length > 0) {
         setPlans(json
           .filter((p: Plan) => p.is_active !== false)
-          .sort((a: Plan, b: Plan) => (a.price_monthly ?? 99) - (b.price_monthly ?? 99))
+          .sort((a: Plan, b: Plan) => (a.sort_order ?? 0) - (b.sort_order ?? 0) || (a.price_monthly ?? 99) - (b.price_monthly ?? 99))
         )
+      } else {
+        setPlans(FALLBACK_PLANS)
       }
-    } catch (err) {
-      console.error("Failed to load plans:", err)
+    } catch {
+      setPlans(FALLBACK_PLANS)
     } finally {
       setLoading(false)
     }

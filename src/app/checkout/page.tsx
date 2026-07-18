@@ -17,6 +17,13 @@ interface Plan {
   is_active: boolean
 }
 
+const FALLBACK_PLANS: Plan[] = [
+  { id: "fb-free", name: "Free", slug: "free", price_monthly: 0, price_yearly: 0, credits: 100, is_active: true, features: ["1 Domain Intelligence check/day", "1 Post Generator test/day", "1 Plagiarism check/day", "1 project", "10 documents"] },
+  { id: "fb-starter", name: "Starter", slug: "starter", price_monthly: 19, price_yearly: 190, credits: 2000, is_active: true, features: ["Domain Intelligence — basic analysis", "Post Generator — up to 2,000 words", "5 projects", "50 documents", "Email support"] },
+  { id: "fb-pro", name: "Pro", slug: "pro", price_monthly: 49, price_yearly: 490, credits: 7500, is_active: true, features: ["Everything in Starter", "Domain Intelligence — full live metrics", "Post Generator — up to 5,000 words", "25 projects", "500 documents", "Priority email support"] },
+  { id: "fb-business", name: "Business", slug: "business", price_monthly: 99, price_yearly: 990, credits: 20000, is_active: true, features: ["Everything in Pro", "Post Generator — up to 10,000 words", "100 projects", "5,000 documents", "Unlimited report history", "Priority support"] },
+]
+
 interface PublicPaymentMethod {
   id: string
   name: string
@@ -61,12 +68,14 @@ function CheckoutContent() {
     fetch("/api/public/plans")
       .then(r => r.json())
       .then(data => {
-        if (Array.isArray(data)) {
-          const found = data.find((p: any) => p.slug === planSlug || p.name?.toLowerCase() === planSlug)
-          if (found) setPlan(found)
-        }
+        const plans = (Array.isArray(data) && data.length > 0) ? data : FALLBACK_PLANS
+        const found = plans.find((p: any) => p.slug === planSlug || p.name?.toLowerCase() === planSlug)
+        if (found) setPlan(found)
       })
-      .catch(() => {})
+      .catch(() => {
+        const found = FALLBACK_PLANS.find(p => p.slug === planSlug)
+        if (found) setPlan(found)
+      })
       .finally(() => setLoading(false))
   }, [planSlug])
 
