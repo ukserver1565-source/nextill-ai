@@ -46,7 +46,7 @@ const Tabs = ({ defaultValue, value: controlledValue, onValueChange, children, c
 }
 Tabs.displayName = "Tabs"
 
-interface TabsListProps extends React.HTMLAttributes<HTMLDivElement> {}
+type TabsListProps = React.HTMLAttributes<HTMLDivElement>
 
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, children, ...props }, ref) => {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Settings, CheckCircle, XCircle, Loader2, Link, X, Save } from "lucide-react"
+import { Settings, CheckCircle, XCircle, Loader2, Link, X } from "lucide-react"
 
 interface IntegrationSetting {
   id: string
@@ -33,19 +33,19 @@ export default function IntegrationsPage() {
   const [error, setError] = useState("")
   const [settingsItem, setSettingsItem] = useState<IntegrationSetting | null>(null)
   const [settingsEnabled, setSettingsEnabled] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const [saveError, setSaveError] = useState("")
+  const [_saving, _setSaving] = useState(false)
+  const [_saveError, _setSaveError] = useState("")
 
-  const openSettings = (item: IntegrationSetting) => {
+  const _openSettings = (item: IntegrationSetting) => {
     setSettingsItem(item)
     setSettingsEnabled(item.is_enabled)
-    setSaveError("")
+    _setSaveError("")
   }
 
-  const handleSaveSettings = async () => {
+  const _handleSaveSettings = async () => {
     if (!settingsItem) return
-    setSaving(true)
-    setSaveError("")
+    _setSaving(true)
+    _setSaveError("")
     try {
       const res = await fetch("/api/admin/integrations", {
         method: "POST",
@@ -58,9 +58,9 @@ export default function IntegrationsPage() {
       ))
       setSettingsItem(null)
     } catch (err: any) {
-      setSaveError(err.message || "Failed to save settings")
+      _setSaveError(err.message || "Failed to save settings")
     } finally {
-      setSaving(false)
+      _setSaving(false)
     }
   }
 

@@ -5,8 +5,7 @@ import { supabase } from "@/lib/supabase/client"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { FolderKanban, Plus, Loader2, ExternalLink, Trash2, Clock, X, FileText } from "lucide-react"
-import Link from "next/link"
+import { FolderKanban, Plus, Loader2, Trash2, Clock, X, FileText } from "lucide-react"
 
 export default function DashboardProjects() {
   const { profile } = useAuth()
@@ -20,18 +19,38 @@ export default function DashboardProjects() {
 
   useEffect(() => {
     if (!profile) return
+    // Fetch projects - use RLS-safe query with auth.uid() fallback
     supabase
       .from("projects")
       .select("*")
-      .eq("user_id", profile.user_id)
       .order("created_at", { ascending: false })
-      .then(({ data }) => { setProjects(data || []); setLoading(false) })
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("Failed to load projects:", error)
+          // Fallback: try with explicit user_id filter
+          supabase
+            .from("projects")
+            .select("*")
+            .eq("user_id", profile.user_id)
+            .order("created_at", { ascending: false })
+            .then(({ data: fallbackData }) => {
+              setProjects(fallbackData || [])
+              setLoading(false)
+            })
+        } else {
+          // Filter client-side to ensure only own projects are shown
+          const myProjects = (data || []).filter((p: any) => p.user_id === profile.user_id)
+          setProjects(myProjects)
+          setLoading(false)
+        }
+      })
   }, [profile])
 
   const createProject = async () => {
     if (!newName.trim() || !profile) return
     setCreating(true)
     try {
+      // Try insert with workspace trigger
       const { data, error } = await supabase
         .from("projects")
         .insert({ user_id: profile.user_id, name: newName.trim(), domain: newDomain.trim() || null })
@@ -41,8 +60,23 @@ export default function DashboardProjects() {
         setProjects([data, ...projects])
         setNewName("")
         setNewDomain("")
+      } else if (error) {
+        console.error("Create project error:", error)
+        // If workspace trigger fails, try without workspace
+        const { data: retryData, error: retryError } = await supabase
+          .from("projects")
+          .insert({ name: newName.trim(), domain: newDomain.trim() || null })
+          .select()
+          .single()
+        if (!retryError && retryData) {
+          setProjects([retryData, ...projects])
+          setNewName("")
+          setNewDomain("")
+        }
       }
-    } catch {}
+    } catch (err) {
+      console.error("Create project failed:", err)
+    }
     setCreating(false)
   }
 

@@ -143,7 +143,7 @@ export function runPlagiarismLocal(text: string): PlagiarismResult {
 
   // 2. N-gram shingling (word 4-grams with Jaccard similarity)
   const all4grams = getNgrams(words, 4)
-  const all6grams = getNgrams(words, 6)
+  const _all6grams = getNgrams(words, 6)
   const seen4grams = new Map<string, number[]>()
   all4grams.forEach((gram, idx) => {
     if (seen4grams.has(gram)) {

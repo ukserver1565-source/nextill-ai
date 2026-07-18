@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { FileText, Loader2, Inbox, ExternalLink } from "lucide-react"
+import { Loader2, Inbox, ExternalLink } from "lucide-react"
 import Link from "next/link"
 
 interface Report {

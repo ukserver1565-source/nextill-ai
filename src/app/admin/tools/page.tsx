@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { PenSquare, Search, Shield, TrendingUp, Share2, FileSearch, ToggleLeft, Settings, Loader2, Package, X, Check } from "lucide-react"
+import { PenSquare, Search, Shield, TrendingUp, Share2, FileSearch, Settings, Loader2, Package, X, Check } from "lucide-react"
 
 interface ToolSetting {
   id: string

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { FileText, FileSpreadsheet, Download, Users, DollarSign, BarChart3, Cpu, Loader2, Inbox, XCircle } from "lucide-react"
+import { Download, Users, DollarSign, BarChart3, Cpu, Loader2, Inbox, XCircle } from "lucide-react"
 
 const reportTypes = [
   { icon: Users, label: "User Reports", desc: "User registration, activity, and plan distribution", color: "from-[#6D5EF5] to-[#8B5CF6]" },

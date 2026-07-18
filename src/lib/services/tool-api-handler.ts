@@ -85,18 +85,18 @@ export async function handleToolApi(req: Request, toolSlug: string) {
         }, { status: 429 })
       }
     } else if (creditsCost > 0) {
-      // Credit check (best-effort)
-      const profileResult = await tryDb(() =>
-        supabaseAdmin.from("profiles").select("credits").eq("user_id", userId).single()
+      // Credit check from credits table (single source of truth)
+      const creditResult = await tryDb(() =>
+        supabaseAdmin.from("credits").select("balance").eq("user_id", userId).single()
       )
-      if (profileResult.ok && profileResult.data.data) {
-        const profile = profileResult.data.data as { credits: number }
-        if (profile.credits < creditsCost) {
+      if (creditResult.ok && creditResult.data.data) {
+        const creditRow = creditResult.data.data as { balance: number }
+        if (creditRow.balance < creditsCost) {
           return NextResponse.json({
             error: "Insufficient credits",
             code: "INSUFFICIENT_CREDITS",
             creditsRequired: creditsCost,
-            creditsAvailable: profile.credits,
+            creditsAvailable: creditRow.balance,
           }, { status: 402 })
         }
       }
@@ -166,6 +166,8 @@ export async function handleToolApi(req: Request, toolSlug: string) {
       creditsUsed: userId ? creditsCost : 0,
       saved: false,
       localEngine,
+      available: result.available,
+      message: result.message,
     })
   } catch (err) {
     if (err instanceof z.ZodError) {

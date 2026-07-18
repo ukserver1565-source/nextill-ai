@@ -19,6 +19,7 @@ const providerColors: Record<string, string> = {
 
 export default function AIHubProvidersPage() {
   const [providers, setProviders] = useState<any[]>([])
+  const [providersWithKeys, setProvidersWithKeys] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [search, setSearch] = useState("")
@@ -35,10 +36,19 @@ export default function AIHubProvidersPage() {
     setLoading(true)
     setError("")
     try {
-      const res = await fetch("/api/admin/ai/providers")
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const json = await res.json()
-      setProviders(Array.isArray(json) ? json : json.data || [])
+      const [provRes, keysRes] = await Promise.all([
+        fetch("/api/admin/ai/providers"),
+        fetch("/api/admin/ai/api-keys"),
+      ])
+      if (provRes.ok) {
+        const json = await provRes.json()
+        setProviders(Array.isArray(json) ? json : json.data || [])
+      }
+      if (keysRes.ok) {
+        const keysJson = await keysRes.json()
+        const keys = Array.isArray(keysJson) ? keysJson : keysJson.data || []
+        setProvidersWithKeys(new Set(keys.map((k: any) => k.provider_slug).filter(Boolean)))
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -228,12 +238,22 @@ export default function AIHubProvidersPage() {
                   </div>
 
                   <div className="flex items-center gap-2 flex-wrap mb-4">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${
-                      p.enabled ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]"
-                    }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${p.enabled ? "bg-[#22C55E]" : "bg-[#A7B0C0]"}`} />
-                      {p.enabled ? "Enabled" : "Disabled"}
-                    </span>
+                    {p.enabled && providersWithKeys.has(p.slug) ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
+                        Connected
+                      </span>
+                    ) : p.enabled && !providersWithKeys.has(p.slug) ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />
+                        No API Key
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#A7B0C0]" />
+                        Disabled
+                      </span>
+                    )}
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${
                       latency !== "—" ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]"
                     }`}>

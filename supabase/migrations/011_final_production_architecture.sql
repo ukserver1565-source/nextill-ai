@@ -122,6 +122,10 @@ ON CONFLICT (provider) DO NOTHING;
 -- Add column (nullable initially for backfill)
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS workspace_id UUID;
 
+-- Add updated_at to subscriptions (was never added in 001 or 010)
+-- Required by admin_change_user_plan() and audit triggers
+ALTER TABLE public.subscriptions ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
 -- ============================================================
 -- SECTION 6: CHECK CONSTRAINTS UPDATE
 -- ============================================================
@@ -129,17 +133,18 @@ ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS workspace_id UUID;
 -- profiles.plan: add 'business' to allowed values
 DO $$
 DECLARE
-  conname TEXT;
+  v_constraint_name TEXT;
 BEGIN
-  SELECT conname INTO conname
-  FROM pg_constraint
-  WHERE conrelid = 'public.profiles'::regclass
-    AND contype = 'c'
-    AND pg_get_constraintdef(oid) LIKE '%plan%'
-    AND pg_get_constraintdef(oid) LIKE '%free%';
+  SELECT c.conname INTO v_constraint_name
+  FROM pg_constraint c
+  WHERE c.conrelid = 'public.profiles'::regclass
+    AND c.contype = 'c'
+    AND pg_get_constraintdef(c.oid) LIKE '%plan%'
+    AND pg_get_constraintdef(c.oid) LIKE '%free%'
+  LIMIT 1;
 
-  IF conname IS NOT NULL THEN
-    EXECUTE format('ALTER TABLE public.profiles DROP CONSTRAINT %I', conname);
+  IF v_constraint_name IS NOT NULL THEN
+    EXECUTE format('ALTER TABLE public.profiles DROP CONSTRAINT %I', v_constraint_name);
   END IF;
 END $$;
 
@@ -150,17 +155,18 @@ ALTER TABLE public.profiles
 -- payments.status: add Paddle/JazzCash states
 DO $$
 DECLARE
-  conname TEXT;
+  v_constraint_name TEXT;
 BEGIN
-  SELECT conname INTO conname
-  FROM pg_constraint
-  WHERE conrelid = 'public.payments'::regclass
-    AND contype = 'c'
-    AND pg_get_constraintdef(oid) LIKE '%status%'
-    AND pg_get_constraintdef(oid) LIKE '%pending%';
+  SELECT c.conname INTO v_constraint_name
+  FROM pg_constraint c
+  WHERE c.conrelid = 'public.payments'::regclass
+    AND c.contype = 'c'
+    AND pg_get_constraintdef(c.oid) LIKE '%status%'
+    AND pg_get_constraintdef(c.oid) LIKE '%pending%'
+  LIMIT 1;
 
-  IF conname IS NOT NULL THEN
-    EXECUTE format('ALTER TABLE public.payments DROP CONSTRAINT %I', conname);
+  IF v_constraint_name IS NOT NULL THEN
+    EXECUTE format('ALTER TABLE public.payments DROP CONSTRAINT %I', v_constraint_name);
   END IF;
 END $$;
 
@@ -1181,7 +1187,7 @@ CREATE INDEX IF NOT EXISTS idx_documents_project_id ON public.documents(project_
 CREATE INDEX IF NOT EXISTS idx_workflow_runs_user_status ON public.workflow_runs(user_id, status);
 
 -- ============================================================
--- SECTION18: FINAL VERIFICATION
+-- SECTION 18: FINAL VERIFICATION
 -- Run integrity checks and report via RAISE NOTICE.
 -- ============================================================
 

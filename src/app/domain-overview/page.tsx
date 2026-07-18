@@ -4,18 +4,18 @@ import { Suspense, useState, useCallback, useEffect } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import {
-  Search, Download, Globe, Smartphone, Monitor, Loader2,
-  Globe2, FileText, BarChart3, Users, Link2, Wrench,
-  Brain, Lightbulb, ChevronDown, Copy, ExternalLink, Star,
-  ArrowUpRight, TrendingUp, AlertTriangle, CheckCircle2,
-  XCircle, Info, RefreshCw, Send, Filter
+  Search, Download, Smartphone, Monitor, Loader2,
+  Globe2, BarChart3, Users, Link2, Wrench,
+  Brain, Lightbulb, Copy, ExternalLink,
+  TrendingUp, AlertTriangle, CheckCircle2,
+  XCircle, Info, Send, Filter
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SummaryCards } from "@/components/domain-intelligence/summary-cards"
 import type {
   DomainOverview as DomainOverviewType, GrowthDataPoint, CountryRow,
   KeywordRow, CompetitorRow, BacklinkRow, TechnicalSEO, Recommendation,
-  ProviderStatus, TabId, KeywordFilters, PaginationState, GrowthTimeframe,
+  ProviderStatus, TabId, KeywordFilters,
 } from "@/lib/domain-intelligence/domain-intelligence.types"
 
 const COUNTRIES = [
@@ -51,7 +51,7 @@ export default function DomainOverviewPage() {
 
 function DomainOverviewContent() {
   const searchParams = useSearchParams()
-  const router = useRouter()
+  const _router = useRouter()
 
   // State
   const [domain, setDomain] = useState(searchParams.get("domain") || "")
@@ -75,7 +75,7 @@ function DomainOverviewContent() {
   const [analyzedDomain, setAnalyzedDomain] = useState("")
 
   // Keyword explorer state
-  const [kwSearch, setKwSearch] = useState("")
+  const [_kwSearch, _setKwSearch] = useState("")
   const [kwPage, setKwPage] = useState(1)
   const [kwFilters, setKwFilters] = useState<KeywordFilters>({
     intent: [], volumeMin: null, volumeMax: null, kdMin: null, kdMax: null,
@@ -97,6 +97,11 @@ function DomainOverviewContent() {
       const data = await res.json()
 
       if (!res.ok) {
+        if (res.status === 402 && data.code === "INSUFFICIENT_CREDITS") {
+          const returnTo = encodeURIComponent(window.location.pathname + window.location.search)
+          window.location.href = `/dashboard/billing?insufficient_credits=true&required=${data.creditsRequired || 0}&available=${data.creditsAvailable || 0}&return_to=${returnTo}`
+          return
+        }
         setError(data.error || "Analysis failed")
         return
       }
@@ -314,7 +319,7 @@ function DomainOverviewContent() {
 
 // === Tab Components ===
 
-function OverviewTab({ overview, technical, competitors, loading }: { overview: DomainOverviewType | null; technical: TechnicalSEO | null; competitors: CompetitorRow[]; loading: boolean }) {
+function OverviewTab({ overview: _overview, technical, competitors, loading }: { overview: DomainOverviewType | null; technical: TechnicalSEO | null; competitors: CompetitorRow[]; loading: boolean }) {
   if (loading) return <div className="space-y-4">{Array.from({length: 3}).map((_, i) => <div key={i} className="skeleton h-32 rounded-xl" />)}</div>
 
   return (
@@ -468,10 +473,10 @@ function CountriesTab({ data }: { data: CountryRow[] }) {
   )
 }
 
-function KeywordsTab({ domain, keywords, filters, setFilters, page, setPage }: {
+function KeywordsTab({ domain: _domain, keywords, filters, setFilters, page: _page, setPage: _setPage }: {
   domain: string; keywords: KeywordRow[]; filters: KeywordFilters; setFilters: (f: KeywordFilters) => void; page: number; setPage: (p: number) => void
 }) {
-  const [copiedKw, setCopiedKw] = useState<string | null>(null)
+  const [_copiedKw, setCopiedKw] = useState<string | null>(null)
 
   const copyKeyword = (kw: string) => {
     navigator.clipboard.writeText(kw)

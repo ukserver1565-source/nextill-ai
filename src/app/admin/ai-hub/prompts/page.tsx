@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { FileText, Search, Plus, Edit3, Copy, Trash2, ChevronDown, ChevronUp, Check, Loader2 } from "lucide-react"
+import { FileText, Search, Plus, Edit3, Copy, Trash2, Check, Loader2 } from "lucide-react"
 
 const categories = [
   "keyword-analysis", "outline", "writer", "humanizer", "rewriter",
@@ -91,7 +91,7 @@ export default function AIHubPromptsPage() {
         setPrompts(prev => [...prev, created])
       } else {
         const res = await fetch(`/api/admin/ai/prompts`, {
-          method: "PATCH",
+          method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editing, ...editForm }),
         })

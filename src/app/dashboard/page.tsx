@@ -11,7 +11,7 @@ import { QuickActions } from "@/components/dashboard/quick-actions"
 import { CommandCenter } from "@/components/dashboard/command-center"
 import { PageSkeleton } from "@/components/ui/skeleton"
 import { Breadcrumbs } from "@/components/layout/breadcrumbs"
-import { BackButton } from "@/components/layout/back-button"
+
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
@@ -28,7 +28,7 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 }
 
-const workflows = [
+const _workflows = [
   {
     icon: Search,
     title: "Domain Intelligence",
@@ -117,6 +117,9 @@ export default function Dashboard() {
       }
     }
     load()
+    const onFocus = () => { if (profile) load() }
+    window.addEventListener("focus", onFocus)
+    return () => window.removeEventListener("focus", onFocus)
   }, [profile])
 
   if (loading) {
@@ -154,7 +157,6 @@ export default function Dashboard() {
       className="space-y-8 pb-24"
     >
       <motion.div variants={itemVariants}>
-        <BackButton />
         <Breadcrumbs className="mb-4" />
         <div className="flex items-center justify-between">
           <div>

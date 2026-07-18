@@ -108,6 +108,7 @@ const DropdownMenuContent = React.forwardRef<HTMLDivElement, DropdownMenuContent
         document.addEventListener("mousedown", handleClickOutside)
       }
       return () => document.removeEventListener("mousedown", handleClickOutside)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ctx.open])
 
     React.useEffect(() => {
@@ -118,6 +119,7 @@ const DropdownMenuContent = React.forwardRef<HTMLDivElement, DropdownMenuContent
         document.addEventListener("keydown", handleEscape)
       }
       return () => document.removeEventListener("keydown", handleEscape)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ctx.open])
 
     if (!ctx.open) return null

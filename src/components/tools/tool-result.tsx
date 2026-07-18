@@ -30,7 +30,7 @@ function getScoreBg(score: number): string {
   return "bg-green-500"
 }
 
-function getScoreLabel(score: number): "Human" | "Mixed" | "AI" {
+function _getScoreLabel(score: number): "Human" | "Mixed" | "AI" {
   if (score >= 70) return "AI"
   if (score >= 40) return "Mixed"
   return "Human"

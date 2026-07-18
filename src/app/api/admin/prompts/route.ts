@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
     const category = req.nextUrl.searchParams.get("category") || req.nextUrl.searchParams.get("tool_slug") || undefined
     const data = await promptsService.list(category)
     return NextResponse.json(data)
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to fetch prompts" }, { status: 500 })
   }
 }

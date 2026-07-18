@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Clock, Loader2, Inbox, ExternalLink } from "lucide-react"
+import { Clock, Loader2, ExternalLink } from "lucide-react"
 import { useAuth } from "@/lib/auth/AuthProvider"
 import { supabase } from "@/lib/supabase/client"
 import Link from "next/link"

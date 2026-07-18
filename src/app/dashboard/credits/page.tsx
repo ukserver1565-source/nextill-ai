@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/auth/AuthProvider"
 import { supabase } from "@/lib/supabase/client"
 import { useState, useEffect } from "react"
-import { CreditCard, Loader2, ArrowUpRight, ArrowDownLeft, Minus, Clock } from "lucide-react"
+import { CreditCard, Loader2, ArrowUpRight, ArrowDownLeft, Minus } from "lucide-react"
 
 export default function DashboardCredits() {
   const { profile } = useAuth()

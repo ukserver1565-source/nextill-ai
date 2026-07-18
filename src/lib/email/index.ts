@@ -1,6 +1,5 @@
 const RESEND_API_KEY = process.env.RESEND_API_KEY || ""
 const SMTP_HOST = process.env.SMTP_HOST || ""
-const SMTP_PORT = process.env.SMTP_PORT || ""
 const SMTP_USER = process.env.SMTP_USER || ""
 const SMTP_PASS = process.env.SMTP_PASS || ""
 const FROM_EMAIL = process.env.EMAIL_FROM || "noreply@nextill.ai"
@@ -48,7 +47,7 @@ async function sendViaResend(payload: EmailPayload): Promise<{ ok: boolean; erro
   }
 }
 
-async function sendViaSmtp(payload: EmailPayload): Promise<{ ok: boolean; error?: string }> {
+async function sendViaSmtp(_payload: EmailPayload): Promise<{ ok: boolean; error?: string }> {
   // SMTP sending requires nodemailer – not installed by default.
   // This is a placeholder for when SMTP credentials are configured.
   return { ok: false, error: "SMTP sending requires nodemailer. Install with: npm install nodemailer" }

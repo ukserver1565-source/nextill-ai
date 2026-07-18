@@ -20,6 +20,7 @@ export default function UsersPage() {
   const [formState, setFormState] = useState({ email: "", name: "", password: "", role: "free_user", plan: "free" })
   const [saving, setSaving] = useState(false)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [createdUser, setCreatedUser] = useState<{ email: string; tempPassword: string } | null>(null)
   const [plans, setPlans] = useState<{ slug: string; name: string }[]>([])
   const [menuError, setMenuError] = useState("")
   const menuRef = useRef<HTMLDivElement>(null)
@@ -81,11 +82,15 @@ export default function UsersPage() {
 
   const handleCreate = async () => {
     setSaving(true)
+    setCreatedUser(null)
     try {
       const res = await fetch("/api/admin/users", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formState),
       })
-      if (!res.ok) throw new Error("Failed to create user")
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Failed to create user")
+      // Show the temp password to the admin
+      setCreatedUser({ email: data.email, tempPassword: data.tempPassword })
       setShowModal(false)
       fetchUsers()
     } catch (err: any) {
@@ -99,8 +104,14 @@ export default function UsersPage() {
     if (!editingUser) return
     setSaving(true)
     try {
+      // Map formState fields to API schema (full_name, not name)
+      const payload: Record<string, unknown> = {
+        full_name: formState.name || undefined,
+        role: formState.role || undefined,
+        plan: formState.plan || undefined,
+      }
       const res = await fetch(`/api/admin/users/${editingUser.id}`, {
-        method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formState),
+        method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
       })
       if (!res.ok) throw new Error("Failed to update user")
       setShowModal(false)
@@ -128,7 +139,7 @@ export default function UsersPage() {
     setOpenMenuId(null)
     setMenuError("")
     if (action === "change_role") {
-      const newRole = window.prompt("Enter new role (user/admin):", user.role || "user")
+      const newRole = window.prompt("Enter new role (free_user/admin/super_admin):", user.role || "free_user")
       if (!newRole) return
       try {
         const res = await fetch(`/api/admin/users/${user.id}`, {
@@ -149,10 +160,12 @@ export default function UsersPage() {
       } catch (e: any) { setMenuError(e.message) }
     } else if (action === "add_credits") {
       const amount = window.prompt("Enter credits to add:")
-      if (!amount) return
+      if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) return
       try {
-        const res = await fetch(`/api/admin/users/${user.id}`, {
-          method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ credits: (user.credits || 0) + Number(amount) }),
+        const res = await fetch(`/api/admin/users/credits`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: user.user_id, amount: Number(amount), reason: "Admin credit adjustment" }),
         })
         if (!res.ok) throw new Error("Failed to add credits")
         fetchUsers()
@@ -274,7 +287,7 @@ export default function UsersPage() {
                         <div className="relative" ref={openMenuId === user.id ? menuRef : undefined}>
                           <button onClick={() => setOpenMenuId(openMenuId === user.id ? null : user.id)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"><MoreVertical className="w-3.5 h-3.5" /></button>
                           {openMenuId === user.id && (
-                            <div className="absolute right-0 top-full mt-1 w-48 bg-[#090B16] border border-white/[0.06] rounded-xl shadow-2xl z-50 overflow-hidden">
+                            <div className="absolute right-0 top-full mt-1 w-48 bg-[#090B16]/90 backdrop-blur-2xl border border-white/[0.08] rounded-xl shadow-2xl z-50 overflow-hidden">
                               <button onClick={() => handleMenuAction(user, "change_role")} className="w-full text-left px-4 py-2.5 text-xs text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-all">Change Role</button>
                               <button onClick={() => handleMenuAction(user, "change_status")} className="w-full text-left px-4 py-2.5 text-xs text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-all">Change Status</button>
                               <button onClick={() => handleMenuAction(user, "add_credits")} className="w-full text-left px-4 py-2.5 text-xs text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-all">Add Credits</button>
@@ -312,7 +325,7 @@ export default function UsersPage() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowModal(false)}>
-          <div className="bg-[#090B16] border border-white/[0.06] rounded-xl p-6 w-full max-w-md space-y-4" onClick={e => e.stopPropagation()}>
+          <div className="bg-[#090B16]/90 backdrop-blur-2xl border border-white/[0.08] rounded-xl p-6 w-full max-w-md space-y-4 shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-white">{editingUser ? "Edit User" : "Add User"}</h2>
               <button onClick={() => setShowModal(false)} className="text-[#A7B0C0] hover:text-white transition-colors"><X className="w-5 h-5" /></button>
@@ -361,6 +374,21 @@ export default function UsersPage() {
       {menuError && (
         <div className="fixed bottom-4 right-4 bg-[#EF4444]/90 backdrop-blur-xl text-white text-xs px-4 py-2.5 rounded-xl shadow-lg z-50">
           {menuError}
+        </div>
+      )}
+      {createdUser && (
+        <div className="fixed bottom-4 right-4 bg-[#151C2E]/95 backdrop-blur-xl border border-[#22C55E]/30 rounded-xl shadow-lg z-50 p-4 max-w-sm">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-[#22C55E]">User Created</span>
+            <button onClick={() => setCreatedUser(null)} className="text-[#A7B0C0] hover:text-white text-xs">✕</button>
+          </div>
+          <p className="text-xs text-[#A7B0C0] mb-1">Email: <span className="text-white">{createdUser.email}</span></p>
+          <p className="text-xs text-[#A7B0C0] mb-2">Temporary Password:</p>
+          <div className="flex items-center gap-2 bg-[#090B16] rounded-lg px-3 py-2">
+            <code className="text-xs text-[#22C55E] font-mono flex-1 break-all">{createdUser.tempPassword}</code>
+            <button onClick={() => navigator.clipboard.writeText(createdUser.tempPassword)} className="text-[#A7B0C0] hover:text-white text-xs shrink-0">Copy</button>
+          </div>
+          <p className="text-[10px] text-[#A7B0C0]/60 mt-2">Share this password with the user. They can change it in Settings.</p>
         </div>
       )}
     </div>

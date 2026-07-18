@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Calendar, TrendingUp, Users, Eye, MousePointerClick, Loader2, Inbox, XCircle } from "lucide-react"
+import { TrendingUp, Users, Eye, MousePointerClick, Loader2, Inbox, XCircle } from "lucide-react"
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { supabase } from "@/lib/supabase/client"
 

@@ -1,23 +1,72 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import localFont from "next/font/local"
 import { AuthProvider } from "@/lib/auth/AuthProvider"
 import { ScrollToTop } from "@/components/layout/scroll-to-top"
 import { NavigationProgressWrapper } from "@/components/layout/navigation-progress-wrapper"
 import "./globals.css"
 
-const geistSans = Geist({
+const geistSans = localFont({
+  src: "../../public/fonts/geist-sans.woff2",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  display: "swap",
 })
 
-const geistMono = Geist_Mono({
+const geistMono = localFont({
+  src: "../../public/fonts/geist-mono.woff2",
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 })
 
 export const metadata: Metadata = {
-  title: "Nextill AI | The Future of AI Productivity",
-  description: "Nextill AI is an all-in-one AI platform for writing, SEO, humanizing, detection, automation, and productivity.",
+  title: {
+    default: "Nextill AI — AI-Powered SEO & Content Platform",
+    template: "%s | Nextill AI",
+  },
+  description:
+    "Generate SEO-optimized content, keyword research, plagiarism checks, and domain intelligence with AI. The all-in-one platform for content creators and SEO professionals.",
+  keywords: [
+    "AI content generator",
+    "SEO tools",
+    "plagiarism checker",
+    "keyword research",
+    "content creation",
+    "blog writer",
+    "domain intelligence",
+  ],
+  authors: [{ name: "Nextill AI" }],
+  creator: "Nextill AI",
+  metadataBase: new URL("https://nextill.ai"),
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://nextill.ai",
+    siteName: "Nextill AI",
+    title: "Nextill AI — AI-Powered SEO & Content Platform",
+    description:
+      "Generate SEO-optimized content, keyword research, plagiarism checks, and domain intelligence with AI.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Nextill AI",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nextill AI — AI-Powered SEO & Content Platform",
+    description: "Generate SEO-optimized content with AI-powered tools.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
 }
 
 export default function RootLayout({
@@ -28,9 +77,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body className="bg-background text-foreground antialiased" suppressHydrationWarning>
+        <NavigationProgressWrapper />
         <AuthProvider>
           <ScrollToTop />
-          <NavigationProgressWrapper />
           {children}
         </AuthProvider>
       </body>

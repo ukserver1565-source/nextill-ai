@@ -19,7 +19,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params
     await couponRepo.delete(id)
     return NextResponse.json({ success: true })
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to delete coupon" }, { status: 500 })
   }
 }

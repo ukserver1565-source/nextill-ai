@@ -1,8 +1,11 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Check, Loader2, Zap, Tag, X } from "lucide-react"
-import Link from "next/link"
+import { Loader2, Zap } from "lucide-react"
+import { BackButton } from "@/components/shared/back-button"
+import { PublicHeader } from "@/components/layout/public-header"
+import { PublicFooter } from "@/components/layout/public-footer"
+import { PricingCard } from "@/components/pricing/pricing-card"
 
 interface Plan {
   id: string
@@ -40,9 +43,9 @@ export default function PricingPage() {
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
-  const [couponCode, setCouponCode] = useState("")
+  const [couponCode, _setCouponCode] = useState("")
   const [couponResult, setCouponResult] = useState<{ valid: boolean; discount: number; type: string; message: string } | null>(null)
-  const [couponLoading, setCouponLoading] = useState(false)
+  const [_couponLoading, setCouponLoading] = useState(false)
   const [creditCosts, setCreditCosts] = useState<WorkflowCost[]>(defaultCreditCosts)
 
   const loadPlans = useCallback(async () => {
@@ -53,7 +56,7 @@ export default function PricingPage() {
       const data = Array.isArray(json) ? json : json.data || []
       setPlans(data
         .filter((p: Plan) => p.is_active !== false)
-        .sort((a: Plan, b: Plan) => (a.sort_order ?? 99) - (b.sort_order ?? 99))
+        .sort((a: Plan, b: Plan) => (a.price_monthly ?? 99) - (b.price_monthly ?? 99))
       )
     } catch { /* empty */ } finally {
       setLoading(false)
@@ -77,7 +80,7 @@ export default function PricingPage() {
 
   useEffect(() => { loadPlans(); loadCreditCosts() }, [loadPlans, loadCreditCosts])
 
-  const validateCoupon = useCallback(async () => {
+  const _validateCoupon = useCallback(async () => {
     if (!couponCode.trim()) return
     setCouponLoading(true)
     setCouponResult(null)
@@ -101,50 +104,30 @@ export default function PricingPage() {
     }
   }, [couponCode, billingCycle])
 
-  const getDisplayPrice = (plan: Plan) => {
-    return billingCycle === "yearly" ? plan.price_yearly : plan.price_monthly
-  }
-
-  const getMonthlyEquivalent = (plan: Plan) => {
-    if (billingCycle === "yearly" && plan.price_yearly > 0) {
-      return Math.round(plan.price_yearly / 12)
-    }
-    return plan.price_monthly
-  }
-
-  const getSavings = (plan: Plan) => {
-    if (billingCycle !== "yearly" || plan.price_yearly === 0) return null
-    const yearlyMonthly = Math.round(plan.price_yearly / 12)
-    const savings = plan.price_monthly - yearlyMonthly
-    return savings > 0 ? savings : null
-  }
-
-  const getDiscountedPrice = (plan: Plan) => {
-    const price = getDisplayPrice(plan)
-    if (!couponResult?.valid || price === 0) return price
-    if (couponResult.type === "percentage") {
-      return Math.round(price * (1 - couponResult.discount / 100) * 100) / 100
-    } else if (couponResult.type === "fixed") {
-      return Math.max(0, price - couponResult.discount)
-    }
-    return price
-  }
-
   const getCreditCost = (slug: string) => {
     return creditCosts.find(c => c.workflow_slug === slug)?.credits_cost || 0
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-20 sm:pt-24 pb-10 sm:pb-16 px-3 sm:px-4 flex items-start justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-primary-light" />
+      <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+        <PublicHeader />
+        <div className="pt-20 sm:pt-24 pb-10 sm:pb-16 px-3 sm:px-4 flex items-start justify-center">
+          <Loader2 className="w-6 h-6 animate-spin text-primary-light" />
+        </div>
+        <PublicFooter />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen pt-20 sm:pt-24 pb-10 sm:pb-16 px-3 sm:px-4">
-      <div className="w-full max-w-6xl mx-auto">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <PublicHeader />
+      <div className="pt-10 sm:pt-12 pb-10 sm:pb-16 px-3 sm:px-4">
+        <div className="w-full max-w-6xl mx-auto">
+        <div className="mb-6">
+          <BackButton fallback="/" />
+        </div>
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2 sm:mb-3">Simple, Transparent Pricing</h1>
@@ -177,127 +160,17 @@ export default function PricingPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-lg sm:max-w-none mx-auto">
-            {plans.map((plan) => {
-              const displayPrice = getDisplayPrice(plan)
-              const monthlyEquiv = getMonthlyEquivalent(plan)
-              const savings = getSavings(plan)
-              const finalPrice = getDiscountedPrice(plan)
-              const hasDiscount = couponResult?.valid && finalPrice !== displayPrice
-              const isFree = displayPrice === 0
-
-              return (
-                <div key={plan.id} className={`relative glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6 ${plan.is_popular ? "border-[#6D5EF5]/40 ring-1 ring-[#6D5EF5]/20" : ""}`}>
-                  {plan.badge && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#6D5EF5] text-white text-[9px] sm:text-[10px] font-bold px-2.5 sm:px-3 py-1 rounded-full uppercase tracking-wider whitespace-nowrap">
-                      {plan.badge}
-                    </div>
-                  )}
-
-                  <h3 className="text-base sm:text-lg font-bold mb-1">{plan.name}</h3>
-
-                  <div className="mb-3 sm:mb-4">
-                    {hasDiscount ? (
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-lg text-[#A7B0C0] line-through">${displayPrice}</span>
-                        <span className="text-2xl sm:text-3xl font-bold text-emerald-400">${finalPrice}</span>
-                        <span className="text-xs sm:text-sm text-muted">/{billingCycle === "yearly" ? "year" : "month"}</span>
-                      </div>
-                    ) : isFree ? (
-                      <span className="text-2xl sm:text-3xl font-bold">Free</span>
-                    ) : (
-                      <div>
-                        <span className="text-2xl sm:text-3xl font-bold">${displayPrice}</span>
-                        <span className="text-xs sm:text-sm text-muted">/{billingCycle === "yearly" ? "year" : "month"}</span>
-                        {billingCycle === "yearly" && monthlyEquiv > 0 && (
-                          <span className="block text-[11px] text-emerald-400 mt-0.5">That&apos;s ${monthlyEquiv}/month</span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-muted mb-3 sm:mb-4">{plan.credits.toLocaleString()} credits per month</p>
-
-                  {/* CTA Button */}
-                  {isFree ? (
-                    <Link href="/signup">
-                      <button className="w-full py-2.5 rounded-lg text-xs sm:text-sm font-semibold mb-4 sm:mb-6 border border-white/[0.12] hover:bg-white/[0.04] transition-colors">
-                        Get Started
-                      </button>
-                    </Link>
-                  ) : (
-                    <Link href={`/signup?plan=${plan.slug}&billing=${billingCycle}${couponResult?.valid ? `&coupon=${couponCode}` : ""}`}>
-                      <button className={`w-full py-2.5 rounded-lg text-xs sm:text-sm font-semibold mb-4 sm:mb-6 transition-colors ${plan.is_popular ? "bg-[#6D5EF5] text-white hover:brightness-110 shadow-lg shadow-[#6D5EF5]/20" : "border border-white/[0.12] hover:bg-white/[0.04]"}`}>
-                        Choose {plan.name}
-                      </button>
-                    </Link>
-                  )}
-
-                  {/* Features */}
-                  <ul className="space-y-2 sm:space-y-2.5">
-                    {plan.features.map((f: string) => (
-                      <li key={f} className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm">
-                        <Check className="w-3.5 h-3.5 text-[#6D5EF5] shrink-0 mt-0.5" />
-                        <span className="text-[#A7B0C0]">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Limits */}
-                  <div className="mt-4 pt-4 border-t border-white/[0.06] space-y-1.5">
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-[#A7B0C0]">Projects</span>
-                      <span className="text-white font-medium">{plan.max_projects}</span>
-                    </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-[#A7B0C0]">Documents</span>
-                      <span className="text-white font-medium">{plan.max_documents}</span>
-                    </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-[#A7B0C0]">Max article length</span>
-                      <span className="text-white font-medium">{plan.max_article_length.toLocaleString()} words</span>
-                    </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-[#A7B0C0]">Report history</span>
-                      <span className="text-white font-medium">{plan.report_history_days >= 9999 ? "Unlimited" : `${plan.report_history_days} days`}</span>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
+            {plans.map((plan) => (
+              <PricingCard
+                key={plan.id}
+                plan={plan}
+                billingCycle={billingCycle}
+                couponResult={couponResult}
+                couponCode={couponCode}
+              />
+            ))}
           </div>
         )}
-
-        {/* Coupon Section */}
-        <div className="mt-10 sm:mt-12 max-w-md mx-auto">
-          <div className="glass-card rounded-xl p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Tag className="w-4 h-4 text-[#6D5EF5]" />
-              <span className="text-sm font-medium text-white">Have a coupon?</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={couponCode}
-                onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponResult(null) }}
-                placeholder="Enter coupon code"
-                className="flex-1 h-10 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 font-mono uppercase"
-              />
-              <button
-                onClick={validateCoupon}
-                disabled={couponLoading || !couponCode.trim()}
-                className="h-10 px-4 rounded-lg bg-[#6D5EF5] text-white text-xs font-medium hover:brightness-110 transition-all disabled:opacity-50"
-              >
-                {couponLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Apply"}
-              </button>
-            </div>
-            {couponResult && (
-              <div className={`mt-3 flex items-center gap-2 text-xs ${couponResult.valid ? "text-emerald-400" : "text-[#EF4444]"}`}>
-                {couponResult.valid ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-                {couponResult.message}
-              </div>
-            )}
-          </div>
-        </div>
 
         {/* How Credits Work */}
         <div className="mt-12 sm:mt-16 max-w-2xl mx-auto">
@@ -340,6 +213,8 @@ export default function PricingPage() {
           <p className="text-center text-xs text-[#A7B0C0] mt-4">Credit costs are configured by the admin and may vary.</p>
         </div>
       </div>
+      </div>
+      <PublicFooter />
     </div>
   )
 }

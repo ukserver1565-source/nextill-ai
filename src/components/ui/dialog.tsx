@@ -90,6 +90,7 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
       }
       if (ctx.open) document.addEventListener("keydown", handleEscape)
       return () => document.removeEventListener("keydown", handleEscape)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ctx.open])
 
     if (!ctx.open) return null

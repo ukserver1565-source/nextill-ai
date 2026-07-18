@@ -68,14 +68,6 @@ function trendToArray(v: string): number[] | null {
   return v.split(",").map(s => numOrNull(s.trim()) ?? 0)
 }
 
-function intentFromLetter(code: string): string {
-  const map: Record<string, string> = {
-    I: "informational", N: "navigational", T: "transactional",
-    C: "commercial", i: "informational", n: "navigator", t: "transactional", c: "commercial",
-  }
-  return map[code] || "unknown"
-}
-
 export class SemrushProvider implements IDomainOverviewProvider, IKeywordProvider, IBacklinkProvider {
   name = "semrush"
   enabled = false
@@ -135,7 +127,7 @@ export class SemrushProvider implements IDomainOverviewProvider, IKeywordProvide
     }
   }
 
-  async getGrowth(input: DomainInput, months = 12): Promise<ProviderResult<GrowthDataPoint[]>> {
+  async getGrowth(input: DomainInput, _months = 12): Promise<ProviderResult<GrowthDataPoint[]>> {
     const start = Date.now()
     try {
       if (!this.enabled) return { data: null, error: "Semrush not configured", provider: this.name, latencyMs: 0 }
@@ -147,7 +139,7 @@ export class SemrushProvider implements IDomainOverviewProvider, IKeywordProvide
     }
   }
 
-  async getCountries(input: DomainInput): Promise<ProviderResult<CountryRow[]>> {
+  async getCountries(_input: DomainInput): Promise<ProviderResult<CountryRow[]>> {
     const start = Date.now()
     try {
       if (!this.enabled) return { data: null, error: "Semrush not configured", provider: this.name, latencyMs: 0 }
@@ -234,7 +226,7 @@ export class SemrushProvider implements IDomainOverviewProvider, IKeywordProvide
     domain: string,
     filters: { intent: string[]; volumeMin: number | null; volumeMax: number | null; kdMin: number | null; kdMax: number | null; cpcMin: number | null; cpcMax: number | null; include: string; exclude: string; questionsOnly: boolean; matchType: string; language: string },
     pagination: { page: number; pageSize: number; total: number; totalPages: number },
-    sort: { field: string; direction: "asc" | "desc" }
+    _sort: { field: string; direction: "asc" | "desc" }
   ): Promise<ProviderResult<{ keywords: KeywordRow[]; total: number }>> {
     const start = Date.now()
     try {
@@ -314,8 +306,8 @@ export class SemrushProvider implements IDomainOverviewProvider, IKeywordProvide
   }
 
   async getReferringDomains(
-    domain: string,
-    pagination: { page: number; pageSize: number; total: number; totalPages: number }
+    _domain: string,
+    _pagination: { page: number; pageSize: number; total: number; totalPages: number }
   ): Promise<ProviderResult<{ domains: ReferringDomain[]; total: number }>> {
     // Semrush doesn't have a direct referring domains endpoint in basic API
     return { data: null, error: "Referring domains requires Semrush Business tier", provider: this.name, latencyMs: 0 }

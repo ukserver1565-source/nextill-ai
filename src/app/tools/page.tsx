@@ -3,13 +3,16 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 import {
-  Search, FileText, Shield, Sparkles, ArrowRight,
-  ChevronRight, ExternalLink, Zap, Star, Layers,
-  BookOpen, FileType, Activity, Globe, Clock, BarChart3,
-  TrendingUp, MessageSquare, Award, Edit, Check
+  Search, FileText, Shield,
+  ChevronRight, ExternalLink, Zap, Layers,
+  FileType, Activity, Globe,
+  TrendingUp, MessageSquare, Award, Edit, Check, X as XIcon
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { BackButton } from "@/components/shared/back-button"
+import { useState, useEffect } from "react"
+import { PublicHeader } from "@/components/layout/public-header"
+import { PublicFooter } from "@/components/layout/public-footer"
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -89,33 +92,23 @@ const workflowMapping = {
 }
 
 export default function ToolsPage() {
+  const [providerStatus, setProviderStatus] = useState<any[]>([])
+
+  useEffect(() => {
+    fetch("/api/public/provider-status")
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setProviderStatus(data) })
+      .catch(() => {})
+  }, [])
+
+  const _getProviderStatus = (slug: string) => {
+    return providerStatus.find(p => p.slug === slug)
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* NAV */}
-      <header className="glass-topbar sticky top-0 z-50 h-16">
-        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">
-              <span className="gradient-primary-text">Nextill AI</span>
-            </span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link href="/login">
-              <Button variant="ghost" size="sm">
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button variant="gradient" size="sm">
-                Get Started
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <PublicHeader />
 
       {/* HERO */}
       <motion.section
@@ -125,12 +118,8 @@ export default function ToolsPage() {
         className="px-4 pt-16 pb-12"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <Link href="/" className="text-xs text-muted hover:text-white transition-colors">
-              Home
-            </Link>
-            <span className="text-xs text-muted mx-2">/</span>
-            <span className="text-xs text-white/70 font-medium">All Tools</span>
+          <div className="mb-6">
+            <BackButton fallback="/" />
           </div>
           <div className="max-w-2xl">
             <Badge variant="info" className="mb-4 px-3 py-1 text-xs">
@@ -204,6 +193,47 @@ export default function ToolsPage() {
         </div>
       </motion.section>
 
+      {/* API STATUS */}
+      {providerStatus.length > 0 && (
+        <motion.section
+          variants={sectionVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="px-4 pb-12"
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="glass-card rounded-2xl p-6 sm:p-8">
+              <h2 className="text-xl font-bold mb-2">API Provider Status</h2>
+              <p className="text-sm text-muted mb-6">Real-time connection status for each AI provider.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {providerStatus.map((provider: any) => (
+                  <div key={provider.slug} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                    <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${provider.connected && provider.enabled ? "bg-[#22C55E] animate-pulse" : "bg-[#EF4444]"}`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium truncate">{provider.name}</p>
+                      <p className="text-[10px] text-muted">
+                        {provider.connected && provider.enabled ? "Connected" : "Not Connected"}
+                      </p>
+                    </div>
+                    {provider.connected && provider.enabled ? (
+                      <Check className="w-3.5 h-3.5 text-[#22C55E] shrink-0" />
+                    ) : (
+                      <XIcon className="w-3.5 h-3.5 text-[#EF4444] shrink-0" />
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 p-3 rounded-lg bg-[#F59E0B]/10 border border-[#F59E0B]/20">
+                <p className="text-xs text-[#F59E0B]">
+                  <strong>Note:</strong> Unavailable providers will use the local fallback engine. Configure API keys in the Admin Panel to enable full AI capabilities.
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.section>
+      )}
+
       {/* LEGACY TOOLS MIGRATION */}
       <motion.section
         variants={sectionVariants}
@@ -258,21 +288,7 @@ export default function ToolsPage() {
       </motion.section>
 
       {/* FOOTER */}
-      <footer className="border-t border-border">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
-                <Sparkles className="w-3.5 h-3.5 text-white" />
-              </div>
-              <span className="text-sm font-bold gradient-primary-text">Nextill AI</span>
-            </Link>
-            <p className="text-xs text-muted">
-              &copy; {new Date().getFullYear()} Nextill AI. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   )
 }

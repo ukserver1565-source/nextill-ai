@@ -75,7 +75,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return
       }
     }
-    setProfile(data as UserProfile | null)
+    // Fetch actual credit balance from the credits table (single source of truth)
+    const { data: creditData } = await supabase
+      .from("credits")
+      .select("balance")
+      .eq("user_id", userId)
+      .maybeSingle()
+
+    const profileData = data as UserProfile | null
+    if (profileData && creditData) {
+      profileData.credits = creditData.balance
+    }
+    setProfile(profileData)
   }, [])
 
   useEffect(() => {

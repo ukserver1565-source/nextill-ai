@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Search, Mail, Reply, CheckCheck, Trash2, Loader2, Inbox } from "lucide-react"
+import { Search, Reply, CheckCheck, Trash2, Loader2, Inbox } from "lucide-react"
 
 interface ContactMessage {
   id: string
@@ -17,7 +17,7 @@ interface ContactMessage {
 export default function ContactPage() {
   const [search, setSearch] = useState("")
   const [messages, setMessages] = useState<ContactMessage[]>([])
-  const [total, setTotal] = useState(0)
+  const [_total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")

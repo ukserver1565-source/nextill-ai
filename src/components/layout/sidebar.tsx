@@ -10,7 +10,7 @@ import Link from "next/link"
 import {
   LayoutDashboard, Search, FileText, Shield, FolderKanban,
   File, Clock, Sparkles, Layers, Settings,
-  PanelLeftClose, PanelLeft, ChevronRight, Zap, LogOut,
+  PanelLeftClose, PanelLeft, Zap, LogOut,
 } from "lucide-react"
 
 const iconMap: Record<string, React.ElementType> = {

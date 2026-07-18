@@ -20,7 +20,7 @@ for (const line of envRaw.split("\n")) {
 }
 
 const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL
-const SERVICE_KEY = env.SUPABASE_SERVICE_ROLE_KEY
+const _SERVICE_KEY = env.SUPABASE_SERVICE_ROLE_KEY
 
 // Extract project ref from URL
 const projectRef = SUPABASE_URL.match(/https?:\/\/([^.]+)\.supabase/)?.[1]

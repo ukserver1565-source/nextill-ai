@@ -2,16 +2,17 @@
 
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
+import { useAuth } from "@/lib/auth/AuthProvider"
+import { PricingCard } from "@/components/pricing/pricing-card"
 import {
   Search, FileText, Shield, Sparkles, ArrowRight, Check,
   Menu, X, BarChart3, Star, Zap, Globe, Clock, Award,
   BookOpen, Layers, ChevronDown, ChevronRight,
-  TrendingUp, Users, Activity, ExternalLink, FileType, Loader2
+  TrendingUp, Activity, FileType, Loader2, Tag
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { StaggerContainer, StaggerItem } from "@/components/layout/stagger-wrapper"
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -101,9 +102,36 @@ const highlights = [
 ]
 
 interface Plan {
-  name: string; price: number; period: string; features: string[];
-  popular?: boolean; cta: string; href: string;
+  id: string
+  name: string
+  slug: string
+  price_monthly: number
+  price_yearly: number
+  credits: number
+  features: string[]
+  is_active: boolean
+  is_popular: boolean
+  badge: string | null
+  max_projects: number
+  max_documents: number
+  max_article_length: number
+  max_reports_per_month: number
+  report_history_days: number
+  exports: string[]
+  support_level: string
+  sort_order: number
 }
+
+interface WorkflowCost {
+  workflow_slug: string
+  credits_cost: number
+}
+
+const defaultCreditCosts: WorkflowCost[] = [
+  { workflow_slug: "domain-intelligence", credits_cost: 2 },
+  { workflow_slug: "post-generator", credits_cost: 10 },
+  { workflow_slug: "plagiarism-checker", credits_cost: 4 },
+]
 
 const faqs = [
     {
@@ -209,11 +237,19 @@ const demos = [
 ]
 
 export default function HomePage() {
+  const { profile } = useAuth()
+  const dashboardHref = profile ? "/dashboard" : "/login"
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [activeDemo, setActiveDemo] = useState(0)
   const [plans, setPlans] = useState<Plan[]>([])
   const [plansLoading, setPlansLoading] = useState(true)
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
+  const [couponCode, setCouponCode] = useState("")
+  const [couponResult, setCouponResult] = useState<{ valid: boolean; discount: number; type: string; message: string } | null>(null)
+  const [couponLoading, setCouponLoading] = useState(false)
+  const [creditCosts, setCreditCosts] = useState<WorkflowCost[]>(defaultCreditCosts)
+  const [showAllPlans, setShowAllPlans] = useState(false)
 
   useEffect(() => {
     const t = setInterval(() => setActiveDemo((p) => (p + 1) % demos.length), 4000)
@@ -225,25 +261,65 @@ export default function HomePage() {
       .then(r => r.json())
       .then(data => {
         if (Array.isArray(data)) {
-          setPlans(data.map((p: any) => ({
-            name: p.name,
-            price: p.price_monthly || p.price || 0,
-            period: "/month",
-            features: [
-              p.description || "",
-              p.credits ? `${p.credits.toLocaleString()} credits` : "",
-              p.max_projects ? `${p.max_projects} projects` : "",
-              p.max_users ? `${p.max_users} users` : "",
-            ].filter(Boolean),
-            popular: p.name?.toLowerCase() === "pro",
-            cta: p.name?.toLowerCase() === "enterprise" ? "Contact Sales" : "Choose Plan",
-            href: p.name?.toLowerCase() === "enterprise" ? "/contact" : "/signup",
-          })))
+          setPlans(data
+            .filter((p: any) => p.is_active !== false)
+            .sort((a: any, b: any) => (a.price_monthly ?? 99) - (b.price_monthly ?? 99))
+          )
         }
       })
       .catch(() => {})
       .finally(() => setPlansLoading(false))
+
+    fetch("/api/public/workflow-settings")
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setCreditCosts(data.map((w: any) => ({
+            workflow_slug: w.workflow_slug,
+            credits_cost: w.credits_cost,
+          })))
+        }
+      })
+      .catch(() => {})
   }, [])
+
+  const getCreditCost = (slug: string) => {
+    return creditCosts.find(c => c.workflow_slug === slug)?.credits_cost || 0
+  }
+
+  const validateCoupon = async () => {
+    if (!couponCode.trim()) return
+    setCouponLoading(true)
+    setCouponResult(null)
+    try {
+      const res = await fetch("/api/public/coupons/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: couponCode.trim(), billing_cycle: billingCycle }),
+      })
+      const data = await res.json()
+      setCouponResult({
+        valid: data.valid || false,
+        discount: data.discount || 0,
+        type: data.type || "",
+        message: data.message || "Invalid coupon",
+      })
+    } catch {
+      setCouponResult({ valid: false, discount: 0, type: "", message: "Failed to validate coupon" })
+    } finally {
+      setCouponLoading(false)
+    }
+  }
+
+  const _allPlanFeatures = useMemo(
+    () => [...new Set(plans.flatMap(p => p.features || []))].sort(),
+    [plans]
+  )
+
+  const _formatExports = (exports: string[]) => {
+    if (!exports || exports.length === 0) return "—"
+    return exports.join(", ")
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -270,7 +346,7 @@ export default function HomePage() {
             ))}
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="hidden sm:block">
+            <Link href={dashboardHref} className="hidden sm:block">
               <Button variant="ghost" size="sm">
                 Dashboard
               </Button>
@@ -295,7 +371,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              className="md:hidden glass border-t border-border"
+              className="md:hidden bg-[#090B16]/80 backdrop-blur-2xl border-t border-white/[0.06] shadow-2xl"
             >
               <div className="px-4 py-4 space-y-3">
                 {["Features", "Tools", "Pricing", "FAQ"].map((item) => (
@@ -308,7 +384,7 @@ export default function HomePage() {
                     {item}
                   </Link>
                 ))}
-                <Link href="/login" onClick={() => setMobileOpen(false)}>
+                <Link href={dashboardHref} onClick={() => setMobileOpen(false)}>
                   <Button variant="outline" className="w-full">
                     Dashboard
                   </Button>
@@ -366,7 +442,7 @@ export default function HomePage() {
                 Get Started Free <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
-            <Link href="/login">
+            <Link href={dashboardHref}>
               <Button variant="glass" size="lg" className="w-full sm:w-auto text-base px-8">
                 Dashboard
               </Button>
@@ -662,72 +738,140 @@ export default function HomePage() {
         viewport={{ once: true, margin: "-100px" }}
         className="px-4 pb-20 scroll-mt-20"
       >
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold">Simple, Transparent Pricing</h2>
-            <p className="text-muted mt-2 max-w-xl mx-auto">
-              Start for free. Scale when you need more.
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2 sm:mb-3">Simple, Transparent Pricing</h2>
+            <p className="text-muted text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-2">
+              Choose the plan that fits your needs. Upgrade or downgrade at any time.
             </p>
           </div>
+
+          {/* Monthly/Yearly Toggle */}
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <button
+              onClick={() => setBillingCycle("monthly")}
+              className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "monthly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-white"}`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setBillingCycle("yearly")}
+              className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "yearly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-white"}`}
+            >
+              Yearly
+              <span className="ml-1.5 text-[10px] font-bold text-emerald-400">Save 2 months</span>
+            </button>
+          </div>
+
+          {/* Pricing Cards */}
           {plansLoading ? (
             <div className="flex items-center justify-center py-20">
               <Loader2 className="w-6 h-6 text-primary-light animate-spin" />
             </div>
           ) : plans.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-muted">Pricing plans are not available right now.</p>
+              <p className="text-muted text-sm">No plans available at this time.</p>
               <Link href="/contact"><Button variant="glass" className="mt-4">Contact Us</Button></Link>
             </div>
           ) : (
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
-            >
-              {plans.map((p) => (
-                <motion.div key={p.name} variants={staggerItem}>
-                  <div
-                    className={`glass-card rounded-2xl p-6 sm:p-8 relative ${
-                      p.popular
-                        ? "border-primary/50 ring-1 ring-primary/30"
-                        : ""
-                    }`}
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-lg sm:max-w-none mx-auto">
+                {(showAllPlans ? plans : plans.slice(0, 3)).map((plan) => (
+                  <PricingCard
+                    key={plan.id}
+                    plan={plan}
+                    billingCycle={billingCycle}
+                  />
+                ))}
+              </div>
+
+              {/* See More Plans Button */}
+              {!showAllPlans && plans.length > 3 && (
+                <div className="text-center mt-8">
+                  <button
+                    onClick={() => setShowAllPlans(true)}
+                    className="px-6 py-2.5 rounded-xl text-sm font-medium border border-white/[0.12] hover:bg-white/[0.04] transition-colors text-muted hover:text-white"
                   >
-                    {p.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <Badge variant="default" className="px-4 py-1 text-xs font-semibold">
-                          Most Popular
-                        </Badge>
-                      </div>
-                    )}
-                    <h3 className="text-lg font-bold">{p.name}</h3>
-                    <div className="mt-4 mb-6">
-                      <span className="text-4xl font-bold">${p.price}</span>
-                      <span className="text-muted text-sm ml-1">{p.period}</span>
-                    </div>
-                    <ul className="space-y-3 mb-8">
-                      {p.features.map((f) => (
-                        <li key={f} className="text-sm text-muted flex items-center gap-2.5">
-                          <Check className="w-4 h-4 text-primary-light shrink-0" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                    <Link href={p.href}>
-                      <Button
-                        variant={p.popular ? "gradient" : "glass"}
-                        className="w-full"
-                      >
-                        {p.cta}
-                      </Button>
-                    </Link>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+                    See More Plans
+                  </button>
+                </div>
+              )}
+            </>
           )}
+
+          {/* Coupon Section */}
+          <div className="mt-10 sm:mt-12 max-w-md mx-auto">
+            <div className="glass-card rounded-xl p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Tag className="w-4 h-4 text-[#6D5EF5]" />
+                <span className="text-sm font-medium text-white">Have a coupon?</span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={couponCode}
+                  onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponResult(null) }}
+                  placeholder="Enter coupon code"
+                  className="flex-1 h-10 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 font-mono uppercase"
+                />
+                <button
+                  onClick={validateCoupon}
+                  disabled={couponLoading || !couponCode.trim()}
+                  className="h-10 px-4 rounded-lg bg-[#6D5EF5] text-white text-xs font-medium hover:brightness-110 transition-all disabled:opacity-50"
+                >
+                  {couponLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Apply"}
+                </button>
+              </div>
+              {couponResult && (
+                <div className={`mt-3 flex items-center gap-2 text-xs ${couponResult.valid ? "text-emerald-400" : "text-[#EF4444]"}`}>
+                  {couponResult.valid ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
+                  {couponResult.message}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* How Credits Work */}
+          <div className="mt-12 sm:mt-16 max-w-2xl mx-auto">
+            <div className="text-center mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-2">How Credits Work</h2>
+              <p className="text-muted text-sm">Each action costs credits. Credits reset monthly with your plan.</p>
+            </div>
+            <div className="glass-card rounded-xl overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/[0.06]">
+                    <th className="text-left p-4 text-xs text-[#A7B0C0] font-medium uppercase">Action</th>
+                    <th className="text-right p-4 text-xs text-[#A7B0C0] font-medium uppercase">Credits</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-white/[0.03]">
+                    <td className="p-4 text-white text-xs sm:text-sm">Domain Intelligence — basic/local</td>
+                    <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />{getCreditCost("domain-intelligence")}</span></td>
+                  </tr>
+                  <tr className="border-b border-white/[0.03]">
+                    <td className="p-4 text-white text-xs sm:text-sm">Post Generator — 1,000 words</td>
+                    <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />5</span></td>
+                  </tr>
+                  <tr className="border-b border-white/[0.03]">
+                    <td className="p-4 text-white text-xs sm:text-sm">Post Generator — 2,000 words</td>
+                    <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />8</span></td>
+                  </tr>
+                  <tr className="border-b border-white/[0.03]">
+                    <td className="p-4 text-white text-xs sm:text-sm">Post Generator — 5,000 words</td>
+                    <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />20</span></td>
+                  </tr>
+                  <tr className="border-b border-white/[0.03]">
+                    <td className="p-4 text-white text-xs sm:text-sm">Plagiarism & Authenticity check</td>
+                    <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />{getCreditCost("plagiarism-checker")}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-center text-xs text-[#A7B0C0] mt-4">Credit costs are configured by the admin and may vary.</p>
+          </div>
         </div>
       </motion.section>
 

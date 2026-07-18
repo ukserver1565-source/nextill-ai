@@ -1,13 +1,12 @@
 ﻿import { supabaseAdmin } from "@/lib/supabase/admin"
 import type {
   ProviderConfig,
-  ApiKeyRecord,
   ModelConfig,
   PromptTemplate,
   AiLog,
   WorkflowSettings,
 } from "./provider-types"
-import { createHash, createCipheriv, createDecipheriv, randomBytes } from "crypto"
+import { createHash, createDecipheriv } from "crypto"
 
 const ENCRYPTION_KEY =
   process.env.ENCRYPTION_KEY ||

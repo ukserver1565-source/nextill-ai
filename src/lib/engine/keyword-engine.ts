@@ -78,7 +78,7 @@ const intentPatterns: Array<{ regex: RegExp; intent: string }> = [
 
 export function analyzeKeywordsLocal(text: string): KeywordResult {
   const words = tokenize(text)
-  const uniqueWords = [...new Set(words)]
+  const _uniqueWords = [...new Set(words)]
   const wordCount = words.length
 
   // TF-IDF style frequency

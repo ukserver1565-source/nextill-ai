@@ -7,7 +7,7 @@ import type {
   ReferringDomain, TechnicalSEO, Recommendation, AISearchMetrics,
   ProviderStatus, KeywordFilters, PaginationState,
 } from "./domain-intelligence.types"
-import type { IDomainOverviewProvider, IKeywordProvider, IBacklinkProvider, ProviderResult } from "./provider.interface"
+import type { ProviderResult } from "./provider.interface"
 import { SemrushProvider } from "./semrush.provider"
 import { PageSpeedProvider } from "./pagespeed.provider"
 import { LocalTechnicalProvider } from "./local-technical.provider"
@@ -188,12 +188,13 @@ export const domainIntelligenceService = {
     ])
   },
 
-  async saveReport(input: DomainInput, result: DomainAnalysisResult): Promise<string | null> {
+  async saveReport(input: DomainInput, result: DomainAnalysisResult, userId: string): Promise<string | null> {
     // Save to Supabase — called from API route with auth
     const { supabaseAdmin } = await import("@/lib/supabase/admin")
     const { data, error } = await supabaseAdmin
       .from("domain_reports")
       .insert({
+        user_id: userId,
         domain: input.rootDomain,
         input_json: input,
         overview_json: result.overview,

@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Bot, Brain, Cpu, Globe, Shield, Activity, Plus, Key, Layers, FileText, ArrowRight, CheckCircle, XCircle, Zap, Loader2, Inbox } from "lucide-react"
+import { Bot, Brain, Cpu, Globe, Shield, Activity, Plus, Key, Layers, FileText, ArrowRight, CheckCircle, XCircle, Loader2, Inbox } from "lucide-react"
 import { useAdminFetch } from "@/lib/admin/use-admin-fetch"
 
 export default function AIHubPage() {
@@ -18,7 +17,8 @@ export default function AIHubPage() {
   const apiKeys = Array.isArray(apiKeysData) ? apiKeysData : apiKeysData?.data || []
   const activity = Array.isArray(logsData) ? logsData : logsData?.data || []
 
-  const activeProviders = Array.isArray(providers) ? providers.filter((p: any) => p.enabled || p.status === "active").length : 0
+  const providerSlugsWithKeys = new Set(apiKeys.filter((k: any) => k.is_enabled !== false).map((k: any) => k.provider_slug))
+  const activeProviders = Array.isArray(providers) ? providers.filter((p: any) => p.enabled && providerSlugsWithKeys.has(p.slug)).length : 0
   const totalModels = Array.isArray(providers) ? providers.reduce((sum: number, p: any) => {
     const count = p.ai_models?.[0]?.count ?? p.model_count ?? 0
     return sum + count

@@ -3,7 +3,7 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 
 export async function POST(req: NextRequest) {
   try {
-    const { code, billing_cycle } = await req.json()
+    const { code, billing_cycle, plan_slug } = await req.json()
     if (!code || typeof code !== "string") {
       return NextResponse.json({ valid: false, message: "Coupon code is required" })
     }
@@ -26,13 +26,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ valid: false, message: "This coupon has expired" })
     }
 
-    if (coupon.usage_limit > 0 && coupon.used_count >= coupon.usage_limit) {
+    if (coupon.max_uses > 0 && coupon.used_count >= coupon.max_uses) {
       return NextResponse.json({ valid: false, message: "This coupon has reached its usage limit" })
     }
 
     // Check billing cycle
     if (coupon.billing_cycle && coupon.billing_cycle !== "both" && billing_cycle && coupon.billing_cycle !== billing_cycle) {
       return NextResponse.json({ valid: false, message: `This coupon is only valid for ${coupon.billing_cycle} billing` })
+    }
+
+    // Check plan-specific coupon (applicable_plan field)
+    if (coupon.applicable_plan && plan_slug && coupon.applicable_plan !== plan_slug) {
+      return NextResponse.json({ valid: false, message: `This coupon is only valid for the ${coupon.applicable_plan} plan` })
     }
 
     // Calculate discount
@@ -68,6 +73,17 @@ export async function POST(req: NextRequest) {
         type: "percentage",
         discount,
         message: `${discount}% off first payment`,
+      })
+    }
+
+    // Fallback: treat as percentage if discount_type exists
+    if (coupon.discount_type === "percentage" || coupon.discount_type === "fixed") {
+      discount = coupon.discount_value || 0
+      return NextResponse.json({
+        valid: true,
+        type: coupon.discount_type,
+        discount,
+        message: coupon.discount_type === "percentage" ? `${discount}% discount applied` : `$${discount} discount applied`,
       })
     }
 

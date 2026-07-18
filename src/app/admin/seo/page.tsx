@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Save, Search, Globe, FileCode, BarChart3, Loader2 } from "lucide-react"
+import { Save, Search, FileCode, BarChart3, Loader2 } from "lucide-react"
 
 export default function SEOPage() {
   const [form, setForm] = useState({

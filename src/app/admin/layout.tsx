@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth/AuthProvider"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminTopbar } from "@/components/admin/admin-topbar"
 import { useState } from "react"
-import { Loader2, Menu } from "lucide-react"
+import { Loader2 } from "lucide-react"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { session, loading, profile } = useAuth()
@@ -64,7 +64,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}
 
       {/* Sidebar: fixed drawer on mobile, static on desktop */}
-      <div className={`fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out lg:inset-y-auto lg:relative lg:z-auto lg:transition-none ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}>
+      <div className={`fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out lg:inset-y-auto lg:relative lg:z-auto lg:transition-none lg:shrink-0 ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}>
         <AdminSidebar
           collapsed={sidebarCollapsed}
           onToggle={() => {

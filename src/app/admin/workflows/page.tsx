@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Workflow, CheckCircle, XCircle, Clock, BarChart3, Settings, Play, Loader2, Inbox } from "lucide-react"
+import { Workflow, XCircle, Clock, BarChart3, Settings, Play, Loader2, Inbox } from "lucide-react"
 
 export default function WorkflowsPage() {
   const router = useRouter()
@@ -58,7 +58,7 @@ export default function WorkflowsPage() {
     }
   }
 
-  const handleSettings = (wf: any) => {
+  const handleSettings = (_wf: any) => {
     router.push(`/admin/integrations`)
   }
 

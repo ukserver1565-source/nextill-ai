@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase/client"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Settings, Save, Loader2, User, Mail, Shield, CreditCard } from "lucide-react"
+import { Save, User, Shield } from "lucide-react"
 
 export default function DashboardSettings() {
   const { profile, refreshProfile } = useAuth()

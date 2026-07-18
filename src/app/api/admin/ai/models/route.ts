@@ -69,7 +69,7 @@ export async function DELETE(req: NextRequest) {
     const { error } = await supabaseAdmin.from("ai_models").delete().eq("id", id)
     if (error) throw new Error(error.message)
     return NextResponse.json({ success: true })
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to delete model" }, { status: 400 })
   }
 }

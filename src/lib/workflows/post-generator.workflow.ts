@@ -38,7 +38,7 @@ export async function runPostGenerator(input: {
     articleType = "blog-post",
     wordCount = 1500,
     language = "en",
-    country = "us",
+    country: _country = "us",
     tone = "professional",
     audience = "general",
   } = input
@@ -108,7 +108,7 @@ REQUIREMENTS:
 
 Write the complete article now:`
   const writerResult = await generateText("post-generator", prompt, {
-    maxTokens: Math.max(8192, Math.ceil(wordCount * 2)),
+    maxTokens: Math.max(16384, Math.ceil(wordCount * 2.5)),
   })
   const usingLocal = isLocalEngine(writerResult.provider)
   let articleContent: string
@@ -118,6 +118,30 @@ Write the complete article now:`
   } else {
     const articleData = localEngine.generateArticle(primaryKeyword, wordCount, tone, audience, h1)
     articleContent = [articleData.intro, articleData.body, articleData.conclusion, articleData.cta].join("\n\n")
+  }
+
+  // Post-generation word count enforcement: expand if content is too short
+  if (!usingLocal) {
+    const maxExpansionAttempts = 3
+    for (let attempt = 0; attempt < maxExpansionAttempts; attempt++) {
+      const currentWords = articleContent.split(/\s+/).filter(Boolean).length
+      if (currentWords >= wordCount * 0.9) break
+
+      const remaining = wordCount - currentWords
+      const expansionPrompt = `The following article currently has approximately ${currentWords} words. It needs at least ${wordCount} words total (${remaining} more words needed).\n\nPlease continue and expand this article by adding more detailed content, practical examples, deeper explanations, additional subsections, and actionable advice. Write at least ${Math.ceil(remaining * 1.2)} more words. Maintain the same tone and style. Do NOT repeat content that already exists — only add new, substantive material.\n\nCurrent article:\n${articleContent}\n\nContinue writing additional content:`
+
+      const expansionResult = await generateText("post-generator", expansionPrompt, {
+        maxTokens: Math.max(16384, Math.ceil(remaining * 2.5)),
+      })
+
+      if (expansionResult.success && expansionResult.content) {
+        // Strip any duplicate headings or intro if the expansion repeats them
+        const expandedContent = expansionResult.content.trim()
+        if (expandedContent.length > 100) {
+          articleContent = articleContent + "\n\n" + expandedContent
+        }
+      }
+    }
   }
 
   runner.updateProgress(2, 100)

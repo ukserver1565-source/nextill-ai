@@ -1,12 +1,12 @@
 "use client"
 
-import { Suspense, useState, useCallback, useRef, useMemo } from "react"
+import { Suspense, useState, useCallback, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Shield, ShieldCheck, ShieldAlert, FileSearch, Upload, Copy, Check,
   Download, Share2, RefreshCw, FileText, ExternalLink, Loader2,
-  ScanSearch, Search, AlertTriangle, X, FileUp, Clock, Save,
+  ScanSearch, Search, AlertTriangle, X, FileUp, Save,
 } from "lucide-react"
 import type { PlagiarismCheckerResult } from "@/lib/workflows/workflow-types"
 
@@ -139,19 +139,6 @@ function SimilarityBar({ unique, matched }: { unique: number; matched: number })
   )
 }
 
-function CopyButton({ text, label }: { text: string; label: string }) {
-  const [copied, setCopied] = useState(false)
-  return (
-    <button
-      onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000) }}
-      className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-sm text-[#A7B0C0] hover:text-white transition-all"
-    >
-      {copied ? <Check className="w-4 h-4 text-[#22C55E]" /> : <Copy className="w-4 h-4" />}
-      {copied ? "Copied!" : label}
-    </button>
-  )
-}
-
 function LoadingSkeleton() {
   return (
     <div className="space-y-6">
@@ -255,7 +242,7 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
         setCopied("save")
         setTimeout(() => setCopied(""), 2000)
       }
-    } catch (e) { setSaveError("Failed to save report. Please try again.") }
+    } catch (_e) { setSaveError("Failed to save report. Please try again.") }
     setSaving(false)
   }, [result])
 
@@ -442,12 +429,16 @@ function PlagiarismCheckerContent() {
   const [fileName, setFileName] = useState("")
   const [isDragOver, setIsDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [apiAvailable, setApiAvailable] = useState<boolean | null>(null)
+  const [apiMessage, setApiMessage] = useState("")
 
   const handleCheck = useCallback(async () => {
     if (!text.trim()) return
     setLoading(true)
     setError("")
     setResult(null)
+    setApiAvailable(null)
+    setApiMessage("")
     try {
       const res = await fetch("/api/tools/plagiarism-checker", {
         method: "POST",
@@ -456,12 +447,19 @@ function PlagiarismCheckerContent() {
       })
       const json = await res.json()
       if (!res.ok) {
+        if (res.status === 402 && json.code === "INSUFFICIENT_CREDITS") {
+          const returnTo = encodeURIComponent(window.location.pathname + window.location.search)
+          window.location.href = `/dashboard/billing?insufficient_credits=true&required=${json.creditsRequired || 0}&available=${json.creditsAvailable || 0}&return_to=${returnTo}`
+          return
+        }
         throw new Error(json.error || `HTTP ${res.status}`)
       }
       if (!json.success || !json.content) {
         throw new Error("Plagiarism check failed")
       }
       const content = json.content
+      setApiAvailable(json.available ?? true)
+      setApiMessage(json.message || "")
       const matches = content.matches || []
       const matchedPhrases = matches.map((m: any) => ({
         text: m.text || "",
@@ -494,7 +492,7 @@ function PlagiarismCheckerContent() {
         sources,
         recommendation,
         safeToPublish: content.safeToPublish ?? score >= 80,
-        wordCount: content.wordCount || json.wordCount || text.split(/\s+/).filter(Boolean).length,
+        wordCount: text.split(/\s+/).filter(Boolean).length,
         engine: json.localEngine ? "local" : "ai",
         aiDetection: json.aiDetection || undefined,
       }
@@ -547,6 +545,8 @@ function PlagiarismCheckerContent() {
     setText("")
     setFileName("")
     setError("")
+    setApiAvailable(null)
+    setApiMessage("")
   }, [])
 
   const wordCount = text.split(/\s+/).filter(Boolean).length
@@ -689,7 +689,11 @@ function PlagiarismCheckerContent() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-[#5A6577]">Engine</span>
-                    <span className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-[#6D5EF5]/10 text-[#6D5EF5] border border-[#6D5EF5]/20">{result.engine}</span>
+                    <span className={`text-[10px] font-medium px-2.5 py-1 rounded-full border ${
+                      apiAvailable === false
+                        ? "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
+                        : "bg-[#6D5EF5]/10 text-[#6D5EF5] border-[#6D5EF5]/20"
+                    }`}>{apiAvailable === false ? "Local Only" : result.engine}</span>
                   </div>
                 </div>
               </motion.div>
@@ -748,6 +752,22 @@ function PlagiarismCheckerContent() {
 
           {!loading && result && (
             <div className="p-8 max-w-2xl mx-auto">
+              {apiAvailable === false && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 bg-gradient-to-b from-[#F59E0B]/8 to-transparent border border-[#F59E0B]/20 rounded-2xl p-5 flex items-start gap-3 shadow-lg shadow-[#F59E0B]/5"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-[#F59E0B]/15 flex items-center justify-center shrink-0">
+                    <AlertTriangle className="w-5 h-5 text-[#F59E0B]" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-[#F59E0B]">API Not Configured</p>
+                    <p className="text-xs text-[#A7B0C0] mt-1 leading-relaxed">{apiMessage || "Connect a real plagiarism detection API for accurate web-based scanning."}</p>
+                    <p className="text-xs text-[#5A6577] mt-2 italic">Results shown are from local internal analysis only (self-duplication detection) and do not represent full web-based plagiarism scanning.</p>
+                  </div>
+                </motion.div>
+              )}
               <ResultsSection result={result} onNewCheck={handleNewCheck} />
             </div>
           )}

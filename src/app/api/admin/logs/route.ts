@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json(data)
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to fetch logs" }, { status: 500 })
   }
 }
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
     })
     if (error) throw new Error(error.message)
     return NextResponse.json({ success: true })
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to create system log" }, { status: 400 })
   }
 }

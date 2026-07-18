@@ -18,7 +18,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
       .single()
     if (error) throw new Error(error.message)
     return NextResponse.json(data)
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to toggle provider" }, { status: 400 })
   }
 }

@@ -20,6 +20,7 @@ const providerIcons: Record<string, any> = {
 
 export default function AIHubModelsPage() {
   const [models, setModels] = useState<any[]>([])
+  const [providersWithKeys, setProvidersWithKeys] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [search, setSearch] = useState("")
@@ -35,10 +36,20 @@ export default function AIHubModelsPage() {
     setLoading(true)
     setError("")
     try {
-      const res = await fetch("/api/admin/ai/models")
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const json = await res.json()
-      setModels(Array.isArray(json) ? json : json.data || [])
+      const [modelsRes, keysRes] = await Promise.all([
+        fetch("/api/admin/ai/models"),
+        fetch("/api/admin/ai/api-keys"),
+      ])
+      if (modelsRes.ok) {
+        const json = await modelsRes.json()
+        setModels(Array.isArray(json) ? json : json.data || [])
+      }
+      if (keysRes.ok) {
+        const keysJson = await keysRes.json()
+        const keys = Array.isArray(keysJson) ? keysJson : keysJson.data || []
+        const slugs = new Set<string>(keys.map((k: any) => k.provider_slug).filter(Boolean))
+        setProvidersWithKeys(slugs)
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -247,12 +258,22 @@ export default function AIHubModelsPage() {
                           )}
                         </td>
                         <td className="p-4">
-                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${
-                            m.is_enabled ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]"
-                          }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${m.is_enabled ? "bg-[#22C55E]" : "bg-[#A7B0C0]"}`} />
-                            {m.is_enabled ? "Active" : "Inactive"}
-                          </span>
+                          {m.is_enabled && providersWithKeys.has(m.provider) ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
+                              Active
+                            </span>
+                          ) : m.is_enabled && !providersWithKeys.has(m.provider) ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />
+                              No API Key
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#A7B0C0]" />
+                              Inactive
+                            </span>
+                          )}
                         </td>
                         <td className="p-4 text-right">
                           <div className="flex items-center justify-end gap-1">

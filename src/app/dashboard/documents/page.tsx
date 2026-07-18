@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth/AuthProvider"
 import { supabase } from "@/lib/supabase/client"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { FileText, Loader2, Clock, Trash2, FileIcon } from "lucide-react"
+import { Loader2, Clock, Trash2, FileIcon } from "lucide-react"
 
 export default function DashboardDocuments() {
   const { profile } = useAuth()
@@ -12,19 +12,36 @@ export default function DashboardDocuments() {
   const [documents, setDocuments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
+  const refreshDocuments = async () => {
     if (!profile) return
-    supabase
+    const { data } = await supabase
       .from("documents")
       .select("*")
       .eq("user_id", profile.user_id)
       .order("updated_at", { ascending: false })
-      .then(({ data }) => { setDocuments(data || []); setLoading(false) }, () => setLoading(false))
+    setDocuments(data || [])
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    refreshDocuments()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile])
+
+  useEffect(() => {
+    const onFocus = () => { if (profile) refreshDocuments() }
+    window.addEventListener("focus", onFocus)
+    return () => window.removeEventListener("focus", onFocus)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile])
 
   const deleteDoc = async (id: string) => {
     if (!confirm("Delete this document?")) return
-    await supabase.from("documents").delete().eq("id", id)
+    const { error } = await supabase.from("documents").delete().eq("id", id)
+    if (error) {
+      console.error("Failed to delete document:", error)
+      return
+    }
     setDocuments(documents.filter((d) => d.id !== id))
   }
 

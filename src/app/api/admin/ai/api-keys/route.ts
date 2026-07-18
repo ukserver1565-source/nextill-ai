@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       is_enabled: body.is_enabled ?? true,
     })
     return NextResponse.json(data)
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to create API key" }, { status: 400 })
   }
 }

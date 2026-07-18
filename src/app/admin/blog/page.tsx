@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Search, Plus, Edit3, Trash2, ExternalLink, ChevronLeft, ChevronRight, Loader2, FileText, X } from "lucide-react"
+import { Search, Plus, Edit3, Trash2, ExternalLink, ChevronLeft, ChevronRight, Loader2, X } from "lucide-react"
 
 const PAGE_SIZE = 8
 

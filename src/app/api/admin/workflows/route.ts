@@ -9,7 +9,7 @@ export async function GET() {
       .order("workflow_name", { ascending: true })
     if (error) throw new Error(error.message)
     return NextResponse.json(data || [])
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to fetch workflows" }, { status: 500 })
   }
 }
@@ -27,7 +27,7 @@ export async function PATCH(req: NextRequest) {
       .single()
     if (error) throw new Error(error.message)
     return NextResponse.json(data)
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to update workflow" }, { status: 400 })
   }
 }

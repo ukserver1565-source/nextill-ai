@@ -21,7 +21,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       updated_at: data.updated_at,
     }
     return NextResponse.json(safe)
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to fetch API key" }, { status: 404 })
   }
 }
@@ -41,7 +41,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       .single()
     if (error) throw new Error(error.message)
     return NextResponse.json(data)
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to update API key" }, { status: 400 })
   }
 }
@@ -52,7 +52,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     const { error } = await supabaseAdmin.from("ai_api_keys").delete().eq("id", id)
     if (error) throw new Error(error.message)
     return NextResponse.json({ success: true })
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to delete API key" }, { status: 400 })
   }
 }

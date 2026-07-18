@@ -317,14 +317,46 @@ grant all privileges on all sequences in schema public to service_role;
 -- ============================================================
 -- FOREIGN KEYS FOR PROFILES JOINS (PostgREST needs FK for joins)
 -- ============================================================
-alter table public.projects add constraint if not exists fk_projects_profiles foreign key (user_id) references public.profiles(user_id);
-alter table public.documents add constraint if not exists fk_documents_profiles foreign key (user_id) references public.profiles(user_id);
-alter table public.payments add constraint if not exists fk_payments_profiles foreign key (user_id) references public.profiles(user_id);
-alter table public.credit_logs add constraint if not exists fk_credit_logs_profiles foreign key (user_id) references public.profiles(user_id);
-alter table public.api_keys add constraint if not exists fk_api_keys_profiles foreign key (user_id) references public.profiles(user_id);
-alter table public.subscriptions add constraint if not exists fk_subscriptions_profiles foreign key (user_id) references public.profiles(user_id);
-alter table public.credits add constraint if not exists fk_credits_profiles foreign key (user_id) references public.profiles(user_id);
-alter table public.usage_logs add constraint if not exists fk_usage_logs_profiles foreign key (user_id) references public.profiles(user_id);
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_projects_profiles') THEN
+    ALTER TABLE public.projects ADD CONSTRAINT fk_projects_profiles FOREIGN KEY (user_id) REFERENCES public.profiles(user_id);
+  END IF;
+END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_documents_profiles') THEN
+    ALTER TABLE public.documents ADD CONSTRAINT fk_documents_profiles FOREIGN KEY (user_id) REFERENCES public.profiles(user_id);
+  END IF;
+END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_payments_profiles') THEN
+    ALTER TABLE public.payments ADD CONSTRAINT fk_payments_profiles FOREIGN KEY (user_id) REFERENCES public.profiles(user_id);
+  END IF;
+END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_credit_logs_profiles') THEN
+    ALTER TABLE public.credit_logs ADD CONSTRAINT fk_credit_logs_profiles FOREIGN KEY (user_id) REFERENCES public.profiles(user_id);
+  END IF;
+END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_api_keys_profiles') THEN
+    ALTER TABLE public.api_keys ADD CONSTRAINT fk_api_keys_profiles FOREIGN KEY (user_id) REFERENCES public.profiles(user_id);
+  END IF;
+END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_subscriptions_profiles') THEN
+    ALTER TABLE public.subscriptions ADD CONSTRAINT fk_subscriptions_profiles FOREIGN KEY (user_id) REFERENCES public.profiles(user_id);
+  END IF;
+END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_credits_profiles') THEN
+    ALTER TABLE public.credits ADD CONSTRAINT fk_credits_profiles FOREIGN KEY (user_id) REFERENCES public.profiles(user_id);
+  END IF;
+END $$;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_usage_logs_profiles') THEN
+    ALTER TABLE public.usage_logs ADD CONSTRAINT fk_usage_logs_profiles FOREIGN KEY (user_id) REFERENCES public.profiles(user_id);
+  END IF;
+END $$;
 
 
 -- 002_rls_policies.sql

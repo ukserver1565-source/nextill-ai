@@ -1,13 +1,16 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { Search, Bell, LogOut, Globe, Menu, Settings, ChevronDown, Shield } from "lucide-react"
+import { usePathname } from "next/navigation"
+import { Search, Bell, LogOut, Globe, Menu, Settings, ChevronDown, Shield, ArrowLeft } from "lucide-react"
 import { Avatar } from "@/components/ui/avatar"
 import { adminLogout } from "@/lib/auth/admin-actions"
 import { supabase } from "@/lib/supabase/client"
 import Link from "next/link"
 
 export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; onMenuClick?: () => void }) {
+  const pathname = usePathname()
+  const showBackButton = pathname !== "/admin"
   const [userName, setUserName] = useState("Admin")
   const [userEmail, setUserEmail] = useState("")
   const [userInitials, setUserInitials] = useState("AD")
@@ -40,9 +43,17 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
     await adminLogout()
   }
 
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      window.history.back()
+    } else {
+      window.location.href = "/admin"
+    }
+  }
+
   return (
-    <header className="h-16 border-b border-white/[0.04] flex items-center justify-between px-3 sm:px-4 lg:px-6 bg-[#090B16]/80 backdrop-blur-xl sticky top-0 z-30">
-      <div className="flex items-center gap-3 flex-1 min-w-0">
+    <header className="h-16 border-b border-white/[0.04] flex items-center justify-between px-3 sm:px-4 lg:px-6 bg-[#090B16]/80 backdrop-blur-xl sticky top-0 z-30 overflow-hidden">
+      <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 overflow-hidden">
         {onMenuClick && (
           <button
             onClick={onMenuClick}
@@ -52,27 +63,36 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
             <Menu className="w-5 h-5" />
           </button>
         )}
+        {showBackButton && (
+          <button
+            onClick={handleBack}
+            className="hidden sm:flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] border border-white/[0.06] hover:border-white/[0.12] transition-all text-xs shrink-0"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">Back</span>
+          </button>
+        )}
         <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#6D5EF5]/10 border border-[#6D5EF5]/20">
           <Shield className="w-3.5 h-3.5 text-[#6D5EF5]" />
           <span className="text-[11px] font-semibold text-[#6D5EF5]">Admin</span>
         </div>
         <button
           onClick={onSearch}
-          className="hidden sm:flex items-center gap-3 w-full max-w-md h-10 px-4 rounded-lg bg-[#151C2E] border border-white/[0.06] hover:border-white/[0.12] transition-all group cursor-pointer"
+          className="hidden sm:flex items-center gap-2 lg:gap-3 w-full max-w-[200px] lg:max-w-md h-10 px-3 lg:px-4 rounded-lg bg-[#151C2E] border border-white/[0.06] hover:border-white/[0.12] transition-all group cursor-pointer shrink-0"
         >
           <Search className="w-4 h-4 text-[#A7B0C0] shrink-0" />
-          <span className="text-sm text-[#A7B0C0] flex-1 text-left">Search admin panel...</span>
-          <kbd className="hidden lg:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-[#A7B0C0] bg-[#090B16] rounded border border-white/[0.06]">
+          <span className="text-xs lg:text-sm text-[#A7B0C0] flex-1 text-left truncate">Search admin panel...</span>
+          <kbd className="hidden xl:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-[#A7B0C0] bg-[#090B16] rounded border border-white/[0.06]">
             <span className="text-[9px]">⌘</span>K
           </kbd>
         </button>
       </div>
 
-      <div className="flex items-center gap-1 sm:gap-2 lg:gap-3">
+      <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
         <Link
           href="/"
           target="_blank"
-          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] border border-transparent hover:border-white/[0.06] transition-all text-xs"
+          className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] border border-transparent hover:border-white/[0.06] transition-all text-xs"
         >
           <Globe className="w-3.5 h-3.5" />
           <span>View Site</span>

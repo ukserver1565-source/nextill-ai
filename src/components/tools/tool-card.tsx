@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   PenSquare, UserCheck, SearchCheck, FileSearch, SpellCheck, RefreshCw,
-  AlignLeft, Languages, Star, Pin, ArrowRight, Clock, Heading, FileText,
+  AlignLeft, Languages, ArrowRight, Heading, FileText,
   Search, Shield, TrendingUp, Share2, Code, Map, Bot, Link as LinkIcon, ClipboardList,
   GitBranch, HelpCircle, type LucideIcon,
 } from "lucide-react"

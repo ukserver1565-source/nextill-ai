@@ -16,7 +16,7 @@ export async function GET() {
       }
     }
     return NextResponse.json(map)
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to fetch email settings" }, { status: 500 })
   }
 }
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     const { error } = await supabaseAdmin.from("site_settings").upsert(updates, { onConflict: "key" })
     if (error) throw new Error(error.message)
     return NextResponse.json({ success: true })
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to update email settings" }, { status: 400 })
   }
 }

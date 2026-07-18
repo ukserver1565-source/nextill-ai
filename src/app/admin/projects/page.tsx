@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Search, FolderKanban, ChevronLeft, ChevronRight, ExternalLink, Loader2 } from "lucide-react"
+import { Search, ChevronLeft, ChevronRight, ExternalLink, Loader2 } from "lucide-react"
 
 const PAGE_SIZE = 8
 

@@ -1,4 +1,3 @@
-import { supabaseAdmin } from "@/lib/supabase/admin"
 import type { PostgrestError } from "@supabase/supabase-js"
 
 // Safe wrapper that catches "relation does not exist" errors and returns empty results

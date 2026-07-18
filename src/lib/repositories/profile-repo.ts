@@ -64,12 +64,17 @@ export const profileRepo = {
   },
 
   async getStats() {
-    const { data: all, error: e1 } = await supabaseAdmin.from("profiles").select("role,plan,status,credits")
+    const { data: all, error: e1 } = await supabaseAdmin.from("profiles").select("role,plan,status")
     if (e1) throw new Error(`Failed to fetch stats: ${e1.message}`)
 
     const premium = all?.filter((u) => u.plan !== "free" && u.status === "active").length || 0
     const free = all?.filter((u) => u.plan === "free" && u.status === "active").length || 0
-    const totalCredits = all?.reduce((s, u) => s + (u.credits || 0), 0) || 0
+
+    // Sum credits from the credits table (single source of truth)
+    const { data: creditRows } = await supabaseAdmin
+      .from("credits")
+      .select("balance")
+    const totalCredits = creditRows?.reduce((s: number, r: { balance: number }) => s + (r.balance || 0), 0) || 0
 
     const { count: totalUsed } = await supabaseAdmin
       .from("credit_logs")

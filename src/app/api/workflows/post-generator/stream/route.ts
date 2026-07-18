@@ -1,4 +1,6 @@
 import { runPostGenerator } from "@/lib/workflows"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 
 const steps = [
   "keyword_analysis",
@@ -20,6 +22,14 @@ const steps = [
 
 const encoder = new TextEncoder()
 
+function getCreditCost(wordCount: number): number {
+  if (wordCount <= 1000) return 5
+  if (wordCount <= 2000) return 8
+  if (wordCount <= 3000) return 12
+  if (wordCount <= 4000) return 16
+  return 20
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json()
@@ -28,6 +38,37 @@ export async function POST(req: Request) {
       return new Response(
         encoder.encode(JSON.stringify({ error: "Primary keyword is required" })),
         { status: 400, headers: { "Content-Type": "application/json" } }
+      )
+    }
+
+    // Authenticate user
+    const supabase = await createSupabaseServerClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return new Response(
+        encoder.encode(JSON.stringify({ error: "Unauthorized", code: "UNAUTHORIZED" })),
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      )
+    }
+
+    // Check credits
+    const creditsCost = getCreditCost(wordCount || 1500)
+    const { data: profile } = await supabaseAdmin
+      .from("credits")
+      .select("balance")
+      .eq("user_id", user.id)
+      .single()
+
+    const balance = (profile as { balance: number } | null)?.balance ?? 0
+    if (balance < creditsCost) {
+      return new Response(
+        encoder.encode(JSON.stringify({
+          error: "Insufficient credits",
+          code: "INSUFFICIENT_CREDITS",
+          creditsRequired: creditsCost,
+          creditsAvailable: balance,
+        })),
+        { status: 402, headers: { "Content-Type": "application/json" } }
       )
     }
 
@@ -51,10 +92,37 @@ export async function POST(req: Request) {
           )
           if (i === 0) {
             runPostGenerator(input)
-              .then((result) => {
+              .then(async (result) => {
+                // Deduct credits after successful generation
+                const { error: deductErr } = await supabaseAdmin
+                  .rpc("deduct_credits", { p_user_id: user.id, p_amount: creditsCost })
+
+                if (!deductErr) {
+                  // Log credit usage
+                  try {
+                    await supabaseAdmin.from("credit_logs").insert({
+                      user_id: user.id,
+                      amount: creditsCost,
+                      type: "used",
+                      reason: "post-generator usage",
+                    })
+                  } catch { /* best-effort logging */ }
+
+                  // Log usage
+                  try {
+                    await supabaseAdmin.from("usage_logs").insert({
+                      user_id: user.id,
+                      tool_slug: "post-generator",
+                      credits_used: creditsCost,
+                      input_chars: JSON.stringify(input).length,
+                      output_chars: JSON.stringify(result || {}).length,
+                    })
+                  } catch { /* best-effort logging */ }
+                }
+
                 controller.enqueue(
                   encoder.encode(
-                    `data: ${JSON.stringify({ step: "complete", status: "completed", data: result })}\n\n`
+                    `data: ${JSON.stringify({ step: "complete", status: "completed", data: result, creditsUsed: creditsCost })}\n\n`
                   )
                 )
                 controller.close()

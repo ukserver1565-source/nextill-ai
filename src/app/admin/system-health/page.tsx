@@ -1,6 +1,5 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { HeartPulse, Activity, Clock, Server, CheckCircle, AlertTriangle, XCircle, RefreshCw, Loader2, Inbox } from "lucide-react"
 import { useAdminFetch } from "@/lib/admin/use-admin-fetch"
@@ -12,7 +11,7 @@ const statusConfig: Record<string, { icon: any; color: string; bg: string }> = {
 }
 
 export default function SystemHealthPage() {
-  const { data: healthData, loading, error, refetch } = useAdminFetch<any>("/api/admin/health")
+  const { data: healthData, loading, error: _error, refetch } = useAdminFetch<any>("/api/admin/health")
   const services = healthData?.services || []
   const avgUptime = services.length > 0
     ? (services.reduce((s: number, svc: any) => s + (svc.uptime || 0), 0) / services.length).toFixed(2)

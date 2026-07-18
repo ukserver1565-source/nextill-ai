@@ -37,8 +37,8 @@ export default function NewProjectPage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <Link href="/dashboard/projects" className="inline-flex items-center gap-2 text-xs sm:text-sm text-muted hover:text-foreground transition-colors">
-        <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+      <Link href="/dashboard/projects" className="inline-flex items-center gap-2 h-9 rounded-lg px-3.5 text-xs sm:text-sm font-medium bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] hover:border-white/[0.12] hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6D5EF5]/40">
+        <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         Back to Projects
       </Link>
       <div>

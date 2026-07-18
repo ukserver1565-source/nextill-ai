@@ -9,7 +9,6 @@ import {
   generateFaqsLocal,
   generateSchemaLocal,
   generateInternalLinksLocal,
-  analyzeSeo,
   calculateReadability,
   humanizeContentLocal,
   summarizeText,
@@ -21,6 +20,8 @@ export interface ToolRunnerResult {
   content: string | Record<string, unknown>
   wordCount?: number
   error?: string
+  available?: boolean
+  message?: string
 }
 
 export const toolRunnerService = {
@@ -92,6 +93,8 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
     return {
       success: true,
       type: "detection",
+      available: false,
+      message: "API Not Configured - Local heuristic analysis only. Connect GPTZero API for accurate AI content detection.",
       content: {
         overallScore: result.overallScore,
         label: result.label,
@@ -117,6 +120,8 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
     return {
       success: true,
       type: "plagiarism",
+      available: false,
+      message: "API Not Configured - Local analysis only. Connect Copyleaks API for web-based plagiarism detection across billions of sources.",
       content: {
         originalityScore: result.originalityScore,
         wordCount: result.wordCount,
@@ -408,7 +413,7 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
   "summarizer": (input) => {
     const text = (input.text as string) || ""
     const length = (input.length as string) || "medium"
-    const wordCount = text.split(/\s+/).filter(Boolean).length
+    const _wordCount = text.split(/\s+/).filter(Boolean).length
     const result = summarizeText(text, length as "short" | "medium" | "long")
     const readability = calculateReadability(text)
     return {

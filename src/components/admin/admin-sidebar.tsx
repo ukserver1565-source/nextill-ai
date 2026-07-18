@@ -10,7 +10,7 @@ import {
   FileSpreadsheet, MessageSquare, FileEdit, TicketPercent, HeartPulse,
   ChevronDown, ChevronRight, Sparkles,
   PanelLeftClose, PanelLeft, Mail, Terminal, Database, Zap,
-  Link as LinkIcon, ClipboardList, Workflow, Search, Globe, Wrench,
+  Link as LinkIcon, Workflow, Search, Wrench,
 } from "lucide-react"
 
 const menuSections = [

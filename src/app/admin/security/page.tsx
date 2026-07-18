@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Shield, ToggleLeft, Clock, Save, AlertTriangle, Loader2, Inbox, XCircle } from "lucide-react"
+import { Shield, Clock, Save, AlertTriangle, Loader2, Inbox, XCircle } from "lucide-react"
 
 export default function SecurityPage() {
   const [rateLimiting, setRateLimiting] = useState(true)

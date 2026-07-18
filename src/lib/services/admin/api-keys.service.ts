@@ -27,12 +27,6 @@ function decrypt(text: string) {
   }
 }
 
-function maskKey(key: string | null): string {
-  if (!key) return ""
-  if (key.length <= 8) return key.slice(0, 2) + "****"
-  return key.slice(0, 4) + "****" + key.slice(-4)
-}
-
 export interface AiApiKeyRow {
   id: string
   provider_slug: string

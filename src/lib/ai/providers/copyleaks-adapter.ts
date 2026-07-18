@@ -59,7 +59,7 @@ export async function copyleaksScanPlagiarism(text: string): Promise<CopyleaksSc
     }
   }
 
-  const start = Date.now()
+  const _start = Date.now()
   try {
     // Create scan
     const createRes = await fetch(`${COPYLEAKS_BASE}/create扫描`, {
@@ -76,7 +76,7 @@ export async function copyleaksScanPlagiarism(text: string): Promise<CopyleaksSc
     })
 
     if (!createRes.ok) {
-      const errorText = await createRes.text().catch(() => "")
+      const _errorText = await createRes.text().catch(() => "")
       return {
         scanId: "",
         status: "error",

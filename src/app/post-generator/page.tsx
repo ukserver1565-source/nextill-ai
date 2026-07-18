@@ -9,9 +9,9 @@ import {
   BookOpen, PenSquare, Loader2, AlertTriangle,
   Brain, FileSearch, FileEdit, UserCheck, CheckSquare,
   Shield, ExternalLink, Target, Zap, Trello, Type,
-  Quote, Layers, Star, Share2, Menu,
-  Settings2, SlidersHorizontal, X, Clock,
-  Hash, Eye, Wifi,
+  Quote, Star, Share2, Menu,
+  SlidersHorizontal, X, Clock,
+  Hash, Eye,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import type { PostGeneratorResult } from "@/lib/workflows/workflow-types"
@@ -26,8 +26,6 @@ const articleTypes = [
   { value: "case-study", label: "Case Study", icon: BarChart3 },
   { value: "news", label: "News", icon: Globe },
 ]
-
-const wordCountOptions = [1000, 1500, 2000, 3000, 5000]
 
 const toneOptions = [
   { value: "professional", label: "Professional" },
@@ -276,7 +274,7 @@ function EmptyState() {
   )
 }
 
-function FloatingToolbar({ onCopy, onDownloadTxt, onDownloadMd, onSave, onShare, onRegenerate, loading, hasResult }: {
+function FloatingToolbar({ onCopy, onDownloadTxt, onDownloadMd, onSave, onShare, onRegenerate, loading, hasResult: _hasResult }: {
   onCopy: () => void
   onDownloadTxt: () => void
   onDownloadMd: () => void
@@ -547,7 +545,7 @@ export default function PostGeneratorPage() {
 
 function PostGeneratorContent() {
   const searchParams = useSearchParams()
-  const { profile } = useAuth()
+  const { profile: _profile } = useAuth()
   const prefillKeyword = searchParams.get("keyword") || ""
 
   const [keyword, setKeyword] = useState(prefillKeyword)
@@ -674,21 +672,40 @@ function PostGeneratorContent() {
 
   const handleCopyAll = useCallback(() => {
     if (!result) return
-    const all = [
-      result.content,
-      "",
-      "--- SEO ---",
-      `Title: ${result.seoTitle}`,
-      `Meta: ${result.metaDescription}`,
-      `Slug: ${result.slug}`,
-      "",
-      "--- FAQ ---",
-      ...(result.faqs || []).map((f) => `Q: ${f.question}\nA: ${f.answer}`),
-      "",
-      "--- Schema ---",
-      JSON.stringify(result.schemaJson, null, 2),
-    ].join("\n")
-    handleCopy("all", all)
+    const parts: string[] = []
+    // Title
+    if (result.h1) parts.push(result.h1, "")
+    // Intro
+    if (result.intro) parts.push(result.intro, "")
+    // Body sections with markdown headings
+    for (const section of result.sections || []) {
+      if (section.h2) parts.push(`## ${section.h2}`, "")
+      if (section.content) parts.push(section.content, "")
+    }
+    // Conclusion
+    if (result.conclusion) parts.push("## Conclusion", "", result.conclusion, "")
+    // CTA
+    if (result.cta) parts.push(result.cta, "")
+    // SEO metadata
+    parts.push("--- SEO ---")
+    if (result.seoTitle) parts.push(`Title: ${result.seoTitle}`)
+    if (result.metaDescription) parts.push(`Meta: ${result.metaDescription}`)
+    if (result.slug) parts.push(`Slug: ${result.slug}`)
+    parts.push("")
+    // FAQ
+    parts.push("--- FAQ ---")
+    for (const faq of result.faqs || []) {
+      if (faq.question && faq.answer) parts.push(`Q: ${faq.question}`, `A: ${faq.answer}`, "")
+    }
+    // Internal Links
+    if (result.internalLinks && result.internalLinks.length > 0) {
+      parts.push("--- Internal Links ---")
+      for (const link of result.internalLinks) parts.push(`- ${link.text} -> /${link.url}`)
+      parts.push("")
+    }
+    // Schema
+    parts.push("--- Schema ---", JSON.stringify(result.schemaJson, null, 2))
+    handleCopy("all", parts.join("\n"))
   }, [result, handleCopy])
 
   const handleDownload = useCallback((ext: string, content: string, filename: string) => {
@@ -719,7 +736,7 @@ function PostGeneratorContent() {
           tool_slug: "post-generator",
         }),
       })
-    } catch (e) { setSaveError("Failed to save document. Please try again.") }
+    } catch (_e) { setSaveError("Failed to save document. Please try again.") }
     setCopied("saved")
     setTimeout(() => setCopied(""), 2000)
   }, [result])
@@ -833,21 +850,26 @@ function PostGeneratorContent() {
             >
               <div className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 space-y-3 shadow-sm">
                 <label className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">Word Count</label>
-                <div className="flex flex-col gap-1.5">
-                  {wordCountOptions.map((w) => (
-                    <motion.button
-                      key={w}
-                      whileTap={{ scale: 0.97 }}
-                      onClick={() => setWordCount(w)}
-                      className={`w-full px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
-                        wordCount === w
-                          ? "bg-gradient-to-r from-[#6D5EF5]/15 to-[#8B5CF6]/10 text-white border border-[#6D5EF5]/30 shadow-sm"
-                          : "bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 text-[#5A6577] border border-transparent hover:border-white/[0.08] hover:text-white"
-                      }`}
-                    >
-                      {w.toLocaleString()}
-                    </motion.button>
-                  ))}
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-[#5A6577]">100</span>
+                  <span className="text-lg font-bold text-white">{wordCount.toLocaleString()}</span>
+                  <span className="text-xs text-[#5A6577]">4,000</span>
+                </div>
+                <input
+                  type="range"
+                  min={100}
+                  max={4000}
+                  step={10}
+                  value={wordCount}
+                  onChange={(e) => setWordCount(Number(e.target.value))}
+                  className="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#151C2E] border border-white/[0.06] accent-[#6D5EF5]"
+                  style={{
+                    background: `linear-gradient(to right, #6D5EF5 0%, #6D5EF5 ${((wordCount - 100) / 3900) * 100}%, #151C2E ${((wordCount - 100) / 3900) * 100}%, #151C2E 100%)`,
+                  }}
+                />
+                <div className="flex justify-between text-[10px] text-[#5A6577]">
+                  <span>~{Math.ceil(wordCount / 200)} sections</span>
+                  <span>~{Math.ceil(wordCount / 200)} min read</span>
                 </div>
               </div>
               <div className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 shadow-sm">
@@ -984,7 +1006,7 @@ function PostGeneratorContent() {
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-[#5A6577]">Words</span>
-                    <span className="text-sm font-semibold text-white">{(result.wordCount || 0).toLocaleString()}</span>
+                    <span className="text-sm font-semibold text-white">{(result.wordCount || 0).toLocaleString()} / {wordCount.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-[#5A6577]">Reading Time</span>
@@ -1215,7 +1237,7 @@ function PostGeneratorContent() {
                       {activeTab === "Article" && (
                         <div className="flex items-center gap-2 text-[11px] text-[#5A6577] bg-[#090B16]/40 border border-white/[0.04] rounded-lg px-3 py-1.5">
                           <FileText className="w-3 h-3" />
-                          <span>{(result.wordCount || 0).toLocaleString()} words</span>
+                          <span>{(result.wordCount || 0).toLocaleString()} / {wordCount.toLocaleString()} words</span>
                           <span className="w-1 h-1 rounded-full bg-white/[0.12]" />
                           <Clock className="w-3 h-3" />
                           <span>{result.readingTime} min read</span>
@@ -1502,7 +1524,7 @@ function PostGeneratorContent() {
                           <motion.div variants={itemVariants} className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 border border-white/[0.06] rounded-xl p-4">
                             <div className="grid grid-cols-2 gap-4">
                               <div className="text-center">
-                                <p className="text-2xl font-bold text-white">{(result.wordCount || 0).toLocaleString()}</p>
+                                <p className="text-2xl font-bold text-white">{(result.wordCount || 0).toLocaleString()} <span className="text-sm text-[#5A6577]">/ {wordCount.toLocaleString()}</span></p>
                                 <p className="text-[10px] text-[#5A6577] uppercase tracking-wider mt-1">Word Count</p>
                               </div>
                               <div className="text-center">

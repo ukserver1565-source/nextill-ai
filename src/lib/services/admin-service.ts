@@ -1,12 +1,6 @@
 import { profileRepo } from "@/lib/repositories/profile-repo"
 import { paymentRepo } from "@/lib/repositories/payment-repo"
-import { planRepo } from "@/lib/repositories/plan-repo"
-import { projectRepo } from "@/lib/repositories/project-repo"
-import { blogRepo } from "@/lib/repositories/blog-repo"
-import { contactRepo } from "@/lib/repositories/contact-repo"
-import { couponRepo } from "@/lib/repositories/coupon-repo"
 import { toolRepo } from "@/lib/repositories/tool-repo"
-import { modelRepo } from "@/lib/repositories/model-repo"
 import { systemHealthRepo } from "@/lib/repositories/system-health-repo"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 

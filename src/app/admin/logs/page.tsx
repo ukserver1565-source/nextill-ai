@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Search, Calendar, ChevronLeft, ChevronRight, Terminal, Loader2, XCircle, Inbox } from "lucide-react"
+import { Search, Calendar, ChevronLeft, ChevronRight, Loader2, XCircle, Inbox } from "lucide-react"
 
 export default function LogsPage() {
   const [logs, setLogs] = useState<any[]>([])

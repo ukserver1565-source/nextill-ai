@@ -1,5 +1,21 @@
+import type { Metadata } from "next"
 import Link from "next/link"
-import { Sparkles, Search, FileText, Shield, Zap, Globe, Users, Award } from "lucide-react"
+import { Sparkles, Search, FileText, Shield, Zap, Users, Award } from "lucide-react"
+import { BackButton } from "@/components/shared/back-button"
+import { PublicHeader } from "@/components/layout/public-header"
+import { PublicFooter } from "@/components/layout/public-footer"
+
+export const metadata: Metadata = {
+  title: "About",
+  description:
+    "Learn about Nextill AI — the all-in-one platform for AI-powered SEO content creation, keyword research, and plagiarism detection. Our mission is to democratize premium AI tools for creators of all sizes.",
+  openGraph: {
+    title: "About Nextill AI — AI-Powered SEO & Content Platform",
+    description:
+      "Learn about Nextill AI and our mission to democratize premium AI content tools for creators and businesses.",
+    url: "https://nextill.ai/about",
+  },
+}
 
 const features = [
   {
@@ -23,37 +39,21 @@ const features = [
 ]
 
 const stats = [
-  { icon: Zap, value: "Thousands", label: "Keywords Analyzed" },
-  { icon: FileText, value: "Growing", label: "Posts Generated" },
-  { icon: Users, value: "Trusted By", label: "Active Users" },
-  { icon: Award, value: "Reliable", label: "Uptime SLA" },
+  { icon: Zap, value: "AI-Powered", label: "Content Generation" },
+  { icon: FileText, value: "SEO-First", label: "Optimized Output" },
+  { icon: Users, value: "Multi-User", label: "Workspace Support" },
+  { icon: Award, value: "99.9%", label: "Platform Uptime" },
 ]
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <header className="glass-topbar sticky top-0 z-50 h-16">
-        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">
-              <span className="gradient-primary-text">Nextill AI</span>
-            </span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link href="/login">
-              <span className="text-sm text-muted hover:text-white transition-colors">Sign In</span>
-            </Link>
-            <Link href="/signup">
-              <span className="text-sm px-4 py-2 rounded-lg gradient-primary text-white font-medium">Get Started</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <PublicHeader />
 
       <section className="relative pt-20 pb-16 px-4 overflow-hidden">
+        <div className="max-w-4xl mx-auto mb-8">
+          <BackButton fallback="/" />
+        </div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
           <div className="absolute -top-40 left-1/4 w-[600px] h-[600px] rounded-full bg-primary/20 blur-[140px]" />
           <div className="absolute -bottom-40 right-1/4 w-[500px] h-[500px] rounded-full bg-secondary/15 blur-[120px]" />
@@ -155,21 +155,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <footer className="border-t border-border">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
-                <Sparkles className="w-3.5 h-3.5 text-white" />
-              </div>
-              <span className="text-sm font-bold gradient-primary-text">Nextill AI</span>
-            </Link>
-            <p className="text-xs text-muted">
-              &copy; {new Date().getFullYear()} Nextill AI. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   )
 }

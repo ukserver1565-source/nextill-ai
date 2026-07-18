@@ -6,7 +6,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     const { id } = await params
     const doc = await documentsRepo.getById(id)
     return NextResponse.json(doc)
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Document not found" }, { status: 404 })
   }
 }
@@ -16,7 +16,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params
     await documentsRepo.delete(id)
     return NextResponse.json({ success: true })
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to delete document" }, { status: 500 })
   }
 }
