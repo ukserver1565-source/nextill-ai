@@ -80,7 +80,8 @@ create table if not exists public.ai_models (
   is_default boolean default false,
   cost_input numeric(10,6) default 0,
   cost_output numeric(10,6) default 0,
-  created_at timestamptz default now()
+  created_at timestamptz default now(),
+  unique (provider, model_name)
 );
 
 -- ============================================================

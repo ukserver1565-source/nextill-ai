@@ -265,9 +265,11 @@ export default function HomePage() {
             .filter((p: any) => p.is_active !== false)
             .sort((a: any, b: any) => (a.price_monthly ?? 99) - (b.price_monthly ?? 99))
           )
+        } else if (data?.error) {
+          console.error("Plans API error:", data.error)
         }
       })
-      .catch(() => {})
+      .catch(err => console.error("Failed to fetch plans:", err))
       .finally(() => setPlansLoading(false))
 
     fetch("/api/public/workflow-settings")
@@ -462,7 +464,7 @@ export default function HomePage() {
             ].map((s) => {
               const Icon = s.icon
               return (
-                <div key={s.label} className="glass-card rounded-xl p-4 text-center">
+                <div key={s.label} className="glass-card rounded-xl p-4 text-center hover:-translate-y-1 hover:border-white/[0.12] transition-all duration-300">
                   <Icon className="w-5 h-5 text-primary-light mx-auto mb-2" />
                   <p className="text-sm font-semibold">{s.label}</p>
                   <p className="text-xs text-muted mt-0.5">{s.desc}</p>
@@ -558,6 +560,8 @@ export default function HomePage() {
         </div>
       </motion.section>
 
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
       {/* WORKFLOW GRID */}
       <motion.section
         id="features"
@@ -569,7 +573,7 @@ export default function HomePage() {
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold">Three Workflows. Infinite Possibilities.</h2>
+            <h2 className="text-3xl font-bold">Three Workflows. <span className="gradient-primary-text">Infinite Possibilities.</span></h2>
             <p className="text-muted mt-2 max-w-xl mx-auto">
               Everything you need to research, create, and verify content — all in one platform.
             </p>
@@ -636,7 +640,7 @@ export default function HomePage() {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
-                  className="glass-card rounded-2xl p-6 text-center"
+                  className="glass-card rounded-2xl p-6 text-center hover:border-white/[0.12] transition-all duration-300"
                 >
                   <Icon className="w-6 h-6 text-primary-light mx-auto mb-3" />
                   <p className="text-2xl font-bold">{s.value}</p>
@@ -647,6 +651,8 @@ export default function HomePage() {
           </div>
         </div>
       </motion.section>
+
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       {/* TEMPLATES */}
       <motion.section
@@ -659,7 +665,7 @@ export default function HomePage() {
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold">Content Templates</h2>
+            <h2 className="text-3xl font-bold"><span className="gradient-primary-text">Content Templates</span></h2>
             <p className="text-muted mt-2 max-w-xl mx-auto">
               Start with a proven template and let AI do the rest.
             </p>
@@ -699,7 +705,7 @@ export default function HomePage() {
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold">Why Nextill AI</h2>
+            <h2 className="text-3xl font-bold">Why <span className="gradient-primary-text">Nextill AI</span></h2>
             <p className="text-muted mt-2 max-w-xl mx-auto">
               Three powerful workflows to supercharge your content creation.
             </p>
@@ -715,7 +721,7 @@ export default function HomePage() {
               const Icon = h.icon
               return (
                 <motion.div key={h.title} variants={staggerItem}>
-                  <div className="glass-card rounded-2xl p-6 h-full flex flex-col">
+                  <div className="glass-card rounded-2xl p-6 h-full flex flex-col hover:-translate-y-1 hover:border-primary/30 transition-all duration-300">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${h.color} flex items-center justify-center mb-4 shadow-lg`}>
                       <Icon className="w-6 h-6 text-white" />
                     </div>
@@ -729,6 +735,8 @@ export default function HomePage() {
         </div>
       </motion.section>
 
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
       {/* PRICING */}
       <motion.section
         id="pricing"
@@ -736,12 +744,16 @@ export default function HomePage() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
-        className="px-4 pb-20 scroll-mt-20"
+        className="relative px-4 pb-20 scroll-mt-20"
       >
-        <div className="max-w-6xl mx-auto">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+          <div className="absolute -top-40 right-1/4 w-[500px] h-[500px] rounded-full bg-[#6D5EF5]/10 blur-[120px]" />
+          <div className="absolute -bottom-40 left-1/4 w-[400px] h-[400px] rounded-full bg-[#4CC9F0]/10 blur-[100px]" />
+        </div>
+        <div className="max-w-6xl mx-auto relative z-10">
           {/* Header */}
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2 sm:mb-3">Simple, Transparent Pricing</h2>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2 sm:mb-3">Simple, <span className="gradient-primary-text">Transparent</span> Pricing</h2>
             <p className="text-muted text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-2">
               Choose the plan that fits your needs. Upgrade or downgrade at any time.
             </p>
@@ -835,7 +847,7 @@ export default function HomePage() {
           {/* How Credits Work */}
           <div className="mt-12 sm:mt-16 max-w-2xl mx-auto">
             <div className="text-center mb-6">
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-2">How Credits Work</h2>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-2">How <span className="gradient-primary-text">Credits</span> Work</h2>
               <p className="text-muted text-sm">Each action costs credits. Credits reset monthly with your plan.</p>
             </div>
             <div className="glass-card rounded-xl overflow-hidden">
@@ -875,6 +887,8 @@ export default function HomePage() {
         </div>
       </motion.section>
 
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
       {/* FAQ */}
       <motion.section
         id="faq"
@@ -886,7 +900,7 @@ export default function HomePage() {
       >
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold">Frequently Asked Questions</h2>
+            <h2 className="text-3xl font-bold"><span className="gradient-primary-text">Frequently</span> Asked Questions</h2>
             <p className="text-muted mt-2">Everything you need to know about Nextill AI.</p>
           </div>
           <div className="space-y-3">
@@ -894,7 +908,7 @@ export default function HomePage() {
               <div
                 key={i}
                 className={`glass-card rounded-xl overflow-hidden transition-all duration-300 ${
-                  openFaq === i ? "border-primary/30" : ""
+                  openFaq === i ? "border-primary/30" : "hover:border-white/[0.12]"
                 }`}
               >
                 <button
@@ -925,6 +939,8 @@ export default function HomePage() {
         </div>
       </motion.section>
 
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
       {/* CTA */}
       <motion.section
         variants={sectionVariants}
@@ -943,7 +959,7 @@ export default function HomePage() {
               <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-secondary/15 blur-[80px]" />
             </div>
             <div className="relative z-10">
-              <h2 className="text-2xl sm:text-3xl font-bold">Ready to Transform Your Workflow?</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold">Ready to <span className="gradient-primary-text">Transform</span> Your Workflow?</h2>
               <p className="text-muted mt-3 max-w-lg mx-auto">
                 Built for creators, marketers, and SEO teams to research, create, and optimize content in one workspace.
               </p>

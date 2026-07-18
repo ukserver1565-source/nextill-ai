@@ -51,14 +51,19 @@ export default function PricingPage() {
   const loadPlans = useCallback(async () => {
     try {
       const res = await fetch("/api/public/plans")
-      if (!res.ok) throw new Error("Failed to load")
       const json = await res.json()
-      const data = Array.isArray(json) ? json : json.data || []
-      setPlans(data
-        .filter((p: Plan) => p.is_active !== false)
-        .sort((a: Plan, b: Plan) => (a.price_monthly ?? 99) - (b.price_monthly ?? 99))
-      )
-    } catch { /* empty */ } finally {
+      if (!res.ok || json?.error) {
+        console.error("Plans API error:", json?.error || `HTTP ${res.status}`)
+      }
+      if (Array.isArray(json)) {
+        setPlans(json
+          .filter((p: Plan) => p.is_active !== false)
+          .sort((a: Plan, b: Plan) => (a.price_monthly ?? 99) - (b.price_monthly ?? 99))
+        )
+      }
+    } catch (err) {
+      console.error("Failed to load plans:", err)
+    } finally {
       setLoading(false)
     }
   }, [])

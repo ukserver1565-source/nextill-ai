@@ -67,7 +67,7 @@ export function PricingCard({ plan, billingCycle, couponResult, couponCode }: Pr
   const isFree = displayPrice === 0
 
   return (
-    <div className={`relative glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6 ${plan.is_popular ? "border-[#6D5EF5]/40 ring-1 ring-[#6D5EF5]/20" : ""}`}>
+    <div className={`relative glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6 transition-all duration-300 ${plan.is_popular ? "border-[#6D5EF5]/40 ring-1 ring-[#6D5EF5]/20 shadow-lg shadow-[#6D5EF5]/10 bg-[#151C2E]/90 hover:scale-[1.02]" : "hover:border-white/[0.12]"}`}>
       {plan.badge && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#6D5EF5] text-white text-[9px] sm:text-[10px] font-bold px-2.5 sm:px-3 py-1 rounded-full uppercase tracking-wider whitespace-nowrap">
           {plan.badge}

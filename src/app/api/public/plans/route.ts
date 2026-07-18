@@ -8,15 +8,22 @@ export async function GET() {
       .select("*")
       .eq("is_active", true)
       .order("price_monthly", { ascending: true })
+
     if (error) {
-      // Table might not exist
+      console.error("[Plans API] Query error:", error.message, error.code)
+      // Table might not exist yet — return empty but log it
       if (error.code === "42P01" || error.message?.includes("does not exist")) {
+        console.warn("[Plans API] Plans table does not exist yet")
         return NextResponse.json([])
       }
-      throw error
+      // Return error details so frontend can display them
+      return NextResponse.json({ error: error.message, code: error.code }, { status: 500 })
     }
+
+    console.log(`[Plans API] Returning ${data?.length || 0} active plans`)
     return NextResponse.json(data || [])
-  } catch {
-    return NextResponse.json([])
+  } catch (err) {
+    console.error("[Plans API] Unexpected error:", err)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
