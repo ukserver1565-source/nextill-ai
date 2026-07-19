@@ -12,10 +12,10 @@ import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { useAdminFetch } from "@/lib/admin/use-admin-fetch"
 
 const quickActions = [
-  { icon: UserPlus, label: "Add User", color: "from-[#6D5EF5] to-[#8B5CF6]", path: "/admin/users" },
-  { icon: Ticket, label: "Create Coupon", color: "from-[#F59E0B] to-[#EF4444]", path: "/admin/coupons" },
-  { icon: FileBarChart, label: "View Reports", color: "from-[#4CC9F0] to-[#6D5EF5]", path: "/admin/reports" },
-  { icon: HeartPulse, label: "System Health", color: "from-[#22C55E] to-[#4CC9F0]", path: "/admin/system-health" },
+  { icon: UserPlus, label: "Add User", color: "from-[#6D5EF5] to-[#8B5CF6]", path: "/zain-nextill-ansari/users" },
+  { icon: Ticket, label: "Create Coupon", color: "from-[#F59E0B] to-[#EF4444]", path: "/zain-nextill-ansari/coupons" },
+  { icon: FileBarChart, label: "View Reports", color: "from-[#4CC9F0] to-[#6D5EF5]", path: "/zain-nextill-ansari/reports" },
+  { icon: HeartPulse, label: "System Health", color: "from-[#22C55E] to-[#4CC9F0]", path: "/zain-nextill-ansari/system-health" },
 ]
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -216,7 +216,7 @@ export default function AdminDashboard() {
               )
             })}
           </div>
-          <button onClick={() => router.push("/admin/settings")} className="w-full mt-4 py-2.5 rounded-lg bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white hover:border-white/[0.12] transition-all flex items-center justify-center gap-1">
+          <button onClick={() => router.push("/zain-nextill-ansari/settings")} className="w-full mt-4 py-2.5 rounded-lg bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white hover:border-white/[0.12] transition-all flex items-center justify-center gap-1">
             View All Actions <ChevronRight className="w-3 h-3" />
           </button>
         </div>

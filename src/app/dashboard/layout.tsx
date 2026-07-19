@@ -18,7 +18,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       router.push("/login")
     }
     if (!loading && session && profile && (profile.role === "admin" || profile.role === "super_admin")) {
-      router.push("/admin")
+      router.push("/zain-nextill-ansari")
     }
   }, [session, loading, profile, router])
 

@@ -10,9 +10,9 @@ const toolRoutes = [
   "/faq-generator", "/article-rewriter", "/grammar-checker",
   "/summarizer", "/translator",
 ]
-const guestAccessible = new Set(["/", "/tools", "/login", "/signup", "/admin/login", "/reset-password", "/unauthorized", "/pricing", "/contact", "/terms", "/privacy-policy", "/affiliate", "/domain-overview", "/keyword-intelligence", "/checkout", "/post-generator", "/plagiarism-checker"])
+const guestAccessible = new Set(["/", "/tools", "/login", "/signup", "/zain-nextill-ansari/login", "/reset-password", "/unauthorized", "/pricing", "/contact", "/terms", "/privacy-policy", "/affiliate", "/domain-overview", "/keyword-intelligence", "/checkout", "/post-generator", "/plagiarism-checker"])
 const userRoutes = ["/dashboard"]
-const adminRoutes = ["/admin"]
+const adminRoutes = ["/zain-nextill-ansari"]
 const adminApiRoutes = ["/api/admin"]
 
 const isDev = process.env.NODE_ENV === "development"
@@ -83,7 +83,7 @@ export async function proxy(request: NextRequest) {
 
   if (adminRoutes.some((r) => pathname.startsWith(r))) {
     // Admin login must always be accessible
-    if (pathname === "/admin/login") {
+    if (pathname === "/zain-nextill-ansari/login") {
       const { supabase, response } = _createClient(request)
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
@@ -98,7 +98,7 @@ export async function proxy(request: NextRequest) {
             path: "/",
             maxAge: SESSION_TIMEOUT_MS / 1000,
           })
-          return NextResponse.redirect(new URL("/admin", request.url))
+          return NextResponse.redirect(new URL("/zain-nextill-ansari", request.url))
         }
       }
       return response
@@ -106,7 +106,7 @@ export async function proxy(request: NextRequest) {
     // Other admin routes: check auth, then allow (admin always bypasses maintenance)
     const { supabase, response } = _createClient(request)
     const { data: { user }, error: userErr } = await supabase.auth.getUser()
-    if (userErr || !user) return NextResponse.redirect(new URL("/admin/login", request.url))
+    if (userErr || !user) return NextResponse.redirect(new URL("/zain-nextill-ansari/login", request.url))
 
     // Sliding-window session timeout for admin routes too
     const lastActiveCookie = request.cookies.get(LAST_ACTIVE_COOKIE)
@@ -215,18 +215,18 @@ export async function proxy(request: NextRequest) {
   const isAdmin = role === "admin" || role === "super_admin"
 
   if (pathname === "/login" || pathname === "/signup") {
-    const dest = isAdmin ? "/admin" : "/dashboard"
+    const dest = isAdmin ? "/zain-nextill-ansari" : "/dashboard"
     debug("redirect from login to:", dest)
     return NextResponse.redirect(new URL(dest, request.url))
   }
 
-  if (pathname === "/admin/login") {
-    if (isAdmin) return NextResponse.redirect(new URL("/admin", request.url))
+  if (pathname === "/zain-nextill-ansari/login") {
+    if (isAdmin) return NextResponse.redirect(new URL("/zain-nextill-ansari", request.url))
     return NextResponse.redirect(new URL("/unauthorized", request.url))
   }
 
   if (userRoutes.some((r) => pathname.startsWith(r))) {
-    if (isAdmin) return NextResponse.redirect(new URL("/admin", request.url))
+    if (isAdmin) return NextResponse.redirect(new URL("/zain-nextill-ansari", request.url))
     return response
   }
 

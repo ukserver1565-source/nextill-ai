@@ -32,10 +32,10 @@ export default function AIHubPage() {
   ]
 
   const quickActions = [
-    { label: "Add Provider", icon: Plus, color: "from-[#6D5EF5] to-[#8B5CF6]", desc: "Connect a new AI provider", href: "/admin/ai-hub/providers" },
-    { label: "Add API Key", icon: Key, color: "from-[#22C55E] to-[#16A34A]", desc: "Configure a new API key", href: "/admin/ai-hub/api-keys" },
-    { label: "Add Model", icon: Layers, color: "from-[#4CC9F0] to-[#3B82F6]", desc: "Register a new AI model", href: "/admin/ai-hub/models" },
-    { label: "View Logs", icon: Activity, color: "from-[#F59E0B] to-[#D97706]", desc: "Check recent AI activity", href: "/admin/logs" },
+    { label: "Add Provider", icon: Plus, color: "from-[#6D5EF5] to-[#8B5CF6]", desc: "Connect a new AI provider", href: "/zain-nextill-ansari/ai-hub/providers" },
+    { label: "Add API Key", icon: Key, color: "from-[#22C55E] to-[#16A34A]", desc: "Configure a new API key", href: "/zain-nextill-ansari/ai-hub/api-keys" },
+    { label: "Add Model", icon: Layers, color: "from-[#4CC9F0] to-[#3B82F6]", desc: "Register a new AI model", href: "/zain-nextill-ansari/ai-hub/models" },
+    { label: "View Logs", icon: Activity, color: "from-[#F59E0B] to-[#D97706]", desc: "Check recent AI activity", href: "/zain-nextill-ansari/logs" },
   ]
 
   const providerColors: Record<string, string> = {

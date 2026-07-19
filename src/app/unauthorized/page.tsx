@@ -27,7 +27,7 @@ export default function UnauthorizedPage() {
         .then(({ data }) => {
           const role = (data as { role?: string } | null)?.role
           if (role === "admin" || role === "super_admin") {
-            setHref("/admin/login")
+            setHref("/zain-nextill-ansari/login")
             setLabel("Go to Admin Login")
           } else {
             setHref("/dashboard")

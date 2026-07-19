@@ -10,7 +10,7 @@ import Link from "next/link"
 
 export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; onMenuClick?: () => void }) {
   const pathname = usePathname()
-  const showBackButton = pathname !== "/admin"
+  const showBackButton = pathname !== "/zain-nextill-ansari"
   const [userName, setUserName] = useState("Admin")
   const [userEmail, setUserEmail] = useState("")
   const [userInitials, setUserInitials] = useState("AD")
@@ -47,7 +47,7 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
     if (typeof window !== "undefined" && window.history.length > 1) {
       window.history.back()
     } else {
-      window.location.href = "/admin"
+      window.location.href = "/zain-nextill-ansari"
     }
   }
 
@@ -129,7 +129,7 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
               </div>
               <div className="p-1">
                 <Link
-                  href="/admin/settings"
+                  href="/zain-nextill-ansari/settings"
                   className="flex items-center gap-2 px-3 py-2 text-sm text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] rounded-lg transition-colors"
                   onClick={() => setProfileOpen(false)}
                 >

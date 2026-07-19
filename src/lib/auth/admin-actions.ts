@@ -37,12 +37,12 @@ export async function adminLogin(formData: FormData) {
   }
 
   revalidatePath("/", "layout")
-  return { redirect: "/admin" }
+  return { redirect: "/zain-nextill-ansari" }
 }
 
 export async function adminLogout() {
   const supabase = await createSupabaseServerClient()
   await supabase.auth.signOut()
   revalidatePath("/", "layout")
-  return { redirect: "/admin/login" }
+  return { redirect: "/zain-nextill-ansari/login" }
 }

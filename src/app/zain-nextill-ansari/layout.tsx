@@ -14,13 +14,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
-  const isPublicPage = pathname === "/admin/login"
+  const isPublicPage = pathname === "/zain-nextill-ansari/login"
 
   useEffect(() => {
     if (isPublicPage) return
     if (loading) return
     if (!session) {
-      router.push("/admin/login")
+      router.push("/zain-nextill-ansari/login")
       return
     }
     if (!profile) return

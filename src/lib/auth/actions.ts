@@ -31,7 +31,7 @@ export async function login(formData: FormData) {
   }
 
   if (role === "admin" || role === "super_admin") {
-    return { redirect: "/admin" }
+    return { redirect: "/zain-nextill-ansari" }
   }
 
   return { redirect: "/dashboard" }
@@ -67,7 +67,7 @@ export async function signup(formData: FormData) {
     }
 
     if (role === "admin" || role === "super_admin") {
-      return { redirect: "/admin" }
+      return { redirect: "/zain-nextill-ansari" }
     }
     return { redirect: "/dashboard" }
   }
