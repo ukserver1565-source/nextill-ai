@@ -131,12 +131,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
     {
-      url: `${baseUrl}/keyword-intelligence`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
       url: `${baseUrl}/seo-title-generator`,
       lastModified: now,
       changeFrequency: "monthly",

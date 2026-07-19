@@ -1,8 +1,22 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { Search, FileText, Shield, Check, ChevronRight, Zap } from "lucide-react"
 import { BackButton } from "@/components/shared/back-button"
 import { Badge } from "@/components/ui/badge"
 import { PublicHeader } from "@/components/layout/public-header"
+import { getSiteUrl } from "@/lib/site-url"
+
+export const metadata: Metadata = {
+  title: "Features",
+  description:
+    "Explore Nextill AI's three powerful workflows: Domain Intelligence for keyword research, Post Generator for SEO content, and Plagiarism Checker for originality verification.",
+  openGraph: {
+    title: "Features — Nextill AI",
+    description:
+      "Domain Intelligence, Post Generator, and Plagiarism Checker — three AI workflows for content creation and SEO.",
+    url: `${getSiteUrl()}/features`,
+  },
+}
 import { PublicFooter } from "@/components/layout/public-footer"
 
 const features = [
