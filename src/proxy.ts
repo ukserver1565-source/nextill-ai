@@ -10,12 +10,16 @@ const toolRoutes = [
   "/faq-generator", "/article-rewriter", "/grammar-checker",
   "/summarizer", "/translator",
 ]
-const guestAccessible = new Set(["/", "/tools", "/login", "/signup", "/admin/login", "/reset-password", "/unauthorized", "/pricing", "/contact", "/terms", "/privacy-policy", "/affiliate", "/domain-overview", "/keyword-intelligence"])
+const guestAccessible = new Set(["/", "/tools", "/login", "/signup", "/admin/login", "/reset-password", "/unauthorized", "/pricing", "/contact", "/terms", "/privacy-policy", "/affiliate", "/domain-overview", "/keyword-intelligence", "/checkout", "/post-generator", "/plagiarism-checker"])
 const userRoutes = ["/dashboard"]
 const adminRoutes = ["/admin"]
 const adminApiRoutes = ["/api/admin"]
 
 const isDev = process.env.NODE_ENV === "development"
+
+// 4-hour sliding-window session timeout
+const SESSION_TIMEOUT_MS = 4 * 60 * 60 * 1000 // 4 hours in milliseconds
+const LAST_ACTIVE_COOKIE = "last_active_at"
 
 function debug(...args: unknown[]) { if (isDev) console.log("[MIDDLEWARE]", ...args) }
 
@@ -86,6 +90,14 @@ export async function proxy(request: NextRequest) {
         const { data: profile } = await supabase.from("profiles").select("role").eq("user_id", user.id).maybeSingle()
         const role = ((profile as { role?: string } | null)?.role || "").toLowerCase()
         if (role === "admin" || role === "super_admin") {
+          // Update session activity for admins too
+          response.cookies.set(LAST_ACTIVE_COOKIE, String(Date.now()), {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+            maxAge: SESSION_TIMEOUT_MS / 1000,
+          })
           return NextResponse.redirect(new URL("/admin", request.url))
         }
       }
@@ -95,6 +107,27 @@ export async function proxy(request: NextRequest) {
     const { supabase, response } = _createClient(request)
     const { data: { user }, error: userErr } = await supabase.auth.getUser()
     if (userErr || !user) return NextResponse.redirect(new URL("/admin/login", request.url))
+
+    // Sliding-window session timeout for admin routes too
+    const lastActiveCookie = request.cookies.get(LAST_ACTIVE_COOKIE)
+    const lastActiveAt = lastActiveCookie ? parseInt(lastActiveCookie.value, 10) : 0
+    const now = Date.now()
+    if (lastActiveAt > 0 && (now - lastActiveAt) > SESSION_TIMEOUT_MS) {
+      await supabase.auth.signOut()
+      const expiredResponse = NextResponse.redirect(new URL("/", request.url))
+      expiredResponse.cookies.delete(LAST_ACTIVE_COOKIE)
+      expiredResponse.cookies.delete("sb-access-token")
+      expiredResponse.cookies.delete("sb-refresh-token")
+      return expiredResponse
+    }
+    response.cookies.set(LAST_ACTIVE_COOKIE, String(now), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: SESSION_TIMEOUT_MS / 1000,
+    })
+
     const { data: profile } = await supabase.from("profiles").select("role").eq("user_id", user.id).maybeSingle()
     const role = ((profile as { role?: string } | null)?.role || "").toLowerCase()
     if (!role || (role !== "admin" && role !== "super_admin")) {
@@ -136,6 +169,34 @@ export async function proxy(request: NextRequest) {
   }
 
   debug("user authenticated:", user.email)
+
+  // --- Sliding-window session timeout (4 hours of inactivity) ---
+  const lastActiveCookie = request.cookies.get(LAST_ACTIVE_COOKIE)
+  const lastActiveAt = lastActiveCookie ? parseInt(lastActiveCookie.value, 10) : 0
+  const now = Date.now()
+
+  if (lastActiveAt > 0 && (now - lastActiveAt) > SESSION_TIMEOUT_MS) {
+    // Session expired — force sign-out
+    debug("session expired, last active:", new Date(lastActiveAt).toISOString())
+    await supabase.auth.signOut()
+    // Clear the last_active cookie and sign-in cookies
+    const expiredResponse = NextResponse.redirect(new URL("/", request.url))
+    expiredResponse.cookies.delete(LAST_ACTIVE_COOKIE)
+    // Clear Supabase auth cookies
+    expiredResponse.cookies.delete("sb-access-token")
+    expiredResponse.cookies.delete("sb-refresh-token")
+    return expiredResponse
+  }
+
+  // Update the last_active_at cookie (sliding window reset)
+  response.cookies.set(LAST_ACTIVE_COOKIE, String(now), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: SESSION_TIMEOUT_MS / 1000, // 4 hours
+  })
+  // --- End session timeout ---
 
   const { data: profile } = await supabase
     .from("profiles")

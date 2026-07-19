@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { getSiteUrl } from "@/lib/site-url"
 import PostGeneratorClient from "./post-generator-client"
+import { PublicHeader } from "@/components/layout/public-header"
+import { PublicFooter } from "@/components/layout/public-footer"
 
 export const metadata: Metadata = {
   title: "AI Post Generator",
@@ -15,5 +17,13 @@ export const metadata: Metadata = {
 }
 
 export default function PostGeneratorPage() {
-  return <PostGeneratorClient />
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <PublicHeader />
+      <div className="flex-1">
+        <PostGeneratorClient />
+      </div>
+      <PublicFooter />
+    </div>
+  )
 }

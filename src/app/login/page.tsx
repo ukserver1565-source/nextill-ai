@@ -1,13 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { Sparkles, Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { login } from "@/lib/auth/actions"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 
-export default function LoginPage() {
+function LoginPageContent() {
+  const searchParams = useSearchParams()
+  const redirectParam = searchParams.get("redirect") || ""
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -22,6 +26,7 @@ export default function LoginPage() {
       const formData = new FormData()
       formData.set("email", email)
       formData.set("password", password)
+      if (redirectParam) formData.set("redirect", redirectParam)
       const result = await login(formData)
       if (result?.redirect) { window.location.href = result.redirect; return }
       if (result?.error) setError(result.error)
@@ -132,7 +137,7 @@ export default function LoginPage() {
 
             <p className="text-center text-sm text-[#A7B0C0]">
               Don&apos;t have an account?{" "}
-              <Link href="/signup" className="text-[#6D5EF5] hover:underline font-medium">
+              <Link href={redirectParam ? `/signup?redirect=${encodeURIComponent(redirectParam)}` : "/signup"} className="text-[#6D5EF5] hover:underline font-medium">
                 Sign up
               </Link>
             </p>
@@ -140,5 +145,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="w-6 h-6 animate-spin text-[#6D5EF5]" /></div>}>
+      <LoginPageContent />
+    </Suspense>
   )
 }

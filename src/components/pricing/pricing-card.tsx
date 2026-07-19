@@ -29,6 +29,7 @@ interface PricingCardProps {
   billingCycle: "monthly" | "yearly"
   couponResult?: { valid: boolean; discount: number; type: string } | null
   couponCode?: string
+  isLoggedIn?: boolean
 }
 
 function formatLimit(value: number, suffix?: string) {
@@ -59,12 +60,15 @@ function getDiscountedPrice(plan: PricingPlan, billingCycle: "monthly" | "yearly
   return price
 }
 
-export function PricingCard({ plan, billingCycle, couponResult, couponCode }: PricingCardProps) {
+export function PricingCard({ plan, billingCycle, couponResult, couponCode, isLoggedIn }: PricingCardProps) {
   const displayPrice = getDisplayPrice(plan, billingCycle)
   const monthlyEquiv = getMonthlyEquivalent(plan)
   const finalPrice = getDiscountedPrice(plan, billingCycle, couponResult)
   const hasDiscount = couponResult?.valid && finalPrice !== displayPrice
   const isFree = displayPrice === 0
+
+  const checkoutUrl = `/checkout?plan=${plan.slug}&billing=${billingCycle}${couponResult?.valid && couponCode ? `&coupon=${couponCode}` : ""}`
+  const ctaHref = isLoggedIn ? checkoutUrl : `/signup?redirect=${encodeURIComponent(checkoutUrl)}`
 
   return (
     <div className={`relative glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6 transition-all duration-300 ${plan.is_popular ? "border-[#6D5EF5]/40 ring-1 ring-[#6D5EF5]/20 shadow-lg shadow-[#6D5EF5]/10 bg-[#151C2E]/90 hover:scale-[1.02]" : "hover:border-white/[0.12]"}`}>
@@ -106,7 +110,7 @@ export function PricingCard({ plan, billingCycle, couponResult, couponCode }: Pr
           </button>
         </Link>
       ) : (
-        <Link href={`/checkout?plan=${plan.slug}&billing=${billingCycle}${couponResult?.valid && couponCode ? `&coupon=${couponCode}` : ""}`}>
+        <Link href={ctaHref}>
           <button className={`w-full py-2.5 rounded-lg text-xs sm:text-sm font-semibold mb-4 sm:mb-6 transition-colors ${plan.is_popular ? "bg-[#6D5EF5] text-white hover:brightness-110 shadow-lg shadow-[#6D5EF5]/20" : "border border-white/[0.12] hover:bg-white/[0.04]"}`}>
             Choose {plan.name}
           </button>

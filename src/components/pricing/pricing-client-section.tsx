@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react"
 import { Loader2, Zap, Tag, Check, X } from "lucide-react"
 import { PricingCard } from "@/components/pricing/pricing-card"
+import { useAuth } from "@/lib/auth/AuthProvider"
 import type { PlanData } from "@/lib/data/plans"
 
 interface WorkflowCost {
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function PricingClientSection({ initialPlans, initialCreditCosts }: Props) {
+  const { user } = useAuth()
   const [plans] = useState(initialPlans)
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
   const [couponCode, setCouponCode] = useState("")
@@ -84,6 +86,7 @@ export function PricingClientSection({ initialPlans, initialCreditCosts }: Props
               billingCycle={billingCycle}
               couponResult={couponResult}
               couponCode={couponCode}
+              isLoggedIn={!!user}
             />
           ))}
         </div>

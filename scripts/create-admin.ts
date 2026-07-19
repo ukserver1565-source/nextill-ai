@@ -30,7 +30,7 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   process.exit(1)
 }
 
-const ADMIN_EMAIL = "admin@nextill.ai"
+const ADMIN_EMAILS = ["admin@nextill.ai", "admin@adultpulse.co.uk"]
 const ADMIN_PASSWORD = "Admin@123456"
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
@@ -47,73 +47,78 @@ async function main() {
     process.exit(1)
   }
 
-  let userId = users.users.find((u) => u.email === ADMIN_EMAIL)?.id
+  // Create/update admin users for all configured emails
+  for (const ADMIN_EMAIL of ADMIN_EMAILS) {
+    console.log(`\n🔧 Processing ${ADMIN_EMAIL}...`)
 
-  if (userId) {
-    console.log("👤 User already exists:", userId)
+    let userId = users.users.find((u) => u.email === ADMIN_EMAIL)?.id
 
-    // Update password
-    const { error: updateErr } = await supabase.auth.admin.updateUserById(userId, {
-      password: ADMIN_PASSWORD,
-      email_confirm: true,
-    })
-    if (updateErr) {
-      console.error("❌ Failed to update user:", updateErr.message)
+    if (userId) {
+      console.log("👤 User already exists:", userId)
+
+      // Update password
+      const { error: updateErr } = await supabase.auth.admin.updateUserById(userId, {
+        password: ADMIN_PASSWORD,
+        email_confirm: true,
+      })
+      if (updateErr) {
+        console.error("❌ Failed to update user:", updateErr.message)
+        process.exit(1)
+      }
+      console.log("🔑 Password updated and email confirmed.")
+    } else {
+      // Create user
+      const { data, error: createErr } = await supabase.auth.admin.createUser({
+        email: ADMIN_EMAIL,
+        password: ADMIN_PASSWORD,
+        email_confirm: true,
+        user_metadata: { full_name: "Admin User" },
+      })
+      if (createErr) {
+        console.error("❌ Failed to create user:", createErr.message)
+        process.exit(1)
+      }
+      userId = data.user.id
+      console.log("✅ User created:", userId)
+    }
+
+    // 2. Upsert profile with admin role
+    const { error: profileErr } = await supabase.from("profiles").upsert(
+      {
+        user_id: userId,
+        email: ADMIN_EMAIL,
+        full_name: "Admin User",
+        role: "admin",
+        plan: "enterprise",
+        status: "active",
+      },
+      { onConflict: "user_id" }
+    )
+    if (profileErr) {
+      console.error("❌ Failed to upsert profile:", profileErr.message)
       process.exit(1)
     }
-    console.log("🔑 Password updated and email confirmed.")
-  } else {
-    // Create user
-    const { data, error: createErr } = await supabase.auth.admin.createUser({
-      email: ADMIN_EMAIL,
-      password: ADMIN_PASSWORD,
-      email_confirm: true,
-      user_metadata: { full_name: "Admin User" },
-    })
-    if (createErr) {
-      console.error("❌ Failed to create user:", createErr.message)
+    console.log("📋 Profile set to admin role.")
+
+    // 3. Upsert credits
+    const { error: creditsErr } = await supabase.from("credits").upsert(
+      {
+        user_id: userId,
+        balance: 10000,
+      },
+      { onConflict: "user_id" }
+    )
+    if (creditsErr) {
+      console.error("❌ Failed to upsert credits:", creditsErr.message)
       process.exit(1)
     }
-    userId = data.user.id
-    console.log("✅ User created:", userId)
+    console.log("💰 Credits set to 10,000.")
   }
 
-  // 2. Upsert profile with admin role
-  const { error: profileErr } = await supabase.from("profiles").upsert(
-    {
-      user_id: userId,
-      email: ADMIN_EMAIL,
-      full_name: "Admin User",
-      role: "admin",
-      plan: "enterprise",
-      status: "active",
-    },
-    { onConflict: "user_id" }
-  )
-  if (profileErr) {
-    console.error("❌ Failed to upsert profile:", profileErr.message)
-    process.exit(1)
-  }
-  console.log("📋 Profile set to admin role.")
-
-  // 3. Upsert credits
-  const { error: creditsErr } = await supabase.from("credits").upsert(
-    {
-      user_id: userId,
-      balance: 10000,
-    },
-    { onConflict: "user_id" }
-  )
-  if (creditsErr) {
-    console.error("❌ Failed to upsert credits:", creditsErr.message)
-    process.exit(1)
-  }
-  console.log("💰 Credits set to 10,000.")
-
-  console.log("\n✅ Admin account ready!")
-  console.log(`   Email:    ${ADMIN_EMAIL}`)
+  console.log("\n✅ All admin accounts ready!")
+  console.log(`   Emails:   ${ADMIN_EMAILS.join(", ")}`)
   console.log(`   Password: ${ADMIN_PASSWORD}`)
-  console.log("\n⚠️  This is a development account. Change the password after first login.")
+  console.log("\n⚠️  These are development accounts. Change passwords after first login.")
 }
 
 main()

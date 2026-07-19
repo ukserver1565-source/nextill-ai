@@ -1,13 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import { Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth/AuthProvider"
 import { useRouter } from "next/navigation"
 import { useState, useRef, useEffect } from "react"
 import { ChevronDown, LogOut, Settings } from "lucide-react"
 import { Avatar } from "@/components/ui/avatar"
+import { SiteLogo } from "@/components/shared/site-logo"
 
 const navLinks = [
   { href: "/features", label: "Features" },
@@ -47,14 +47,7 @@ export function PublicHeader() {
     <header className="glass-topbar sticky top-0 z-50 h-16">
       <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">
-              <span className="gradient-primary-text">Nextill AI</span>
-            </span>
-          </Link>
+          <SiteLogo size="md" />
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link

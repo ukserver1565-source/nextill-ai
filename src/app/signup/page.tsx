@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, Suspense } from "react"
 import { Sparkles, Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { signup } from "@/lib/auth/actions"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 
 function getStrength(password: string): { label: string; level: number; color: string } {
   let score = 0
@@ -20,7 +21,10 @@ function getStrength(password: string): { label: string; level: number; color: s
   return { label: "Strong", level: 3, color: "bg-green-500" }
 }
 
-export default function SignupPage() {
+function SignupPageContent() {
+  const searchParams = useSearchParams()
+  const redirectParam = searchParams.get("redirect") || ""
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -46,6 +50,7 @@ export default function SignupPage() {
       formData.set("email", email)
       formData.set("password", password)
       formData.set("full_name", fullName)
+      if (redirectParam) formData.set("redirect", redirectParam)
       const result = await signup(formData)
       if (result?.redirect) { window.location.href = result.redirect; return }
       if (result?.error) setError(result.error)
@@ -206,7 +211,7 @@ export default function SignupPage() {
 
             <p className="text-center text-sm text-[#A7B0C0]">
               Already have an account?{" "}
-              <Link href="/login" className="text-[#6D5EF5] hover:underline font-medium">
+              <Link href={redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : "/login"} className="text-[#6D5EF5] hover:underline font-medium">
                 Sign in
               </Link>
             </p>
@@ -214,5 +219,13 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="w-6 h-6 animate-spin text-[#6D5EF5]" /></div>}>
+      <SignupPageContent />
+    </Suspense>
   )
 }

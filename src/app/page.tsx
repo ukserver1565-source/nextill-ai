@@ -6,13 +6,13 @@ import HomePage from "@/components/home/home-client"
 export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
-  title: "Nextill AI — AI-Powered SEO & Content Platform",
+  title: "Nextill AI — AI SEO Tools & Content Platform",
   description:
-    "Generate SEO-optimized content, keyword research, plagiarism checks, and domain intelligence with AI. The all-in-one platform for content creators and SEO professionals.",
+    "Nextill AI is the all-in-one AI SEO platform for content creators and SEO professionals. Generate SEO-optimized content, research keywords, check plagiarism, and analyze domains with AI-powered workflows.",
   openGraph: {
-    title: "Nextill AI — AI-Powered SEO & Content Platform",
+    title: "Nextill AI — AI SEO Tools & Content Platform",
     description:
-      "Generate SEO-optimized content, keyword research, plagiarism checks, and domain intelligence with AI.",
+      "Nextill AI — the all-in-one AI SEO platform. Generate SEO-optimized content, research keywords, check plagiarism, and analyze domains with AI.",
     url: getSiteUrl(),
   },
 }

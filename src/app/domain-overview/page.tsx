@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { getSiteUrl } from "@/lib/site-url"
 import DomainOverviewClient from "./domain-overview-client"
+import { PublicHeader } from "@/components/layout/public-header"
+import { PublicFooter } from "@/components/layout/public-footer"
 
 export const metadata: Metadata = {
   title: "Domain Intelligence",
@@ -15,5 +17,13 @@ export const metadata: Metadata = {
 }
 
 export default function DomainOverviewPage() {
-  return <DomainOverviewClient />
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <PublicHeader />
+      <div className="flex-1">
+        <DomainOverviewClient />
+      </div>
+      <PublicFooter />
+    </div>
+  )
 }

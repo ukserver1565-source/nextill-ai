@@ -9,10 +9,11 @@ import {
   Search, FileText, Shield, Sparkles, ArrowRight, Check,
   Menu, X, BarChart3, Star, Zap, Globe, Clock, Award,
   BookOpen, Layers, ChevronDown, ChevronRight,
-  TrendingUp, Activity, FileType, Loader2, Tag
+  TrendingUp, Activity, FileType
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { SiteLogo } from "@/components/shared/site-logo"
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -229,9 +230,6 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
   const [activeDemo, setActiveDemo] = useState(0)
   const [plans] = useState<PlanData[]>(initialPlans)
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
-  const [couponCode, setCouponCode] = useState("")
-  const [couponResult, setCouponResult] = useState<{ valid: boolean; discount: number; type: string; message: string } | null>(null)
-  const [couponLoading, setCouponLoading] = useState(false)
   const [creditCosts, setCreditCosts] = useState<WorkflowCost[]>(defaultCreditCosts)
   const [showAllPlans, setShowAllPlans] = useState(false)
 
@@ -259,30 +257,6 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
     return creditCosts.find(c => c.workflow_slug === slug)?.credits_cost || 0
   }
 
-  const validateCoupon = async () => {
-    if (!couponCode.trim()) return
-    setCouponLoading(true)
-    setCouponResult(null)
-    try {
-      const res = await fetch("/api/public/coupons/validate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: couponCode.trim(), billing_cycle: billingCycle }),
-      })
-      const data = await res.json()
-      setCouponResult({
-        valid: data.valid || false,
-        discount: data.discount || 0,
-        type: data.type || "",
-        message: data.message || "Invalid coupon",
-      })
-    } catch {
-      setCouponResult({ valid: false, discount: 0, type: "", message: "Failed to validate coupon" })
-    } finally {
-      setCouponLoading(false)
-    }
-  }
-
   const _allPlanFeatures = useMemo(
     () => [...new Set(plans.flatMap(p => p.features || []))].sort(),
     [plans]
@@ -298,14 +272,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
       {/* NAV */}
       <header className="fixed top-0 left-0 right-0 z-50 glass-topbar h-16">
         <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-lg font-bold tracking-tight">
-              <span className="gradient-primary-text">Nextill AI</span>
-            </span>
-          </Link>
+          <SiteLogo size="md" />
           <nav className="hidden md:flex items-center gap-8 text-sm">
             {["Features", "Tools", "Pricing", "FAQ"].map((item) => (
               <Link
@@ -760,56 +727,28 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                     key={plan.id}
                     plan={plan}
                     billingCycle={billingCycle}
+                    isLoggedIn={!!profile}
                   />
                 ))}
               </div>
 
-              {/* See More Plans Button */}
-              {!showAllPlans && plans.length > 3 && (
+              {/* See More/Less Plans Button */}
+              {plans.length > 3 && (
                 <div className="text-center mt-8">
                   <button
-                    onClick={() => setShowAllPlans(true)}
+                    onClick={() => {
+                      setShowAllPlans(!showAllPlans)
+                      if (showAllPlans) {
+                        document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })
+                      }
+                    }}
                     className="px-6 py-2.5 rounded-xl text-sm font-medium border border-white/[0.12] hover:bg-white/[0.04] transition-colors text-muted hover:text-white"
                   >
-                    See More Plans
+                    {showAllPlans ? "See Less Plans" : "See More Plans"}
                   </button>
                 </div>
               )}
             </>
-          )}
-
-          {/* Coupon Section — only show when plans are loaded */}
-          {plans.length > 0 && (
-          <div className="mt-10 sm:mt-12 max-w-md mx-auto">
-            <div className="glass-card rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <Tag className="w-4 h-4 text-[#6D5EF5]" />
-                <span className="text-sm font-medium text-white">Have a coupon?</span>
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={couponCode}
-                  onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponResult(null) }}
-                  placeholder="Enter coupon code"
-                  className="flex-1 h-10 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 font-mono uppercase"
-                />
-                <button
-                  onClick={validateCoupon}
-                  disabled={couponLoading || !couponCode.trim()}
-                  className="h-10 px-4 rounded-lg bg-[#6D5EF5] text-white text-xs font-medium hover:brightness-110 transition-all disabled:opacity-50"
-                >
-                  {couponLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Apply"}
-                </button>
-              </div>
-              {couponResult && (
-                <div className={`mt-3 flex items-center gap-2 text-xs ${couponResult.valid ? "text-emerald-400" : "text-[#EF4444]"}`}>
-                  {couponResult.valid ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-                  {couponResult.message}
-                </div>
-              )}
-            </div>
-          </div>
           )}
 
           {/* How Credits Work */}
@@ -953,12 +892,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
             <div className="col-span-2 md:col-span-1">
-              <Link href="/" className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-lg font-bold gradient-primary-text">Nextill AI</span>
-              </Link>
+              <SiteLogo size="md" className="mb-4" />
               <p className="text-xs text-muted leading-relaxed max-w-xs">
                 AI-powered SEO and content tools for modern creators. Research keywords, generate content, and verify originality.
               </p>

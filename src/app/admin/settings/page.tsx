@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Save, Globe, ToggleLeft, Coins, Loader2, Link2, Plus, Trash2, GripVertical, Eye, EyeOff, MessageCircle, Instagram, Facebook, Hash, AtSign, CreditCard, ChevronUp, ChevronDown, Wallet, Smartphone, Building, Coins as CoinsIcon, Globe as GlobeIcon, Pencil, X } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { Save, Globe, ToggleLeft, Coins, Loader2, Link2, Plus, Trash2, GripVertical, Eye, EyeOff, MessageCircle, Instagram, Facebook, Hash, AtSign, CreditCard, ChevronUp, ChevronDown, Wallet, Smartphone, Building, Coins as CoinsIcon, Globe as GlobeIcon, Pencil, X, Upload, Image } from "lucide-react"
 
 interface SocialLink {
   name: string
@@ -95,6 +95,9 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState("")
+  const [logoUploading, setLogoUploading] = useState(false)
+  const [logoError, setLogoError] = useState("")
+  const logoFileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     fetch("/api/admin/settings")
@@ -103,6 +106,7 @@ export default function SettingsPage() {
         if (data.siteName) setForm(f => ({ ...f, siteName: data.siteName }))
         if (data.description) setForm(f => ({ ...f, description: data.description }))
         if (data.logoUrl) setForm(f => ({ ...f, logoUrl: data.logoUrl }))
+        if (data.site_logo_url) setForm(f => ({ ...f, logoUrl: data.site_logo_url }))
         if (data.registration_open !== undefined) setRegistrationOpen(data.registration_open === "true" || data.registration_open === true)
         if (data.default_credits) setDefaultCredits(Number(data.default_credits))
         if (data.social_links) {
@@ -147,6 +151,44 @@ export default function SettingsPage() {
     }
   }
 
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setLogoUploading(true)
+    setLogoError("")
+
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const res = await fetch("/api/admin/upload/logo", {
+        method: "POST",
+        body: formData,
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setLogoError(data.error || "Upload failed")
+        return
+      }
+      // Update the logo URL in the form and in settings
+      setForm(f => ({ ...f, logoUrl: data.logo_url }))
+      // Also save immediately to site_settings
+      await fetch("/api/admin/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ logoUrl: data.logo_url }),
+      })
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+    } catch {
+      setLogoError("Failed to upload logo")
+    } finally {
+      setLogoUploading(false)
+      if (logoFileRef.current) logoFileRef.current.value = ""
+    }
+  }
+
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
@@ -164,14 +206,47 @@ export default function SettingsPage() {
             <h2 className="text-sm font-semibold text-white flex items-center gap-2">
               <Globe className="w-4 h-4 text-[#6D5EF5]" /> Site Settings
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-[#A7B0C0]">Site Name</label>
-                <input value={form.siteName} onChange={(e) => setForm(f => ({ ...f, siteName: e.target.value }))} className="w-full h-11 px-4 rounded-xl bg-[#090B16] border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50 transition-all" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-[#A7B0C0]">Logo URL</label>
-                <input value={form.logoUrl} onChange={(e) => setForm(f => ({ ...f, logoUrl: e.target.value }))} className="w-full h-11 px-4 rounded-xl bg-[#090B16] border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50 transition-all" />
+            <div className="space-y-2">
+              <label className="text-xs font-medium text-[#A7B0C0]">Site Name</label>
+              <input value={form.siteName} onChange={(e) => setForm(f => ({ ...f, siteName: e.target.value }))} className="w-full h-11 px-4 rounded-xl bg-[#090B16] border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50 transition-all" />
+            </div>
+
+            {/* Logo Upload */}
+            <div className="space-y-3">
+              <label className="text-xs font-medium text-[#A7B0C0]">Site Logo</label>
+              <div className="flex items-center gap-4">
+                {/* Logo Preview */}
+                <div className="w-16 h-16 rounded-xl bg-[#090B16] border border-white/[0.06] flex items-center justify-center overflow-hidden shrink-0">
+                  {form.logoUrl && form.logoUrl !== "/logo.png" ? (
+                    <img src={form.logoUrl} alt="Site logo" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }} />
+                  ) : (
+                    <Image className="w-6 h-6 text-[#A7B0C0]/40" />
+                  )}
+                </div>
+                {/* Upload Button */}
+                <div className="flex-1 space-y-2">
+                  <input
+                    ref={logoFileRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/svg+xml"
+                    onChange={handleLogoUpload}
+                    className="hidden"
+                  />
+                  <button
+                    onClick={() => logoFileRef.current?.click()}
+                    disabled={logoUploading}
+                    className="flex items-center gap-2 h-9 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-xs font-medium text-[#A7B0C0] hover:text-white hover:border-white/[0.12] transition-colors disabled:opacity-50"
+                  >
+                    {logoUploading ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Upload className="w-3.5 h-3.5" />
+                    )}
+                    {logoUploading ? "Uploading..." : "Upload Logo"}
+                  </button>
+                  <p className="text-[10px] text-[#A7B0C0]/60">PNG, JPG, or SVG. Max 2MB.</p>
+                  {logoError && <p className="text-[10px] text-red-400">{logoError}</p>}
+                </div>
               </div>
             </div>
             <div className="space-y-2">

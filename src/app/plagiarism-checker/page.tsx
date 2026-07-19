@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { getSiteUrl } from "@/lib/site-url"
 import PlagiarismCheckerClient from "./plagiarism-checker-client"
+import { PublicHeader } from "@/components/layout/public-header"
+import { PublicFooter } from "@/components/layout/public-footer"
 
 export const metadata: Metadata = {
   title: "Plagiarism & Authenticity Checker",
@@ -15,5 +17,13 @@ export const metadata: Metadata = {
 }
 
 export default function PlagiarismCheckerPage() {
-  return <PlagiarismCheckerClient />
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <PublicHeader />
+      <div className="flex-1">
+        <PlagiarismCheckerClient />
+      </div>
+      <PublicFooter />
+    </div>
+  )
 }

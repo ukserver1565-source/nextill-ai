@@ -7,6 +7,7 @@ export async function login(formData: FormData) {
   const supabase = await createSupabaseServerClient()
   const email = formData.get("email") as string
   const password = formData.get("password") as string
+  const redirectTo = (formData.get("redirect") as string) || null
 
   const { data: _data, error } = await supabase.auth.signInWithPassword({ email, password })
   if (error) return { error: error.message }
@@ -22,9 +23,12 @@ export async function login(formData: FormData) {
 
   const role = ((profile as { role?: string } | null)?.role || "").toLowerCase()
 
-
-
   revalidatePath("/", "layout")
+
+  // If a redirect param is provided, honor it (e.g. from checkout flow)
+  if (redirectTo && redirectTo.startsWith("/")) {
+    return { redirect: redirectTo }
+  }
 
   if (role === "admin" || role === "super_admin") {
     return { redirect: "/admin" }
@@ -38,6 +42,7 @@ export async function signup(formData: FormData) {
   const email = formData.get("email") as string
   const password = formData.get("password") as string
   const fullName = formData.get("full_name") as string
+  const redirectTo = (formData.get("redirect") as string) || null
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -55,6 +60,11 @@ export async function signup(formData: FormData) {
 
     const role = ((profile as { role?: string } | null)?.role || "").toLowerCase()
     revalidatePath("/", "layout")
+
+    // If a redirect param is provided, honor it (e.g. from checkout flow)
+    if (redirectTo && redirectTo.startsWith("/")) {
+      return { redirect: redirectTo }
+    }
 
     if (role === "admin" || role === "super_admin") {
       return { redirect: "/admin" }

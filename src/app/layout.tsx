@@ -22,19 +22,22 @@ const siteUrl = getSiteUrl()
 
 export const metadata: Metadata = {
   title: {
-    default: "Nextill AI — AI-Powered SEO & Content Platform",
+    default: "Nextill AI — AI SEO Tools & Content Platform",
     template: "%s | Nextill AI",
   },
   description:
-    "Generate SEO-optimized content, keyword research, plagiarism checks, and domain intelligence with AI. The all-in-one platform for content creators and SEO professionals.",
+    "Nextill AI is the all-in-one AI SEO platform for content creators and SEO professionals. Generate SEO-optimized content, research keywords, check plagiarism, and analyze domains with AI-powered workflows.",
   keywords: [
+    "AI SEO tools",
     "AI content generator",
-    "SEO tools",
+    "SEO platform",
     "plagiarism checker",
     "keyword research",
     "content creation",
     "blog writer",
     "domain intelligence",
+    "AI SEO platform",
+    "Nextill AI",
   ],
   authors: [{ name: "Nextill AI" }],
   creator: "Nextill AI",
@@ -44,9 +47,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteUrl,
     siteName: "Nextill AI",
-    title: "Nextill AI — AI-Powered SEO & Content Platform",
+    title: "Nextill AI — AI SEO Tools & Content Platform",
     description:
-      "Generate SEO-optimized content, keyword research, plagiarism checks, and domain intelligence with AI.",
+      "Nextill AI — the all-in-one AI SEO platform. Generate SEO-optimized content, research keywords, check plagiarism, and analyze domains with AI.",
     images: [
       {
         url: "/og-image.png",
@@ -58,8 +61,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nextill AI — AI-Powered SEO & Content Platform",
-    description: "Generate SEO-optimized content with AI-powered tools.",
+    title: "Nextill AI — AI SEO Tools & Content Platform",
+    description: "Nextill AI — the all-in-one AI SEO platform for content creators.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -77,8 +80,36 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Nextill AI",
+    "url": siteUrl,
+    "logo": `${siteUrl}/og-image.png`,
+    "description": "AI-powered SEO and content generation platform for keyword research, post generation, and plagiarism checking.",
+    "sameAs": [],
+  }
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Nextill AI",
+    "url": siteUrl,
+    "description": "AI-powered SEO and content generation platform.",
+  }
+
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+      </head>
       <body className="bg-background text-foreground antialiased" suppressHydrationWarning>
         <NavigationProgressWrapper />
         <AuthProvider>
