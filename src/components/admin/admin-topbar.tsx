@@ -52,8 +52,8 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
   }
 
   return (
-    <header className="h-16 border-b border-white/[0.04] flex items-center justify-between px-3 sm:px-4 lg:px-6 bg-[#090B16]/80 backdrop-blur-xl sticky top-0 z-30 overflow-hidden">
-      <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 overflow-hidden">
+    <header className="h-16 border-b border-white/[0.04] flex items-center justify-between px-3 sm:px-4 lg:px-6 bg-[#090B16]/80 backdrop-blur-xl sticky top-0 z-30">
+      <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
         {onMenuClick && (
           <button
             onClick={onMenuClick}
