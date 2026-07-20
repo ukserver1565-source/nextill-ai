@@ -92,14 +92,9 @@ const workflowMapping = {
 }
 
 export default function ToolsPage() {
-  const [providerStatus, setProviderStatus] = useState<any[]>([])
   const [workflowStatuses, setWorkflowStatuses] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    fetch("/api/public/provider-status")
-      .then(r => r.json())
-      .then(data => { if (Array.isArray(data)) setProviderStatus(data) })
-      .catch(() => {})
     fetch("/api/public/workflow-settings")
       .then(r => r.json())
       .then(data => {
@@ -111,10 +106,6 @@ export default function ToolsPage() {
       })
       .catch(() => {})
   }, [])
-
-  const _getProviderStatus = (slug: string) => {
-    return providerStatus.find(p => p.slug === slug)
-  }
 
   const getStatusBadge = (slug: string) => {
     const status = workflowStatuses[slug]
@@ -234,47 +225,6 @@ export default function ToolsPage() {
           </motion.div>
         </div>
       </motion.section>
-
-      {/* API STATUS */}
-      {providerStatus.length > 0 && (
-        <motion.section
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="px-4 pb-12"
-        >
-          <div className="max-w-7xl mx-auto">
-            <div className="glass-card rounded-2xl p-6 sm:p-8">
-              <h2 className="text-xl font-bold mb-2">API Provider Status</h2>
-              <p className="text-sm text-muted mb-6">Real-time connection status for each AI provider.</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {providerStatus.map((provider: any) => (
-                  <div key={provider.slug} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
-                    <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${provider.connected && provider.enabled ? "bg-[#22C55E] animate-pulse" : "bg-[#EF4444]"}`} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium truncate">{provider.name}</p>
-                      <p className="text-[10px] text-muted">
-                        {provider.connected && provider.enabled ? "Connected" : "Not Connected"}
-                      </p>
-                    </div>
-                    {provider.connected && provider.enabled ? (
-                      <Check className="w-3.5 h-3.5 text-[#22C55E] shrink-0" />
-                    ) : (
-                      <XIcon className="w-3.5 h-3.5 text-[#EF4444] shrink-0" />
-                    )}
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 p-3 rounded-lg bg-[#F59E0B]/10 border border-[#F59E0B]/20">
-                <p className="text-xs text-[#F59E0B]">
-                  <strong>Note:</strong> Unavailable providers will use the local fallback engine. Configure API keys in the Admin Panel to enable full AI capabilities.
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.section>
-      )}
 
       {/* LEGACY TOOLS MIGRATION */}
       <motion.section
