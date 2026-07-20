@@ -113,11 +113,9 @@ export async function proxy(request: NextRequest) {
     const lastActiveAt = lastActiveCookie ? parseInt(lastActiveCookie.value, 10) : 0
     const now = Date.now()
     if (lastActiveAt > 0 && (now - lastActiveAt) > SESSION_TIMEOUT_MS) {
-      await supabase.auth.signOut()
-      const expiredResponse = NextResponse.redirect(new URL("/", request.url))
+      // Don't force signOut — just redirect to login and let Supabase handle token expiry
+      const expiredResponse = NextResponse.redirect(new URL("/zain-nextill-ansari/login", request.url))
       expiredResponse.cookies.delete(LAST_ACTIVE_COOKIE)
-      expiredResponse.cookies.delete("sb-access-token")
-      expiredResponse.cookies.delete("sb-refresh-token")
       return expiredResponse
     }
     response.cookies.set(LAST_ACTIVE_COOKIE, String(now), {
@@ -176,15 +174,10 @@ export async function proxy(request: NextRequest) {
   const now = Date.now()
 
   if (lastActiveAt > 0 && (now - lastActiveAt) > SESSION_TIMEOUT_MS) {
-    // Session expired — force sign-out
+    // Session expired — redirect to login, let Supabase handle token expiry naturally
     debug("session expired, last active:", new Date(lastActiveAt).toISOString())
-    await supabase.auth.signOut()
-    // Clear the last_active cookie and sign-in cookies
-    const expiredResponse = NextResponse.redirect(new URL("/", request.url))
+    const expiredResponse = NextResponse.redirect(new URL("/login", request.url))
     expiredResponse.cookies.delete(LAST_ACTIVE_COOKIE)
-    // Clear Supabase auth cookies
-    expiredResponse.cookies.delete("sb-access-token")
-    expiredResponse.cookies.delete("sb-refresh-token")
     return expiredResponse
   }
 
@@ -221,9 +214,10 @@ export async function proxy(request: NextRequest) {
   }
 
   if (pathname === "/login" || pathname === "/signup") {
-    const dest = isAdmin ? "/zain-nextill-ansari" : "/dashboard"
-    debug("redirect from login to:", dest)
-    return NextResponse.redirect(new URL(dest, request.url))
+    // All logged-in users (including admins) go to user dashboard from /login
+    // Admin panel is only accessible via /zain-nextill-ansari
+    debug("redirect from login to: /dashboard")
+    return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
   if (pathname === "/zain-nextill-ansari/login") {
@@ -232,7 +226,8 @@ export async function proxy(request: NextRequest) {
   }
 
   if (userRoutes.some((r) => pathname.startsWith(r))) {
-    if (isAdmin) return NextResponse.redirect(new URL("/zain-nextill-ansari", request.url))
+    // Don't redirect admins away from /dashboard — let them access user dashboard too
+    // Admin panel is separately accessible at /zain-nextill-ansari
     return response
   }
 
