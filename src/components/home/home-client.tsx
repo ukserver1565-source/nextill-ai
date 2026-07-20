@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { SiteLogo } from "@/components/shared/site-logo"
+import { LatestBlogPosts } from "@/components/home/latest-blog-posts"
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -161,6 +162,7 @@ const footerColumns = [
       { label: "All Tools", href: "/tools" },
       { label: "Features", href: "/features" },
       { label: "Pricing", href: "/pricing" },
+      { label: "Blog", href: "/blog" },
     ],
   },
   {
@@ -283,6 +285,12 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                 {item}
               </Link>
             ))}
+            <Link
+              href="/blog"
+              className="text-muted hover:text-white transition-colors duration-200"
+            >
+              Blog
+            </Link>
           </nav>
           <div className="flex items-center gap-3">
             <Link href={dashboardHref} className="hidden sm:block">
@@ -323,6 +331,13 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                     {item}
                   </Link>
                 ))}
+                <Link
+                  href="/blog"
+                  onClick={() => setMobileOpen(false)}
+                  className="block text-sm text-muted hover:text-white transition-colors py-2"
+                >
+                  Blog
+                </Link>
                 <Link href={dashboardHref} onClick={() => setMobileOpen(false)}>
                   <Button variant="outline" className="w-full">
                     Dashboard
@@ -790,6 +805,34 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               </table>
             </div>
             <p className="text-center text-xs text-[#A7B0C0] mt-4">Credit costs are configured by the admin and may vary.</p>
+          </div>
+        </div>
+      </motion.section>
+
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
+      {/* LATEST BLOG POSTS */}
+      <motion.section
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="px-4 pb-20 scroll-mt-20"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold"><span className="gradient-primary-text">Latest</span> from the Blog</h2>
+            <p className="text-muted mt-2 max-w-xl mx-auto">
+              Tips, insights, and updates on AI-powered SEO and content creation.
+            </p>
+          </div>
+          <LatestBlogPosts />
+          <div className="text-center mt-8">
+            <Link href="/blog">
+              <Button variant="glass" size="sm" className="text-sm px-6">
+                View All Posts <ArrowRight className="w-4 h-4 ml-1.5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </motion.section>

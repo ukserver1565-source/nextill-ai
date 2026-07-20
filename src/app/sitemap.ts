@@ -1,9 +1,49 @@
 import type { MetadataRoute } from "next"
 import { getSiteUrl } from "@/lib/site-url"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 
 const baseUrl = getSiteUrl()
 
-export default function sitemap(): MetadataRoute.Sitemap {
+async function getBlogPostUrls(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const { data } = await supabaseAdmin
+      .from("blog_posts")
+      .select("slug, published_at, updated_at")
+      .eq("status", "published")
+      .not("published_at", "is", null)
+
+    if (!data) return []
+
+    const blogIndex: MetadataRoute.Sitemap = [
+      {
+        url: `${baseUrl}/blog`,
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+      },
+    ]
+
+    const blogPosts: MetadataRoute.Sitemap = data.map(post => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.updated_at),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }))
+
+    return [...blogIndex, ...blogPosts]
+  } catch {
+    return [
+      {
+        url: `${baseUrl}/blog`,
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+      },
+    ]
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
   // Static top-level pages
@@ -220,5 +260,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]
 
-  return [...staticPages, ...toolPages, ...legacyToolPages, ...authPages]
+  // Blog pages (dynamic from database)
+  const blogPages = await getBlogPostUrls()
+
+  return [...staticPages, ...toolPages, ...legacyToolPages, ...authPages, ...blogPages]
 }

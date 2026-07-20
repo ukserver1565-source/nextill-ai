@@ -3715,3 +3715,14 @@ AS $$
   );
 $$;
 
+-- ============================================================
+-- BLOG POSTS — ADD MISSING COLUMNS (idempotent)
+-- ============================================================
+ALTER TABLE public.blog_posts ADD COLUMN IF NOT EXISTS featured_image_url text;
+ALTER TABLE public.blog_posts ADD COLUMN IF NOT EXISTS author_id uuid REFERENCES public.profiles(id) ON DELETE SET NULL;
+ALTER TABLE public.blog_posts ADD COLUMN IF NOT EXISTS published_at timestamptz;
+ALTER TABLE public.blog_posts ADD COLUMN IF NOT EXISTS view_count integer DEFAULT 0;
+
+CREATE INDEX IF NOT EXISTS idx_blog_posts_published_at ON public.blog_posts(published_at);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_author_id ON public.blog_posts(author_id);
+

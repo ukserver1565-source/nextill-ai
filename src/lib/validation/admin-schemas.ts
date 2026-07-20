@@ -42,10 +42,14 @@ export const createBlogPostSchema = z.object({
   slug: z.string().min(1).max(200),
   excerpt: z.string().optional(),
   content: z.string().optional(),
+  featured_image_url: z.string().nullable().optional(),
   category_id: z.string().nullable().optional(),
+  author_id: z.string().nullable().optional(),
   status: blogStatusSchema.default("draft"),
+  published_at: z.string().nullable().optional(),
   seo_title: z.string().max(200).optional(),
   meta_description: z.string().max(300).optional(),
+  view_count: z.number().int().min(0).optional(),
 })
 
 export const updateBlogPostSchema = createBlogPostSchema.partial()

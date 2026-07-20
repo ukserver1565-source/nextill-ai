@@ -17,6 +17,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const { id } = await params
     const body = await req.json()
     const parsed = updateBlogPostSchema.parse(body)
+
+    // If transitioning to published and no published_at set, set it now
+    if (parsed.status === "published" && !parsed.published_at) {
+      const existing = await blogRepo.getById(id)
+      if (!existing.published_at) {
+        parsed.published_at = new Date().toISOString()
+      }
+    }
+
     const post = await blogRepo.update(id, parsed)
     return NextResponse.json(post)
   } catch (err) {
