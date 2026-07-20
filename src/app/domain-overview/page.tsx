@@ -3,6 +3,7 @@ import { getSiteUrl } from "@/lib/site-url"
 import DomainOverviewClient from "./domain-overview-client"
 import { PublicHeader } from "@/components/layout/public-header"
 import { PublicFooter } from "@/components/layout/public-footer"
+import { ToolStatusGuard } from "@/components/shared/tool-status-guard"
 
 export const metadata: Metadata = {
   title: "Domain Intelligence",
@@ -18,12 +19,14 @@ export const metadata: Metadata = {
 
 export default function DomainOverviewPage() {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <PublicHeader />
-      <div className="flex-1">
-        <DomainOverviewClient />
+    <ToolStatusGuard toolSlug="keyword-intelligence" toolName="Domain Intelligence" toolDescription="Discover high-value keywords with AI-powered analysis">
+      <div className="min-h-screen bg-background flex flex-col">
+        <PublicHeader />
+        <div className="flex-1">
+          <DomainOverviewClient />
+        </div>
+        <PublicFooter />
       </div>
-      <PublicFooter />
-    </div>
+    </ToolStatusGuard>
   )
 }

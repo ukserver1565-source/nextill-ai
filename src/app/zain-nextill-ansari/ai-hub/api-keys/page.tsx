@@ -34,6 +34,8 @@ export default function AIHubApiKeysPage() {
   const [editItem, setEditItem] = useState<any>(null)
   const [visible, setVisible] = useState<Set<number>>(new Set())
   const [testStatus, setTestStatus] = useState<Record<string, "testing" | "success" | "error">>({})
+  const [testMessages, setTestMessages] = useState<Record<string, string>>({})
+  const [integratedKeys, setIntegratedKeys] = useState<Set<string>>(new Set())
   const [form, setForm] = useState({ name: "", provider: "OpenAI", key: "", enabled: true })
   const [rotateKey, setRotateKey] = useState("")
   const [saving, setSaving] = useState(false)
@@ -62,18 +64,43 @@ export default function AIHubApiKeysPage() {
     setVisible(s)
   }
 
-  const handleTest = async (id: string) => {
-    setTestStatus(s => ({ ...s, [id]: "testing" }))
+  const handleTest = async (keyId: string, providerSlug: string) => {
+    setTestStatus(s => ({ ...s, [keyId]: "testing" }))
+    setTestMessages(s => ({ ...s, [keyId]: "" }))
     try {
-      const res = await fetch(`/api/admin/ai/api-keys/${id}/test`, { method: "POST" })
+      const res = await fetch("/api/admin/ai/test-connection", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider_slug: providerSlug, api_key_id: keyId }),
+      })
       const json = await res.json()
-      setTestStatus(s => ({ ...s, [id]: res.ok && json.success ? "success" : "error" }))
+      setTestStatus(s => ({ ...s, [keyId]: json.success ? "success" : "error" }))
+      setTestMessages(s => ({ ...s, [keyId]: json.message || (json.success ? "Connected" : "Failed") }))
     } catch {
-      setTestStatus(s => ({ ...s, [id]: "error" }))
+      setTestStatus(s => ({ ...s, [keyId]: "error" }))
+      setTestMessages(s => ({ ...s, [keyId]: "Connection failed" }))
     }
-    setTimeout(() => {
-      setTestStatus(s => { const n = { ...s }; delete n[id]; return n })
-    }, 3500)
+  }
+
+  const handleIntegrate = async (keyId: string, providerSlug: string) => {
+    try {
+      // Find the workflow_settings for this provider's tool and mark api_verified
+      const res = await fetch("/api/admin/tools")
+      const tools = await res.json()
+      // Find tool matching this provider
+      const tool = Array.isArray(tools) ? tools.find((t: any) => t.tool_slug === providerSlug) : null
+      if (tool) {
+        await fetch(`/api/admin/tools/${tool.id}/status`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ api_verified: true, last_tested_at: new Date().toISOString() }),
+        })
+      }
+      setIntegratedKeys(prev => new Set(prev).add(keyId))
+      setTestMessages(s => ({ ...s, [keyId]: "Integrated successfully!" }))
+    } catch {
+      setActionError("Failed to integrate")
+    }
   }
 
   const handleDelete = async (id: string) => {
@@ -239,21 +266,28 @@ export default function AIHubApiKeysPage() {
                           </div>
                         </td>
                         <td className="p-4">
-                          {testStatus[k.id] === "testing" ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#3B82F6]/10 text-[#3B82F6] border border-[#3B82F6]/20">
-                              <Loader2 className="w-3 h-3 animate-spin" /> Testing
-                            </span>
-                          ) : testStatus[k.id] === "success" ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20">
-                              <Check className="w-3 h-3" /> OK
-                            </span>
-                          ) : testStatus[k.id] === "error" ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20">
-                              <X className="w-3 h-3" /> Failed
-                            </span>
-                          ) : (
-                            <StatusBadge status={isActive} />
-                          )}
+                          <div className="space-y-1">
+                            {testStatus[k.id] === "testing" ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#3B82F6]/10 text-[#3B82F6] border border-[#3B82F6]/20">
+                                <Loader2 className="w-3 h-3 animate-spin" /> Testing
+                              </span>
+                            ) : testStatus[k.id] === "success" ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20">
+                                <Check className="w-3 h-3" /> Connected
+                              </span>
+                            ) : testStatus[k.id] === "error" ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20">
+                                <X className="w-3 h-3" /> Failed
+                              </span>
+                            ) : (
+                              <StatusBadge status={isActive} />
+                            )}
+                            {testMessages[k.id] && testStatus[k.id] !== "testing" && (
+                              <p className={`text-[10px] max-w-[200px] truncate ${testStatus[k.id] === "success" ? "text-[#22C55E]" : "text-[#EF4444]"}`} title={testMessages[k.id]}>
+                                {testMessages[k.id]}
+                              </p>
+                            )}
+                          </div>
                         </td>
                         <td className="p-4 text-xs text-[#A7B0C0]">{k.last_used_at ? new Date(k.last_used_at).toLocaleDateString() : "Never"}</td>
                         <td className="p-4 text-xs text-[#A7B0C0]">{k.created_at ? new Date(k.created_at).toLocaleDateString() : "—"}</td>
@@ -266,12 +300,22 @@ export default function AIHubApiKeysPage() {
                               <Edit3 className="w-3.5 h-3.5" />
                             </button>
                             <button
-                              onClick={() => handleTest(k.id)}
+                              onClick={() => handleTest(k.id, k.provider_slug)}
                               disabled={testStatus[k.id] === "testing"}
                               className="w-7 h-7 rounded-lg bg-[#090B16] border border-white/[0.06] flex items-center justify-center text-[#A7B0C0] hover:text-white transition-all disabled:opacity-50"
+                              title="Test connection"
                             >
                               {testStatus[k.id] === "testing" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5" />}
                             </button>
+                            {testStatus[k.id] === "success" && !integratedKeys.has(k.id) && (
+                              <button
+                                onClick={() => handleIntegrate(k.id, k.provider_slug)}
+                                className="w-7 h-7 rounded-lg bg-[#22C55E]/10 border border-[#22C55E]/20 flex items-center justify-center text-[#22C55E] hover:bg-[#22C55E]/20 transition-all"
+                                title="Integrate — mark as verified"
+                              >
+                                <Check className="w-3.5 h-3.5" />
+                              </button>
+                            )}
                             <button
                               onClick={() => { setEditItem(k); setRotateKey(""); setShowRotateModal(true) }}
                               className="w-7 h-7 rounded-lg bg-[#090B16] border border-white/[0.06] flex items-center justify-center text-[#A7B0C0] hover:text-white transition-all"

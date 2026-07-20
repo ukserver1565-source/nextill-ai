@@ -3,6 +3,7 @@ import { getSiteUrl } from "@/lib/site-url"
 import PlagiarismCheckerClient from "./plagiarism-checker-client"
 import { PublicHeader } from "@/components/layout/public-header"
 import { PublicFooter } from "@/components/layout/public-footer"
+import { ToolStatusGuard } from "@/components/shared/tool-status-guard"
 
 export const metadata: Metadata = {
   title: "Plagiarism & Authenticity Checker",
@@ -18,12 +19,14 @@ export const metadata: Metadata = {
 
 export default function PlagiarismCheckerPage() {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <PublicHeader />
-      <div className="flex-1">
-        <PlagiarismCheckerClient />
+    <ToolStatusGuard toolSlug="plagiarism-checker" toolName="Plagiarism & Authenticity Checker" toolDescription="Check content originality against billions of web sources">
+      <div className="min-h-screen bg-background flex flex-col">
+        <PublicHeader />
+        <div className="flex-1">
+          <PlagiarismCheckerClient />
+        </div>
+        <PublicFooter />
       </div>
-      <PublicFooter />
-    </div>
+    </ToolStatusGuard>
   )
 }
