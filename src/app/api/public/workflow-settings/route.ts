@@ -10,8 +10,7 @@ export async function GET() {
   try {
     const { data, error } = await supabase
       .from("workflow_settings")
-      .select("workflow_slug, workflow_name, credits_cost, guest_daily_limit, free_daily_limit, premium_daily_limit, max_words, is_enabled")
-      .eq("is_enabled", true)
+      .select("workflow_slug, workflow_name, credits_cost, guest_daily_limit, free_daily_limit, premium_daily_limit, max_words, is_enabled, status")
       .order("workflow_slug")
     if (error) {
       return NextResponse.json([])

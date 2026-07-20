@@ -18,15 +18,25 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const body = await req.json()
     const parsed = updateBlogPostSchema.parse(body)
 
+    // Sanitize: convert empty strings to null for nullable fields
+    const sanitized: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(parsed)) {
+      if (value === "" || value === undefined) {
+        // Skip empty strings — don't write them to nullable columns
+        continue
+      }
+      sanitized[key] = value
+    }
+
     // If transitioning to published and no published_at set, set it now
-    if (parsed.status === "published" && !parsed.published_at) {
+    if (sanitized.status === "published" && !sanitized.published_at) {
       const existing = await blogRepo.getById(id)
       if (!existing.published_at) {
-        parsed.published_at = new Date().toISOString()
+        sanitized.published_at = new Date().toISOString()
       }
     }
 
-    const post = await blogRepo.update(id, parsed)
+    const post = await blogRepo.update(id, sanitized as Partial<import("@/lib/repositories/blog-repo").BlogPostRow>)
     return NextResponse.json(post)
   } catch (err) {
     return NextResponse.json({ error: "Failed to update post", details: (err as Error).message }, { status: 400 })

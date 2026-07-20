@@ -449,8 +449,10 @@ export default function BlogPage() {
                     </td>
                     <td className="p-4">
                       {(() => {
-                        const cat = categories.find(c => c.id === post.category_id)
-                        return cat ? (
+                        // Use joined blog_categories data if available, fall back to categories list
+                        const joinedCat = (post as any).blog_categories
+                        const cat = joinedCat?.name ? joinedCat : categories.find(c => c.id === post.category_id)
+                        return cat?.name ? (
                           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#6D5EF5]/10 text-[#6D5EF5] border border-[#6D5EF5]/20">
                             {cat.name}
                           </span>

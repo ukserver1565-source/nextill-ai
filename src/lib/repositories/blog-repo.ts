@@ -21,7 +21,7 @@ export interface BlogPostRow {
 
 export const blogRepo = {
   async list(params: PaginationParams) {
-    let query = supabaseAdmin.from("blog_posts").select("*", { count: "exact" })
+    let query = supabaseAdmin.from("blog_posts").select("*, blog_categories(id, name, slug)", { count: "exact" })
     if (params.search) query = query.ilike("title", `%${params.search}%`)
     if (params.filter?.category_id) query = query.eq("category_id", params.filter.category_id)
     if (params.filter?.status) query = query.eq("status", params.filter.status)

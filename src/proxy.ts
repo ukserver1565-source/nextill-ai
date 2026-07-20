@@ -200,19 +200,25 @@ export async function proxy(request: NextRequest) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, user_id")
+    .select("role, user_id, status")
     .eq("user_id", user.id)
     .maybeSingle()
 
   const role = ((profile as { role?: string } | null)?.role || "").toLowerCase()
+  const profileStatus = ((profile as { status?: string } | null)?.status || "active").toLowerCase()
   debug("role:", role)
+
+  // Block suspended users (except admins accessing admin routes)
+  const isAdmin = role === "admin" || role === "super_admin"
+  if (profileStatus === "suspended" && !isAdmin) {
+    await supabase.auth.signOut()
+    return NextResponse.redirect(new URL("/unauthorized", request.url))
+  }
 
   if (!role) {
     if (guestAccessible.has(pathname)) return NextResponse.next()
     return response
   }
-
-  const isAdmin = role === "admin" || role === "super_admin"
 
   if (pathname === "/login" || pathname === "/signup") {
     const dest = isAdmin ? "/zain-nextill-ansari" : "/dashboard"

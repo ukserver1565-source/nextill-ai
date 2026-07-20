@@ -41,12 +41,12 @@ export default function AdminDashboard() {
 
   const statCards = overview?.stats
     ? [
-        { icon: Users, label: "Total Users", value: (overview.stats.totalUsers ?? 0).toLocaleString(), change: `+${overview.stats.activeToday ?? 0} today`, up: true, color: "#6D5EF5" },
-        { icon: UserCheck, label: "Active Today", value: (overview.stats.activeToday ?? 0).toLocaleString(), change: `${overview.stats.premiumUsers ?? 0} premium`, up: true, color: "#22C55E" },
-        { icon: DollarSign, label: "Total Revenue", value: `$${(overview.stats.totalRevenue ?? 0).toLocaleString()}`, change: `$${overview.stats.monthlyRevenue ?? 0} this month`, up: true, color: "#F59E0B" },
-        { icon: FileText, label: "Projects", value: (overview.stats.totalProjects ?? 0).toLocaleString(), change: `${overview.stats.totalTransactions ?? 0} transactions`, up: true, color: "#4CC9F0" },
-        { icon: Sparkles, label: "Credits Used", value: (overview.stats.totalUsed ?? 0).toLocaleString(), change: `${overview.stats.totalCredits ?? 0} remaining`, up: true, color: "#8B5CF6" },
-        { icon: Activity, label: "Free Users", value: (overview.stats.freeUsers ?? 0).toLocaleString(), change: `${overview.stats.premiumUsers ?? 0} premium`, up: true, color: "#EF4444" },
+        { icon: Users, label: "Total Users", value: (overview.stats.totalUsers ?? 0).toLocaleString(), change: `+${overview.stats.activeToday ?? 0} today`, up: true, color: "#6D5EF5", path: "/zain-nextill-ansari/users" },
+        { icon: UserCheck, label: "Active Today", value: (overview.stats.activeToday ?? 0).toLocaleString(), change: `${overview.stats.premiumUsers ?? 0} premium`, up: true, color: "#22C55E", path: "/zain-nextill-ansari/users" },
+        { icon: DollarSign, label: "Total Revenue", value: `$${(overview.stats.totalRevenue ?? 0).toLocaleString()}`, change: `$${overview.stats.monthlyRevenue ?? 0} this month`, up: true, color: "#F59E0B", path: "/zain-nextill-ansari/payments" },
+        { icon: FileText, label: "Projects", value: (overview.stats.totalProjects ?? 0).toLocaleString(), change: `${overview.stats.totalTransactions ?? 0} transactions`, up: true, color: "#4CC9F0", path: "/zain-nextill-ansari/projects" },
+        { icon: Sparkles, label: "Credits Used", value: (overview.stats.totalUsed ?? 0).toLocaleString(), change: `${overview.stats.totalCredits ?? 0} remaining`, up: true, color: "#8B5CF6", path: "/zain-nextill-ansari/credits" },
+        { icon: Activity, label: "Free Users", value: (overview.stats.freeUsers ?? 0).toLocaleString(), change: `${overview.stats.premiumUsers ?? 0} premium`, up: true, color: "#EF4444", path: "/zain-nextill-ansari/users" },
       ]
     : []
 
@@ -86,7 +86,8 @@ export default function AdminDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.12] transition-all"
+              onClick={() => router.push(stat.path)}
+              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.12] hover:bg-white/[0.03] transition-all cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20 border border-white/[0.06] flex items-center justify-center">

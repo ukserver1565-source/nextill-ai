@@ -93,16 +93,39 @@ const workflowMapping = {
 
 export default function ToolsPage() {
   const [providerStatus, setProviderStatus] = useState<any[]>([])
+  const [workflowStatuses, setWorkflowStatuses] = useState<Record<string, string>>({})
 
   useEffect(() => {
     fetch("/api/public/provider-status")
       .then(r => r.json())
       .then(data => { if (Array.isArray(data)) setProviderStatus(data) })
       .catch(() => {})
+    fetch("/api/public/workflow-settings")
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const map: Record<string, string> = {}
+          data.forEach((w: any) => { map[w.workflow_slug] = w.status || "coming_soon" })
+          setWorkflowStatuses(map)
+        }
+      })
+      .catch(() => {})
   }, [])
 
   const _getProviderStatus = (slug: string) => {
     return providerStatus.find(p => p.slug === slug)
+  }
+
+  const getStatusBadge = (slug: string) => {
+    const status = workflowStatuses[slug]
+    if (status === "published") return { label: "Live", variant: "success" as const, showDot: true }
+    if (status === "maintenance") return { label: "Maintenance", variant: "warning" as const, showDot: false }
+    return { label: "Coming Soon", variant: "info" as const, showDot: false }
+  }
+
+  const isToolClickable = (slug: string) => {
+    const status = workflowStatuses[slug]
+    return status === "published" || status === undefined // default to clickable if status unknown
   }
 
   return (
@@ -151,41 +174,60 @@ export default function ToolsPage() {
           >
             {premiumTools.map((tool) => {
               const Icon = tool.icon
-              return (
-                <motion.div key={tool.slug} variants={staggerItem}>
-                  <Link
-                    href={`/${tool.slug}`}
-                    className="glass-card rounded-2xl p-6 sm:p-8 h-full flex flex-col group hover:border-primary/30 transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div
-                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center shadow-lg`}
-                      >
-                        <Icon className="w-6 h-6 text-white" />
-                      </div>
-                      <Badge variant={tool.badgeVariant} size="sm" showDot>
-                        {tool.badge}
-                      </Badge>
+              const statusBadge = getStatusBadge(tool.slug)
+              const clickable = isToolClickable(tool.slug)
+              const isComingSoon = workflowStatuses[tool.slug] === "coming_soon"
+              const isMaintenance = workflowStatuses[tool.slug] === "maintenance"
+              const cardClassName = `glass-card rounded-2xl p-6 sm:p-8 h-full flex flex-col group transition-all duration-300 ${
+                clickable
+                  ? "hover:border-primary/30 hover:-translate-y-1 cursor-pointer"
+                  : "opacity-75 cursor-default border-white/[0.04]"
+              }`
+              const cardContent = (
+                <>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center shadow-lg`}>
+                      <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-lg font-bold group-hover:gradient-primary-text transition-all duration-300">
-                      {tool.name}
-                    </h3>
-                    <p className="text-sm text-muted mt-2 flex-1">{tool.desc}</p>
-                    <ul className="mt-4 space-y-2">
-                      {tool.features.map((f) => (
-                        <li key={f} className="text-xs text-muted flex items-center gap-2">
-                          <Check className="w-3 h-3 text-primary-light shrink-0" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
+                    <Badge variant={statusBadge.variant} size="sm" showDot={statusBadge.showDot}>
+                      {statusBadge.label}
+                    </Badge>
+                  </div>
+                  <h3 className="text-lg font-bold group-hover:gradient-primary-text transition-all duration-300">{tool.name}</h3>
+                  <p className="text-sm text-muted mt-2 flex-1">{tool.desc}</p>
+                  <ul className="mt-4 space-y-2">
+                    {tool.features.map((f) => (
+                      <li key={f} className="text-xs text-muted flex items-center gap-2">
+                        <Check className="w-3 h-3 text-primary-light shrink-0" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
+                    {isComingSoon ? (
+                      <span className="text-xs text-[#F59E0B]">Coming Soon</span>
+                    ) : isMaintenance ? (
+                      <span className="text-xs text-[#EF4444]">Under Maintenance</span>
+                    ) : (
                       <span className="text-xs text-muted">Free to try</span>
+                    )}
+                    {clickable ? (
                       <span className="inline-flex items-center gap-1 text-sm text-primary-light font-medium group-hover:gap-2 transition-all">
                         Open Tool <ChevronRight className="w-4 h-4" />
                       </span>
-                    </div>
-                  </Link>
+                    ) : (
+                      <span className="text-xs text-muted">{isComingSoon ? "Not yet available" : "Temporarily unavailable"}</span>
+                    )}
+                  </div>
+                </>
+              )
+              return (
+                <motion.div key={tool.slug} variants={staggerItem}>
+                  {clickable ? (
+                    <Link href={`/${tool.slug}`} className={cardClassName}>{cardContent}</Link>
+                  ) : (
+                    <div className={cardClassName}>{cardContent}</div>
+                  )}
                 </motion.div>
               )
             })}
