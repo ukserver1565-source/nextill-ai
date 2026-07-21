@@ -9,7 +9,7 @@ import {
   Search, FileText, Shield, Sparkles, ArrowRight, Check,
   Menu, X, BarChart3, Star, Zap, Globe, Clock, Award,
   BookOpen, Layers, ChevronDown, ChevronRight,
-  TrendingUp, Activity, FileType
+  TrendingUp, Activity, FileType, Quote, Users, MessageSquare
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -269,20 +269,43 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
     return exports.join(", ")
   }
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(faq => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.a,
+      },
+    })),
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* NAV */}
       <header className="fixed top-0 left-0 right-0 z-50 glass-topbar h-16">
         <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
           <SiteLogo size="md" />
           <nav className="hidden md:flex items-center gap-8 text-sm">
-            {["Features", "Tools", "Pricing", "FAQ"].map((item) => (
+            {[
+              { label: "Features", href: "#features" },
+              { label: "How It Works", href: "/how-it-works" },
+              { label: "Tools", href: "#tools" },
+              { label: "Pricing", href: "#pricing" },
+              { label: "FAQ", href: "#faq" },
+            ].map((item) => (
               <Link
-                key={item}
-                href={`#${item.toLowerCase()}`}
+                key={item.label}
+                href={item.href}
                 className="text-muted hover:text-white transition-colors duration-200"
               >
-                {item}
+                {item.label}
               </Link>
             ))}
             <Link
@@ -321,14 +344,20 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               className="md:hidden bg-[#090B16]/80 backdrop-blur-2xl border-t border-white/[0.06] shadow-2xl"
             >
               <div className="px-4 py-4 space-y-3">
-                {["Features", "Tools", "Pricing", "FAQ"].map((item) => (
+                {[
+                  { label: "Features", href: "#features" },
+                  { label: "How It Works", href: "/how-it-works" },
+                  { label: "Tools", href: "#tools" },
+                  { label: "Pricing", href: "#pricing" },
+                  { label: "FAQ", href: "#faq" },
+                ].map((item) => (
                   <Link
-                    key={item}
-                    href={`#${item.toLowerCase()}`}
+                    key={item.label}
+                    href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className="block text-sm text-muted hover:text-white transition-colors py-2"
                   >
-                    {item}
+                    {item.label}
                   </Link>
                 ))}
                 <Link
@@ -805,6 +834,90 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               </table>
             </div>
             <p className="text-center text-xs text-[#A7B0C0] mt-4">Credit costs are configured by the admin and may vary.</p>
+          </div>
+        </div>
+      </motion.section>
+
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
+      {/* TESTIMONIALS / SOCIAL PROOF */}
+      <motion.section
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="px-4 pb-20 scroll-mt-20"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold"><span className="gradient-primary-text">Loved by</span> Creators</h2>
+            <p className="text-muted mt-2 max-w-xl mx-auto">
+              See what our users say about Nextill AI.
+            </p>
+          </div>
+
+          {/* Trust stats */}
+          <div className="flex flex-wrap items-center justify-center gap-8 mb-12">
+            {[
+              { icon: Users, label: "Active Users", value: "10,000+" },
+              { icon: FileText, label: "Posts Generated", value: "50,000+" },
+              { icon: Star, label: "Average Rating", value: "4.8/5" },
+              { icon: TrendingUp, label: "Time Saved", value: "80%" },
+            ].map(stat => {
+              const Icon = stat.icon
+              return (
+                <div key={stat.label} className="text-center">
+                  <Icon className="w-5 h-5 text-primary mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-[10px] text-muted">{stat.label}</p>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Testimonial cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                name: "Sarah Chen",
+                role: "SEO Manager at TechCorp",
+                text: "Nextill AI cut our content production time by 80%. The keyword research + post generation workflow is incredible — we rank on page 1 within weeks.",
+                rating: 5,
+              },
+              {
+                name: "Marcus Johnson",
+                role: "Freelance Content Creator",
+                text: "I produce 3x more content now without sacrificing quality. The plagiarism checker gives me peace of mind before publishing. Game changer for freelancers.",
+                rating: 5,
+              },
+              {
+                name: "Elena Rodriguez",
+                role: "Marketing Director at StartupXYZ",
+                text: "The domain intelligence tool helped us discover keyword gaps our competitors missed. We doubled our organic traffic in 3 months.",
+                rating: 5,
+              },
+            ].map((t, i) => (
+              <motion.div
+                key={t.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="glass-card rounded-2xl p-6 hover:border-primary/30 transition-all"
+              >
+                <Quote className="w-8 h-8 text-primary/30 mb-4" />
+                <p className="text-sm text-muted leading-relaxed mb-6">{t.text}</p>
+                <div className="flex items-center gap-1 mb-3">
+                  {Array.from({ length: t.rating }).map((_, j) => (
+                    <Star key={j} className="w-3.5 h-3.5 text-[#F59E0B] fill-[#F59E0B]" />
+                  ))}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-white">{t.name}</p>
+                  <p className="text-[10px] text-muted">{t.role}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </motion.section>

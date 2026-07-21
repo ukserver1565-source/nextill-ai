@@ -53,7 +53,7 @@ export const metadata: Metadata = {
       "Nextill AI — the all-in-one AI SEO platform. Generate SEO-optimized content, research keywords, check plagiarism, and analyze domains with AI.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/api/og",
         width: 1200,
         height: 630,
         alt: "Nextill AI",
@@ -64,7 +64,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Nextill AI — AI SEO Tools & Content Platform",
     description: "Nextill AI — the all-in-one AI SEO platform for content creators.",
-    images: ["/og-image.png"],
+    images: ["/api/og"],
+  },
+  icons: {
+    icon: "/favicon.svg",
   },
   robots: {
     index: true,

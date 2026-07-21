@@ -11,6 +11,7 @@ import { SiteLogo } from "@/components/shared/site-logo"
 
 const navLinks = [
   { href: "/features", label: "Features" },
+  { href: "/how-it-works", label: "How It Works" },
   { href: "/tools", label: "Tools" },
   { href: "/pricing", label: "Pricing" },
   { href: "/blog", label: "Blog" },

@@ -10,7 +10,7 @@ const toolRoutes = [
   "/faq-generator", "/article-rewriter", "/grammar-checker",
   "/summarizer", "/translator",
 ]
-const guestAccessible = new Set(["/", "/tools", "/login", "/signup", "/zain-nextill-ansari/login", "/reset-password", "/unauthorized", "/pricing", "/contact", "/terms", "/privacy-policy", "/affiliate", "/domain-overview", "/keyword-intelligence", "/checkout", "/post-generator", "/plagiarism-checker"])
+const guestAccessible = new Set(["/", "/tools", "/login", "/signup", "/zain-nextill-ansari/login", "/reset-password", "/unauthorized", "/pricing", "/contact", "/terms", "/privacy-policy", "/affiliate", "/domain-overview", "/keyword-intelligence", "/checkout", "/post-generator", "/plagiarism-checker", "/how-it-works", "/blog"])
 const userRoutes = ["/dashboard"]
 const adminRoutes = ["/zain-nextill-ansari"]
 const adminApiRoutes = ["/api/admin"]
