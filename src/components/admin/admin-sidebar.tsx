@@ -12,6 +12,7 @@ import {
   PanelLeftClose, PanelLeft, Mail, Terminal, Database, Zap,
   Link as LinkIcon, Workflow, Search, Wrench,
 } from "lucide-react"
+import { ThemeToggle } from "@/components/shared/theme-toggle"
 
 const menuSections = [
   {
@@ -204,7 +205,8 @@ export function AdminSidebar({ collapsed, onToggle }: { collapsed: boolean; onTo
       </div>
 
       <div className="px-4 py-3 border-t border-white/[0.04]">
-        <div className={cn("flex items-center gap-2", collapsed ? "justify-center" : "px-3 py-2 rounded-lg bg-white/[0.02] border border-white/[0.04]")}>
+        <ThemeToggle className={collapsed ? "justify-center px-2" : ""} />
+        <div className={cn("flex items-center gap-2 mt-2", collapsed ? "justify-center" : "px-3 py-2 rounded-lg bg-white/[0.02] border border-white/[0.04]")}>
           <div className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse shadow-lg shadow-[#22C55E]/30" />
           {!collapsed && (
             <>

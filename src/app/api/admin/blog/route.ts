@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server"
 import { blogRepo } from "@/lib/repositories/blog-repo"
 import { paginationSchema, createBlogPostSchema } from "@/lib/validation/admin-schemas"
+import { sanitizeHtml } from "@/lib/security/html-sanitizer"
 
 export async function GET(req: NextRequest) {
   try {
     const params = paginationSchema.parse(Object.fromEntries(req.nextUrl.searchParams))
     const data = await blogRepo.list(params)
     return NextResponse.json(data)
-  } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch blog posts", details: (err as Error).message }, { status: 500 })
+  } catch {
+    return NextResponse.json({ error: "Failed to fetch blog posts" }, { status: 500 })
   }
 }
 
@@ -17,11 +18,17 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const parsed = createBlogPostSchema.parse(body)
     const status = parsed.status || "draft"
+
+    // Sanitize content before storing (defense in depth)
+    const cleanContent = parsed.content
+      ? sanitizeHtml(parsed.content)
+      : undefined
+
     const post = await blogRepo.create({
       title: parsed.title,
       slug: parsed.slug,
       ...(parsed.excerpt ? { excerpt: parsed.excerpt } : {}),
-      ...(parsed.content ? { content: parsed.content } : {}),
+      ...(cleanContent ? { content: cleanContent } : {}),
       ...(parsed.featured_image_url ? { featured_image_url: parsed.featured_image_url } : {}),
       ...(parsed.category_id ? { category_id: parsed.category_id } : {}),
       ...(parsed.author_id ? { author_id: parsed.author_id } : {}),
@@ -32,7 +39,7 @@ export async function POST(req: NextRequest) {
       ...(parsed.meta_description ? { meta_description: parsed.meta_description } : {}),
     })
     return NextResponse.json(post, { status: 201 })
-  } catch (err) {
-    return NextResponse.json({ error: "Failed to create post", details: (err as Error).message }, { status: 400 })
+  } catch {
+    return NextResponse.json({ error: "Failed to create post" }, { status: 400 })
   }
 }

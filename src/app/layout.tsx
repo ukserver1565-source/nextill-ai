@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import localFont from "next/font/local"
 import { AuthProvider } from "@/lib/auth/AuthProvider"
+import { ThemeProvider } from "@/lib/theme/theme-provider"
 import { ScrollToTop } from "@/components/layout/scroll-to-top"
 import { NavigationProgressWrapper } from "@/components/layout/navigation-progress-wrapper"
 import { getSiteUrl } from "@/lib/site-url"
@@ -101,6 +102,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <head>
+        {/* Prevent flash of wrong theme — runs before first paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);document.documentElement.classList.add(t)}catch(e){}})()`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
@@ -112,10 +119,12 @@ export default function RootLayout({
       </head>
       <body className="bg-background text-foreground antialiased" suppressHydrationWarning>
         <NavigationProgressWrapper />
-        <AuthProvider>
-          <ScrollToTop />
-          {children}
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <ScrollToTop />
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

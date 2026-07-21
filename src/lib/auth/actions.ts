@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
+import { checkRateLimit } from "@/lib/security/rate-limit"
 
 export async function login(formData: FormData) {
   const supabase = await createSupabaseServerClient()
@@ -9,8 +10,14 @@ export async function login(formData: FormData) {
   const password = formData.get("password") as string
   const redirectTo = (formData.get("redirect") as string) || null
 
+  // Rate limit: 5 login attempts per 15 minutes per email
+  const rl = checkRateLimit(`login:${email}`, 5, 15 * 60_000)
+  if (rl.limited) {
+    return { error: "Too many login attempts. Please try again later." }
+  }
+
   const { data: _data, error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error) return { error: error.message }
+  if (error) return { error: "Invalid email or password." }
 
   const { data: { user: verifiedUser }, error: verifyErr } = await supabase.auth.getUser()
   if (verifyErr || !verifiedUser) return { error: "Failed to verify session. Please try again." }
@@ -43,6 +50,17 @@ export async function signup(formData: FormData) {
   const password = formData.get("password") as string
   const fullName = formData.get("full_name") as string
   const redirectTo = (formData.get("redirect") as string) || null
+
+  // Rate limit: 3 signups per hour per IP (using email as proxy)
+  const rl = checkRateLimit(`signup:${email}`, 3, 60 * 60_000)
+  if (rl.limited) {
+    return { error: "Too many signup attempts. Please try again later." }
+  }
+
+  // Password strength validation
+  if (password.length < 8) {
+    return { error: "Password must be at least 8 characters long." }
+  }
 
   const { data, error } = await supabase.auth.signUp({
     email,

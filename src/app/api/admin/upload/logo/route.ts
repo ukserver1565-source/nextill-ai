@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { createServerClient } from "@supabase/ssr"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 
-const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"]
+const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp"]
+const ALLOWED_EXTENSIONS = ["png", "jpg", "jpeg", "webp"]
 const MAX_SIZE = 2 * 1024 * 1024 // 2MB
 
 export async function POST(req: NextRequest) {
@@ -62,7 +63,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Upload file
-    const ext = file.name.split(".").pop() || "png"
+    const ext = (file.name.split(".").pop() || "png").toLowerCase()
+    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+      return NextResponse.json({ error: "Invalid file extension" }, { status: 400 })
+    }
     const filePath = `site-logo.${ext}`
 
     // Remove old logo if exists

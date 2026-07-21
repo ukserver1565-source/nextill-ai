@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { useAuth } from "@/lib/auth/AuthProvider"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
+import { ThemeToggle } from "@/components/shared/theme-toggle"
 import {
   LayoutDashboard, Search, FileText, Shield, FolderKanban,
   File, Clock, Sparkles, Layers, Settings,
@@ -177,6 +178,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
           </div>
 
           <div className="pt-1">
+            <ThemeToggle />
             <button
               onClick={signOut}
               className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-xs text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors"

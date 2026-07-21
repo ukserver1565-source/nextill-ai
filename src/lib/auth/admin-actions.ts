@@ -2,22 +2,22 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
+import { checkRateLimit } from "@/lib/security/rate-limit"
 
 export async function adminLogin(formData: FormData) {
   const supabase = await createSupabaseServerClient()
   const email = (formData.get("email") as string) || ""
   const password = formData.get("password") as string
 
+  // Rate limit: 5 admin login attempts per 15 minutes per email
+  const rl = checkRateLimit(`admin-login:${email}`, 5, 15 * 60_000)
+  if (rl.limited) {
+    return { error: "Too many login attempts. Please try again later." }
+  }
+
   const { data: _data, error } = await supabase.auth.signInWithPassword({ email, password })
   if (error) {
-    // Provide more helpful error messages for common issues
-    if (error.message.includes("Invalid login credentials")) {
-      return { error: "Invalid email or password. Please check your credentials." }
-    }
-    if (error.message.includes("API key") || error.message.includes("invalid")) {
-      return { error: "Authentication service error. Please contact the administrator to verify the Supabase configuration." }
-    }
-    return { error: error.message }
+    return { error: "Invalid email or password." }
   }
 
   const { data: { user: verifiedUser }, error: verifyErr } = await supabase.auth.getUser()

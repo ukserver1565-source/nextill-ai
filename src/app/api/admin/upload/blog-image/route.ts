@@ -3,6 +3,7 @@ import { createServerClient } from "@supabase/ssr"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 
 const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"]
+const ALLOWED_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "gif"]
 const MAX_SIZE = 5 * 1024 * 1024 // 5MB
 const BUCKET = "blog-images"
 
@@ -68,10 +69,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate unique filename
-    const ext = file.name.split(".").pop() || "png"
-    const timestamp = Date.now()
-    const randomId = Math.random().toString(36).substring(2, 8)
-    const filePath = `blog/${timestamp}-${randomId}.${ext}`
+    const ext = (file.name.split(".").pop() || "png").toLowerCase()
+    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+      return NextResponse.json({ error: "Invalid file extension" }, { status: 400 })
+    }
+    const randomId = crypto.randomUUID().slice(0, 8)
+    const filePath = `blog/${randomId}.${ext}`
 
     const buffer = Buffer.from(await file.arrayBuffer())
     const { error: uploadErr } = await supabaseAdmin.storage

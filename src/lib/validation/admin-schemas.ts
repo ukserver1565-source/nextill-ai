@@ -39,7 +39,7 @@ export const createCouponSchema = z.object({
 
 export const createBlogPostSchema = z.object({
   title: z.string().min(1).max(200),
-  slug: z.string().min(1).max(200),
+  slug: z.string().min(1).max(200).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must contain only lowercase letters, numbers, and hyphens"),
   excerpt: z.string().optional(),
   content: z.string().optional(),
   featured_image_url: z.string().nullable().optional(),
