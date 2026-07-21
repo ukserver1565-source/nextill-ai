@@ -1,6 +1,7 @@
 import { profileRepo, type ProfileRow } from "@/lib/repositories/profile-repo"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import type { PaginationParams } from "@/lib/validation/admin-schemas"
+import { validateRealEmail } from "@/lib/security/email-validator"
 
 export const userService = {
   async list(params: PaginationParams) {
@@ -25,6 +26,12 @@ export const userService = {
   },
 
   async create(data: { email: string; name?: string; password?: string; role?: string; plan?: string; plan_id?: string }) {
+    // Validate email is from a real provider
+    const emailCheck = validateRealEmail(data.email)
+    if (!emailCheck.valid) {
+      throw new Error(emailCheck.reason || "Invalid email provider")
+    }
+
     // Generate a temporary password if none provided
     const tempPassword = data.password || `Temp${Date.now()}!${Math.random().toString(36).slice(2, 8)}`
 

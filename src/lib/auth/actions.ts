@@ -3,6 +3,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { checkRateLimit } from "@/lib/security/rate-limit"
+import { validateRealEmail } from "@/lib/security/email-validator"
 
 export async function login(formData: FormData) {
   const supabase = await createSupabaseServerClient()
@@ -60,6 +61,12 @@ export async function signup(formData: FormData) {
   // Password strength validation
   if (password.length < 8) {
     return { error: "Password must be at least 8 characters long." }
+  }
+
+  // Validate real email provider (block temp/disposable emails)
+  const emailCheck = validateRealEmail(email)
+  if (!emailCheck.valid) {
+    return { error: emailCheck.reason || "Invalid email provider" }
   }
 
   const { data, error } = await supabase.auth.signUp({
