@@ -8,6 +8,7 @@ import { useState, useRef, useEffect } from "react"
 import { ChevronDown, LogOut, Settings } from "lucide-react"
 import { Avatar } from "@/components/ui/avatar"
 import { SiteLogo } from "@/components/shared/site-logo"
+import { ThemeToggle } from "@/components/shared/theme-toggle"
 
 const navLinks = [
   { href: "/features", label: "Features" },
@@ -64,6 +65,7 @@ export function PublicHeader() {
         </div>
 
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           {isLoggedIn ? (
             <div className="relative" ref={profileRef}>
               <button

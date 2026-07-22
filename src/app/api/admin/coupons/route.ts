@@ -15,6 +15,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const parsed = createCouponSchema.parse(body)
+    // Fix empty string dates to null
+    if (parsed.expires_at === "") parsed.expires_at = null
     const coupon = await couponRepo.create({
       code: parsed.code.toUpperCase(),
       discount_type: parsed.discount_type,

@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { SiteLogo } from "@/components/shared/site-logo"
+import { ThemeToggle } from "@/components/shared/theme-toggle"
 import { LatestBlogPosts } from "@/components/home/latest-blog-posts"
 
 const sectionVariants = {
@@ -316,6 +317,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
             </Link>
           </nav>
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Link href={dashboardHref} className="hidden sm:block">
               <Button variant="ghost" size="sm">
                 Dashboard

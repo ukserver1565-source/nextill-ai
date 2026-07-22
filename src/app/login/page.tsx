@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, Suspense } from "react"
-import { Sparkles, Eye, EyeOff, Loader2, AlertCircle, Info } from "lucide-react"
+import { Sparkles, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { login } from "@/lib/auth/actions"
@@ -67,43 +67,6 @@ function LoginPageContent() {
           <h1 className="text-4xl font-bold gradient-primary-text">Nextill AI</h1>
           <p className="text-muted mt-3 text-lg">Your AI content workflow.</p>
 
-          {/* Example credentials */}
-          <div className="mt-8 p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] text-left">
-            <div className="flex items-center gap-2 mb-3">
-              <Info className="w-4 h-4 text-primary" />
-              <span className="text-xs font-medium text-white">Demo Credentials</span>
-            </div>
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center gap-2">
-                <span className="text-muted w-14">Admin:</span>
-                <code className="text-primary font-mono">admin@nextill.ai</code>
-                <span className="text-muted">/</span>
-                <code className="text-primary font-mono">Admin123!</code>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-muted w-14">User:</span>
-                <code className="text-primary font-mono">user@example.com</code>
-                <span className="text-muted">/</span>
-                <code className="text-primary font-mono">User1234!</code>
-              </div>
-            </div>
-          </div>
-
-          {/* Security tips */}
-          <div className="mt-4 text-left space-y-2">
-            <p className="text-[10px] text-muted flex items-start gap-2">
-              <span className="text-primary mt-0.5">•</span>
-              Password must be at least 8 characters
-            </p>
-            <p className="text-[10px] text-muted flex items-start gap-2">
-              <span className="text-primary mt-0.5">•</span>
-              Use a mix of uppercase, numbers, and symbols
-            </p>
-            <p className="text-[10px] text-muted flex items-start gap-2">
-              <span className="text-primary mt-0.5">•</span>
-              Session expires after 4 hours of inactivity
-            </p>
-          </div>
         </div>
       </div>
 

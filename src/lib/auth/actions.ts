@@ -39,7 +39,9 @@ export async function login(formData: FormData) {
   }
 
   if (role === "admin" || role === "super_admin") {
-    return { redirect: "/zain-nextill-ansari" }
+    // Admin accounts must use the dedicated admin login, not /login
+    await supabase.auth.signOut()
+    return { error: "Admin accounts must use the admin login page." }
   }
 
   return { redirect: "/dashboard" }
@@ -92,7 +94,9 @@ export async function signup(formData: FormData) {
     }
 
     if (role === "admin" || role === "super_admin") {
-      return { redirect: "/zain-nextill-ansari" }
+      // Admin accounts should not sign up through the public form
+      await supabase.auth.signOut()
+      return { error: "Admin accounts cannot be created through public signup." }
     }
     return { redirect: "/dashboard" }
   }
