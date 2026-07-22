@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
             verificationStatus = "auto_verified"
           } else {
             // Payment failed verification — record it but don't upgrade
-            const { error: paymentError } = await supabaseAdmin.from("payments").insert({
+            const { error: _paymentError } = await supabaseAdmin.from("payments").insert({
               user_id: user.id,
               plan_slug: plan.slug,
               amount: price,

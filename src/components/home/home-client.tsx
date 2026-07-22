@@ -7,9 +7,9 @@ import { useAuth } from "@/lib/auth/AuthProvider"
 import { PricingCard } from "@/components/pricing/pricing-card"
 import {
   Search, FileText, Shield, Sparkles, ArrowRight, Check,
-  Menu, X, BarChart3, Star, Zap, Globe, Clock, Award,
+  Menu, X, Star, Zap, Globe, Clock, Award,
   BookOpen, Layers, ChevronDown, ChevronRight,
-  TrendingUp, Activity, FileType, Quote, Users
+  TrendingUp, FileType, Quote, Users
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -81,27 +81,6 @@ const templates = [
   { icon: Layers, name: "Tutorial", desc: "Step-by-step guide with examples", href: "/post-generator" },
   { icon: FileType, name: "Comprehensive Guide", desc: "In-depth topic coverage", href: "/post-generator" },
   { icon: ChevronRight, name: "Listicle", desc: "Numbered list format for easy scanning", href: "/post-generator" },
-]
-
-const highlights = [
-  {
-    icon: Search,
-    title: "Domain Intelligence",
-    desc: "Discover high-value keywords with real-time volume, difficulty scoring, and SERP feature analysis — all powered by AI.",
-    color: "from-violet-500 to-indigo-600",
-  },
-  {
-    icon: FileText,
-    title: "Post Generator",
-    desc: "Generate full SEO-optimized blog posts with AI — including titles, meta descriptions, FAQ schema, and internal links.",
-    color: "from-blue-500 to-purple-600",
-  },
-  {
-    icon: Shield,
-    title: "Plagiarism & Authenticity",
-    desc: "Check content originality with detailed similarity scoring, source URL detection, and downloadable reports.",
-    color: "from-emerald-500 to-green-600",
-  },
 ]
 
 import type { PlanData } from "@/lib/data/plans"
