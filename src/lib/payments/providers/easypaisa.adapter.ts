@@ -32,8 +32,8 @@ import type {
  * the encryption and POST logic described above.
  */
 
-const EASYPAISA_SANDBOX_URL = 'https://sandbox-api.easypaisa.com/easypaisa/v1/inquiry'
-const EASYPAISA_PRODUCTION_URL = 'https://api.easypaisa.com/easypaisa/v1/inquiry'
+const _EASYPAISA_SANDBOX_URL = 'https://sandbox-api.easypaisa.com/easypaisa/v1/inquiry'
+const _EASYPAISA_PRODUCTION_URL = 'https://api.easypaisa.com/easypaisa/v1/inquiry'
 
 function isConfigured(): boolean {
   return Boolean(

@@ -33,8 +33,8 @@ import type {
  * the AES encryption and POST logic described above.
  */
 
-const JAZZCASH_SANDBOX_URL = 'https://sandbox.jazzcash.com.pk/ApplicationAPI/API/Inquiry'
-const JAZZCASH_PRODUCTION_URL = 'https://www.jazzcash.com.pk/ApplicationAPI/API/Inquiry'
+const _JAZZCASH_SANDBOX_URL = 'https://sandbox.jazzcash.com.pk/ApplicationAPI/API/Inquiry'
+const _JAZZCASH_PRODUCTION_URL = 'https://www.jazzcash.com.pk/ApplicationAPI/API/Inquiry'
 
 function isConfigured(): boolean {
   return Boolean(

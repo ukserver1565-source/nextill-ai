@@ -43,7 +43,7 @@ const statusConfig: Record<string, { label: string; color: string; bgColor: stri
   },
 }
 
-export function ToolStatusGuard({ toolSlug, toolName, toolDescription, color = "from-[#6D5EF5] to-[#8B5CF6]", children }: ToolStatusGuardProps) {
+export function ToolStatusGuard({ toolSlug, toolName, toolDescription: _toolDescription, color: _color = "from-[#6D5EF5] to-[#8B5CF6]", children }: ToolStatusGuardProps) {
   const [status, setStatus] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 

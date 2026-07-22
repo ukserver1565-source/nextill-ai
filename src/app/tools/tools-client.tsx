@@ -6,7 +6,7 @@ import {
   Search, FileText, Shield,
   ChevronRight, ExternalLink, Zap, Layers,
   FileType, Activity, Globe,
-  TrendingUp, MessageSquare, Award, Edit, Check, X as XIcon
+  TrendingUp, MessageSquare, Award, Edit, Check
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { BackButton } from "@/components/shared/back-button"

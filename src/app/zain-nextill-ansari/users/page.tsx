@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
-  Search, UserPlus, ChevronLeft, ChevronRight, MoreVertical, Edit3, Trash2,
-  Loader2, X, Shield, ShieldOff, CreditCard, Award, AlertTriangle, Eye
+  Search, UserPlus, ChevronLeft, ChevronRight, Trash2,
+  Loader2, X, Shield, ShieldOff, CreditCard, AlertTriangle, Eye
 } from "lucide-react"
 
 const PAGE_SIZE = 10

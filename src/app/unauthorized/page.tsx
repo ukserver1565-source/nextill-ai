@@ -1,6 +1,6 @@
 "use client"
 
-import { ShieldAlert, ArrowLeft, Loader2, Home, LogOut } from "lucide-react"
+import { ShieldAlert, Loader2, Home, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useEffect, useState } from "react"

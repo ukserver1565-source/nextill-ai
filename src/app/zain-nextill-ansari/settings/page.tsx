@@ -218,7 +218,7 @@ export default function SettingsPage() {
                 {/* Logo Preview */}
                 <div className="w-16 h-16 rounded-xl bg-[#090B16] border border-white/[0.06] flex items-center justify-center overflow-hidden shrink-0">
                   {form.logoUrl && form.logoUrl !== "/logo.png" ? (
-                    <img src={form.logoUrl} alt="Site logo" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }} />
+                    <img src={form.logoUrl} alt="Site logo preview" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }} />
                   ) : (
                     <Image className="w-6 h-6 text-[#A7B0C0]/40" />
                   )}

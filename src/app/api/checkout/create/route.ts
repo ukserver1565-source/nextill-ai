@@ -184,7 +184,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create payment record
-    const { data: payment, error: paymentError } = await supabaseAdmin.from("payments").insert({
+    const { data: payment, error: _paymentError } = await supabaseAdmin.from("payments").insert({
       user_id: user.id,
       plan_slug: plan.slug,
       amount: price,
@@ -200,8 +200,8 @@ export async function POST(req: NextRequest) {
       auto_verification_response: isAutoVerified ? { verified_at: new Date().toISOString() } : null,
     }).select("id").single()
 
-    if (paymentError) {
-      console.error("Payment record error:", paymentError)
+    if (_paymentError) {
+      console.error("Payment record error:", _paymentError)
       return NextResponse.json({ error: "Failed to record payment" }, { status: 500 })
     }
 

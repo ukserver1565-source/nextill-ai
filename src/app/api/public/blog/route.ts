@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
 
     const data = await blogRepo.listPublished({ page, limit, category_id })
     return NextResponse.json(data)
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Failed to fetch blog posts" }, { status: 500 })
   }
 }

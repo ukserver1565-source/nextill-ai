@@ -9,7 +9,7 @@ import {
   Search, FileText, Shield, Sparkles, ArrowRight, Check,
   Menu, X, BarChart3, Star, Zap, Globe, Clock, Award,
   BookOpen, Layers, ChevronDown, ChevronRight,
-  TrendingUp, Activity, FileType, Quote, Users, MessageSquare
+  TrendingUp, Activity, FileType, Quote, Users
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"

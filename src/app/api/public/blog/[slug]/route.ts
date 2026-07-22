@@ -6,7 +6,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
     const { slug } = await params
     const post = await blogRepo.getPublishedBySlug(slug)
     return NextResponse.json(post)
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: "Post not found" }, { status: 404 })
   }
 }

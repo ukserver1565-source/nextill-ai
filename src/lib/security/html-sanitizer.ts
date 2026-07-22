@@ -16,7 +16,7 @@ const ALLOWED_ATTRS: Record<string, Set<string>> = {
   "img": new Set(["src", "alt", "width", "height", "loading"]),
 }
 
-const DANGEROUS_ATTRS = /^on/i
+const _DANGEROUS_ATTRS = /^on/i
 const DANGEROUS_SCHEMES = /^(javascript|data|vbscript):/i
 
 export function sanitizeHtml(html: string): string {

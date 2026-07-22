@@ -62,7 +62,7 @@ export function BlogListClient() {
     fetchPosts(1)
   }, [fetchPosts])
 
-  const handleCategory = (catId: string) => {
+  const _handleCategory = (catId: string) => {
     setActiveCategory(catId === activeCategory ? "" : catId)
   }
 
