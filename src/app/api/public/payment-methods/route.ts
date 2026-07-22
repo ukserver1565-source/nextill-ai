@@ -9,6 +9,9 @@ interface PaymentMethod {
   type: string
   description: string
   sort_order: number
+  wallet_address: string
+  qr_code_url: string
+  instructions: string
 }
 
 export async function GET() {
@@ -50,6 +53,9 @@ export async function GET() {
         type: m.type,
         description: m.description,
         sort_order: m.sort_order,
+        wallet_address: m.wallet_address || "",
+        qr_code_url: m.qr_code_url || "",
+        instructions: m.instructions || "",
       }))
 
     return NextResponse.json(publicMethods)

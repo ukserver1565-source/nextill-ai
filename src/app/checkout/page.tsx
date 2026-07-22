@@ -31,6 +31,9 @@ interface PublicPaymentMethod {
   type: string
   description: string
   sort_order: number
+  wallet_address: string
+  qr_code_url: string
+  instructions: string
 }
 
 const CHECKOUT_ICON_MAP: Record<string, any> = {
@@ -57,13 +60,24 @@ function CheckoutContent() {
   const [error, setError] = useState("")
   const [paymentMethods, setPaymentMethods] = useState<PublicPaymentMethod[]>([])
   const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(null)
-  // Step: "review" = original checkout, "payment" = card details form
+  // Step: "review" = original checkout, "payment" = payment details form
   const [step, setStep] = useState<"review" | "payment">("review")
-  // Card details
+  // Card details (for Stripe/card types)
   const [cardName, setCardName] = useState("")
   const [cardNumber, setCardNumber] = useState("")
   const [cardExpiry, setCardExpiry] = useState("")
   const [cardCVV, setCardCVV] = useState("")
+  // Mobile wallet details (JazzCash, EasyPaisa)
+  const [mobileNumber, setMobileNumber] = useState("")
+  // Online wallet details (Payoneer, PayPal)
+  const [accountEmail, setAccountEmail] = useState("")
+  const [accountId, setAccountId] = useState("")
+  // Bank transfer
+  const [bankHolderName, setBankHolderName] = useState("")
+  const [bankAccountNumber, setBankAccountNumber] = useState("")
+  // Crypto
+  const [walletAddress, setWalletAddress] = useState("")
+  const [txHash, setTxHash] = useState("")
 
   useEffect(() => {
     fetch("/api/public/plans")
@@ -183,36 +197,184 @@ function CheckoutContent() {
             </div>
           )}
 
-          {/* Card Details Form */}
-          <div className="glass-card rounded-2xl p-5 mb-4">
-            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-[#22C55E]" /> Card Information
-            </h3>
-            <div className="space-y-3">
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-medium text-[#A7B0C0]">Cardholder Name</label>
-                <input value={cardName} onChange={e => setCardName(e.target.value)} placeholder="John Smith"
-                  className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-medium text-[#A7B0C0]">Card Number</label>
-                <input value={cardNumber} onChange={e => setCardNumber(formatCardNumber(e.target.value))} placeholder="1234 5678 9012 3456" maxLength={19}
-                  className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-medium text-[#A7B0C0]">Expiry Date</label>
-                  <input value={cardExpiry} onChange={e => setCardExpiry(formatExpiry(e.target.value))} placeholder="MM/YY" maxLength={5}
-                    className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-medium text-[#A7B0C0]">CVV</label>
-                  <input value={cardCVV} onChange={e => setCardCVV(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="123" maxLength={4} type="password"
-                    className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
-                </div>
-              </div>
+          {/* ── Dynamic Payment Form ── */}
+          {selectedMethod && (
+            <div className="glass-card rounded-2xl p-5 mb-4">
+              {/* ── Card / Stripe / Paddle ── */}
+              {(selectedMethod.id === "stripe" || selectedMethod.id === "paddle" || selectedMethod.type === "card") && (
+                <>
+                  <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-[#22C55E]" /> Card Information
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-medium text-[#A7B0C0]">Cardholder Name</label>
+                      <input value={cardName} onChange={e => setCardName(e.target.value)} placeholder="John Smith"
+                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-medium text-[#A7B0C0]">Card Number</label>
+                      <input value={cardNumber} onChange={e => setCardNumber(formatCardNumber(e.target.value))} placeholder="1234 5678 9012 3456" maxLength={19}
+                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1.5">
+                        <label className="text-[11px] font-medium text-[#A7B0C0]">Expiry</label>
+                        <input value={cardExpiry} onChange={e => setCardExpiry(formatExpiry(e.target.value))} placeholder="MM/YY" maxLength={5}
+                          className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[11px] font-medium text-[#A7B0C0]">CVV</label>
+                        <input value={cardCVV} onChange={e => setCardCVV(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="123" maxLength={4} type="password"
+                          className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* ── JazzCash / EasyPaisa ── */}
+              {(selectedMethod.id === "jazzcash" || selectedMethod.id === "easypaisa" || selectedMethod.type === "mobile") && (
+                <>
+                  <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+                    <Smartphone className="w-4 h-4 text-[#22C55E]" /> {selectedMethod.name} Payment
+                  </h3>
+                  {selectedMethod.qr_code_url && (
+                    <div className="mb-4 text-center">
+                      <img src={selectedMethod.qr_code_url} alt={`${selectedMethod.name} QR Code`} className="mx-auto rounded-xl border border-white/[0.06] max-w-[200px]" />
+                      <p className="text-[10px] text-[#A7B0C0] mt-2">Scan QR code or send to the number below</p>
+                    </div>
+                  )}
+                  {selectedMethod.wallet_address && (
+                    <div className="p-3 rounded-lg bg-[#22C55E]/10 border border-[#22C55E]/20 mb-4">
+                      <p className="text-[10px] text-[#A7B0C0] mb-1">Send payment to:</p>
+                      <p className="text-sm font-mono font-bold text-white">{selectedMethod.wallet_address}</p>
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-medium text-[#A7B0C0]">{selectedMethod.name} Registered Phone Number</label>
+                      <input value={mobileNumber} onChange={e => setMobileNumber(e.target.value)} placeholder="03XX XXXXXXX"
+                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                    </div>
+                  </div>
+                  {selectedMethod.instructions && (
+                    <div className="mt-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.06]">
+                      <p className="text-[10px] text-[#A7B0C0] whitespace-pre-line">{selectedMethod.instructions}</p>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* ── Payoneer / PayPal ── */}
+              {(selectedMethod.id === "payoneer" || selectedMethod.id === "paypal" || selectedMethod.type === "online") && (
+                <>
+                  <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-[#22C55E]" /> {selectedMethod.name} Payment
+                  </h3>
+                  {selectedMethod.qr_code_url && (
+                    <div className="mb-4 text-center">
+                      <img src={selectedMethod.qr_code_url} alt={`${selectedMethod.name}`} className="mx-auto rounded-xl border border-white/[0.06] max-w-[200px]" />
+                    </div>
+                  )}
+                  {selectedMethod.wallet_address && (
+                    <div className="p-3 rounded-lg bg-[#22C55E]/10 border border-[#22C55E]/20 mb-4">
+                      <p className="text-[10px] text-[#A7B0C0] mb-1">Send payment to:</p>
+                      <p className="text-sm font-mono font-bold text-white">{selectedMethod.wallet_address}</p>
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-medium text-[#A7B0C0]">{selectedMethod.name} Account Email</label>
+                      <input type="email" value={accountEmail} onChange={e => setAccountEmail(e.target.value)} placeholder="you@example.com"
+                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-medium text-[#A7B0C0]">{selectedMethod.name} Account ID</label>
+                      <input value={accountId} onChange={e => setAccountId(e.target.value)} placeholder="Your account ID (optional)"
+                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                    </div>
+                  </div>
+                  {selectedMethod.instructions && (
+                    <div className="mt-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.06]">
+                      <p className="text-[10px] text-[#A7B0C0] whitespace-pre-line">{selectedMethod.instructions}</p>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* ── Bank Transfer ── */}
+              {(selectedMethod.id === "bank_transfer" || selectedMethod.type === "bank") && (
+                <>
+                  <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+                    <Building className="w-4 h-4 text-[#22C55E]" /> Bank Transfer
+                  </h3>
+                  {selectedMethod.instructions && (
+                    <div className="p-3 rounded-lg bg-[#22C55E]/10 border border-[#22C55E]/20 mb-4">
+                      <p className="text-[10px] font-medium text-[#A7B0C0] mb-1">Bank Details:</p>
+                      <p className="text-xs text-white whitespace-pre-line font-mono">{selectedMethod.instructions}</p>
+                    </div>
+                  )}
+                  {selectedMethod.wallet_address && (
+                    <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] mb-4">
+                      <p className="text-[10px] text-[#A7B0C0] mb-1">Account Number / IBAN:</p>
+                      <p className="text-sm font-mono font-bold text-white">{selectedMethod.wallet_address}</p>
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-medium text-[#A7B0C0]">Your Name (as on bank transfer)</label>
+                      <input value={bankHolderName} onChange={e => setBankHolderName(e.target.value)} placeholder="John Smith"
+                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-medium text-[#A7B0C0]">Transaction Reference / Last 4 digits</label>
+                      <input value={bankAccountNumber} onChange={e => setBankAccountNumber(e.target.value)} placeholder="e.g. TX12345 or last 4 digits"
+                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* ── Binance Pay / Crypto Wallet ── */}
+              {(selectedMethod.id === "binance_pay" || selectedMethod.id === "crypto_wallet" || selectedMethod.type === "crypto") && (
+                <>
+                  <h3 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+                    <Coins className="w-4 h-4 text-[#22C55E]" /> {selectedMethod.name}
+                  </h3>
+                  {selectedMethod.qr_code_url && (
+                    <div className="mb-4 text-center">
+                      <img src={selectedMethod.qr_code_url} alt="Wallet QR Code" className="mx-auto rounded-xl border border-white/[0.06] max-w-[200px]" />
+                      <p className="text-[10px] text-[#A7B0C0] mt-2">Scan QR code to send payment</p>
+                    </div>
+                  )}
+                  {selectedMethod.wallet_address && (
+                    <div className="p-3 rounded-lg bg-[#22C55E]/10 border border-[#22C55E]/20 mb-4">
+                      <p className="text-[10px] text-[#A7B0C0] mb-1">Send crypto to:</p>
+                      <p className="text-xs font-mono font-bold text-white break-all">{selectedMethod.wallet_address}</p>
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-medium text-[#A7B0C0]">Your Wallet Address (from which you sent)</label>
+                      <input value={walletAddress} onChange={e => setWalletAddress(e.target.value)} placeholder="0x... or bc1..."
+                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-medium text-[#A7B0C0]">Transaction Hash (optional)</label>
+                      <input value={txHash} onChange={e => setTxHash(e.target.value)} placeholder="Paste tx hash for faster verification"
+                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                    </div>
+                  </div>
+                  {selectedMethod.instructions && (
+                    <div className="mt-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.06]">
+                      <p className="text-[10px] text-[#A7B0C0] whitespace-pre-line">{selectedMethod.instructions}</p>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
-          </div>
+          )}
 
           {/* Order Summary */}
           <div className="glass-card rounded-2xl p-5 mb-4">
