@@ -34,8 +34,11 @@ export async function POST(req: NextRequest) {
       const periodEnd = new Date(now)
       periodEnd.setMonth(periodEnd.getMonth() + 1)
 
-      // Update profile with new plan and credits
-      const { error: profileError } = await supabase.from("profiles").update({ plan: plan.slug, credits: plan.credits || 0 }).eq("user_id", user.id)
+      // Update profile with new plan and credits (upsert in case profile doesn't exist yet)
+      const { error: profileError } = await supabase.from("profiles").upsert(
+        { user_id: user.id, plan: plan.slug, credits: plan.credits || 0 },
+        { onConflict: "user_id" }
+      )
       if (profileError) {
         console.error("Free plan profile update error:", profileError)
         return NextResponse.json({ error: "Failed to update profile" }, { status: 500 })
@@ -127,11 +130,11 @@ export async function POST(req: NextRequest) {
       console.error("Payment record error:", paymentError)
     }
 
-    // Update profile with new plan and credits
-    const { error: profileError } = await supabase.from("profiles").update({
-      plan: plan.slug,
-      credits: plan.credits || 0,
-    }).eq("user_id", user.id)
+    // Update profile with new plan and credits (upsert in case profile doesn't exist yet)
+    const { error: profileError } = await supabase.from("profiles").upsert(
+      { user_id: user.id, plan: plan.slug, credits: plan.credits || 0 },
+      { onConflict: "user_id" }
+    )
     if (profileError) {
       console.error("Profile update error:", profileError)
       return NextResponse.json({ error: "Failed to update profile" }, { status: 500 })

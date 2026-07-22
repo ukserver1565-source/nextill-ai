@@ -22,11 +22,22 @@ export default function NewProjectPage() {
     if (!name.trim() || !profile) return
     setCreating(true)
     setError("")
-    const { data, error } = await supabase
+    // Try with description first; fall back without it if column doesn't exist yet
+    let result = await supabase
       .from("projects")
       .insert({ user_id: profile.user_id, name: name.trim(), domain: domain.trim() || null, description: description.trim() || null })
       .select()
       .single()
+
+    if (result.error && result.error.message?.includes("description")) {
+      result = await supabase
+        .from("projects")
+        .insert({ user_id: profile.user_id, name: name.trim(), domain: domain.trim() || null })
+        .select()
+        .single()
+    }
+
+    const { data, error } = result
     setCreating(false)
     if (error) {
       setError(error.message || "Failed to create project. Please try again.")
