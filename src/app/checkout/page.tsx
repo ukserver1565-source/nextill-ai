@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
-import { Loader2, Check, Tag, X, CreditCard, Shield, ArrowLeft, Wallet, Smartphone, Building, Coins, Globe, ChevronDown, Lock, CheckCircle2 } from "lucide-react"
+import { Loader2, Check, Tag, X, CreditCard, Shield, ArrowLeft, Wallet, Smartphone, Building, Coins, Globe, Lock, CheckCircle2, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { useAuth } from "@/lib/auth/AuthProvider"
 
@@ -57,8 +57,8 @@ function CheckoutContent() {
   const [error, setError] = useState("")
   const [paymentMethods, setPaymentMethods] = useState<PublicPaymentMethod[]>([])
   const [selectedPaymentId, setSelectedPaymentId] = useState<string | null>(null)
-  const [showPaymentDropdown, setShowPaymentDropdown] = useState(false)
-  const [paymentStep, setPaymentStep] = useState<"select" | "details" | "confirming">("select")
+  // Step: "review" = original checkout, "payment" = card details form
+  const [step, setStep] = useState<"review" | "payment">("review")
   // Card details
   const [cardName, setCardName] = useState("")
   const [cardNumber, setCardNumber] = useState("")
@@ -114,30 +114,25 @@ function CheckoutContent() {
   }
 
   const handleCheckout = async () => {
-    setProcessing(true); setError(""); setPaymentStep("confirming")
+    setProcessing(true); setError("")
     try {
       const res = await fetch("/api/checkout/create", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ plan_slug: plan?.slug, billing_cycle: billing, coupon_code: couponResult?.valid ? couponCode : undefined, payment_method_id: selectedPaymentId || undefined }),
       })
       const data = await res.json()
-      if (!res.ok) { setError(data.error || "Checkout failed."); setPaymentStep("details"); return }
+      if (!res.ok) { setError(data.error || "Checkout failed."); return }
       if (data.checkout_url) { window.location.href = data.checkout_url }
       else if (data.success) { window.location.href = "/dashboard" }
-      else { setError(data.error || "Payment not configured."); setPaymentStep("details") }
-    } catch { setError("Payment processing unavailable."); setPaymentStep("details") }
+      else { setError(data.error || "Payment not configured.") }
+    } catch { setError("Payment processing unavailable.") }
     finally { setProcessing(false) }
   }
 
-  const formatCardNumber = (val: string) => {
-    const digits = val.replace(/\D/g, "").slice(0, 16)
-    return digits.replace(/(.{4})/g, "$1 ").trim()
-  }
-
+  const formatCardNumber = (val: string) => val.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim()
   const formatExpiry = (val: string) => {
-    const digits = val.replace(/\D/g, "").slice(0, 4)
-    if (digits.length >= 3) return digits.slice(0, 2) + "/" + digits.slice(2)
-    return digits
+    const d = val.replace(/\D/g, "").slice(0, 4)
+    return d.length >= 3 ? d.slice(0, 2) + "/" + d.slice(2) : d
   }
 
   const selectedMethod = paymentMethods.find(m => m.id === selectedPaymentId)
@@ -161,6 +156,127 @@ function CheckoutContent() {
     </div>
   )
 
+  // ════════════════════════════════════════════════════════════
+  // STEP 2: PAYMENT DETAILS (shown after clicking Proceed to Payment)
+  // ════════════════════════════════════════════════════════════
+  if (step === "payment" && !isFree) {
+    return (
+      <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-10 sm:pb-16 px-3 sm:px-4">
+        <div className="w-full max-w-2xl mx-auto">
+          <button onClick={() => { setStep("review"); setError("") }} className="inline-flex items-center gap-2 text-sm text-[#A7B0C0] hover:text-white mb-6 transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Back to Checkout
+          </button>
+
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">Payment Details</h1>
+          <p className="text-muted text-sm mb-6">Enter your payment information to complete the purchase.</p>
+
+          {/* Payment Method Info */}
+          {selectedMethod && (
+            <div className="glass-card rounded-2xl p-5 mb-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#6D5EF5]/10 flex items-center justify-center">
+                {(() => { const I = getCheckoutIcon(selectedMethod.icon); return <I className="w-5 h-5 text-[#6D5EF5]" /> })()}
+              </div>
+              <div>
+                <p className="text-sm font-medium text-white">{selectedMethod.name}</p>
+                <p className="text-[11px] text-[#A7B0C0]">{selectedMethod.description}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Card Details Form */}
+          <div className="glass-card rounded-2xl p-5 mb-4">
+            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+              <Lock className="w-4 h-4 text-[#22C55E]" /> Card Information
+            </h3>
+            <div className="space-y-3">
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-medium text-[#A7B0C0]">Cardholder Name</label>
+                <input value={cardName} onChange={e => setCardName(e.target.value)} placeholder="John Smith"
+                  className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-medium text-[#A7B0C0]">Card Number</label>
+                <input value={cardNumber} onChange={e => setCardNumber(formatCardNumber(e.target.value))} placeholder="1234 5678 9012 3456" maxLength={19}
+                  className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-medium text-[#A7B0C0]">Expiry Date</label>
+                  <input value={cardExpiry} onChange={e => setCardExpiry(formatExpiry(e.target.value))} placeholder="MM/YY" maxLength={5}
+                    className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-medium text-[#A7B0C0]">CVV</label>
+                  <input value={cardCVV} onChange={e => setCardCVV(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="123" maxLength={4} type="password"
+                    className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Order Summary */}
+          <div className="glass-card rounded-2xl p-5 mb-4">
+            <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-[#6D5EF5]" /> Order Summary
+            </h3>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-sm text-[#A7B0C0]">Plan</span>
+                <span className="text-sm font-medium text-white">{plan.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-[#A7B0C0]">Billing</span>
+                <span className="text-sm text-white capitalize">{billing}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-[#A7B0C0]">Credits</span>
+                <span className="text-sm text-white">{plan.credits.toLocaleString()}/month</span>
+              </div>
+              {couponResult?.valid && (
+                <div className="flex justify-between">
+                  <span className="text-sm text-[#A7B0C0]">Discount ({couponResult.type === "percentage" ? `${couponResult.discount}%` : `$${couponResult.discount}`})</span>
+                  <span className="text-sm font-medium text-emerald-400">-${discountAmount.toFixed(2)}</span>
+                </div>
+              )}
+              <div className="flex justify-between pt-3 border-t border-white/[0.06]">
+                <span className="text-sm font-semibold text-white">Total</span>
+                <span className="text-xl font-bold text-white">
+                  ${finalPrice}
+                  <span className="text-xs font-normal text-[#A7B0C0]">/{billing === "yearly" ? "year" : "month"}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4 mb-4">
+              <p className="text-sm text-[#EF4444]">{error}</p>
+            </div>
+          )}
+
+          {/* Confirm Payment */}
+          <button onClick={handleCheckout} disabled={processing}
+            className="w-full h-12 rounded-xl bg-gradient-to-r from-[#6D5EF5] to-[#4CC9F0] text-white font-medium flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50 shadow-lg shadow-[#6D5EF5]/20">
+            {processing ? (
+              <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
+            ) : (
+              <><Lock className="w-4 h-4" /> Confirm Payment — ${finalPrice}</>
+            )}
+          </button>
+
+          <div className="flex items-center justify-center gap-2 mt-4 text-xs text-[#A7B0C0]/60">
+            <Shield className="w-3 h-3" />
+            <span>Secure checkout · Your payment info is encrypted</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // STEP 1: REVIEW (original checkout design)
+  // ════════════════════════════════════════════════════════════
   return (
     <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-10 sm:pb-16 px-3 sm:px-4">
       <div className="w-full max-w-2xl mx-auto">
@@ -168,102 +284,62 @@ function CheckoutContent() {
           <ArrowLeft className="w-4 h-4" /> Back to Pricing
         </Link>
 
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">Checkout</h1>
-        <p className="text-muted text-sm mb-6">Complete your purchase to activate your plan.</p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">Checkout</h1>
+        <p className="text-muted text-sm mb-8">Complete your purchase to activate your plan.</p>
 
-        {/* ── STEP 1: Select Payment Method ── */}
-        {!isFree && (
-          <div className="glass-card rounded-2xl p-5 mb-4">
-            <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-[#6D5EF5]" /> Select Payment Method
-            </h3>
-            {paymentMethods.length > 0 ? (
-              <div className="relative">
-                <button
-                  onClick={() => setShowPaymentDropdown(!showPaymentDropdown)}
-                  className="w-full flex items-center justify-between p-3 rounded-xl bg-[#090B16] border border-white/[0.06] hover:border-white/[0.12] transition-all text-left"
-                >
-                  {selectedMethod ? (
-                    <div className="flex items-center gap-3">
-                      {(() => { const I = getCheckoutIcon(selectedMethod.icon); return <I className="w-4 h-4 text-[#6D5EF5]" /> })()}
-                      <div>
-                        <p className="text-sm font-medium text-white">{selectedMethod.name}</p>
-                        <p className="text-[10px] text-[#A7B0C0]/70">{selectedMethod.description}</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <span className="text-sm text-[#A7B0C0]">Choose a payment method</span>
-                  )}
-                  <ChevronDown className={`w-4 h-4 text-[#A7B0C0] transition-transform ${showPaymentDropdown ? "rotate-180" : ""}`} />
-                </button>
-                {showPaymentDropdown && (
-                  <div className="absolute z-20 w-full mt-1 bg-[#111827] border border-white/[0.06] rounded-xl shadow-2xl overflow-hidden">
-                    {paymentMethods.map(method => {
-                      const I = getCheckoutIcon(method.icon)
-                      const isActive = method.id === selectedPaymentId
-                      return (
-                        <button key={method.id} onClick={() => { setSelectedPaymentId(method.id); setShowPaymentDropdown(false); setPaymentStep("details") }}
-                          className={`w-full flex items-center gap-3 p-3 text-left transition-all hover:bg-white/[0.04] ${isActive ? "bg-[#6D5EF5]/10" : ""}`}>
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isActive ? "bg-[#6D5EF5]/20" : "bg-white/[0.04]"}`}>
-                            <I className={`w-4 h-4 ${isActive ? "text-[#6D5EF5]" : "text-[#A7B0C0]"}`} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-medium ${isActive ? "text-white" : "text-[#A7B0C0]"}`}>{method.name}</p>
-                            <p className="text-[10px] text-[#A7B0C0]/60 truncate">{method.description}</p>
-                          </div>
-                          {isActive && <Check className="w-4 h-4 text-[#6D5EF5] shrink-0" />}
-                        </button>
-                      )
-                    })}
-                  </div>
-                )}
-              </div>
+        {/* Plan Summary */}
+        <div className="glass-card rounded-2xl p-6 mb-6">
+          <h2 className="text-lg font-bold mb-4">{plan.name} Plan</h2>
+
+          {/* Billing Toggle */}
+          <div className="flex items-center gap-3 mb-6">
+            <button onClick={() => setBilling("monthly")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${billing === "monthly" ? "bg-[#6D5EF5] text-white" : "text-[#A7B0C0] hover:text-white"}`}>
+              Monthly
+            </button>
+            <button onClick={() => setBilling("yearly")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${billing === "yearly" ? "bg-[#6D5EF5] text-white" : "text-[#A7B0C0] hover:text-white"}`}>
+              Yearly
+              <span className="ml-1.5 text-[10px] font-bold text-emerald-400">Save 2 months</span>
+            </button>
+          </div>
+
+          {/* Price */}
+          <div className="flex items-baseline gap-2 mb-4">
+            {couponResult?.valid && finalPrice !== price ? (
+              <>
+                <span className="text-lg text-[#A7B0C0] line-through">${price}</span>
+                <span className="text-3xl font-bold text-emerald-400">${finalPrice}</span>
+              </>
             ) : (
-              <p className="text-xs text-[#A7B0C0]">No payment methods configured yet.</p>
+              <span className="text-3xl font-bold">{isFree ? "Free" : `$${price}`}</span>
             )}
+            {!isFree && <span className="text-sm text-muted">/{billing === "yearly" ? "year" : "month"}</span>}
           </div>
-        )}
 
-        {/* ── STEP 2: Payment Details ── */}
-        {selectedMethod && !isFree && paymentStep !== "select" && (
-          <div className="glass-card rounded-2xl p-5 mb-4">
-            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-[#22C55E]" /> Payment Details
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="sm:col-span-2 space-y-1.5">
-                <label className="text-[11px] font-medium text-[#A7B0C0]">Cardholder Name</label>
-                <input value={cardName} onChange={e => setCardName(e.target.value)} placeholder="John Smith"
-                  className="w-full h-10 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
-              </div>
-              <div className="sm:col-span-2 space-y-1.5">
-                <label className="text-[11px] font-medium text-[#A7B0C0]">Card Number</label>
-                <input value={cardNumber} onChange={e => setCardNumber(formatCardNumber(e.target.value))} placeholder="1234 5678 9012 3456" maxLength={19}
-                  className="w-full h-10 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-medium text-[#A7B0C0]">Expiry Date</label>
-                <input value={cardExpiry} onChange={e => setCardExpiry(formatExpiry(e.target.value))} placeholder="MM/YY" maxLength={5}
-                  className="w-full h-10 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-medium text-[#A7B0C0]">CVV</label>
-                <input value={cardCVV} onChange={e => setCardCVV(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="123" maxLength={4} type="password"
-                  className="w-full h-10 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
-              </div>
-            </div>
-          </div>
-        )}
+          <p className="text-sm text-muted mb-4">{plan.credits.toLocaleString()} credits per month</p>
 
-        {/* ── Coupon ── */}
+          {/* Features */}
+          <ul className="space-y-2">
+            {plan.features.slice(0, 6).map((f: string) => (
+              <li key={f} className="text-xs text-muted flex items-center gap-2">
+                <Check className="w-3.5 h-3.5 text-[#6D5EF5] shrink-0" />
+                {f}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Coupon */}
         {!isFree && (
-          <div className="glass-card rounded-2xl p-5 mb-4">
+          <div className="glass-card rounded-2xl p-6 mb-6">
             <div className="flex items-center gap-2 mb-3">
               <Tag className="w-4 h-4 text-[#6D5EF5]" />
-              <span className="text-sm font-medium text-white">Have a coupon?</span>
+              <span className="text-sm font-medium">Have a coupon?</span>
             </div>
             <div className="flex gap-2">
-              <input type="text" value={couponCode} onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponResult(null) }}
+              <input type="text" value={couponCode}
+                onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponResult(null) }}
                 placeholder="Enter coupon code"
                 className="flex-1 h-10 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 font-mono uppercase" />
               <button onClick={validateCoupon} disabled={couponLoading || !couponCode.trim()}
@@ -280,67 +356,72 @@ function CheckoutContent() {
           </div>
         )}
 
-        {/* ── Plan Summary ── */}
-        <div className="glass-card rounded-2xl p-5 mb-4">
-          <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-[#6D5EF5]" /> Order Summary
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-[#A7B0C0]">Plan</span>
-              <span className="text-sm font-medium text-white">{plan.name}</span>
+        {/* Payment Method Selection (radio buttons — original style) */}
+        {paymentMethods.length > 0 && !isFree && (
+          <div className="glass-card rounded-2xl p-6 mb-6">
+            <h3 className="text-sm font-medium mb-4 flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-[#6D5EF5]" />
+              Select Payment Method
+            </h3>
+            <div className="space-y-2">
+              {paymentMethods.map((method) => {
+                const IconComponent = getCheckoutIcon(method.icon)
+                const isSelected = selectedPaymentId === method.id
+                return (
+                  <button key={method.id} onClick={() => setSelectedPaymentId(method.id)}
+                    className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
+                      isSelected ? "bg-[#6D5EF5]/10 border-[#6D5EF5]/40" : "bg-[#090B16] border-white/[0.06] hover:border-white/[0.12]"
+                    }`}>
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? "bg-[#6D5EF5]/20" : "bg-white/[0.04]"}`}>
+                      <IconComponent className={`w-4 h-4 ${isSelected ? "text-[#6D5EF5]" : "text-[#A7B0C0]"}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm font-medium ${isSelected ? "text-white" : "text-[#A7B0C0]"}`}>{method.name}</p>
+                      <p className="text-[11px] text-[#A7B0C0]/70 truncate">{method.description}</p>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${isSelected ? "border-[#6D5EF5] bg-[#6D5EF5]" : "border-white/20"}`}>
+                      {isSelected && <Check className="w-3 h-3 text-white" />}
+                    </div>
+                  </button>
+                )
+              })}
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-[#A7B0C0]">Billing</span>
-              <span className="text-sm text-white capitalize">{billing}</span>
-            </div>
-            {!isFree && couponResult?.valid && (
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-[#A7B0C0]">Discount ({couponResult.type === "percentage" ? `${couponResult.discount}%` : `$${couponResult.discount}`})</span>
-                <span className="text-sm font-medium text-emerald-400">-${discountAmount.toFixed(2)}</span>
-              </div>
-            )}
-            <div className="flex items-center justify-between pt-3 border-t border-white/[0.06]">
-              <span className="text-sm font-semibold text-white">Total</span>
-              <span className="text-xl font-bold text-white">
-                {isFree ? "Free" : `$${finalPrice}`}
-                {!isFree && <span className="text-xs font-normal text-[#A7B0C0]">/{billing === "yearly" ? "year" : "month"}</span>}
-              </span>
-            </div>
-            <p className="text-[10px] text-[#A7B0C0]">{plan.credits.toLocaleString()} credits per month included</p>
           </div>
-        </div>
+        )}
 
-        {/* ── Error ── */}
+        {/* Error */}
         {error && (
-          <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4 mb-4">
+          <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4 mb-6">
             <p className="text-sm text-[#EF4444]">{error}</p>
           </div>
         )}
 
-        {/* ── Current Plan Notice ── */}
+        {/* Current Plan Notice */}
         {profile?.plan === plan.slug && (
-          <div className="bg-[#6D5EF5]/10 border border-[#6D5EF5]/20 rounded-xl p-4 mb-4">
+          <div className="bg-[#6D5EF5]/10 border border-[#6D5EF5]/20 rounded-xl p-4 mb-6">
             <p className="text-sm text-[#6D5EF5]">You are currently on the {plan.name} plan.</p>
           </div>
         )}
 
-        {/* ── Confirm Payment Button ── */}
-        <button onClick={handleCheckout}
-          disabled={processing || (profile?.plan === plan.slug) || (!isFree && paymentMethods.length > 0 && !selectedPaymentId)}
-          className="w-full h-12 rounded-xl bg-gradient-to-r from-[#6D5EF5] to-[#4CC9F0] text-white font-medium flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50 shadow-lg shadow-[#6D5EF5]/20">
-          {processing ? (
-            <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
-          ) : isFree ? (
+        {/* Proceed to Payment Button */}
+        <button onClick={() => { setStep("payment"); setError("") }}
+          disabled={isFree || (!isFree && paymentMethods.length > 0 && !selectedPaymentId)}
+          className="w-full h-12 rounded-xl bg-gradient-to-r from-[#6D5EF5] to-[#4CC9F0] text-white font-medium flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50">
+          {isFree ? (
             "Get Started Free"
           ) : (
-            <><Lock className="w-4 h-4" /> Confirm Payment — ${finalPrice}</>
+            <>
+              <CreditCard className="w-4 h-4" />
+              Proceed to Payment
+              <ArrowRight className="w-4 h-4" />
+            </>
           )}
         </button>
 
+        {/* Security Note */}
         <div className="flex items-center justify-center gap-2 mt-4 text-xs text-[#A7B0C0]/60">
           <Shield className="w-3 h-3" />
-          <span>Secure checkout · Your payment info is encrypted</span>
+          <span>Secure checkout powered by your payment provider</span>
         </div>
       </div>
     </div>
