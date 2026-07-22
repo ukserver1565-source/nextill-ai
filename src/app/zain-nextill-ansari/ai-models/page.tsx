@@ -103,10 +103,10 @@ export default function AiModelsPage() {
                 </div>
 
                 <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/[0.06]">
-                  <button onClick={() => router.push('/admin/ai-hub/api-keys')} className="flex-1 h-8 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center justify-center gap-1.5 transition-all">
+                  <button onClick={() => router.push('/zain-nextill-ansari/ai-hub/api-keys')} className="flex-1 h-8 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center justify-center gap-1.5 transition-all">
                     <Key className="w-3.5 h-3.5" /> API Key
                   </button>
-                  <button onClick={() => router.push('/admin/ai-hub/models')} className="flex-1 h-8 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center justify-center gap-1.5 transition-all">
+                  <button onClick={() => router.push('/zain-nextill-ansari/ai-hub/models')} className="flex-1 h-8 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center justify-center gap-1.5 transition-all">
                     <Edit3 className="w-3.5 h-3.5" /> Edit
                   </button>
                 </div>

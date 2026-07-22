@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/lib/auth/AuthProvider"
 import { supabase } from "@/lib/supabase/client"
-import { Search, FileText, FileSearch, Sparkles, FolderKanban, FileIcon, Zap, Activity } from "lucide-react"
+import { FileText, Sparkles, FolderKanban, FileIcon, Zap, Activity } from "lucide-react"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { MetricCards } from "@/components/dashboard/metric-cards"
@@ -27,33 +27,6 @@ const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 }
-
-const _workflows = [
-  {
-    icon: Search,
-    title: "Domain Intelligence",
-    desc: "Discover high-value keywords with volume, difficulty & SERP analysis",
-    path: "/domain-overview",
-    gradient: "from-violet-500 to-indigo-600",
-    credits: 2,
-  },
-  {
-    icon: FileText,
-    title: "Post Generator",
-    desc: "Generate full SEO-optimized blog posts with AI in one click",
-    path: "/post-generator",
-    gradient: "from-blue-500 to-purple-600",
-    credits: 5,
-  },
-  {
-    icon: FileSearch,
-    title: "Plagiarism & Authenticity",
-    desc: "Check content originality against billions of web sources",
-    path: "/plagiarism-checker",
-    gradient: "from-red-500 to-pink-600",
-    credits: 3,
-  },
-]
 
 export default function Dashboard() {
   const { profile } = useAuth()
