@@ -21,26 +21,10 @@ export async function GET() {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    // Fetch pending payments with profile data
+    // Fetch pending payments — simple query without join
     const { data: payments, error } = await supabaseAdmin
       .from("payments")
-      .select(`
-        id,
-        user_id,
-        plan_slug,
-        amount,
-        final_amount,
-        discount_amount,
-        provider,
-        provider_transaction_id,
-        verification_status,
-        billing_cycle,
-        created_at,
-        profiles!payments_user_id_fkey (
-          email,
-          full_name
-        )
-      `)
+      .select("*")
       .eq("verification_status", "pending_manual_review")
       .order("created_at", { ascending: false })
 
@@ -49,12 +33,29 @@ export async function GET() {
       return NextResponse.json({ error: "Failed to fetch pending payments", details: error.message }, { status: 500 })
     }
 
-    // Flatten profile data for easier consumption
+    // Fetch user profiles for each payment
+    const userIds = [...new Set((payments || []).map((p: any) => p.user_id).filter(Boolean))]
+    let profileMap: Record<string, { email: string; full_name: string }> = {}
+
+    if (userIds.length > 0) {
+      const { data: profiles } = await supabaseAdmin
+        .from("profiles")
+        .select("user_id, email, full_name")
+        .in("user_id", userIds)
+
+      if (profiles) {
+        for (const p of profiles) {
+          profileMap[p.user_id] = { email: p.email || "", full_name: p.full_name || "" }
+        }
+      }
+    }
+
+    // Flatten data for easier consumption
     const result = (payments || []).map((p: any) => ({
       id: p.id,
       user_id: p.user_id,
-      user_email: p.profiles?.email || null,
-      user_name: p.profiles?.full_name || null,
+      user_email: profileMap[p.user_id]?.email || null,
+      user_name: profileMap[p.user_id]?.full_name || null,
       plan_slug: p.plan_slug,
       amount: p.amount,
       final_amount: p.final_amount,
