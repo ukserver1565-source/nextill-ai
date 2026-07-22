@@ -78,6 +78,8 @@ function CheckoutContent() {
   // Crypto
   const [walletAddress, setWalletAddress] = useState("")
   const [txHash, setTxHash] = useState("")
+  // Checkout result (pending manual review / auto verified)
+  const [checkoutResult, setCheckoutResult] = useState<{ status: string; message: string; payment_id?: string } | null>(null)
 
   useEffect(() => {
     fetch("/api/public/plans")
@@ -127,18 +129,42 @@ function CheckoutContent() {
     return price
   }
 
+  // Transaction ID based on payment method type
+  const getTransactionId = () => {
+    if (!selectedMethod) return undefined
+    if (selectedMethod.type === "card") return cardNumber.replace(/\s/g, "").slice(-4) + "-" + Date.now()
+    if (selectedMethod.type === "mobile") return mobileNumber || undefined
+    if (selectedMethod.type === "online") return accountEmail || accountId || undefined
+    if (selectedMethod.type === "bank") return bankAccountNumber || undefined
+    if (selectedMethod.type === "crypto") return txHash || walletAddress || undefined
+    return undefined
+  }
+
   const handleCheckout = async () => {
     setProcessing(true); setError("")
     try {
       const res = await fetch("/api/checkout/create", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan_slug: plan?.slug, billing_cycle: billing, coupon_code: couponResult?.valid ? couponCode : undefined, payment_method_id: selectedPaymentId || undefined }),
+        body: JSON.stringify({
+          plan_slug: plan?.slug,
+          billing_cycle: billing,
+          coupon_code: couponResult?.valid ? couponCode : undefined,
+          payment_method_id: selectedPaymentId || undefined,
+          provider_transaction_id: getTransactionId(),
+        }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || "Checkout failed."); return }
       if (data.checkout_url) { window.location.href = data.checkout_url }
-      else if (data.success) { window.location.href = "/dashboard" }
-      else { setError(data.error || "Payment not configured.") }
+      else if (data.verified === true) {
+        // Auto-verified — go to dashboard
+        window.location.href = "/dashboard"
+      } else if (data.verified === false) {
+        // Manual mode — show pending state
+        setCheckoutResult({ status: "pending", message: data.message, payment_id: data.payment_id })
+      } else if (data.success) {
+        window.location.href = "/dashboard"
+      } else { setError(data.error || "Payment not configured.") }
     } catch { setError("Payment processing unavailable.") }
     finally { setProcessing(false) }
   }
@@ -169,6 +195,50 @@ function CheckoutContent() {
       </div>
     </div>
   )
+
+  // ════════════════════════════════════════════════════════════
+  // CHECKOUT RESULT: Pending / Success screen
+  // ════════════════════════════════════════════════════════════
+  if (checkoutResult) {
+    return (
+      <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-10 sm:pb-16 px-3 sm:px-4">
+        <div className="w-full max-w-lg mx-auto text-center">
+          <div className="glass-card rounded-2xl p-8 sm:p-10">
+            {checkoutResult.status === "pending" ? (
+              <>
+                <div className="w-16 h-16 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mx-auto mb-6">
+                  <Loader2 className="w-8 h-8 text-yellow-400 animate-spin" />
+                </div>
+                <h1 className="text-2xl font-bold text-white mb-2">Payment Under Review</h1>
+                <p className="text-sm text-[#A7B0C0] mb-6 max-w-md mx-auto">{checkoutResult.message}</p>
+                {checkoutResult.payment_id && (
+                  <div className="p-3 rounded-lg bg-[#090B16] border border-white/[0.06] mb-6">
+                    <p className="text-[10px] text-[#A7B0C0] mb-1">Reference ID</p>
+                    <p className="text-xs font-mono text-white">{checkoutResult.payment_id}</p>
+                  </div>
+                )}
+                <p className="text-xs text-[#A7B0C0]/60 mb-6">Save this reference ID for your records.</p>
+                <Link href="/dashboard" className="inline-flex items-center gap-2 h-10 px-6 rounded-xl bg-[#6D5EF5] text-white text-sm font-medium hover:brightness-110 transition-all">
+                  Go to Dashboard
+                </Link>
+              </>
+            ) : (
+              <>
+                <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-6">
+                  <Check className="w-8 h-8 text-emerald-400" />
+                </div>
+                <h1 className="text-2xl font-bold text-white mb-2">Payment Verified!</h1>
+                <p className="text-sm text-[#A7B0C0] mb-6">Your plan is now active.</p>
+                <Link href="/dashboard" className="inline-flex items-center gap-2 h-10 px-6 rounded-xl bg-[#6D5EF5] text-white text-sm font-medium hover:brightness-110 transition-all">
+                  Go to Dashboard <ArrowRight className="w-4 h-4" />
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // ════════════════════════════════════════════════════════════
   // STEP 2: PAYMENT DETAILS (shown after clicking Proceed to Payment)

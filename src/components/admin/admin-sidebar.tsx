@@ -38,6 +38,7 @@ const menuSections = [
       { label: "Credits", icon: DollarSign, href: "/zain-nextill-ansari/credits" },
       { label: "Users", icon: Users, href: "/zain-nextill-ansari/users" },
       { label: "Payments", icon: DollarSign, href: "/zain-nextill-ansari/payments" },
+      { label: "Pending Approvals", icon: HeartPulse, href: "/zain-nextill-ansari/payments/pending" },
       { label: "Coupons", icon: TicketPercent, href: "/zain-nextill-ansari/coupons" },
     ],
   },

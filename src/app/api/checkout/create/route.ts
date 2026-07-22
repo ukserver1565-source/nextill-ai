@@ -1,6 +1,64 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
+import { getAdapter } from "@/lib/payments/providers"
+
+// Shared plan upgrade logic — used by checkout AND admin approval
+export async function upgradeUserPlan(
+  userId: string,
+  planSlug: string,
+  billingCycle: string = "monthly"
+) {
+  const { data: plan } = await supabaseAdmin
+    .from("plans")
+    .select("*")
+    .eq("slug", planSlug)
+    .eq("is_active", true)
+    .single()
+
+  if (!plan) throw new Error("Plan not found")
+
+  const now = new Date()
+  const periodEnd = new Date(now)
+  if (billingCycle === "yearly") {
+    periodEnd.setFullYear(periodEnd.getFullYear() + 1)
+  } else {
+    periodEnd.setMonth(periodEnd.getMonth() + 1)
+  }
+
+  // Update profile
+  const { error: profileError } = await supabaseAdmin.from("profiles").upsert(
+    { user_id: userId, plan: plan.slug, credits: plan.credits || 0 },
+    { onConflict: "user_id" }
+  )
+  if (profileError) throw new Error("Failed to update profile: " + profileError.message)
+
+  // Sync credits table
+  const { error: creditsError } = await supabaseAdmin.from("credits").upsert(
+    { user_id: userId, balance: plan.credits || 0 },
+    { onConflict: "user_id" }
+  )
+  if (creditsError) throw new Error("Failed to update credits: " + creditsError.message)
+
+  // Cancel existing active subscriptions
+  await supabaseAdmin.from("subscriptions")
+    .update({ status: "cancelled", cancelled_at: now.toISOString() })
+    .eq("user_id", userId)
+    .eq("status", "active")
+
+  // Create new subscription
+  const { error: subError } = await supabaseAdmin.from("subscriptions").insert({
+    user_id: userId,
+    plan_slug: plan.slug,
+    status: "active",
+    billing_cycle: billingCycle,
+    current_period_start: now.toISOString(),
+    current_period_end: periodEnd.toISOString(),
+  })
+  if (subError) throw new Error("Failed to create subscription: " + subError.message)
+
+  return { planName: plan.name, credits: plan.credits }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,7 +68,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { plan_slug, billing_cycle, coupon_code } = await req.json()
+    const { plan_slug, billing_cycle, coupon_code, payment_method_id, provider_transaction_id } = await req.json()
 
     if (!plan_slug) {
       return NextResponse.json({ error: "Plan is required" }, { status: 400 })
@@ -28,57 +86,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Plan not found" }, { status: 404 })
     }
 
-    // Free plan — activate immediately
+    // Free plan — activate immediately (no payment needed)
     if (plan.price_monthly === 0) {
-      const now = new Date()
-      const periodEnd = new Date(now)
-      periodEnd.setMonth(periodEnd.getMonth() + 1)
-
-      // Update profile with new plan and credits (upsert in case profile doesn't exist yet)
-      const { error: profileError } = await supabase.from("profiles").upsert(
-        { user_id: user.id, plan: plan.slug, credits: plan.credits || 0 },
-        { onConflict: "user_id" }
-      )
-      if (profileError) {
-        console.error("Free plan profile update error:", profileError)
-        return NextResponse.json({ error: "Failed to update profile" }, { status: 500 })
-      }
-
-      // Sync credits table (single source of truth) — REPLACE balance, never add
-      const { error: creditsError } = await supabaseAdmin.from("credits").upsert(
-        { user_id: user.id, balance: plan.credits || 0 },
-        { onConflict: "user_id" }
-      )
-      if (creditsError) {
-        console.error("Free plan credits update error:", creditsError)
-        return NextResponse.json({ error: "Failed to update credits" }, { status: 500 })
-      }
-
-      // Cancel any existing active subscriptions before creating new one
-      await supabaseAdmin.from("subscriptions")
-        .update({ status: "cancelled", cancelled_at: now.toISOString() })
-        .eq("user_id", user.id)
-        .eq("status", "active")
-
-      const { error: subError } = await supabaseAdmin.from("subscriptions").insert({
-        user_id: user.id,
-        plan_slug: plan.slug,
-        status: "active",
-        current_period_start: now.toISOString(),
-        current_period_end: periodEnd.toISOString(),
-      })
-      if (subError) {
-        console.error("Free plan subscription error:", subError)
-        return NextResponse.json({ error: "Failed to create subscription" }, { status: 500 })
-      }
-
+      await upgradeUserPlan(user.id, plan.slug, billing_cycle || "monthly")
       return NextResponse.json({ success: true, message: "Free plan activated" })
     }
 
-    // Paid plan — process payment (simulated for now, integrate real provider here)
+    // Paid plan — calculate price + coupon
     const price = billing_cycle === "yearly" ? plan.price_yearly : plan.price_monthly
 
-    // Calculate coupon discount
     let discountAmount = 0
     let couponId: string | null = null
     if (coupon_code) {
@@ -90,7 +106,6 @@ export async function POST(req: NextRequest) {
 
       if (coupon) {
         couponId = coupon.id
-        // Verify coupon applies to this plan
         if (coupon.applicable_plan && coupon.applicable_plan !== plan_slug) {
           return NextResponse.json({ error: "This coupon is not valid for this plan" }, { status: 400 })
         }
@@ -103,85 +118,104 @@ export async function POST(req: NextRequest) {
     }
 
     const finalAmount = Math.max(0, price - discountAmount)
+    const provider = payment_method_id || "manual"
 
-    const now = new Date()
-    const periodEnd = new Date(now)
-    if (billing_cycle === "yearly") {
-      periodEnd.setFullYear(periodEnd.getFullYear() + 1)
-    } else {
-      periodEnd.setMonth(periodEnd.getMonth() + 1)
+    // Determine verification mode: check if provider has verified credentials
+    let isAutoVerified = false
+    let verificationStatus: string = "pending_manual_review"
+
+    // bank_transfer and crypto ALWAYS stay manual regardless of credentials
+    if (provider !== "bank_transfer" && provider !== "crypto") {
+      const { data: credentials } = await supabaseAdmin
+        .from("payment_provider_credentials")
+        .select("is_verified")
+        .eq("provider", provider)
+        .single()
+
+      if (credentials?.is_verified) {
+        isAutoVerified = true
+      }
     }
 
-    // Create payment record with actual discount
-    const { error: paymentError } = await supabase.from("payments").insert({
+    // If auto mode: call the adapter to verify the payment
+    if (isAutoVerified && provider_transaction_id) {
+      const adapter = getAdapter(provider)
+      if (adapter) {
+        try {
+          const result = await adapter.verifyPayment({
+            transactionId: provider_transaction_id,
+            amount: finalAmount,
+            currency: "USD",
+          })
+
+          if (result.success) {
+            verificationStatus = "auto_verified"
+          } else {
+            // Payment failed verification — record it but don't upgrade
+            const { error: paymentError } = await supabaseAdmin.from("payments").insert({
+              user_id: user.id,
+              plan_slug: plan.slug,
+              amount: price,
+              currency: "USD",
+              status: "failed",
+              provider,
+              provider_transaction_id,
+              discount_amount: discountAmount,
+              coupon_id: couponId,
+              final_amount: finalAmount,
+              billing_cycle: billing_cycle || "monthly",
+              verification_status: "rejected",
+              auto_verification_response: result.rawResponse || { message: result.message },
+              rejection_reason: result.message,
+            })
+
+            return NextResponse.json({
+              error: "Payment could not be verified",
+              details: result.message,
+            }, { status: 400 })
+          }
+        } catch (err) {
+          console.error("Auto-verification error:", err)
+          // On adapter error, fall through to manual mode
+          verificationStatus = "pending_manual_review"
+          isAutoVerified = false
+        }
+      }
+    }
+
+    // Create payment record
+    const { data: payment, error: paymentError } = await supabaseAdmin.from("payments").insert({
       user_id: user.id,
       plan_slug: plan.slug,
       amount: price,
       currency: "USD",
-      status: "completed",
-      provider: "manual",
+      status: verificationStatus === "auto_verified" ? "completed" : "pending",
+      provider,
+      provider_transaction_id: provider_transaction_id || null,
       discount_amount: discountAmount,
       coupon_id: couponId,
       final_amount: finalAmount,
       billing_cycle: billing_cycle || "monthly",
-    })
+      verification_status: verificationStatus,
+      auto_verification_response: isAutoVerified ? { verified_at: new Date().toISOString() } : null,
+    }).select("id").single()
 
     if (paymentError) {
       console.error("Payment record error:", paymentError)
+      return NextResponse.json({ error: "Failed to record payment" }, { status: 500 })
     }
 
-    // Update profile with new plan and credits (upsert in case profile doesn't exist yet)
-    const { error: profileError } = await supabase.from("profiles").upsert(
-      { user_id: user.id, plan: plan.slug, credits: plan.credits || 0 },
-      { onConflict: "user_id" }
-    )
-    if (profileError) {
-      console.error("Profile update error:", profileError)
-      return NextResponse.json({ error: "Failed to update profile" }, { status: 500 })
-    }
-
-    // Sync credits table (single source of truth) — REPLACE balance, never add
-    const { error: creditsError } = await supabaseAdmin.from("credits").upsert(
-      { user_id: user.id, balance: plan.credits || 0 },
-      { onConflict: "user_id" }
-    )
-    if (creditsError) {
-      console.error("Credits update error:", creditsError)
-      return NextResponse.json({ error: "Failed to update credits" }, { status: 500 })
-    }
-
-    // Cancel any existing active subscriptions before creating new one
-    await supabaseAdmin.from("subscriptions")
-      .update({ status: "cancelled", cancelled_at: now.toISOString() })
-      .eq("user_id", user.id)
-      .eq("status", "active")
-
-    // Create new subscription
-    const { error: subError } = await supabaseAdmin.from("subscriptions").insert({
-      user_id: user.id,
-      plan_slug: plan.slug,
-      status: "active",
-      billing_cycle: billing_cycle || "monthly",
-      current_period_start: now.toISOString(),
-      current_period_end: periodEnd.toISOString(),
-    })
-    if (subError) {
-      console.error("Subscription insert error:", subError)
-      return NextResponse.json({ error: "Failed to create subscription" }, { status: 500 })
-    }
-
-    // Record coupon usage if applicable — with real discount and increment used_count
+    // Record coupon usage
     if (couponId && coupon_code) {
-      // Insert redemption record with actual discount
-      await supabase.from("coupon_redemptions").insert({
+      await supabaseAdmin.from("coupon_redemptions").insert({
         coupon_id: couponId,
         user_id: user.id,
         discount_applied: discountAmount,
         billing_cycle: billing_cycle || "monthly",
         plan_slug: plan_slug,
+        payment_id: payment?.id,
       })
 
-      // Increment used_count (not reset to 0)
       const { data: currentCoupon } = await supabaseAdmin
         .from("coupons")
         .select("used_count")
@@ -196,13 +230,28 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // AUTO mode: payment verified — upgrade immediately
+    if (verificationStatus === "auto_verified") {
+      await upgradeUserPlan(user.id, plan.slug, billing_cycle || "monthly")
+
+      return NextResponse.json({
+        success: true,
+        verified: true,
+        message: "Payment verified! Your plan is now active.",
+        plan: plan.slug,
+        payment_id: payment?.id,
+      })
+    }
+
+    // MANUAL mode: payment pending — do NOT upgrade yet
     return NextResponse.json({
       success: true,
-      message: `${plan.name} plan activated successfully`,
-      plan: plan.slug,
-      discountApplied: discountAmount,
-      finalAmount,
+      verified: false,
+      message: "Your payment is being reviewed. This usually takes a few minutes — you'll receive confirmation once approved.",
+      payment_id: payment?.id,
+      verification_status: "pending_manual_review",
     })
+
   } catch (err) {
     return NextResponse.json({ error: "Checkout failed", details: (err as Error).message }, { status: 500 })
   }
