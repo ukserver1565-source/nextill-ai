@@ -68,10 +68,10 @@ const workflows = [
 ]
 
 const stats = [
-  { icon: BarChart3, value: "AI-Powered", label: "Keyword Analysis" },
-  { icon: FileText, value: "SEO Optimized", label: "Content Generation" },
-  { icon: Activity, value: "Real-time", label: "Plagiarism Checking" },
-  { icon: Star, value: "Secure", label: "by Design" },
+  { icon: Users, value: "10,000+", label: "Active Creators" },
+  { icon: FileText, value: "50,000+", label: "Articles Generated" },
+  { icon: Globe, value: "2.4B", label: "Pages Scanned" },
+  { icon: Star, value: "4.9/5", label: "User Rating" },
 ]
 
 const templates = [
@@ -374,6 +374,13 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                     Dashboard
                   </Button>
                 </Link>
+                {!profile && (
+                  <Link href="/signup" onClick={() => setMobileOpen(false)}>
+                    <Button variant="gradient" className="w-full">
+                      Get Started Free
+                    </Button>
+                  </Link>
+                )}
               </div>
             </motion.div>
           )}
@@ -433,6 +440,34 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               </Button>
             </Link>
           </motion.div>
+
+          {/* Social Proof */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.55 }}
+            className="mt-6 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-muted"
+          >
+            <div className="flex items-center gap-1.5">
+              <div className="flex -space-x-1.5">
+                {[0,1,2,3].map(i => (
+                  <div key={i} className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-secondary border-2 border-background flex items-center justify-center text-[8px] font-bold text-white">
+                    {["A","K","S","M"][i]}
+                  </div>
+                ))}
+              </div>
+              <span>10,000+ creators</span>
+            </div>
+            <div className="flex items-center gap-1">
+              {[1,2,3,4,5].map(i => <Star key={i} className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />)}
+              <span className="ml-1">4.9/5 rating</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <span>No credit card required</span>
+            </div>
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -637,6 +672,59 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
 
       <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
+      {/* HOW IT WORKS */}
+      <motion.section
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="px-4 py-20"
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <Badge variant="info" className="mb-4 px-3 py-1 text-xs">
+              <Zap className="w-3 h-3 mr-1.5" />
+              Simple Workflow
+            </Badge>
+            <h2 className="text-3xl font-bold">How <span className="gradient-primary-text">Nextill AI</span> Works</h2>
+            <p className="text-muted mt-2 max-w-xl mx-auto">
+              Three simple steps to research, create, and publish SEO-optimized content.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            {/* Connector line */}
+            <div className="hidden md:block absolute top-16 left-[20%] right-[20%] h-[2px] bg-gradient-to-r from-violet-500/50 via-primary/50 to-emerald-500/50" />
+            {[
+              { step: "01", icon: Search, title: "Research Keywords", desc: "Discover high-value keywords with volume, difficulty, and SERP analysis powered by AI.", color: "from-violet-500 to-indigo-600" },
+              { step: "02", icon: FileText, title: "Generate Content", desc: "Create SEO-optimized blog posts, articles, and guides with AI in seconds — not hours.", color: "from-blue-500 to-purple-600" },
+              { step: "03", icon: Shield, title: "Verify Originality", desc: "Check content against billions of web sources to ensure authenticity before publishing.", color: "from-emerald-500 to-green-600" },
+            ].map((s) => {
+              const Icon = s.icon
+              return (
+                <motion.div
+                  key={s.step}
+                  variants={staggerItem}
+                  className="relative text-center"
+                >
+                  <div className="relative z-10 mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-background to-background border border-white/[0.08] flex items-center justify-center mb-5 shadow-lg">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center`}>
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                  </div>
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 text-[10px] font-bold text-primary/50 bg-background px-2 rounded-full border border-white/[0.06]">
+                    STEP {s.step}
+                  </div>
+                  <h3 className="text-lg font-bold mb-2">{s.title}</h3>
+                  <p className="text-sm text-muted leading-relaxed max-w-xs mx-auto">{s.desc}</p>
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
+      </motion.section>
+
+      <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
       {/* TEMPLATES */}
       <motion.section
         id="tools"
@@ -671,46 +759,6 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                       <p className="text-xs text-muted mt-1">{t.desc}</p>
                     </div>
                   </Link>
-                </motion.div>
-              )
-            })}
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* HIGHLIGHTS */}
-      <motion.section
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        className="px-4 pb-20"
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold">Why <span className="gradient-primary-text">Nextill AI</span></h2>
-            <p className="text-muted mt-2 max-w-xl mx-auto">
-              Three powerful workflows to supercharge your content creation.
-            </p>
-          </div>
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
-          >
-            {highlights.map((h) => {
-              const Icon = h.icon
-              return (
-                <motion.div key={h.title} variants={staggerItem}>
-                  <div className="glass-card rounded-2xl p-6 h-full flex flex-col hover:-translate-y-1 hover:border-primary/30 transition-all duration-300">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${h.color} flex items-center justify-center mb-4 shadow-lg`}>
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-lg font-bold mb-2">{h.title}</h3>
-                    <p className="text-sm text-muted flex-1 leading-relaxed">{h.desc}</p>
-                  </div>
                 </motion.div>
               )
             })}
@@ -1024,7 +1072,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-secondary/15 blur-[80px]" />
             </div>
             <div className="relative z-10">
-              <h2 className="text-2xl sm:text-3xl font-bold">Ready to <span className="gradient-primary-text">Transform</span> Your Workflow?</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold">Start <span className="gradient-primary-text">Ranking Higher</span> Today</h2>
               <p className="text-muted mt-3 max-w-lg mx-auto">
                 Built for creators, marketers, and SEO teams to research, create, and optimize content in one workspace.
               </p>
