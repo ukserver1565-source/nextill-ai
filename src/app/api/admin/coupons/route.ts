@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const parsed = createCouponSchema.parse(body)
     const coupon = await couponRepo.create({
-      code: parsed.code,
+      code: parsed.code.toUpperCase(),
       discount_type: parsed.discount_type,
       discount_value: parsed.discount_value,
       usage_limit: parsed.usage_limit,

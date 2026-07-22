@@ -160,6 +160,7 @@ const footerColumns = [
     title: "Resources",
     links: [
       { label: "All Tools", href: "/tools" },
+      { label: "How It Works", href: "/how-it-works" },
       { label: "Features", href: "/features" },
       { label: "Pricing", href: "/pricing" },
       { label: "Blog", href: "/blog" },
@@ -169,7 +170,6 @@ const footerColumns = [
     title: "Company",
     links: [
       { label: "About", href: "/about" },
-      { label: "Tools", href: "/tools" },
       { label: "Contact", href: "/contact" },
     ],
   },

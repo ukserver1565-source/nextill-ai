@@ -58,7 +58,7 @@ export default function CouponsPage() {
     setSaving(true)
     try {
       const res = await fetch("/api/admin/coupons", {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formState),
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...formState, code: formState.code.toUpperCase() }),
       })
       if (!res.ok) throw new Error("Failed to create coupon")
       setShowModal(false)
@@ -75,7 +75,7 @@ export default function CouponsPage() {
     setSaving(true)
     try {
       const res = await fetch(`/api/admin/coupons/${editingCoupon.id}`, {
-        method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formState),
+        method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...formState, code: formState.code.toUpperCase() }),
       })
       if (!res.ok) throw new Error("Failed to update coupon")
       setShowModal(false)
@@ -214,7 +214,7 @@ export default function CouponsPage() {
             <div className="space-y-3">
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-[#A7B0C0]">Code</label>
-                <input value={formState.code} onChange={e => setFormState(f => ({ ...f, code: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
+                <input value={formState.code} onChange={e => setFormState(f => ({ ...f, code: e.target.value.toUpperCase() }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" placeholder="e.g. SUMMER2025" autoCapitalize="characters" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
