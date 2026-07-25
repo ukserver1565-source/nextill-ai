@@ -36,7 +36,7 @@ export default function DashboardCredits() {
 
       <div className="glass-card rounded-xl p-6 flex items-center gap-4">
         <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-          <CreditCard className="w-7 h-7 text-white" />
+          <CreditCard className="w-7 h-7 text-foreground" />
         </div>
         <div>
           <p className="text-3xl font-bold">{balance.toLocaleString()}</p>

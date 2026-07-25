@@ -104,7 +104,7 @@ function SignupPageContent() {
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent/20 rounded-full blur-[128px]" />
         <div className="relative z-10 text-center max-w-md px-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent mb-6 shadow-lg shadow-primary/30">
-            <Sparkles className="w-8 h-8 text-white" />
+            <Sparkles className="w-8 h-8 text-foreground" />
           </div>
           <span className="text-4xl font-bold gradient-primary-text">Nextill AI</span>
           <p className="text-muted mt-3 text-lg">Your AI content workflow.</p>
@@ -118,13 +118,13 @@ function SignupPageContent() {
             {/* Mobile Logo */}
             <div className="lg:hidden text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] mb-4">
-                <Sparkles className="w-6 h-6 text-white" />
+                <Sparkles className="w-6 h-6 text-foreground" />
               </div>
             </div>
 
             <div className="text-center">
               <h1 className="text-2xl font-bold text-foreground">Create your account</h1>
-              <p className="text-[#A7B0C0] text-sm mt-1">Get started with Nextill AI — it&apos;s free</p>
+              <p className="text-muted text-sm mt-1">Get started with Nextill AI — it&apos;s free</p>
             </div>
 
             {error && (
@@ -152,7 +152,7 @@ function SignupPageContent() {
 
               {/* Email — with real email validation indicator */}
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-[#A7B0C0]">Email</label>
+                <label className="text-xs font-medium text-muted">Email</label>
                 <div className="relative">
                   <input
                     type="email"
@@ -160,12 +160,12 @@ function SignupPageContent() {
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); setError("") }}
                     required
-                    className={`w-full h-11 px-4 pr-10 rounded-lg bg-[#090B16] border text-sm text-white placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full h-11 px-4 pr-10 rounded-lg bg-background border text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:ring-2 transition-all ${
                       emailLooksFake
                         ? "border-[#EF4444]/50 focus:ring-[#EF4444]/30"
                         : email && !emailLooksFake
                           ? "border-[#22C55E]/50 focus:ring-[#22C55E]/30"
-                          : "border-white/[0.06] focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50"
+                          : "border-border focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50"
                     }`}
                   />
                   {email && (
@@ -182,7 +182,7 @@ function SignupPageContent() {
 
               {/* Password — with border color feedback */}
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-[#A7B0C0]">Password</label>
+                <label className="text-xs font-medium text-muted">Password</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -191,15 +191,15 @@ function SignupPageContent() {
                     onChange={(e) => { setPassword(e.target.value); setError("") }}
                     required
                     minLength={8}
-                    className={`w-full h-11 px-4 pr-11 rounded-lg bg-[#090B16] border text-sm text-white placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 transition-all ${
-                      getPasswordBorderColor() || "border-white/[0.06] focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50"
+                    className={`w-full h-11 px-4 pr-11 rounded-lg bg-background border text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:ring-2 transition-all ${
+                      getPasswordBorderColor() || "border-border focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50"
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-foreground transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -215,7 +215,7 @@ function SignupPageContent() {
 
               {/* Confirm Password */}
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-[#A7B0C0]">Confirm Password</label>
+                <label className="text-xs font-medium text-muted">Confirm Password</label>
                 <div className="relative">
                   <input
                     type={showConfirm ? "text" : "password"}
@@ -224,19 +224,19 @@ function SignupPageContent() {
                     onChange={(e) => { setConfirmPassword(e.target.value); setError("") }}
                     required
                     minLength={8}
-                    className={`w-full h-11 px-4 pr-11 rounded-lg bg-[#090B16] border text-sm text-white placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full h-11 px-4 pr-11 rounded-lg bg-background border text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:ring-2 transition-all ${
                       passwordMismatch
                         ? "border-[#EF4444]/50 focus:ring-[#EF4444]/30"
                         : confirmPassword && !passwordMismatch
                           ? "border-[#22C55E]/50 focus:ring-[#22C55E]/30"
-                          : "border-white/[0.06] focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50"
+                          : "border-border focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50"
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirm(!showConfirm)}
                     aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-foreground transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
                   >
                     {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -251,9 +251,9 @@ function SignupPageContent() {
                   type="checkbox"
                   checked={acceptTerms}
                   onChange={(e) => setAcceptTerms(e.target.checked)}
-                  className="w-4 h-4 mt-0.5 rounded border-white/[0.06] bg-[#090B16] text-[#6D5EF5] focus:ring-[#6D5EF5]/40"
+                  className="w-4 h-4 mt-0.5 rounded border-border bg-background text-[#6D5EF5] focus:ring-[#6D5EF5]/40"
                 />
-                <span className="text-sm text-[#A7B0C0]">
+                <span className="text-sm text-muted">
                   I accept the{" "}
                   <Link href="/terms" className="text-[#6D5EF5] hover:underline">Terms</Link> and{" "}
                   <Link href="/privacy-policy" className="text-[#6D5EF5] hover:underline">Privacy Policy</Link>
@@ -265,7 +265,7 @@ function SignupPageContent() {
               </Button>
             </form>
 
-            <p className="text-center text-sm text-[#A7B0C0]">
+            <p className="text-center text-sm text-muted">
               Already have an account?{" "}
               <Link href={redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : "/login"} className="text-[#6D5EF5] hover:underline font-medium">
                 Sign in

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import localFont from "next/font/local"
+import { Analytics } from "@vercel/analytics/next"
 import { AuthProvider } from "@/lib/auth/AuthProvider"
 import { ThemeProvider } from "@/lib/theme/theme-provider"
 import { ScrollToTop } from "@/components/layout/scroll-to-top"
@@ -131,6 +132,7 @@ export default function RootLayout({
             <main id="main-content">{children}</main>
           </AuthProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   )

@@ -18,10 +18,10 @@ export default function NotFound() {
             <Link href="/" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl gradient-primary text-white text-sm font-medium hover:opacity-90 transition-all">
               <Home className="w-4 h-4" /> Go Home
             </Link>
-            <Link href="/tools" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-foreground text-sm font-medium hover:bg-white/[0.06] transition-all">
+            <Link href="/tools" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border bg-card/30 text-foreground text-sm font-medium hover:bg-white/[0.06] transition-all">
               <Search className="w-4 h-4" /> Browse Tools
             </Link>
-            <Link href="/blog" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-foreground text-sm font-medium hover:bg-white/[0.06] transition-all">
+            <Link href="/blog" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border bg-card/30 text-foreground text-sm font-medium hover:bg-white/[0.06] transition-all">
               <BookOpen className="w-4 h-4" /> Read Blog
             </Link>
           </div>

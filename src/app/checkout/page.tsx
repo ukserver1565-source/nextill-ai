@@ -210,15 +210,15 @@ function CheckoutContent() {
                   <Loader2 className="w-8 h-8 text-yellow-400 animate-spin" />
                 </div>
                 <h2 className="text-2xl font-bold text-foreground mb-2">Payment Under Review</h2>
-                <p className="text-sm text-[#A7B0C0] mb-6 max-w-md mx-auto">{checkoutResult.message}</p>
+                <p className="text-sm text-muted mb-6 max-w-md mx-auto">{checkoutResult.message}</p>
                 {checkoutResult.payment_id && (
-                  <div className="p-3 rounded-lg bg-[#090B16] border border-white/[0.06] mb-6">
-                    <p className="text-[10px] text-[#A7B0C0] mb-1">Reference ID</p>
-                    <p className="text-xs font-mono text-white">{checkoutResult.payment_id}</p>
+                  <div className="p-3 rounded-lg bg-background border border-border mb-6">
+                    <p className="text-[10px] text-muted mb-1">Reference ID</p>
+                    <p className="text-xs font-mono text-foreground">{checkoutResult.payment_id}</p>
                   </div>
                 )}
-                <p className="text-xs text-[#A7B0C0]/60 mb-6">Save this reference ID for your records.</p>
-                <Link href="/dashboard" className="inline-flex items-center gap-2 h-10 px-6 rounded-xl bg-[#6D5EF5] text-white text-sm font-medium hover:brightness-110 transition-all">
+                <p className="text-xs text-muted/60 mb-6">Save this reference ID for your records.</p>
+                <Link href="/dashboard" className="inline-flex items-center gap-2 h-10 px-6 rounded-xl bg-[#6D5EF5] text-foreground text-sm font-medium hover:brightness-110 transition-all">
                   Go to Dashboard
                 </Link>
               </>
@@ -228,8 +228,8 @@ function CheckoutContent() {
                   <Check className="w-8 h-8 text-emerald-400" />
                 </div>
                 <h2 className="text-2xl font-bold text-foreground mb-2">Payment Verified!</h2>
-                <p className="text-sm text-[#A7B0C0] mb-6">Your plan is now active.</p>
-                <Link href="/dashboard" className="inline-flex items-center gap-2 h-10 px-6 rounded-xl bg-[#6D5EF5] text-white text-sm font-medium hover:brightness-110 transition-all">
+                <p className="text-sm text-muted mb-6">Your plan is now active.</p>
+                <Link href="/dashboard" className="inline-flex items-center gap-2 h-10 px-6 rounded-xl bg-[#6D5EF5] text-foreground text-sm font-medium hover:brightness-110 transition-all">
                   Go to Dashboard <ArrowRight className="w-4 h-4" />
                 </Link>
               </>
@@ -247,7 +247,7 @@ function CheckoutContent() {
     return (
       <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-10 sm:pb-16 px-3 sm:px-4">
         <div className="w-full max-w-2xl mx-auto">
-          <button onClick={() => { setStep("review"); setError("") }} className="inline-flex items-center gap-2 text-sm text-[#A7B0C0] hover:text-foreground mb-6 transition-colors">
+          <button onClick={() => { setStep("review"); setError("") }} className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to Checkout
           </button>
 
@@ -262,7 +262,7 @@ function CheckoutContent() {
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">{selectedMethod.name}</p>
-                <p className="text-[11px] text-[#A7B0C0]">{selectedMethod.description}</p>
+                <p className="text-[11px] text-muted">{selectedMethod.description}</p>
               </div>
             </div>
           )}
@@ -278,25 +278,25 @@ function CheckoutContent() {
                   </h3>
                   <div className="space-y-3">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-medium text-[#A7B0C0]">Cardholder Name</label>
+                      <label className="text-[11px] font-medium text-muted">Cardholder Name</label>
                       <input value={cardName} onChange={e => setCardName(e.target.value)} placeholder="John Smith"
-                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-medium text-[#A7B0C0]">Card Number</label>
+                      <label className="text-[11px] font-medium text-muted">Card Number</label>
                       <input value={cardNumber} onChange={e => setCardNumber(formatCardNumber(e.target.value))} placeholder="1234 5678 9012 3456" maxLength={19}
-                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
-                        <label className="text-[11px] font-medium text-[#A7B0C0]">Expiry</label>
+                        <label className="text-[11px] font-medium text-muted">Expiry</label>
                         <input value={cardExpiry} onChange={e => setCardExpiry(formatExpiry(e.target.value))} placeholder="MM/YY" maxLength={5}
-                          className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                          className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[11px] font-medium text-[#A7B0C0]">CVV</label>
+                        <label className="text-[11px] font-medium text-muted">CVV</label>
                         <input value={cardCVV} onChange={e => setCardCVV(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="123" maxLength={4} type="password"
-                          className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                          className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                       </div>
                     </div>
                   </div>
@@ -311,26 +311,26 @@ function CheckoutContent() {
                   </h3>
                   {selectedMethod.qr_code_url && (
                     <div className="mb-4 text-center">
-                      <img src={selectedMethod.qr_code_url} alt={`${selectedMethod.name} QR Code`} className="mx-auto rounded-xl border border-white/[0.06] max-w-[200px]" />
-                      <p className="text-[10px] text-[#A7B0C0] mt-2">Scan QR code or send to the number below</p>
+                      <img src={selectedMethod.qr_code_url} alt={`${selectedMethod.name} QR Code`} className="mx-auto rounded-xl border border-border max-w-[200px]" />
+                      <p className="text-[10px] text-muted mt-2">Scan QR code or send to the number below</p>
                     </div>
                   )}
                   {selectedMethod.wallet_address && (
                     <div className="p-3 rounded-lg bg-[#22C55E]/10 border border-[#22C55E]/20 mb-4">
-                      <p className="text-[10px] text-[#A7B0C0] mb-1">Send payment to:</p>
+                      <p className="text-[10px] text-muted mb-1">Send payment to:</p>
                       <p className="text-sm font-mono font-bold text-foreground">{selectedMethod.wallet_address}</p>
                     </div>
                   )}
                   <div className="space-y-3">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-medium text-[#A7B0C0]">{selectedMethod.name} Registered Phone Number</label>
+                      <label className="text-[11px] font-medium text-muted">{selectedMethod.name} Registered Phone Number</label>
                       <input value={mobileNumber} onChange={e => setMobileNumber(e.target.value)} placeholder="03XX XXXXXXX"
-                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                   </div>
                   {selectedMethod.instructions && (
-                    <div className="mt-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.06]">
-                      <p className="text-[10px] text-[#A7B0C0] whitespace-pre-line">{selectedMethod.instructions}</p>
+                    <div className="mt-3 p-3 rounded-lg bg-white/[0.02] border border-border">
+                      <p className="text-[10px] text-muted whitespace-pre-line">{selectedMethod.instructions}</p>
                     </div>
                   )}
                 </>
@@ -344,30 +344,30 @@ function CheckoutContent() {
                   </h3>
                   {selectedMethod.qr_code_url && (
                     <div className="mb-4 text-center">
-                      <img src={selectedMethod.qr_code_url} alt={`${selectedMethod.name} QR Code`} className="mx-auto rounded-xl border border-white/[0.06] max-w-[200px]" />
+                      <img src={selectedMethod.qr_code_url} alt={`${selectedMethod.name} QR Code`} className="mx-auto rounded-xl border border-border max-w-[200px]" />
                     </div>
                   )}
                   {selectedMethod.wallet_address && (
                     <div className="p-3 rounded-lg bg-[#22C55E]/10 border border-[#22C55E]/20 mb-4">
-                      <p className="text-[10px] text-[#A7B0C0] mb-1">Send payment to:</p>
+                      <p className="text-[10px] text-muted mb-1">Send payment to:</p>
                       <p className="text-sm font-mono font-bold text-foreground">{selectedMethod.wallet_address}</p>
                     </div>
                   )}
                   <div className="space-y-3">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-medium text-[#A7B0C0]">{selectedMethod.name} Account Email</label>
+                      <label className="text-[11px] font-medium text-muted">{selectedMethod.name} Account Email</label>
                       <input type="email" value={accountEmail} onChange={e => setAccountEmail(e.target.value)} placeholder="you@example.com"
-                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-medium text-[#A7B0C0]">{selectedMethod.name} Account ID</label>
+                      <label className="text-[11px] font-medium text-muted">{selectedMethod.name} Account ID</label>
                       <input value={accountId} onChange={e => setAccountId(e.target.value)} placeholder="Your account ID (optional)"
-                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                   </div>
                   {selectedMethod.instructions && (
-                    <div className="mt-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.06]">
-                      <p className="text-[10px] text-[#A7B0C0] whitespace-pre-line">{selectedMethod.instructions}</p>
+                    <div className="mt-3 p-3 rounded-lg bg-white/[0.02] border border-border">
+                      <p className="text-[10px] text-muted whitespace-pre-line">{selectedMethod.instructions}</p>
                     </div>
                   )}
                 </>
@@ -381,26 +381,26 @@ function CheckoutContent() {
                   </h3>
                   {selectedMethod.instructions && (
                     <div className="p-3 rounded-lg bg-[#22C55E]/10 border border-[#22C55E]/20 mb-4">
-                      <p className="text-[10px] font-medium text-[#A7B0C0] mb-1">Bank Details:</p>
+                      <p className="text-[10px] font-medium text-muted mb-1">Bank Details:</p>
                       <p className="text-xs text-foreground whitespace-pre-line font-mono">{selectedMethod.instructions}</p>
                     </div>
                   )}
                   {selectedMethod.wallet_address && (
-                    <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] mb-4">
-                      <p className="text-[10px] text-[#A7B0C0] mb-1">Account Number / IBAN:</p>
+                    <div className="p-3 rounded-lg bg-white/[0.02] border border-border mb-4">
+                      <p className="text-[10px] text-muted mb-1">Account Number / IBAN:</p>
                       <p className="text-sm font-mono font-bold text-foreground">{selectedMethod.wallet_address}</p>
                     </div>
                   )}
                   <div className="space-y-3">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-medium text-[#A7B0C0]">Your Name (as on bank transfer)</label>
+                      <label className="text-[11px] font-medium text-muted">Your Name (as on bank transfer)</label>
                       <input value={bankHolderName} onChange={e => setBankHolderName(e.target.value)} placeholder="John Smith"
-                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-medium text-[#A7B0C0]">Transaction Reference / Last 4 digits</label>
+                      <label className="text-[11px] font-medium text-muted">Transaction Reference / Last 4 digits</label>
                       <input value={bankAccountNumber} onChange={e => setBankAccountNumber(e.target.value)} placeholder="e.g. TX12345 or last 4 digits"
-                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                   </div>
                 </>
@@ -414,31 +414,31 @@ function CheckoutContent() {
                   </h3>
                   {selectedMethod.qr_code_url && (
                     <div className="mb-4 text-center">
-                      <img src={selectedMethod.qr_code_url} alt="Wallet QR Code" className="mx-auto rounded-xl border border-white/[0.06] max-w-[200px]" />
-                      <p className="text-[10px] text-[#A7B0C0] mt-2">Scan QR code to send payment</p>
+                      <img src={selectedMethod.qr_code_url} alt="Wallet QR Code" className="mx-auto rounded-xl border border-border max-w-[200px]" />
+                      <p className="text-[10px] text-muted mt-2">Scan QR code to send payment</p>
                     </div>
                   )}
                   {selectedMethod.wallet_address && (
                     <div className="p-3 rounded-lg bg-[#22C55E]/10 border border-[#22C55E]/20 mb-4">
-                      <p className="text-[10px] text-[#A7B0C0] mb-1">Send crypto to:</p>
+                      <p className="text-[10px] text-muted mb-1">Send crypto to:</p>
                       <p className="text-xs font-mono font-bold text-foreground break-all">{selectedMethod.wallet_address}</p>
                     </div>
                   )}
                   <div className="space-y-3">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-medium text-[#A7B0C0]">Your Wallet Address (from which you sent)</label>
+                      <label className="text-[11px] font-medium text-muted">Your Wallet Address (from which you sent)</label>
                       <input value={walletAddress} onChange={e => setWalletAddress(e.target.value)} placeholder="0x... or bc1..."
-                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-medium text-[#A7B0C0]">Transaction Hash (optional)</label>
+                      <label className="text-[11px] font-medium text-muted">Transaction Hash (optional)</label>
                       <input value={txHash} onChange={e => setTxHash(e.target.value)} placeholder="Paste tx hash for faster verification"
-                        className="w-full h-11 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                   </div>
                   {selectedMethod.instructions && (
-                    <div className="mt-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.06]">
-                      <p className="text-[10px] text-[#A7B0C0] whitespace-pre-line">{selectedMethod.instructions}</p>
+                    <div className="mt-3 p-3 rounded-lg bg-white/[0.02] border border-border">
+                      <p className="text-[10px] text-muted whitespace-pre-line">{selectedMethod.instructions}</p>
                     </div>
                   )}
                 </>
@@ -453,28 +453,28 @@ function CheckoutContent() {
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-sm text-[#A7B0C0]">Plan</span>
+                <span className="text-sm text-muted">Plan</span>
                 <span className="text-sm font-medium text-foreground">{plan.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-[#A7B0C0]">Billing</span>
+                <span className="text-sm text-muted">Billing</span>
                 <span className="text-sm text-foreground capitalize">{billing}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-[#A7B0C0]">Credits</span>
+                <span className="text-sm text-muted">Credits</span>
                 <span className="text-sm text-foreground">{plan.credits.toLocaleString()}/month</span>
               </div>
               {couponResult?.valid && (
                 <div className="flex justify-between">
-                  <span className="text-sm text-[#A7B0C0]">Discount ({couponResult.type === "percentage" ? `${couponResult.discount}%` : `$${couponResult.discount}`})</span>
+                  <span className="text-sm text-muted">Discount ({couponResult.type === "percentage" ? `${couponResult.discount}%` : `$${couponResult.discount}`})</span>
                   <span className="text-sm font-medium text-emerald-400">-${discountAmount.toFixed(2)}</span>
                 </div>
               )}
-              <div className="flex justify-between pt-3 border-t border-white/[0.06]">
+              <div className="flex justify-between pt-3 border-t border-border">
                 <span className="text-sm font-semibold text-foreground">Total</span>
                 <span className="text-xl font-bold text-foreground">
                   ${finalPrice}
-                  <span className="text-xs font-normal text-[#A7B0C0]">/{billing === "yearly" ? "year" : "month"}</span>
+                  <span className="text-xs font-normal text-muted">/{billing === "yearly" ? "year" : "month"}</span>
                 </span>
               </div>
             </div>
@@ -489,7 +489,7 @@ function CheckoutContent() {
 
           {/* Confirm Payment */}
           <button onClick={handleCheckout} disabled={processing}
-            className="w-full h-12 rounded-xl bg-gradient-to-r from-[#6D5EF5] to-[#4CC9F0] text-white font-medium flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50 shadow-lg shadow-[#6D5EF5]/20">
+            className="w-full h-12 rounded-xl bg-gradient-to-r from-[#6D5EF5] to-[#4CC9F0] text-foreground font-medium flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50 shadow-lg shadow-[#6D5EF5]/20">
             {processing ? (
               <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
             ) : (
@@ -497,7 +497,7 @@ function CheckoutContent() {
             )}
           </button>
 
-          <div className="flex items-center justify-center gap-2 mt-4 text-xs text-[#A7B0C0]/60">
+          <div className="flex items-center justify-center gap-2 mt-4 text-xs text-muted/60">
             <Shield className="w-3 h-3" />
             <span>Secure checkout · Your payment info is encrypted</span>
           </div>
@@ -512,7 +512,7 @@ function CheckoutContent() {
   return (
     <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-10 sm:pb-16 px-3 sm:px-4">
       <div className="w-full max-w-2xl mx-auto">
-        <Link href="/pricing" className="inline-flex items-center gap-2 text-sm text-[#A7B0C0] hover:text-foreground mb-6 transition-colors">
+        <Link href="/pricing" className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Pricing
         </Link>
 
@@ -526,11 +526,11 @@ function CheckoutContent() {
           {/* Billing Toggle */}
           <div className="flex items-center gap-3 mb-6">
             <button onClick={() => setBilling("monthly")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${billing === "monthly" ? "bg-[#6D5EF5] text-white" : "text-[#A7B0C0] hover:text-foreground"}`}>
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${billing === "monthly" ? "bg-[#6D5EF5] text-foreground" : "text-muted hover:text-foreground"}`}>
               Monthly
             </button>
             <button onClick={() => setBilling("yearly")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${billing === "yearly" ? "bg-[#6D5EF5] text-white" : "text-[#A7B0C0] hover:text-foreground"}`}>
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${billing === "yearly" ? "bg-[#6D5EF5] text-foreground" : "text-muted hover:text-foreground"}`}>
               Yearly
               <span className="ml-1.5 text-[10px] font-bold text-emerald-400">Save 2 months</span>
             </button>
@@ -540,7 +540,7 @@ function CheckoutContent() {
           <div className="flex items-baseline gap-2 mb-4">
             {couponResult?.valid && finalPrice !== price ? (
               <>
-                <span className="text-lg text-[#A7B0C0] line-through">${price}</span>
+                <span className="text-lg text-muted line-through">${price}</span>
                 <span className="text-3xl font-bold text-emerald-400">${finalPrice}</span>
               </>
             ) : (
@@ -573,9 +573,9 @@ function CheckoutContent() {
               <input type="text" value={couponCode}
                 onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponResult(null) }}
                 placeholder="Enter coupon code"
-                className="flex-1 h-10 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 font-mono uppercase" />
+                className="flex-1 h-10 px-3 rounded-lg bg-background border border-border text-sm text-foreground placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 font-mono uppercase" />
               <button onClick={validateCoupon} disabled={couponLoading || !couponCode.trim()}
-                className="h-10 px-4 rounded-lg bg-[#6D5EF5] text-white text-xs font-medium hover:brightness-110 transition-all disabled:opacity-50">
+                className="h-10 px-4 rounded-lg bg-[#6D5EF5] text-foreground text-xs font-medium hover:brightness-110 transition-all disabled:opacity-50">
                 {couponLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Apply"}
               </button>
             </div>
@@ -602,17 +602,17 @@ function CheckoutContent() {
                 return (
                   <button key={method.id} onClick={() => setSelectedPaymentId(method.id)}
                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
-                      isSelected ? "bg-[#6D5EF5]/10 border-[#6D5EF5]/40" : "bg-[#090B16] border-white/[0.06] hover:border-white/[0.12]"
+                      isSelected ? "bg-[#6D5EF5]/10 border-[#6D5EF5]/40" : "bg-background border-border hover:border-white/[0.12]"
                     }`}>
-                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? "bg-[#6D5EF5]/20" : "bg-white/[0.04]"}`}>
-                      <IconComponent className={`w-4 h-4 ${isSelected ? "text-[#6D5EF5]" : "text-[#A7B0C0]"}`} />
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? "bg-[#6D5EF5]/20" : "bg-card/40"}`}>
+                      <IconComponent className={`w-4 h-4 ${isSelected ? "text-[#6D5EF5]" : "text-muted"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${isSelected ? "text-foreground" : "text-[#A7B0C0]"}`}>{method.name}</p>
-                      <p className="text-[11px] text-[#A7B0C0]/70 truncate">{method.description}</p>
+                      <p className={`text-sm font-medium ${isSelected ? "text-foreground" : "text-muted"}`}>{method.name}</p>
+                      <p className="text-[11px] text-muted/70 truncate">{method.description}</p>
                     </div>
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${isSelected ? "border-[#6D5EF5] bg-[#6D5EF5]" : "border-white/20"}`}>
-                      {isSelected && <Check className="w-3 h-3 text-white" />}
+                      {isSelected && <Check className="w-3 h-3 text-foreground" />}
                     </div>
                   </button>
                 )
@@ -638,7 +638,7 @@ function CheckoutContent() {
         {/* Proceed to Payment Button */}
         <button onClick={() => { setStep("payment"); setError("") }}
           disabled={isFree || (!isFree && paymentMethods.length > 0 && !selectedPaymentId)}
-          className="w-full h-12 rounded-xl bg-gradient-to-r from-[#6D5EF5] to-[#4CC9F0] text-white font-medium flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50">
+          className="w-full h-12 rounded-xl bg-gradient-to-r from-[#6D5EF5] to-[#4CC9F0] text-foreground font-medium flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50">
           {isFree ? (
             "Get Started Free"
           ) : (
@@ -651,7 +651,7 @@ function CheckoutContent() {
         </button>
 
         {/* Security Note */}
-        <div className="flex items-center justify-center gap-2 mt-4 text-xs text-[#A7B0C0]/60">
+        <div className="flex items-center justify-center gap-2 mt-4 text-xs text-muted/60">
           <Shield className="w-3 h-3" />
           <span>Secure checkout powered by your payment provider</span>
         </div>

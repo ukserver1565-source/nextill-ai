@@ -119,7 +119,7 @@ function BillingContent() {
           <AlertTriangle className="w-5 h-5 text-[#F59E0B] shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-medium text-[#F59E0B]">Insufficient Credits</p>
-            <p className="text-xs text-[#A7B0C0] mt-1">
+            <p className="text-xs text-muted mt-1">
               You need {requiredCredits} credits but only have {availableCredits}. Add a payment method below to upgrade your plan and get more credits.
             </p>
           </div>
@@ -166,7 +166,7 @@ function BillingContent() {
               <p className="text-sm text-muted mb-4">
                 You are currently on the Free plan. Upgrade to unlock premium AI tools and higher credit limits.
               </p>
-              <Link href="/pricing" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-sm font-medium hover:opacity-90 transition-opacity">
+              <Link href="/pricing" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-foreground text-sm font-medium hover:opacity-90 transition-opacity">
                 View Plans <ExternalLink className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -206,9 +206,9 @@ function BillingContent() {
 
             {paymentMethods.length === 0 && !showAddForm ? (
               <div className="text-center py-8">
-                <CreditCard className="w-10 h-10 text-[#A7B0C0]/30 mx-auto mb-3" />
+                <CreditCard className="w-10 h-10 text-muted/30 mx-auto mb-3" />
                 <p className="text-sm text-muted mb-1">No payment methods on file</p>
-                <p className="text-xs text-[#A7B0C0]/60">Add a card to enable premium plan purchases.</p>
+                <p className="text-xs text-muted/60">Add a card to enable premium plan purchases.</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -217,12 +217,12 @@ function BillingContent() {
                   return (
                     <div key={method.id} className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-[#151C2E] border border-white/[0.06] flex items-center justify-center">
-                          <Icon className="w-5 h-5 text-[#A7B0C0]" />
+                        <div className="w-10 h-10 rounded-lg bg-card border border-border flex items-center justify-center">
+                          <Icon className="w-5 h-5 text-muted" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-foreground">{method.name}</p>
-                          <p className="text-xs text-[#A7B0C0]">
+                          <p className="text-xs text-muted">
                             {method.brand || method.type}
                             {method.is_default && <span className="ml-2 text-[#22C55E]">• Default</span>}
                           </p>
@@ -240,7 +240,7 @@ function BillingContent() {
                         <button
                           onClick={() => removePaymentMethod(method.id)}
                           aria-label="Remove payment method"
-                          className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors"
+                          className="p-1.5 rounded-lg text-muted hover:text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -257,47 +257,47 @@ function BillingContent() {
                 <h3 className="text-xs font-semibold text-foreground mb-2">Add Payment Card</h3>
                 {addError && <p className="text-xs text-[#EF4444]">{addError}</p>}
                 <div>
-                  <label className="text-[10px] text-[#A7B0C0] mb-1 block">Cardholder Name</label>
+                  <label className="text-[10px] text-muted mb-1 block">Cardholder Name</label>
                   <input
                     type="text"
                     value={newCard.name}
                     onChange={(e) => setNewCard({ ...newCard, name: e.target.value })}
                     placeholder="John Doe"
-                    className="w-full h-9 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-xs text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50"
+                    className="w-full h-9 px-3 rounded-lg bg-background border border-border text-xs text-foreground placeholder-muted focus:outline-none focus:border-[#6D5EF5]/50"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-[#A7B0C0] mb-1 block">Card Number</label>
+                  <label className="text-[10px] text-muted mb-1 block">Card Number</label>
                   <input
                     type="text"
                     value={newCard.number}
                     onChange={(e) => setNewCard({ ...newCard, number: e.target.value.replace(/\D/g, "").slice(0, 16) })}
                     placeholder="4242 4242 4242 4242"
                     maxLength={16}
-                    className="w-full h-9 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-xs text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 font-mono"
+                    className="w-full h-9 px-3 rounded-lg bg-background border border-border text-xs text-foreground placeholder-muted focus:outline-none focus:border-[#6D5EF5]/50 font-mono"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] text-[#A7B0C0] mb-1 block">Expiry</label>
+                    <label className="text-[10px] text-muted mb-1 block">Expiry</label>
                     <input
                       type="text"
                       value={newCard.expiry}
                       onChange={(e) => setNewCard({ ...newCard, expiry: e.target.value.replace(/\D/g, "").slice(0, 4) })}
                       placeholder="MM/YY"
                       maxLength={5}
-                      className="w-full h-9 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-xs text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 font-mono"
+                      className="w-full h-9 px-3 rounded-lg bg-background border border-border text-xs text-foreground placeholder-muted focus:outline-none focus:border-[#6D5EF5]/50 font-mono"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] text-[#A7B0C0] mb-1 block">CVC</label>
+                    <label className="text-[10px] text-muted mb-1 block">CVC</label>
                     <input
                       type="text"
                       value={newCard.cvc}
                       onChange={(e) => setNewCard({ ...newCard, cvc: e.target.value.replace(/\D/g, "").slice(0, 4) })}
                       placeholder="123"
                       maxLength={4}
-                      className="w-full h-9 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-xs text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 font-mono"
+                      className="w-full h-9 px-3 rounded-lg bg-background border border-border text-xs text-foreground placeholder-muted focus:outline-none focus:border-[#6D5EF5]/50 font-mono"
                     />
                   </div>
                 </div>
@@ -305,19 +305,19 @@ function BillingContent() {
                   <button
                     onClick={handleAddCard}
                     disabled={adding}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#6D5EF5] text-white text-xs font-medium hover:brightness-110 transition-all disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#6D5EF5] text-foreground text-xs font-medium hover:brightness-110 transition-all disabled:opacity-50"
                   >
                     {adding ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                     {adding ? "Adding..." : "Add Card"}
                   </button>
                   <button
                     onClick={() => { setShowAddForm(false); setAddError("") }}
-                    className="px-4 py-2 rounded-lg border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-foreground transition-colors"
+                    className="px-4 py-2 rounded-lg border border-border text-xs text-muted hover:text-foreground transition-colors"
                   >
                     Cancel
                   </button>
                 </div>
-                <p className="text-[10px] text-[#A7B0C0]/60">
+                <p className="text-[10px] text-muted/60">
                   Test mode — card details are not sent to a real payment processor. Connect Stripe/PayPal in production.
                 </p>
               </div>

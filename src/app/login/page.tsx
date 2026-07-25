@@ -62,7 +62,7 @@ function LoginPageContent() {
         <div className="absolute bottom-1/3 left-1/3 w-3 h-3 bg-primary/40 rounded-full" />
         <div className="relative z-10 text-center max-w-md px-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent mb-6 shadow-lg shadow-primary/30">
-            <Sparkles className="w-8 h-8 text-white" />
+            <Sparkles className="w-8 h-8 text-foreground" />
           </div>
           <span className="text-4xl font-bold gradient-primary-text">Nextill AI</span>
           <p className="text-muted mt-3 text-lg">Your AI content workflow.</p>
@@ -77,7 +77,7 @@ function LoginPageContent() {
             {/* Mobile Logo */}
             <div className="lg:hidden text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent mb-4">
-                <Sparkles className="w-6 h-6 text-white" />
+                <Sparkles className="w-6 h-6 text-foreground" />
               </div>
             </div>
 
@@ -113,7 +113,7 @@ function LoginPageContent() {
               />
 
               <div className="space-y-2">
-                <label className="text-xs font-medium text-[#A7B0C0]">Password</label>
+                <label className="text-xs font-medium text-muted">Password</label>
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
@@ -127,7 +127,7 @@ function LoginPageContent() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-foreground transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>

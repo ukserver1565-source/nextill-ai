@@ -116,7 +116,7 @@ export default function Dashboard() {
   }
 
   const statusColors: Record<string, string> = {
-    draft: "bg-[#A7B0C0]/10 text-[#A7B0C0]",
+    draft: "bg-[#A7B0C0]/10 text-muted",
     published: "bg-[#22C55E]/10 text-[#22C55E]",
     processing: "bg-[#F59E0B]/10 text-[#F59E0B]",
     failed: "bg-[#EF4444]/10 text-[#EF4444]",
@@ -136,12 +136,12 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
               {clientDate ? clientDate.split("|")[0] : "Hello"}, {userName.split(" ")[0]}
             </h1>
-            <p className="text-sm text-[#A7B0C0] mt-1">{clientDate ? clientDate.split("|")[1] : ""}</p>
+            <p className="text-sm text-muted mt-1">{clientDate ? clientDate.split("|")[1] : ""}</p>
           </div>
-          <div className="flex items-center gap-2 bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl px-4 py-2.5">
+          <div className="flex items-center gap-2 bg-card/80 backdrop-blur-xl border border-border rounded-xl px-4 py-2.5">
             <Sparkles className="w-4 h-4 text-[#6D5EF5]" />
-            <span className="text-sm font-medium text-white">{creditBalance}</span>
-            <span className="text-xs text-[#A7B0C0]">credits left</span>
+            <span className="text-sm font-medium text-foreground">{creditBalance}</span>
+            <span className="text-xs text-muted">credits left</span>
           </div>
         </div>
       </motion.div>
@@ -155,13 +155,13 @@ export default function Dashboard() {
       </motion.div>
 
       <motion.div variants={itemVariants} className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6">
+        <div className="bg-card/80 backdrop-blur-xl border border-border rounded-xl p-6">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <FileIcon className="w-4 h-4 text-[#6D5EF5]" />
               Recent Documents
             </h2>
-            <span className="text-[10px] text-[#A7B0C0] bg-white/[0.04] px-2 py-1 rounded-md">{documents.length} total</span>
+            <span className="text-[10px] text-muted bg-card/40 px-2 py-1 rounded-md">{documents.length} total</span>
           </div>
           {documents.length > 0 ? (
             <div className="space-y-1">
@@ -171,25 +171,25 @@ export default function Dashboard() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-white/[0.03] transition-colors group cursor-pointer"
+                  className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-card-hover transition-colors group cursor-pointer"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-8 h-8 rounded-lg bg-[#6D5EF5]/10 border border-[#6D5EF5]/20 flex items-center justify-center shrink-0">
                       <FileText className="w-4 h-4 text-[#6D5EF5]" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm text-white truncate max-w-[220px]">{doc.title || "Untitled"}</p>
+                      <p className="text-sm text-foreground truncate max-w-[220px]">{doc.title || "Untitled"}</p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className={cn("text-[10px] px-1.5 py-0.5 rounded", docTypeColors[doc.type] || "bg-white/[0.04] text-[#A7B0C0]")}>
+                        <span className={cn("text-[10px] px-1.5 py-0.5 rounded", docTypeColors[doc.type] || "bg-card/40 text-muted")}>
                           {doc.type || "document"}
                         </span>
-                        <span className={cn("text-[10px] px-1.5 py-0.5 rounded", statusColors[doc.status] || "bg-white/[0.04] text-[#A7B0C0]")}>
+                        <span className={cn("text-[10px] px-1.5 py-0.5 rounded", statusColors[doc.status] || "bg-card/40 text-muted")}>
                           {doc.status || "draft"}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <span className="text-[11px] text-[#A7B0C0] shrink-0">
+                  <span className="text-[11px] text-muted shrink-0">
                     {doc.updated_at ? new Date(doc.updated_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "N/A"}
                   </span>
                 </motion.div>
@@ -200,10 +200,10 @@ export default function Dashboard() {
               <div className="w-14 h-14 rounded-xl bg-[#6D5EF5]/10 border border-[#6D5EF5]/20 flex items-center justify-center mb-4">
                 <FileText className="w-6 h-6 text-[#6D5EF5]" />
               </div>
-              <p className="text-sm text-white font-medium mb-1">No documents yet</p>
-              <p className="text-xs text-[#A7B0C0] mb-4">Generate your first SEO-optimized post to get started</p>
+              <p className="text-sm text-foreground font-medium mb-1">No documents yet</p>
+              <p className="text-xs text-muted mb-4">Generate your first SEO-optimized post to get started</p>
               <Link href="/post-generator">
-                <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#6D5EF5] text-white text-xs font-medium hover:brightness-110 transition-all">
+                <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#6D5EF5] text-foreground text-xs font-medium hover:brightness-110 transition-all">
                   <Sparkles className="w-3.5 h-3.5" />
                   Create your first post
                 </span>
@@ -212,13 +212,13 @@ export default function Dashboard() {
           )}
         </div>
 
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6">
+        <div className="bg-card/80 backdrop-blur-xl border border-border rounded-xl p-6">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <Zap className="w-4 h-4 text-[#F59E0B]" />
               Credit Usage
             </h2>
-            <span className="text-[10px] text-[#A7B0C0] bg-white/[0.04] px-2 py-1 rounded-md">
+            <span className="text-[10px] text-muted bg-card/40 px-2 py-1 rounded-md">
               {creditBalance} remaining
             </span>
           </div>
@@ -244,16 +244,16 @@ export default function Dashboard() {
                 </defs>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-bold text-white">{creditPercent}%</span>
-                <span className="text-[10px] text-[#A7B0C0]">used</span>
+                <span className="text-2xl font-bold text-foreground">{creditPercent}%</span>
+                <span className="text-[10px] text-muted">used</span>
               </div>
             </div>
             <div className="w-full max-w-xs space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[#A7B0C0]">Used</span>
-                <span className="text-white font-medium">{creditUsed.toLocaleString()}</span>
+                <span className="text-muted">Used</span>
+                <span className="text-foreground font-medium">{creditUsed.toLocaleString()}</span>
               </div>
-              <div className="w-full h-2 rounded-full bg-white/[0.06] overflow-hidden">
+              <div className="w-full h-2 rounded-full bg-card/60 overflow-hidden">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-[#6D5EF5] to-[#4CC9F0]"
                   initial={{ width: 0 }}
@@ -262,8 +262,8 @@ export default function Dashboard() {
                 />
               </div>
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[#A7B0C0]">Limit</span>
-                <span className="text-white font-medium">{creditLimit.toLocaleString()}</span>
+                <span className="text-muted">Limit</span>
+                <span className="text-foreground font-medium">{creditLimit.toLocaleString()}</span>
               </div>
             </div>
           </div>

@@ -32,7 +32,7 @@ export default function UnauthorizedPage() {
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold text-white mb-2">Access Denied</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-2">Access Denied</h1>
             <p className="text-sm text-muted leading-relaxed">
               You don&apos;t have permission to access this page.
             </p>
@@ -55,7 +55,7 @@ export default function UnauthorizedPage() {
                   {primaryLabel}
                 </Button>
               </Link>
-              <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-white transition-colors">
+              <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors">
                 <Home className="w-4 h-4" /> Back to Home
               </Link>
               {isLoggedIn && (

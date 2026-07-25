@@ -155,7 +155,7 @@ export default function DashboardProjects() {
                 </div>
                 <h2 className="text-lg font-bold">{selectedProject.name}</h2>
               </div>
-              <button onClick={() => setSelectedProject(null)} aria-label="Close project details" className="p-1 rounded text-muted hover:text-white">
+              <button onClick={() => setSelectedProject(null)} aria-label="Close project details" className="p-1 rounded text-muted hover:text-foreground">
                 <X className="w-4 h-4" />
               </button>
             </div>

@@ -106,17 +106,17 @@ export default function ResetPasswordPage() {
         <div className="liquid-glass-card rounded-xl p-8 space-y-6">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] mb-4 shadow-lg shadow-[#6D5EF5]/30">
-              <Sparkles className="w-7 h-7 text-white" />
+              <Sparkles className="w-7 h-7 text-foreground" />
             </div>
             <h1 className="text-2xl font-bold text-foreground">Reset your password</h1>
-            <p className="text-[#A7B0C0] text-sm mt-1">
+            <p className="text-muted text-sm mt-1">
               {recoveryMode ? "Enter your new password" : "Enter your email to receive a reset link"}
             </p>
           </div>
 
           {checking && (
             <div className="flex justify-center py-4">
-              <Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" />
+              <Loader2 className="w-6 h-6 animate-spin text-muted" />
             </div>
           )}
 
@@ -132,7 +132,7 @@ export default function ResetPasswordPage() {
                 <CheckCircle2 className="w-8 h-8 text-green-400" />
               </div>
               <p className="text-foreground font-medium">Check your email</p>
-              <p className="text-sm text-[#A7B0C0]">
+              <p className="text-sm text-muted">
                 We&apos;ve sent a reset link to <span className="text-foreground">{email}</span>
               </p>
               <Button
@@ -155,7 +155,7 @@ export default function ResetPasswordPage() {
           ) : recoveryMode ? (
             <form onSubmit={handleUpdatePassword} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs font-medium text-[#A7B0C0]">New Password</label>
+                <label className="text-xs font-medium text-muted">New Password</label>
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
@@ -169,7 +169,7 @@ export default function ResetPasswordPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-foreground transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>

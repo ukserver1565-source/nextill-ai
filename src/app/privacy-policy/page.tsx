@@ -223,7 +223,7 @@ export default function PrivacyPolicyPage() {
                 <Link href="/contact" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-white font-semibold text-base hover:opacity-90 transition-all">
                   Contact Us
                 </Link>
-                <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-foreground font-semibold text-base hover:bg-white/[0.06] transition-all">
+                <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl border border-border bg-card/30 text-foreground font-semibold text-base hover:bg-white/[0.06] transition-all">
                   Get Started Free
                 </Link>
               </div>

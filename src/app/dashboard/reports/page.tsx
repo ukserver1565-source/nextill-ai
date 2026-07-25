@@ -43,8 +43,8 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Reports</h1>
-        <p className="text-sm text-[#A7B0C0] mt-1">Your saved Domain Intelligence reports</p>
+        <h1 className="text-2xl font-bold text-foreground">Reports</h1>
+        <p className="text-sm text-muted mt-1">Your saved Domain Intelligence reports</p>
       </div>
 
       {loading && (
@@ -62,8 +62,8 @@ export default function ReportsPage() {
 
       {!loading && !error && reports.length === 0 && (
         <div className="text-center py-20">
-          <Inbox className="w-12 h-12 text-[#A7B0C0]/30 mx-auto mb-3" />
-          <p className="text-sm text-[#A7B0C0]">No reports yet</p>
+          <Inbox className="w-12 h-12 text-muted/30 mx-auto mb-3" />
+          <p className="text-sm text-muted">No reports yet</p>
           <Link href="/domain-overview" className="inline-block mt-3 text-xs text-[#6D5EF5] hover:underline">
             Analyze a domain to create your first report
           </Link>
@@ -75,16 +75,16 @@ export default function ReportsPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/[0.06]">
-                <th className="text-left p-4 text-xs text-[#A7B0C0] font-medium uppercase">Domain</th>
-                <th className="text-left p-4 text-xs text-[#A7B0C0] font-medium uppercase">Created</th>
-                <th className="text-right p-4 text-xs text-[#A7B0C0] font-medium uppercase">Actions</th>
+                <th className="text-left p-4 text-xs text-muted font-medium uppercase">Domain</th>
+                <th className="text-left p-4 text-xs text-muted font-medium uppercase">Created</th>
+                <th className="text-right p-4 text-xs text-muted font-medium uppercase">Actions</th>
               </tr>
             </thead>
             <tbody>
               {reports.map(r => (
                 <tr key={r.id} className="border-b border-white/[0.03] hover:bg-white/[0.02]">
-                  <td className="p-4 text-white font-medium">{r.domain}</td>
-                  <td className="p-4 text-[#A7B0C0] text-xs">{new Date(r.created_at).toLocaleDateString()}</td>
+                  <td className="p-4 text-foreground font-medium">{r.domain}</td>
+                  <td className="p-4 text-muted text-xs">{new Date(r.created_at).toLocaleDateString()}</td>
                   <td className="p-4 text-right">
                     <a href={`/domain-overview?domain=${encodeURIComponent(r.domain)}`}
                       className="inline-flex items-center gap-1 text-xs text-[#6D5EF5] hover:underline">
