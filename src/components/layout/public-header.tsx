@@ -69,6 +69,7 @@ export function PublicHeader() {
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
                 className="flex items-center gap-2 pl-2 pr-2 py-1 rounded-lg hover:bg-[#151C2E] transition-colors border-l border-white/[0.06]"
+                aria-label="User menu"
               >
                 <Avatar fallback={initials} size="sm" />
                 <div className="hidden sm:block text-left">

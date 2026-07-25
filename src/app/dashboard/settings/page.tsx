@@ -42,9 +42,9 @@ export default function DashboardSettings() {
       </div>
 
       <div className="glass-card rounded-xl p-5 space-y-4">
-        <h3 className="text-sm font-semibold flex items-center gap-2">
+        <h2 className="text-sm font-semibold flex items-center gap-2">
           <User className="w-4 h-4 text-primary-light" /> Profile
-        </h3>
+        </h2>
 
         <div className="space-y-2">
           <label className="text-xs font-medium text-muted">Full Name</label>
@@ -62,9 +62,9 @@ export default function DashboardSettings() {
       </div>
 
       <div className="glass-card rounded-xl p-5 space-y-3">
-        <h3 className="text-sm font-semibold flex items-center gap-2">
+        <h2 className="text-sm font-semibold flex items-center gap-2">
           <Shield className="w-4 h-4 text-primary-light" /> Account
-        </h3>
+        </h2>
         <div className="flex items-center justify-between py-2">
           <div>
             <p className="text-xs font-medium">Role</p>

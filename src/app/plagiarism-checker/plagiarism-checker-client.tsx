@@ -568,7 +568,7 @@ function PlagiarismCheckerContent() {
                   <h1 className="text-lg font-bold tracking-tight text-white">Plagiarism & Authenticity</h1>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
-                    <p className="text-xs text-[#5A6577]">Originality scanner</p>
+                    <p className="text-xs text-[#8895A7]">Originality scanner</p>
                   </div>
                 </div>
               </div>
@@ -605,7 +605,7 @@ function PlagiarismCheckerContent() {
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         rows={10}
-                        className="w-full rounded-xl bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 border border-white/[0.06] px-4 py-3.5 text-sm text-white placeholder:text-[#5A6577]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-2 focus:ring-[#6D5EF5]/12 transition-all resize-none"
+                        className="w-full rounded-xl bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 border border-white/[0.06] px-4 py-3.5 text-sm text-white placeholder:text-[#8895A7]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-2 focus:ring-[#6D5EF5]/12 transition-all resize-none"
                       />
                     </div>
                     <div className="flex items-center justify-between">
@@ -668,7 +668,7 @@ function PlagiarismCheckerContent() {
                 className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 shadow-sm"
               >
                 <div className="flex items-center justify-between mb-3 pb-3 border-b border-white/[0.04]">
-                  <span className="text-xs text-[#5A6577]">Status</span>
+                  <span className="text-xs text-[#8895A7]">Status</span>
                   <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#22C55E]">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] shadow-[0_0_6px_rgba(34,197,94,0.5)]" />
                     Checked
@@ -676,19 +676,19 @@ function PlagiarismCheckerContent() {
                 </div>
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#5A6577]">Originality</span>
+                    <span className="text-xs text-[#8895A7]">Originality</span>
                     <span className="text-sm font-semibold text-white">{result.originalityScore}%</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#5A6577]">Words Checked</span>
+                    <span className="text-xs text-[#8895A7]">Words Checked</span>
                     <span className="text-sm font-semibold text-white">{result.wordCount.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#5A6577]">Matches</span>
+                    <span className="text-xs text-[#8895A7]">Matches</span>
                     <span className="text-sm font-semibold text-[#EF4444]">{result.matchedPhrases.length}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#5A6577]">Engine</span>
+                    <span className="text-xs text-[#8895A7]">Engine</span>
                     <span className={`text-[10px] font-medium px-2.5 py-1 rounded-full border ${
                       apiAvailable === false
                         ? "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
@@ -702,7 +702,7 @@ function PlagiarismCheckerContent() {
             {/* New Check */}
             {hasResult && (
               <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={handleNewCheck}
-                className="w-full h-11 rounded-2xl border border-dashed border-white/[0.08] text-xs text-[#5A6577] hover:text-white hover:border-white/[0.15] hover:bg-white/[0.02] transition-all"
+                className="w-full h-11 rounded-2xl border border-dashed border-white/[0.08] text-xs text-[#8895A7] hover:text-white hover:border-white/[0.15] hover:bg-white/[0.02] transition-all"
               >
                 + New Check
               </motion.button>
@@ -721,7 +721,7 @@ function PlagiarismCheckerContent() {
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold text-white">Scanning Content</h3>
-                    <p className="text-[11px] text-[#5A6577]">Checking against billions of web sources...</p>
+                    <p className="text-[11px] text-[#8895A7]">Checking against billions of web sources...</p>
                   </div>
                 </div>
                 <LoadingSkeleton />
@@ -764,7 +764,7 @@ function PlagiarismCheckerContent() {
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-[#F59E0B]">API Not Configured</p>
                     <p className="text-xs text-[#A7B0C0] mt-1 leading-relaxed">{apiMessage || "Connect a real plagiarism detection API for accurate web-based scanning."}</p>
-                    <p className="text-xs text-[#5A6577] mt-2 italic">Results shown are from local internal analysis only (self-duplication detection) and do not represent full web-based plagiarism scanning.</p>
+                    <p className="text-xs text-[#8895A7] mt-2 italic">Results shown are from local internal analysis only (self-duplication detection) and do not represent full web-based plagiarism scanning.</p>
                   </div>
                 </motion.div>
               )}
@@ -785,7 +785,7 @@ export default function PlagiarismCheckerPage() {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/10 border border-[#6D5EF5]/20 flex items-center justify-center">
             <Loader2 className="w-5 h-5 text-[#6D5EF5] animate-spin" />
           </div>
-          <p className="text-sm text-[#5A6577]">Loading Plagiarism & Authenticity...</p>
+          <p className="text-sm text-[#8895A7]">Loading Plagiarism & Authenticity...</p>
         </div>
       </div>
     }>

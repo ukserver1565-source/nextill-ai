@@ -185,7 +185,7 @@ export default function UsersPage() {
       {error && (
         <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4 flex items-center justify-between">
           <p className="text-sm text-[#EF4444]">{error}</p>
-          <button onClick={() => setError("")} className="text-[#EF4444] hover:text-white"><X className="w-4 h-4" /></button>
+          <button onClick={() => setError("")} className="text-[#EF4444] hover:text-white" aria-label="Dismiss error"><X className="w-4 h-4" /></button>
         </div>
       )}
 
@@ -287,13 +287,13 @@ export default function UsersPage() {
                     <td className="p-4 text-xs text-[#A7B0C0]">{user.created_at ? new Date(user.created_at).toLocaleDateString("en-US") : "—"}</td>
                     <td className="p-4 text-right" onClick={e => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => openDetail(user)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all" title="View details">
+                        <button onClick={() => openDetail(user)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all" title="View details" aria-label="View user details">
                           <Eye className="w-3.5 h-3.5" />
                         </button>
-                        <button onClick={() => handleUpdateProfile(user.id, { status: user.status === "suspended" ? "active" : "suspended" })} className={`p-1.5 rounded-lg hover:bg-white/[0.06] transition-all ${user.status === "suspended" ? "text-[#22C55E] hover:text-[#22C55E]" : "text-[#A7B0C0] hover:text-[#EF4444]"}`} title={user.status === "suspended" ? "Unblock" : "Block"}>
+                        <button onClick={() => handleUpdateProfile(user.id, { status: user.status === "suspended" ? "active" : "suspended" })} className={`p-1.5 rounded-lg hover:bg-white/[0.06] transition-all ${user.status === "suspended" ? "text-[#22C55E] hover:text-[#22C55E]" : "text-[#A7B0C0] hover:text-[#EF4444]"}`} title={user.status === "suspended" ? "Unblock" : "Block"} aria-label={user.status === "suspended" ? "Unblock user" : "Block user"}>
                           {user.status === "suspended" ? <ShieldOff className="w-3.5 h-3.5" /> : <Shield className="w-3.5 h-3.5" />}
                         </button>
-                        <button onClick={() => setConfirmDelete(user.id)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all" title="Delete">
+                        <button onClick={() => setConfirmDelete(user.id)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all" title="Delete" aria-label="Delete user">
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -311,14 +311,14 @@ export default function UsersPage() {
         <div className="flex items-center justify-between">
           <p className="text-xs text-[#A7B0C0]">Page {page} of {totalPages} ({total} total)</p>
           <div className="flex items-center gap-2">
-            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronLeft className="w-4 h-4" /></button>
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all" aria-label="Previous page"><ChevronLeft className="w-4 h-4" /></button>
             {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
               const start = Math.max(1, Math.min(page - 2, totalPages - 4))
               const p = start + i
               if (p > totalPages) return null
               return <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === p ? "bg-[#6D5EF5] text-white" : "bg-[#151C2E]/80 border border-white/[0.06] text-[#A7B0C0] hover:text-white"}`}>{p}</button>
             })}
-            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronRight className="w-4 h-4" /></button>
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all" aria-label="Next page"><ChevronRight className="w-4 h-4" /></button>
           </div>
         </div>
       )}
@@ -351,7 +351,7 @@ export default function UsersPage() {
                     <p className="text-[11px] text-[#A7B0C0]">{detailUser.email}</p>
                   </div>
                 </div>
-                <button onClick={() => setDetailUser(null)} className="text-[#A7B0C0] hover:text-white transition-colors"><X className="w-5 h-5" /></button>
+                <button onClick={() => setDetailUser(null)} className="text-[#A7B0C0] hover:text-white transition-colors" aria-label="Close user details"><X className="w-5 h-5" /></button>
               </div>
 
               {/* Tabs */}

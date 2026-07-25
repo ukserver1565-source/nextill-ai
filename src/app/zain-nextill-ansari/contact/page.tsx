@@ -161,8 +161,8 @@ export default function ContactPage() {
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <a href={`mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject)}`} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#4CC9F0] transition-all inline-flex"><Reply className="w-3.5 h-3.5" /></a>
-                        <button onClick={() => handleMarkRead(m.id)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"><CheckCheck className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => handleMarkRead(m.id)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all" aria-label="Mark as read"><CheckCheck className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all" aria-label="Delete message"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </td>
                   </motion.tr>

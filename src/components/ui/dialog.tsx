@@ -106,8 +106,8 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
           role="dialog"
           aria-modal="true"
           className={cn(
-            "relative z-50 w-full max-w-lg rounded-xl border border-[rgba(255,255,255,0.06)]",
-            "bg-[#111827]/95 backdrop-blur-2xl shadow-2xl",
+            "relative z-50 w-full max-w-lg rounded-xl border border-border",
+            "bg-surface/95 backdrop-blur-2xl shadow-2xl",
             "p-6 transition-all duration-200",
             "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
             className
@@ -119,7 +119,8 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
             <button
               type="button"
               onClick={() => ctx.onOpenChange(false)}
-              className="absolute right-4 top-4 rounded-lg p-1 text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors"
+              className="absolute right-4 top-4 rounded-lg p-1 text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors"
+              aria-label="Close dialog"
             >
               <X className="h-4 w-4" />
             </button>
@@ -140,14 +141,14 @@ DialogHeader.displayName = "DialogHeader"
 
 const DialogTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h2 ref={ref} className={cn("text-lg font-semibold leading-none tracking-tight text-white", className)} {...props} />
+    <h2 ref={ref} className={cn("text-lg font-semibold leading-none tracking-tight text-foreground", className)} {...props} />
   )
 )
 DialogTitle.displayName = "DialogTitle"
 
 const DialogDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
   ({ className, ...props }, ref) => (
-    <p ref={ref} className={cn("text-sm text-[#A7B0C0]", className)} {...props} />
+    <p ref={ref} className={cn("text-sm text-muted", className)} {...props} />
   )
 )
 DialogDescription.displayName = "DialogDescription"

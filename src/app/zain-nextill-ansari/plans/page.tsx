@@ -203,7 +203,7 @@ export default function PlansPage() {
                 {plan.is_active ? "Active" : "Disabled"}
               </div>
               <div className="flex gap-1">
-                <button onClick={() => openEdit(plan)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"><Edit3 className="w-3.5 h-3.5" /></button>
+                <button onClick={() => openEdit(plan)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all" aria-label="Edit plan"><Edit3 className="w-3.5 h-3.5" /></button>
               </div>
             </div>
           </motion.div>
@@ -215,7 +215,7 @@ export default function PlansPage() {
           <div className="bg-[#090B16] border border-white/[0.06] rounded-xl p-6 w-full max-w-lg space-y-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-white">{editingPlan ? "Edit Plan" : "Add Plan"}</h2>
-              <button onClick={() => setShowModal(false)} className="text-[#A7B0C0] hover:text-white transition-colors"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowModal(false)} className="text-[#A7B0C0] hover:text-white transition-colors" aria-label="Close modal"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-3 max-h-[60vh] overflow-y-auto">
               <div className="space-y-1.5">
@@ -254,7 +254,7 @@ export default function PlansPage() {
               </div>
               <div className="flex items-center gap-3 pt-1">
                 <label className="text-xs font-medium text-[#A7B0C0]">Active</label>
-                <button onClick={() => setFormState(f => ({ ...f, is_active: !f.is_active }))} className={`relative w-11 h-6 rounded-full transition-colors ${formState.is_active ? "bg-[#22C55E]" : "bg-white/[0.06]"}`}>
+                <button onClick={() => setFormState(f => ({ ...f, is_active: !f.is_active }))} className={`relative w-11 h-6 rounded-full transition-colors ${formState.is_active ? "bg-[#22C55E]" : "bg-white/[0.06]"}`} aria-label="Toggle active status">
                   <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform ${formState.is_active ? "translate-x-5.5" : "translate-x-0.5"}`} />
                 </button>
               </div>

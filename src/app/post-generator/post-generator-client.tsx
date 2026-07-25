@@ -116,7 +116,7 @@ function PipelineTimeline({ steps, statuses, progress }: {
                 ) : status === "failed" ? (
                   <AlertTriangle className="w-4 h-4 text-[#EF4444]" />
                 ) : (
-                  <Icon className="w-4 h-4 text-[#5A6577]" />
+                  <Icon className="w-4 h-4 text-[#8895A7]" />
                 )}
               </div>
               <div className="flex-1 min-w-0">
@@ -128,7 +128,7 @@ function PipelineTimeline({ steps, statuses, progress }: {
                 }`}>
                   {step.name}
                 </p>
-                <p className="text-[11px] text-[#5A6577] mt-0.5">
+                <p className="text-[11px] text-[#8895A7] mt-0.5">
                   {status === "pending" && "Waiting..."}
                   {status === "running" && "Processing..."}
                   {status === "completed" && "Complete"}
@@ -146,7 +146,7 @@ function PipelineTimeline({ steps, statuses, progress }: {
                   <span className="text-[10px] font-medium text-[#22C55E]">Done</span>
                 )}
                 {status === "pending" && (
-                  <span className="text-[10px] text-[#5A6577] font-mono">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="text-[10px] text-[#8895A7] font-mono">{String(i + 1).padStart(2, "0")}</span>
                 )}
                 {status === "failed" && (
                   <span className="text-[10px] text-[#EF4444]">Error</span>
@@ -157,7 +157,7 @@ function PipelineTimeline({ steps, statuses, progress }: {
         })}
       </motion.div>
       <div className="mt-5 flex items-center justify-between px-1">
-        <span className="text-xs text-[#5A6577]">Overall Progress</span>
+        <span className="text-xs text-[#8895A7]">Overall Progress</span>
         <span className="text-sm font-bold bg-gradient-to-r from-[#6D5EF5] to-[#8B5CF6] bg-clip-text text-transparent">{progressPct}%</span>
       </div>
       <div className="mt-2 h-[6px] bg-white/[0.05] rounded-full overflow-hidden ring-1 ring-white/[0.03] p-[2px] relative">
@@ -220,7 +220,7 @@ function CircularScore({ label, score, color, size = 80 }: { label: string; scor
           </motion.span>
         </div>
       </div>
-      <span className="text-[11px] font-medium text-[#5A6577] group-hover:text-[#A7B0C0] transition-colors">{label}</span>
+      <span className="text-[11px] font-medium text-[#8895A7] group-hover:text-[#A7B0C0] transition-colors">{label}</span>
     </div>
   )
 }
@@ -242,7 +242,7 @@ function EmptyState() {
         <Sparkles className="w-12 h-12 text-[#6D5EF5]" />
       </motion.div>
       <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">Ready to create content</h3>
-      <p className="text-sm text-[#5A6577] max-w-md mb-10 leading-relaxed">
+      <p className="text-sm text-[#8895A7] max-w-md mb-10 leading-relaxed">
         Enter your keyword and configure preferences, then hit generate for a fully SEO-optimized article.
       </p>
       <motion.div
@@ -266,7 +266,7 @@ function EmptyState() {
               <item.icon className="w-[18px] h-[18px] text-[#6D5EF5]" />
             </div>
             <p className="text-sm font-semibold text-white mb-0.5">{item.label}</p>
-            <p className="text-xs text-[#5A6577]">{item.desc}</p>
+            <p className="text-xs text-[#8895A7]">{item.desc}</p>
           </motion.div>
         ))}
       </motion.div>
@@ -368,7 +368,7 @@ function FaqItem({ question, answer, isOpen, onToggle }: {
           transition={{ duration: 0.25, ease: "easeInOut" }}
           className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-200 ${isOpen ? "bg-[#6D5EF5]/15" : "bg-white/[0.04]"}`}
         >
-          <ChevronDown className="w-3.5 h-3.5 text-[#5A6577]" />
+          <ChevronDown className="w-3.5 h-3.5 text-[#8895A7]" />
         </motion.div>
       </button>
       <AnimatePresence>
@@ -398,7 +398,7 @@ function InputChipGroup<T extends string>({ options, value, onChange, label }: {
 }) {
   return (
     <div className="space-y-2.5">
-      <label className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">{label}</label>
+      <label className="text-xs font-medium text-[#8895A7] uppercase tracking-wider">{label}</label>
       <div className="flex flex-wrap gap-1.5">
         {options.map((opt) => {
           const active = value === opt.value
@@ -411,7 +411,7 @@ function InputChipGroup<T extends string>({ options, value, onChange, label }: {
               className={`group relative px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
                 active
                   ? "bg-gradient-to-r from-[#6D5EF5]/15 to-[#8B5CF6]/10 text-white border border-[#6D5EF5]/30 shadow-sm"
-                  : "bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 text-[#5A6577] border border-white/[0.06] hover:border-white/[0.12] hover:text-white hover:bg-[#151C2E]/60"
+                  : "bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 text-[#8895A7] border border-white/[0.06] hover:border-white/[0.12] hover:text-white hover:bg-[#151C2E]/60"
               }`}
             >
               {Icon && <Icon className={`w-3.5 h-3.5 inline mr-1.5 -mt-0.5 ${active ? "text-[#6D5EF5]" : ""}`} />}
@@ -506,7 +506,7 @@ function ScoreCard({ label, value, color }: { label: string; value: number; colo
                   className="group bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 backdrop-blur-sm border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.10] hover:shadow-lg hover:shadow-black/10 hover:scale-[1.02] transition-all duration-300"
                 >
                   <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-[#5A6577] font-medium">{label}</span>
+        <span className="text-xs text-[#8895A7] font-medium">{label}</span>
         <span className="text-lg font-bold text-white"><AnimatedCounter value={value} />%</span>
       </div>
       <div className="h-[6px] bg-white/[0.05] rounded-full overflow-hidden ring-1 ring-white/[0.03] p-[1px]">
@@ -534,7 +534,7 @@ export default function PostGeneratorPage() {
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/10 border border-[#6D5EF5]/20 flex items-center justify-center shadow-lg shadow-[#6D5EF5]/10">
             <Loader2 className="w-6 h-6 text-[#6D5EF5] animate-spin" />
           </div>
-          <p className="text-sm text-[#5A6577]">Loading Post Generator...</p>
+          <p className="text-sm text-[#8895A7]">Loading Post Generator...</p>
         </motion.div>
       </div>
     }>
@@ -791,7 +791,7 @@ function PostGeneratorContent() {
                   <h1 className="text-lg font-bold tracking-tight text-white">Post Generator</h1>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
-                    <p className="text-xs text-[#5A6577]">AI-powered SEO content</p>
+                    <p className="text-xs text-[#8895A7]">AI-powered SEO content</p>
                   </div>
                 </div>
               </div>
@@ -804,23 +804,24 @@ function PostGeneratorContent() {
               transition={{ delay: 0.05 }}
               className="space-y-2"
             >
-              <label className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">Primary Keyword</label>
+              <label className="text-xs font-medium text-[#8895A7] uppercase tracking-wider">Primary Keyword</label>
               <div className="relative group">
                 <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-r from-[#6D5EF5]/0 via-[#6D5EF5]/0 to-[#6D5EF5]/0 group-focus-within:from-[#6D5EF5]/30 group-focus-within:via-[#8B5CF6]/20 group-focus-within:to-[#6D5EF5]/30 opacity-0 group-focus-within:opacity-100 transition-all duration-500 blur-sm" />
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5A6577] group-focus-within:text-[#6D5EF5] transition-colors duration-300 z-10" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8895A7] group-focus-within:text-[#6D5EF5] transition-colors duration-300 z-10" />
                 <input
                   placeholder="Enter your primary keyword..."
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
-                  className="relative w-full h-12 pl-11 pr-4 bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 backdrop-blur-sm border border-white/[0.06] rounded-xl text-sm text-white placeholder:text-[#5A6577]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-2 focus:ring-[#6D5EF5]/12 transition-all group-hover:border-white/[0.10]"
+                  className="relative w-full h-12 pl-11 pr-4 bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 backdrop-blur-sm border border-white/[0.06] rounded-xl text-sm text-white placeholder:text-[#8895A7]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-2 focus:ring-[#6D5EF5]/12 transition-all group-hover:border-white/[0.10]"
                 />
                 {keyword && (
                   <button
                     onClick={() => setKeyword("")}
                     className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white/[0.06] flex items-center justify-center hover:bg-white/[0.12] transition-colors"
+                    aria-label="Clear keyword"
                   >
-                    <X className="w-3 h-3 text-[#5A6577]" />
+                    <X className="w-3 h-3 text-[#8895A7]" />
                   </button>
                 )}
               </div>
@@ -849,11 +850,11 @@ function PostGeneratorContent() {
               className="grid grid-cols-2 gap-4"
             >
               <div className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 space-y-3 shadow-sm">
-                <label className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">Word Count</label>
+                <label className="text-xs font-medium text-[#8895A7] uppercase tracking-wider">Word Count</label>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-[#5A6577]">100</span>
+                  <span className="text-xs text-[#8895A7]">100</span>
                   <span className="text-lg font-bold text-white">{wordCount.toLocaleString()}</span>
-                  <span className="text-xs text-[#5A6577]">4,000</span>
+                  <span className="text-xs text-[#8895A7]">4,000</span>
                 </div>
                 <input
                   type="range"
@@ -867,7 +868,7 @@ function PostGeneratorContent() {
                     background: `linear-gradient(to right, #6D5EF5 0%, #6D5EF5 ${((wordCount - 100) / 3900) * 100}%, #151C2E ${((wordCount - 100) / 3900) * 100}%, #151C2E 100%)`,
                   }}
                 />
-                <div className="flex justify-between text-[10px] text-[#5A6577]">
+                <div className="flex justify-between text-[10px] text-[#8895A7]">
                   <span>~{Math.ceil(wordCount / 200)} sections</span>
                   <span>~{Math.ceil(wordCount / 200)} min read</span>
                 </div>
@@ -891,7 +892,7 @@ function PostGeneratorContent() {
             >
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className="w-full flex items-center justify-between gap-2 px-5 py-4 text-xs font-medium text-[#5A6577] hover:text-white transition-colors"
+                className="w-full flex items-center justify-between gap-2 px-5 py-4 text-xs font-medium text-[#8895A7] hover:text-white transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <div className="w-7 h-7 rounded-lg bg-white/[0.04] flex items-center justify-center">
@@ -918,31 +919,31 @@ function PostGeneratorContent() {
                   >
                     <div className="px-5 pb-5 space-y-4 border-t border-white/[0.04] pt-4">
                       <div className="space-y-1.5">
-                        <label className="text-xs font-medium text-[#5A6577]">Target Audience</label>
+                        <label className="text-xs font-medium text-[#8895A7]">Target Audience</label>
                         <input
                           placeholder="e.g. Marketing professionals, small business owners"
                           value={audience}
                           onChange={(e) => setAudience(e.target.value)}
-                          className="w-full h-10 px-3.5 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#5A6577]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all"
+                          className="w-full h-10 px-3.5 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#8895A7]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-xs font-medium text-[#5A6577]">Key Points (one per line)</label>
+                        <label className="text-xs font-medium text-[#8895A7]">Key Points (one per line)</label>
                         <textarea
                           placeholder="Key points to cover..."
                           value={keyPoints}
                           onChange={(e) => setKeyPoints(e.target.value)}
                           rows={3}
-                          className="w-full px-3.5 py-2 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#5A6577]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all resize-none"
+                          className="w-full px-3.5 py-2 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#8895A7]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all resize-none"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-xs font-medium text-[#5A6577]">Brand Voice</label>
+                        <label className="text-xs font-medium text-[#8895A7]">Brand Voice</label>
                         <input
                           placeholder="e.g. Authoritative yet approachable"
                           value={brandVoice}
                           onChange={(e) => setBrandVoice(e.target.value)}
-                          className="w-full h-10 px-3.5 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#5A6577]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all"
+                          className="w-full h-10 px-3.5 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#8895A7]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all"
                         />
                       </div>
                     </div>
@@ -980,7 +981,7 @@ function PostGeneratorContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.35 }}
-                className="text-[10px] text-center text-[#5A6577] mt-2"
+                className="text-[10px] text-center text-[#8895A7] mt-2"
               >
                 Press <kbd className="px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/[0.08] font-mono text-[9px]">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/[0.08] font-mono text-[9px]">Enter</kbd> to generate
               </motion.p>
@@ -994,7 +995,7 @@ function PostGeneratorContent() {
                 className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 shadow-sm"
               >
                 <div className="flex items-center justify-between mb-3 pb-3 border-b border-white/[0.04]">
-                  <span className="text-xs text-[#5A6577]">Status</span>
+                  <span className="text-xs text-[#8895A7]">Status</span>
                   <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#22C55E]">
                     <span className="relative flex w-2 h-2">
                       <span className="absolute inset-0 rounded-full bg-[#22C55E] animate-ping opacity-40" />
@@ -1005,19 +1006,19 @@ function PostGeneratorContent() {
                 </div>
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#5A6577]">Words</span>
+                    <span className="text-xs text-[#8895A7]">Words</span>
                     <span className="text-sm font-semibold text-white">{(result.wordCount || 0).toLocaleString()} / {wordCount.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#5A6577]">Reading Time</span>
+                    <span className="text-xs text-[#8895A7]">Reading Time</span>
                     <span className="text-sm font-semibold text-white">{result.readingTime} min</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#5A6577]">SEO Score</span>
+                    <span className="text-xs text-[#8895A7]">SEO Score</span>
                     <span className="text-sm font-semibold text-[#22C55E]">{result.seoScore}%</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#5A6577]">Engine</span>
+                    <span className="text-xs text-[#8895A7]">Engine</span>
                     <span className="text-[10px] font-medium px-2.5 py-1 rounded-full bg-[#6D5EF5]/10 text-[#6D5EF5] border border-[#6D5EF5]/20">{result.engine}</span>
                   </div>
                 </div>
@@ -1030,7 +1031,7 @@ function PostGeneratorContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 onClick={handleNewArticle}
-                className="w-full h-11 rounded-2xl border border-dashed border-white/[0.08] text-xs text-[#5A6577] hover:text-white hover:border-white/[0.15] hover:bg-white/[0.02] transition-all"
+                className="w-full h-11 rounded-2xl border border-dashed border-white/[0.08] text-xs text-[#8895A7] hover:text-white hover:border-white/[0.15] hover:bg-white/[0.02] transition-all"
               >
                 + New Article
               </motion.button>
@@ -1059,14 +1060,15 @@ function PostGeneratorContent() {
                         </div>
                         <div>
                           <h3 className="text-sm font-semibold text-white">Generation Pipeline</h3>
-                          <p className="text-[11px] text-[#5A6577]">Processing your content through 14 stages</p>
+                          <p className="text-[11px] text-[#8895A7]">Processing your content through 14 stages</p>
                         </div>
                       </div>
                       <button
                         onClick={() => setShowPipeline(false)}
                         className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center hover:bg-white/[0.08] hover:border-white/[0.10] transition-all"
+                        aria-label="Close pipeline"
                       >
-                        <X className="w-3.5 h-3.5 text-[#5A6577]" />
+                        <X className="w-3.5 h-3.5 text-[#8895A7]" />
                       </button>
                     </div>
                     <PipelineTimeline steps={pipelineSteps} statuses={pipelineStepStatuses} progress={pipelineProgress} />
@@ -1165,7 +1167,7 @@ function PostGeneratorContent() {
                 >
                   <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                   <span>{saveError}</span>
-                  <button onClick={() => setSaveError("")} className="ml-auto shrink-0">
+                  <button onClick={() => setSaveError("")} className="ml-auto shrink-0" aria-label="Dismiss error">
                     <X className="w-3.5 h-3.5 hover:opacity-70 transition-opacity" />
                   </button>
                 </motion.div>
@@ -1190,7 +1192,7 @@ function PostGeneratorContent() {
                         className={`shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-medium transition-all duration-200 relative ${
                           activeTab === tab
                             ? "text-white"
-                            : "text-[#5A6577] hover:text-white"
+                            : "text-[#8895A7] hover:text-white"
                         }`}
                       >
                         <TabIcon className="w-3.5 h-3.5" />
@@ -1235,7 +1237,7 @@ function PostGeneratorContent() {
                         <h2 className="text-sm font-semibold text-white">{activeTab}</h2>
                       </div>
                       {activeTab === "Article" && (
-                        <div className="flex items-center gap-2 text-[11px] text-[#5A6577] bg-[#090B16]/40 border border-white/[0.04] rounded-lg px-3 py-1.5">
+                        <div className="flex items-center gap-2 text-[11px] text-[#8895A7] bg-[#090B16]/40 border border-white/[0.04] rounded-lg px-3 py-1.5">
                           <FileText className="w-3 h-3" />
                           <span>{(result.wordCount || 0).toLocaleString()} / {wordCount.toLocaleString()} words</span>
                           <span className="w-1 h-1 rounded-full bg-white/[0.12]" />
@@ -1299,7 +1301,7 @@ function PostGeneratorContent() {
                                 <div className="w-7 h-7 rounded-lg bg-[#6D5EF5]/10 flex items-center justify-center">
                                   <ExternalLink className="w-3.5 h-3.5 text-[#6D5EF5]" />
                                 </div>
-                                <h3 className="text-xs font-semibold text-[#5A6577] uppercase tracking-wider">Internal Links</h3>
+                                <h3 className="text-xs font-semibold text-[#8895A7] uppercase tracking-wider">Internal Links</h3>
                               </div>
                               <div className="space-y-2.5">
                                 {(result.internalLinks || []).map((link, i) => (
@@ -1312,7 +1314,7 @@ function PostGeneratorContent() {
                                   >
                                     <ExternalLink className="w-3.5 h-3.5 text-[#6D5EF5] shrink-0" />
                                     <span className="text-[#A7B0C0]">{link.text}</span>
-                                    <span className="text-[#5A6577]">→</span>
+                                    <span className="text-[#8895A7]">→</span>
                                     <span className="text-[#6D5EF5] font-mono text-xs">/{link.url}</span>
                                   </motion.div>
                                 ))}
@@ -1336,17 +1338,18 @@ function PostGeneratorContent() {
                             <motion.div key={item.key} variants={itemVariants} className="space-y-1.5">
                               <div className="flex items-center gap-2 mb-1">
                                 <item.icon className="w-3.5 h-3.5 text-[#22C55E]" />
-                                <label className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">{item.label}</label>
+                                <label className="text-xs font-medium text-[#8895A7] uppercase tracking-wider">{item.label}</label>
                               </div>
                               <div className="group flex items-center gap-2 p-4 bg-gradient-to-b from-[#090B16]/60 to-[#090B16]/40 border border-white/[0.06] rounded-xl hover:border-[#6D5EF5]/20 hover:shadow-lg hover:shadow-black/10 transition-all">
                                 <p className="text-sm text-[#A7B0C0] flex-1 leading-relaxed">{item.value}</p>
                                 <button
                                   onClick={() => handleCopy(item.key, item.value)}
                                   className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-[#6D5EF5]/10 hover:border-[#6D5EF5]/30"
+                                  aria-label="Copy to clipboard"
                                 >
                                   {copied === item.key
                                     ? <Check className="w-3.5 h-3.5 text-[#22C55E]" />
-                                    : <Copy className="w-3.5 h-3.5 text-[#5A6577]" />
+                                    : <Copy className="w-3.5 h-3.5 text-[#8895A7]" />
                                   }
                                 </button>
                               </div>
@@ -1354,13 +1357,13 @@ function PostGeneratorContent() {
                           ))}
                           <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4 pt-2">
                             <div className="space-y-1.5">
-                              <label className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">Slug</label>
+                              <label className="text-xs font-medium text-[#8895A7] uppercase tracking-wider">Slug</label>
                               <div className="p-3.5 bg-gradient-to-b from-[#090B16]/60 to-[#090B16]/40 border border-white/[0.06] rounded-xl">
                                 <p className="text-sm font-mono text-[#6D5EF5]">/{result.slug}</p>
                               </div>
                             </div>
                             <div className="space-y-1.5">
-                              <label className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">Readability</label>
+                              <label className="text-xs font-medium text-[#8895A7] uppercase tracking-wider">Readability</label>
                               <div className="p-3.5 bg-gradient-to-b from-[#090B16]/60 to-[#090B16]/40 border border-white/[0.06] rounded-xl">
                                 <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20 shadow-sm">
                                   <Check className="w-3 h-3" />
@@ -1370,7 +1373,7 @@ function PostGeneratorContent() {
                             </div>
                           </motion.div>
                           <motion.div variants={itemVariants} className="space-y-1.5">
-                            <label className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">Tags</label>
+                            <label className="text-xs font-medium text-[#8895A7] uppercase tracking-wider">Tags</label>
                             <div className="flex flex-wrap gap-2">
                               {(result.tags || []).map((tag, i) => (
                                 <motion.span
@@ -1386,7 +1389,7 @@ function PostGeneratorContent() {
                             </div>
                           </motion.div>
                           <motion.div variants={itemVariants} className="space-y-1.5">
-                            <label className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">Categories</label>
+                            <label className="text-xs font-medium text-[#8895A7] uppercase tracking-wider">Categories</label>
                             <div className="flex flex-wrap gap-2">
                               {(result.categorySuggestions || []).map((cat, i) => (
                                 <motion.span
@@ -1427,7 +1430,7 @@ function PostGeneratorContent() {
                               <div className="w-14 h-14 rounded-2xl bg-[#3B82F6]/10 border border-[#3B82F6]/20 flex items-center justify-center mx-auto mb-3">
                                 <Quote className="w-6 h-6 text-[#3B82F6]" />
                               </div>
-                              <p className="text-sm text-[#5A6577]">No FAQs generated</p>
+                              <p className="text-sm text-[#8895A7]">No FAQs generated</p>
                             </motion.div>
                           )}
                         </motion.div>
@@ -1443,7 +1446,7 @@ function PostGeneratorContent() {
                           <motion.div variants={itemVariants} className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <Hash className="w-4 h-4 text-[#F59E0B]" />
-                              <span className="text-xs font-medium text-[#5A6577] uppercase tracking-wider">JSON-LD Schema</span>
+                              <span className="text-xs font-medium text-[#8895A7] uppercase tracking-wider">JSON-LD Schema</span>
                             </div>
                             <button
                               onClick={() => handleCopy("schema", JSON.stringify(result.schemaJson, null, 2))}
@@ -1480,7 +1483,7 @@ function PostGeneratorContent() {
                           </motion.div>
 
                           <motion.div variants={itemVariants} className="space-y-3 pt-4 border-t border-white/[0.04]">
-                            <h3 className="text-xs font-medium text-[#5A6577] uppercase tracking-wider mb-3">Detailed Scores</h3>
+                            <h3 className="text-xs font-medium text-[#8895A7] uppercase tracking-wider mb-3">Detailed Scores</h3>
                             {scoreData.map((item) => (
                               <ScoreCard key={item.label} label={item.label} value={item.score} color={item.color} />
                             ))}
@@ -1506,7 +1509,7 @@ function PostGeneratorContent() {
                                     <Icon className="w-4 h-4" style={{ color: item.color }} />
                                   </div>
                                   <div className="text-2xl font-bold text-white mb-1">{item.score}%</div>
-                                  <div className="text-[10px] text-[#5A6577] uppercase tracking-wider">{item.label}</div>
+                                  <div className="text-[10px] text-[#8895A7] uppercase tracking-wider">{item.label}</div>
                                   <div className="mt-2.5 h-[5px] bg-white/[0.05] rounded-full overflow-hidden ring-1 ring-white/[0.03] p-[1px]">
                                     <motion.div
                                       className="h-full rounded-full"
@@ -1524,12 +1527,12 @@ function PostGeneratorContent() {
                           <motion.div variants={itemVariants} className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 border border-white/[0.06] rounded-xl p-4">
                             <div className="grid grid-cols-2 gap-4">
                               <div className="text-center">
-                                <p className="text-2xl font-bold text-white">{(result.wordCount || 0).toLocaleString()} <span className="text-sm text-[#5A6577]">/ {wordCount.toLocaleString()}</span></p>
-                                <p className="text-[10px] text-[#5A6577] uppercase tracking-wider mt-1">Word Count</p>
+                                <p className="text-2xl font-bold text-white">{(result.wordCount || 0).toLocaleString()} <span className="text-sm text-[#8895A7]">/ {wordCount.toLocaleString()}</span></p>
+                                <p className="text-[10px] text-[#8895A7] uppercase tracking-wider mt-1">Word Count</p>
                               </div>
                               <div className="text-center">
                                 <p className="text-2xl font-bold text-white">{result.readingTime} min</p>
-                                <p className="text-[10px] text-[#5A6577] uppercase tracking-wider mt-1">Reading Time</p>
+                                <p className="text-[10px] text-[#8895A7] uppercase tracking-wider mt-1">Reading Time</p>
                               </div>
                             </div>
                           </motion.div>

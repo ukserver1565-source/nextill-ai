@@ -10,7 +10,7 @@ export default function SEOPage() {
     metaTitle: "Nextill AI - AI-Powered SEO & Content Platform",
     metaDescription: "Nextill AI helps you generate SEO-optimized content with AI. Tools include AI writer, keyword research, and rank tracking.",
     googleAnalyticsId: "G-XXXXXXXXXX",
-    robotsTxt: `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml`,
+    robotsTxt: `User-agent: *\nAllow: /\nDisallow: /dashboard/\nDisallow: /zain-nextill-ansari/\nDisallow: /api/\nDisallow: /login\nDisallow: /signup\nDisallow: /checkout\nDisallow: /reset-password\nDisallow: /unauthorized\nDisallow: /maintenance\n\nSitemap: ${siteUrl}/sitemap.xml`,
     sitemapUrl: `${siteUrl}/sitemap.xml`,
   })
   const [saved, setSaved] = useState(false)

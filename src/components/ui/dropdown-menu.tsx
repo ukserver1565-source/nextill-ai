@@ -133,8 +133,8 @@ const DropdownMenuContent = React.forwardRef<HTMLDivElement, DropdownMenuContent
         }}
         style={style}
         className={cn(
-          "z-50 min-w-[8rem] overflow-hidden rounded-xl border border-[rgba(255,255,255,0.06)]",
-          "bg-[#111827]/95 backdrop-blur-2xl shadow-2xl",
+          "z-50 min-w-[8rem] overflow-hidden rounded-xl border border-border",
+          "bg-surface/95 backdrop-blur-2xl shadow-2xl",
           "p-1 transition-all duration-200",
           "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           className

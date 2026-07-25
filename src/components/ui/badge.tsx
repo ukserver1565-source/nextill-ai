@@ -12,8 +12,8 @@ const badgeVariants = cva(
         warning: "bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20",
         danger: "bg-[#EF4444]/10 text-[#EF4444] border border-[#EF4444]/20",
         info: "bg-[#4CC9F0]/10 text-[#4CC9F0] border border-[#4CC9F0]/20",
-        outline: "text-white border border-[rgba(255,255,255,0.06)]",
-        ghost: "bg-[#151C2E] text-[#A7B0C0]",
+        outline: "text-foreground border border-border",
+        ghost: "bg-card text-muted",
       },
       size: {
         default: "px-2.5 py-0.5 text-xs",

@@ -114,16 +114,16 @@ function RichEditor({ value, onChange }: { value: string; onChange: (v: string) 
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-1 flex-wrap p-2 bg-[#0D1120] rounded-t-xl border border-white/[0.06] border-b-0">
-        <button type="button" onClick={() => execCmd("bold")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("bold") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-[#A7B0C0] hover:text-white hover:bg-white/[0.06]"}`} title="Bold"><Bold className="w-3.5 h-3.5" /></button>
-        <button type="button" onClick={() => execCmd("italic")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("italic") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-[#A7B0C0] hover:text-white hover:bg-white/[0.06]"}`} title="Italic"><Italic className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={() => execCmd("bold")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("bold") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-[#A7B0C0] hover:text-white hover:bg-white/[0.06]"}`} title="Bold" aria-label="Bold"><Bold className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={() => execCmd("italic")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("italic") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-[#A7B0C0] hover:text-white hover:bg-white/[0.06]"}`} title="Italic" aria-label="Italic"><Italic className="w-3.5 h-3.5" /></button>
         <div className="w-px h-4 bg-white/[0.06] mx-1" />
-        <button type="button" onClick={() => execCmd("formatBlock", "h2")} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Heading 2"><Heading1 className="w-3.5 h-3.5" /></button>
-        <button type="button" onClick={() => execCmd("formatBlock", "h3")} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Heading 3"><Heading2 className="w-3.5 h-3.5" /></button>
-        <button type="button" onClick={() => execCmd("formatBlock", "p")} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Paragraph"><Type className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={() => execCmd("formatBlock", "h2")} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Heading 2" aria-label="H2"><Heading1 className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={() => execCmd("formatBlock", "h3")} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Heading 3" aria-label="H3"><Heading2 className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={() => execCmd("formatBlock", "p")} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Paragraph" aria-label="Paragraph"><Type className="w-3.5 h-3.5" /></button>
         <div className="w-px h-4 bg-white/[0.06] mx-1" />
-        <button type="button" onClick={() => execCmd("insertUnorderedList")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("list") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-[#A7B0C0] hover:text-white hover:bg-white/[0.06]"}`} title="Bullet List"><List className="w-3.5 h-3.5" /></button>
-        <button type="button" onClick={insertLink} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Insert Link"><LinkIcon className="w-3.5 h-3.5" /></button>
-        <button type="button" onClick={insertInlineImage} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Insert Image"><ImageIcon className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={() => execCmd("insertUnorderedList")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("list") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-[#A7B0C0] hover:text-white hover:bg-white/[0.06]"}`} title="Bullet List" aria-label="List"><List className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={insertLink} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Insert Link" aria-label="Link"><LinkIcon className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={insertInlineImage} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Insert Image" aria-label="Image"><ImageIcon className="w-3.5 h-3.5" /></button>
       </div>
       <div
         ref={editorRef}
@@ -361,7 +361,7 @@ export default function BlogPage() {
       {error && (
         <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4 flex items-center justify-between">
           <p className="text-sm text-[#EF4444]">{error}</p>
-          <button onClick={() => setError("")} className="text-[#EF4444] hover:text-white"><X className="w-4 h-4" /></button>
+          <button onClick={() => setError("")} className="text-[#EF4444] hover:text-white" aria-label="Dismiss error"><X className="w-4 h-4" /></button>
         </div>
       )}
 
@@ -435,7 +435,7 @@ export default function BlogPage() {
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         {post.featured_image_url ? (
-                          <img src={post.featured_image_url} alt="" className="w-10 h-10 rounded-lg object-cover border border-white/[0.06]" />
+                          <img src={post.featured_image_url} alt={post.title || "Blog post image"} className="w-10 h-10 rounded-lg object-cover border border-white/[0.06]" />
                         ) : (
                           <div className="w-10 h-10 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
                             <ImageIcon className="w-4 h-4 text-[#A7B0C0]" />
@@ -495,6 +495,7 @@ export default function BlogPage() {
                           onClick={() => window.open(`/blog/${post.slug}`, "_blank")}
                           className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#4CC9F0] transition-all"
                           title="View public"
+                          aria-label="View public post"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                         </button>
@@ -502,6 +503,7 @@ export default function BlogPage() {
                           onClick={() => handleDuplicate(post)}
                           className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#F59E0B] transition-all"
                           title="Duplicate"
+                          aria-label="Duplicate post"
                         >
                           <Copy className="w-3.5 h-3.5" />
                         </button>
@@ -509,6 +511,7 @@ export default function BlogPage() {
                           onClick={() => openEdit(post)}
                           className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"
                           title="Edit"
+                          aria-label="Edit post"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                         </button>
@@ -516,6 +519,7 @@ export default function BlogPage() {
                           onClick={() => setDeleteConfirm(post.id)}
                           className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all"
                           title="Delete"
+                          aria-label="Delete post"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -540,6 +544,7 @@ export default function BlogPage() {
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
               className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"
+              aria-label="Previous page"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -568,6 +573,7 @@ export default function BlogPage() {
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
               className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"
+              aria-label="Next page"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -645,7 +651,7 @@ export default function BlogPage() {
                 <h2 className="text-lg font-bold text-white">
                   {editingPost ? "Edit Post" : "New Post"}
                 </h2>
-                <button onClick={() => setShowEditor(false)} className="text-[#A7B0C0] hover:text-white transition-colors">
+                <button onClick={() => setShowEditor(false)} className="text-[#A7B0C0] hover:text-white transition-colors" aria-label="Close editor">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -689,7 +695,7 @@ export default function BlogPage() {
                   <div className="relative">
                     {formState.featured_image_url ? (
                       <div className="relative group rounded-xl overflow-hidden border border-white/[0.06]">
-                        <img src={formState.featured_image_url} alt="Featured" className="w-full h-48 object-cover" />
+                        <img src={formState.featured_image_url} alt={formState.title || "Featured image"} className="w-full h-48 object-cover" />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
                           <label className="h-9 px-4 rounded-xl bg-[#6D5EF5] text-white text-xs font-medium cursor-pointer hover:opacity-90 transition-opacity flex items-center gap-2">
                             <Upload className="w-3.5 h-3.5" /> Replace

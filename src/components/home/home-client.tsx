@@ -484,7 +484,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               <Zap className="w-3 h-3 mr-1.5" />
               Live Preview
             </Badge>
-            <h2 className="text-3xl font-bold">See It In Action</h2>
+            <h1 className="text-3xl font-bold">See It In Action</h1>
             <p className="text-muted mt-2 max-w-xl mx-auto">
               Watch how each workflow delivers instant results — cycling automatically.
             </p>

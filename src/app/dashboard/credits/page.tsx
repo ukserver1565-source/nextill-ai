@@ -46,7 +46,7 @@ export default function DashboardCredits() {
 
       <div className="glass-card rounded-xl overflow-hidden">
         <div className="p-4 border-b border-border">
-          <h3 className="text-sm font-semibold">Transaction History</h3>
+          <h2 className="text-sm font-semibold">Transaction History</h2>
         </div>
         {logs.map((log) => (
           <div key={log.id} className="flex items-center justify-between p-4 border-b border-border last:border-0 hover:bg-card/30 transition-colors">

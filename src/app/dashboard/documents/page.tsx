@@ -61,11 +61,11 @@ export default function DashboardDocuments() {
               <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
                 <FileIcon className="w-5 h-5 text-primary-light" />
               </div>
-              <button onClick={() => deleteDoc(doc.id)} className="p-1 rounded text-muted hover:text-danger opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onClick={() => deleteDoc(doc.id)} aria-label="Delete document" className="p-1 rounded text-muted hover:text-danger opacity-0 group-hover:opacity-100 transition-opacity">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
-            <h3 className="text-sm font-semibold mb-1 line-clamp-2">{doc.title}</h3>
+            <h2 className="text-sm font-semibold mb-1 line-clamp-2">{doc.title}</h2>
             {doc.tool_slug && <p className="text-[10px] text-muted mb-2">via {doc.tool_slug}</p>}
             <div className="flex items-center gap-1 text-[10px] text-muted">
               <Clock className="w-3 h-3" /> {doc.updated_at ? new Date(doc.updated_at).toLocaleDateString("en-US") : "N/A"}

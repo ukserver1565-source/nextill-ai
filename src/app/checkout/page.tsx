@@ -209,7 +209,7 @@ function CheckoutContent() {
                 <div className="w-16 h-16 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mx-auto mb-6">
                   <Loader2 className="w-8 h-8 text-yellow-400 animate-spin" />
                 </div>
-                <h1 className="text-2xl font-bold text-white mb-2">Payment Under Review</h1>
+                <h2 className="text-2xl font-bold text-white mb-2">Payment Under Review</h2>
                 <p className="text-sm text-[#A7B0C0] mb-6 max-w-md mx-auto">{checkoutResult.message}</p>
                 {checkoutResult.payment_id && (
                   <div className="p-3 rounded-lg bg-[#090B16] border border-white/[0.06] mb-6">
@@ -227,7 +227,7 @@ function CheckoutContent() {
                 <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-6">
                   <Check className="w-8 h-8 text-emerald-400" />
                 </div>
-                <h1 className="text-2xl font-bold text-white mb-2">Payment Verified!</h1>
+                <h2 className="text-2xl font-bold text-white mb-2">Payment Verified!</h2>
                 <p className="text-sm text-[#A7B0C0] mb-6">Your plan is now active.</p>
                 <Link href="/dashboard" className="inline-flex items-center gap-2 h-10 px-6 rounded-xl bg-[#6D5EF5] text-white text-sm font-medium hover:brightness-110 transition-all">
                   Go to Dashboard <ArrowRight className="w-4 h-4" />
@@ -251,7 +251,7 @@ function CheckoutContent() {
             <ArrowLeft className="w-4 h-4" /> Back to Checkout
           </button>
 
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">Payment Details</h1>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">Payment Details</h2>
           <p className="text-muted text-sm mb-6">Enter your payment information to complete the purchase.</p>
 
           {/* Payment Method Info */}
@@ -344,7 +344,7 @@ function CheckoutContent() {
                   </h3>
                   {selectedMethod.qr_code_url && (
                     <div className="mb-4 text-center">
-                      <img src={selectedMethod.qr_code_url} alt={`${selectedMethod.name}`} className="mx-auto rounded-xl border border-white/[0.06] max-w-[200px]" />
+                      <img src={selectedMethod.qr_code_url} alt={`${selectedMethod.name} QR Code`} className="mx-auto rounded-xl border border-white/[0.06] max-w-[200px]" />
                     </div>
                   )}
                   {selectedMethod.wallet_address && (

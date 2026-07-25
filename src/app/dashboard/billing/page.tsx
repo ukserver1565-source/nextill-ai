@@ -137,7 +137,7 @@ function BillingContent() {
           {subscription ? (
             <div className="glass-card rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-white">Current Subscription</h3>
+                <h2 className="text-sm font-semibold text-white">Current Subscription</h2>
                 <span className="text-xs px-2.5 py-1 rounded-full bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20">
                   {subscription.status}
                 </span>
@@ -161,7 +161,7 @@ function BillingContent() {
             <div className="glass-card rounded-xl p-6">
               <div className="flex items-center gap-3 mb-3">
                 <CreditCard className="w-5 h-5 text-muted" />
-                <h3 className="text-sm font-semibold text-white">Free Plan</h3>
+                <h2 className="text-sm font-semibold text-white">Free Plan</h2>
               </div>
               <p className="text-sm text-muted mb-4">
                 You are currently on the Free plan. Upgrade to unlock premium AI tools and higher credit limits.
@@ -175,7 +175,7 @@ function BillingContent() {
           {/* Last Payment */}
           {recentPayment && (
             <div className="glass-card rounded-xl p-6">
-              <h3 className="text-sm font-semibold text-white mb-3">Last Payment</h3>
+              <h2 className="text-sm font-semibold text-white mb-3">Last Payment</h2>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted">Amount</p>
@@ -194,7 +194,7 @@ function BillingContent() {
           {/* Payment Methods */}
           <div className="glass-card rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-white">Payment Methods</h3>
+              <h2 className="text-sm font-semibold text-white">Payment Methods</h2>
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#6D5EF5]/10 text-[#6D5EF5] border border-[#6D5EF5]/20 hover:bg-[#6D5EF5]/20 transition-colors"
@@ -239,6 +239,7 @@ function BillingContent() {
                         )}
                         <button
                           onClick={() => removePaymentMethod(method.id)}
+                          aria-label="Remove payment method"
                           className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -253,7 +254,7 @@ function BillingContent() {
             {/* Add Card Form */}
             {showAddForm && (
               <div className="mt-4 p-4 rounded-lg bg-white/[0.02] border border-white/[0.04] space-y-3">
-                <h4 className="text-xs font-semibold text-white mb-2">Add Payment Card</h4>
+                <h3 className="text-xs font-semibold text-white mb-2">Add Payment Card</h3>
                 {addError && <p className="text-xs text-[#EF4444]">{addError}</p>}
                 <div>
                   <label className="text-[10px] text-[#A7B0C0] mb-1 block">Cardholder Name</label>

@@ -13,7 +13,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="absolute -top-2 left-3 px-1 text-xs font-medium text-[#A7B0C0] bg-[#090B16] z-10"
+            className="absolute -top-2 left-3 px-1 text-xs font-medium text-muted bg-background z-10"
           >
             {label}
           </label>
@@ -22,7 +22,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           type={type}
           className={cn(
-            "flex h-10 w-full rounded-lg border border-[rgba(255,255,255,0.06)] bg-[#090B16]/60 px-3 py-2 text-sm text-white placeholder:text-[#A7B0C0] focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/40 focus:border-[#6D5EF5]/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 backdrop-blur-xl",
+            "flex h-10 w-full rounded-lg border border-border bg-background/60 px-3 py-2 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 backdrop-blur-xl",
             className
           )}
           ref={ref}

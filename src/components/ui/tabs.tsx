@@ -136,7 +136,7 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
       <div
         ref={ref}
         role="tabpanel"
-        className={cn("mt-2 ring-offset-[#090B16] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6D5EF5]/40 focus-visible:ring-offset-2", className)}
+        className={cn("mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2", className)}
         {...props}
       >
         {children}

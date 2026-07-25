@@ -88,9 +88,9 @@ export default function FeaturesPage() {
                       Live
                     </Badge>
                   </div>
-                  <h3 className="text-lg font-bold group-hover:gradient-primary-text transition-all duration-300">
+                  <h2 className="text-lg font-bold group-hover:gradient-primary-text transition-all duration-300">
                     {f.title}
-                  </h3>
+                  </h2>
                   <p className="text-sm text-muted mt-2 flex-1 leading-relaxed">{f.desc}</p>
                   <ul className="mt-4 space-y-2">
                     {f.points.map((p) => (

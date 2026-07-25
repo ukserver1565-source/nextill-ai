@@ -9,7 +9,42 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/dashboard/", "/zain-nextill-ansari/", "/api/", "/login", "/signup", "/checkout", "/reset-password"],
+        disallow: [
+          // Auth & account pages
+          "/login",
+          "/signup",
+          "/reset-password",
+          "/checkout",
+          // Dashboard (authenticated area)
+          "/dashboard/",
+          // Admin panel
+          "/zain-nextill-ansari/",
+          // API routes
+          "/api/",
+          // Utility/error pages
+          "/unauthorized",
+          "/maintenance",
+        ],
+      },
+      {
+        userAgent: "GPTBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "CCBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "Google-Extended",
+        disallow: "/",
+      },
+      {
+        userAgent: "anthropic-ai",
+        disallow: "/",
+      },
+      {
+        userAgent: "ClaudeBot",
+        disallow: "/",
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

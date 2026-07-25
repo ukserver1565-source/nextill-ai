@@ -114,7 +114,7 @@ export default function DashboardProjects() {
       </div>
 
       <div className="glass-card rounded-xl p-5 space-y-3">
-        <h3 className="text-sm font-semibold">New Project</h3>
+        <h2 className="text-sm font-semibold">New Project</h2>
         <div className="flex flex-col sm:flex-row gap-2">
           <Input placeholder="Project name" value={newName} onChange={(e) => setNewName(e.target.value)} />
           <Input placeholder="Domain (optional)" value={newDomain} onChange={(e) => setNewDomain(e.target.value)} />
@@ -131,11 +131,11 @@ export default function DashboardProjects() {
               <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
                 <FolderKanban className="w-5 h-5 text-primary-light" />
               </div>
-              <button onClick={() => deleteProject(project.id)} className="p-1 rounded text-muted hover:text-danger">
+              <button onClick={() => deleteProject(project.id)} aria-label="Delete project" className="p-1 rounded text-muted hover:text-danger">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
-            <h3 className="text-sm font-semibold mb-1">{project.name}</h3>
+            <h2 className="text-sm font-semibold mb-1">{project.name}</h2>
             {project.domain && <p className="text-xs text-muted mb-3">{project.domain}</p>}
             <div className="flex items-center gap-3 text-[10px] text-muted">
               <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {new Date(project.created_at).toLocaleDateString("en-US")}</span>
@@ -155,7 +155,7 @@ export default function DashboardProjects() {
                 </div>
                 <h2 className="text-lg font-bold">{selectedProject.name}</h2>
               </div>
-              <button onClick={() => setSelectedProject(null)} className="p-1 rounded text-muted hover:text-white">
+              <button onClick={() => setSelectedProject(null)} aria-label="Close project details" className="p-1 rounded text-muted hover:text-white">
                 <X className="w-4 h-4" />
               </button>
             </div>

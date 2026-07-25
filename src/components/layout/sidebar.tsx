@@ -77,6 +77,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
             "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors",
             collapsed && "justify-center"
           )}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? (
             <PanelLeft className="w-4 h-4" />
@@ -195,6 +196,7 @@ export function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
             onClick={signOut}
             className="p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors mx-auto block"
             title="Sign Out"
+            aria-label="Sign Out"
           >
             <LogOut className="w-4 h-4" />
           </button>

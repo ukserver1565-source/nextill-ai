@@ -102,7 +102,10 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
           <span>View Site</span>
         </Link>
 
-        <button className="relative p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors shrink-0">
+        <button
+          className="relative p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors shrink-0"
+          aria-label="Notifications"
+        >
           <Bell className="w-4 h-4" />
         </button>
 
@@ -116,6 +119,7 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
           <button
             onClick={() => setProfileOpen(!profileOpen)}
             className="flex items-center gap-1.5 sm:gap-2 pl-1 sm:pl-2 border-l border-white/[0.06] hover:bg-white/[0.06] rounded-lg pr-1 sm:pr-2 py-1 transition-colors shrink-0"
+            aria-label="User menu"
           >
             <Avatar fallback={userInitials} size="sm" />
             <div className="hidden lg:block text-left">

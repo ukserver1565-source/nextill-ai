@@ -69,12 +69,12 @@ export function TopBar({ onMenuClick }: TopBarProps) {
   }
 
   return (
-    <header className="h-16 border-b border-white/[0.06] flex items-center justify-between px-3 sm:px-4 lg:px-6 liquid-glass sticky top-0 z-30">
+    <header className="h-16 border-b border-border flex items-center justify-between px-3 sm:px-4 lg:px-6 glass-topbar sticky top-0 z-30">
       <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
         {onMenuClick && (
           <button
             onClick={onMenuClick}
-            className="lg:hidden p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors -ml-1 shrink-0"
+            className="lg:hidden p-2 rounded-lg text-muted hover:text-foreground hover:bg-card transition-colors -ml-1 shrink-0"
             aria-label="Open menu"
           >
             <Menu className="w-5 h-5" />
@@ -83,19 +83,19 @@ export function TopBar({ onMenuClick }: TopBarProps) {
         {showBackButton && (
           <button
             onClick={handleBack}
-            className="hidden sm:flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] border border-white/[0.06] hover:border-white/[0.12] transition-all text-xs shrink-0"
+            className="hidden sm:flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-muted hover:text-foreground hover:bg-card border border-border hover:border-muted transition-all text-xs shrink-0"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span className="hidden md:inline">Back</span>
           </button>
         )}
         <div className="relative hidden sm:block shrink-0" ref={searchRef}>
-          <div className="flex items-center gap-2 w-full max-w-[200px] lg:max-w-md h-10 px-3 lg:px-4 rounded-lg bg-[#151C2E] border border-white/[0.06] hover:border-white/[0.12] transition-all">
-            <Search className="w-4 h-4 text-[#A7B0C0] shrink-0" />
+          <div className="flex items-center gap-2 w-full max-w-[200px] lg:max-w-md h-10 px-3 lg:px-4 rounded-lg bg-card border border-border hover:border-muted transition-all">
+            <Search className="w-4 h-4 text-muted shrink-0" />
             <input
               type="text"
               placeholder="Search..."
-              className="flex-1 bg-transparent text-xs lg:text-sm text-white placeholder:text-[#A7B0C0] focus:outline-none min-w-0"
+              className="flex-1 bg-transparent text-xs lg:text-sm text-foreground placeholder:text-muted focus:outline-none min-w-0"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setSearchFocused(true)}
@@ -108,20 +108,20 @@ export function TopBar({ onMenuClick }: TopBarProps) {
               }}
             />
             {!searchFocused && (
-              <kbd className="hidden lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium text-[#A7B0C0] bg-[#090B16] rounded border border-white/[0.06] shrink-0">
+              <kbd className="hidden lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium text-muted bg-background rounded border border-border shrink-0">
                 ⌘K
               </kbd>
             )}
           </div>
           {searchFocused && searchQuery.trim() && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-[#111827]/95 backdrop-blur-xl border border-white/[0.06] rounded-lg shadow-2xl z-50 overflow-hidden">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-surface/95 backdrop-blur-xl border border-border rounded-lg shadow-2xl z-50 overflow-hidden">
               <button
                 onClick={() => {
                   router.push(`/dashboard/history?search=${encodeURIComponent(searchQuery.trim())}`)
                   setSearchFocused(false)
                   setSearchQuery("")
                 }}
-                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors text-left"
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-muted hover:text-foreground hover:bg-card transition-colors text-left"
               >
                 <Search className="w-3.5 h-3.5 shrink-0" />
                 <span className="truncate">Search for &ldquo;{searchQuery.trim()}&rdquo;</span>
@@ -143,16 +143,17 @@ export function TopBar({ onMenuClick }: TopBarProps) {
         <div className="relative shrink-0" ref={notifRef}>
           <button
             onClick={() => setNotifOpen(!notifOpen)}
-            className="relative p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors"
+            className="relative p-2 rounded-lg text-muted hover:text-foreground hover:bg-card transition-colors"
+            aria-label="Notifications"
           >
             <Bell className="w-4 h-4" />
           </button>
           {notifOpen && (
             <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 liquid-glass-card !rounded-xl shadow-2xl z-50 overflow-hidden p-0">
-              <div className="px-4 py-3 border-b border-white/[0.06]">
-                <p className="text-sm font-semibold text-white">Notifications</p>
+              <div className="px-4 py-3 border-b border-border">
+                <p className="text-sm font-semibold text-foreground">Notifications</p>
               </div>
-              <div className="p-6 text-center text-sm text-[#A7B0C0]">
+              <div className="p-6 text-center text-sm text-muted">
                 <Bell className="w-8 h-8 mx-auto mb-2 opacity-40" />
                 <p>No new notifications</p>
               </div>
@@ -170,20 +171,21 @@ export function TopBar({ onMenuClick }: TopBarProps) {
         <div className="relative shrink-0" ref={profileRef}>
           <button
             onClick={() => setProfileOpen(!profileOpen)}
-            className="flex items-center gap-2 pl-2 border-l border-white/[0.06] hover:bg-[#151C2E] rounded-lg pr-2 py-1 transition-colors"
+            className="flex items-center gap-2 pl-2 border-l border-border hover:bg-card rounded-lg pr-2 py-1 transition-colors"
+            aria-label="User menu"
           >
             <Avatar fallback={initials} size="sm" />
             <div className="hidden xl:block text-left">
-              <p className="text-xs font-medium text-white leading-tight whitespace-nowrap">{profile?.full_name || "User"}</p>
-              <p className="text-[10px] text-[#A7B0C0] leading-tight capitalize whitespace-nowrap">{profile?.plan || "Free"} Plan</p>
+              <p className="text-xs font-medium text-foreground leading-tight whitespace-nowrap">{profile?.full_name || "User"}</p>
+              <p className="text-[10px] text-muted leading-tight capitalize whitespace-nowrap">{profile?.plan || "Free"} Plan</p>
             </div>
-            <ChevronDown className="w-3 h-3 text-[#A7B0C0] hidden xl:block" />
+            <ChevronDown className="w-3 h-3 text-muted hidden xl:block" />
           </button>
           {profileOpen && (
             <div className="absolute right-0 top-full mt-2 w-52 liquid-glass-card !rounded-xl shadow-2xl z-50 overflow-hidden p-1">
-              <div className="px-4 py-3 border-b border-white/[0.06]">
-                <p className="text-sm font-medium text-white">{profile?.full_name || "User"}</p>
-                <p className="text-xs text-[#A7B0C0]">{profile?.email || user?.email || ""}</p>
+              <div className="px-4 py-3 border-b border-border">
+                <p className="text-sm font-medium text-foreground">{profile?.full_name || "User"}</p>
+                <p className="text-xs text-muted">{profile?.email || user?.email || ""}</p>
                 <div className="mt-1.5">
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[#6D5EF5]/10 text-[#6D5EF5] border border-[#6D5EF5]/20 capitalize">
                     {profile?.plan || "Free"}
@@ -193,7 +195,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
               <div className="p-1">
                 <Link
                   href="/dashboard/settings"
-                  className="flex items-center gap-2 px-3 py-2 text-sm text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-muted hover:text-foreground hover:bg-card rounded-lg transition-colors"
                   onClick={() => setProfileOpen(false)}
                 >
                   <Settings className="w-4 h-4" />
@@ -201,7 +203,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
                 </Link>
                 <button
                   onClick={handleSignOut}
-                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-[#A7B0C0] hover:text-[#EF4444] hover:bg-[#EF4444]/10 rounded-lg transition-colors"
+                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-muted hover:text-[#EF4444] hover:bg-[#EF4444]/10 rounded-lg transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
                   Sign Out

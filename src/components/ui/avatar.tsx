@@ -28,7 +28,7 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
         className={cn(
           "relative inline-flex items-center justify-center rounded-full overflow-hidden shrink-0",
           "bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20",
-          "ring-2 ring-[rgba(255,255,255,0.06)] ring-offset-2 ring-offset-[#090B16]",
+          "ring-2 ring-border ring-offset-2 ring-offset-background",
           "shadow-lg shadow-[#6D5EF5]/10",
           sizeMap[size],
           className

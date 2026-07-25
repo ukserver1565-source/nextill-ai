@@ -128,7 +128,7 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <ScrollToTop />
-            {children}
+            <main id="main-content">{children}</main>
           </AuthProvider>
         </ThemeProvider>
       </body>

@@ -61,7 +61,7 @@
   --color-card-active: #F1F5F9;
   --color-border: rgba(0, 0, 0, 0.08);
   --color-border-light: rgba(0, 0, 0, 0.04);
-  --color-muted: #64748B;
+  --color-muted: #56657A;
   --color-muted-dark: #94A3B8;
   --color-sidebar: #FFFFFF;
   --color-sidebar-hover: #F1F5F9;
@@ -92,6 +92,10 @@
   ::selection {
     background: rgba(109, 94, 245, 0.25);
     color: white;
+  }
+  :root.light ::selection {
+    background: rgba(109, 94, 245, 0.2);
+    color: #0F172A;
   }
 }
 
@@ -705,6 +709,13 @@ input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 30px #111827 inset !important;
   -webkit-text-fill-color: white !important;
   caret-color: white;
+}
+:root.light input:-webkit-autofill,
+:root.light input:-webkit-autofill:hover,
+:root.light input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px #F1F5F9 inset !important;
+  -webkit-text-fill-color: #0F172A !important;
+  caret-color: #0F172A;
 }
 
 /* Accessibility */

@@ -36,12 +36,47 @@ export default async function PricingPage() {
     "@type": "Product",
     name: `Nextill AI — ${plan.name} Plan`,
     description: `AI-powered SEO tools plan with ${plan.credits} credits per month.`,
+    image: `${siteUrl}/og-pricing.png`,
+    brand: {
+      "@type": "Brand",
+      name: "Nextill AI",
+    },
+    mpn: `nextill-${plan.name?.toLowerCase().replace(/\s+/g, "-") || "plan"}`,
     offers: {
       "@type": "Offer",
       price: plan.price_monthly || 0,
       priceCurrency: "USD",
       availability: "https://schema.org/InStock",
       url: `${siteUrl}/pricing`,
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "US",
+        merchantReturnDays: 7,
+        returnMethod: "https://schema.org/ReturnByMail",
+        returnFees: "https://schema.org/FreeReturn",
+      },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "US",
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 0,
+            maxValue: 0,
+            unitCode: "DAY",
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: 0,
+            maxValue: 0,
+            unitCode: "DAY",
+          },
+        },
+      },
     },
   }))
 

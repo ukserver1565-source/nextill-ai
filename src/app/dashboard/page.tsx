@@ -157,10 +157,10 @@ export default function Dashboard() {
       <motion.div variants={itemVariants} className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
               <FileIcon className="w-4 h-4 text-[#6D5EF5]" />
               Recent Documents
-            </h3>
+            </h2>
             <span className="text-[10px] text-[#A7B0C0] bg-white/[0.04] px-2 py-1 rounded-md">{documents.length} total</span>
           </div>
           {documents.length > 0 ? (
@@ -214,10 +214,10 @@ export default function Dashboard() {
 
         <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
               <Zap className="w-4 h-4 text-[#F59E0B]" />
               Credit Usage
-            </h3>
+            </h2>
             <span className="text-[10px] text-[#A7B0C0] bg-white/[0.04] px-2 py-1 rounded-md">
               {creditBalance} remaining
             </span>

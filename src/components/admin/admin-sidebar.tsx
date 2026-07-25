@@ -130,6 +130,7 @@ export function AdminSidebar({ collapsed, onToggle }: { collapsed: boolean; onTo
             "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors text-xs",
             collapsed && "justify-center"
           )}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? <PanelLeft className="w-4 h-4" /> : <><PanelLeftClose className="w-4 h-4" /><span>Collapse</span></>}
         </button>
