@@ -7,6 +7,7 @@ import { payoneerAdapter } from './payoneer.adapter'
 import { bankTransferAdapter } from './bank_transfer.adapter'
 import { cryptoAdapter } from './crypto.adapter'
 import { gofastpayAdapter } from './gofastpay.adapter'
+import { gopayfastAdapter } from './gopayfast.adapter'
 
 /**
  * Registry of all payment verification adapters.
@@ -17,16 +18,18 @@ import { gofastpayAdapter } from './gofastpay.adapter'
  * Provider statuses:
  *   - stripe:    LIVE    — full verification via Stripe API
  *   - paypal:    LIVE    — full verification via PayPal Orders API
+ *   - gopayfast: LIVE    — hosted checkout via GoPayFast/PayFast Pakistan
  *   - jazzcash:  STUB    — requires Pakistani merchant credentials
  *   - easypaisa: STUB    — requires Pakistani merchant credentials
  *   - payoneer:  STUB    — requires enterprise partnership
- *   - gofastpay: STUB    — requires GoFastPay merchant credentials
+ *   - gofastpay: STUB    — requires GoFastPay merchant credentials (DOES NOT EXIST)
  *   - bank_transfer: MANUAL — always requires admin approval
  *   - crypto:    MANUAL — always requires admin approval
  */
 export const adapters: Record<string, PaymentVerificationAdapter> = {
   stripe: stripeAdapter,
   paypal: paypalAdapter,
+  gopayfast: gopayfastAdapter,
   jazzcash: jazzcashAdapter,
   easypaisa: easypaisaAdapter,
   payoneer: payoneerAdapter,
