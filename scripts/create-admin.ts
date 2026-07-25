@@ -30,7 +30,7 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   process.exit(1)
 }
 
-const ADMIN_EMAILS = ["admin@nextill.ai", "admin@adultpulse.co.uk"]
+const ADMIN_EMAILS = ["admin@adultpulse.co.uk"]
 const ADMIN_PASSWORD = "Admin@123456"
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
