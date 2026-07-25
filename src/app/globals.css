@@ -53,27 +53,27 @@
 /* Light mode overrides */
 :root[data-theme="light"],
 :root.light {
-  --background: #F8FAFC;
-  --foreground: #0F172A;
-  --color-surface: #F1F5F9;
+  --background: #FFFFFF;
+  --foreground: #000000;
+  --color-surface: #F8FAFC;
   --color-card: #FFFFFF;
   --color-card-hover: #F8FAFC;
   --color-card-active: #F1F5F9;
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-light: rgba(0, 0, 0, 0.04);
-  --color-muted: #56657A;
-  --color-muted-dark: #94A3B8;
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-border-light: rgba(0, 0, 0, 0.06);
+  --color-muted: #374151;
+  --color-muted-dark: #4B5563;
   --color-sidebar: #FFFFFF;
-  --color-sidebar-hover: #F1F5F9;
+  --color-sidebar-hover: #F8FAFC;
   --color-sidebar-active: #EEF2FF;
 
   /* Fix hardcoded dark-mode colors in light mode */
   color-scheme: light;
 }
-/* Force dark text in light mode — global fallback */
+/* Force black text in light mode — global fallback */
 :root[data-theme="light"] body,
 :root.light body {
-  color: #0F172A;
+  color: #000000;
 }
 
 @layer base {
@@ -779,19 +779,19 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @layer utilities {
   :root[data-theme="light"] .text-white,
   :root.light .text-white {
-    color: #0F172A;
+    color: #000000;
   }
   :root[data-theme="light"] .text-white\/70,
   :root.light .text-white\/70 {
-    color: rgba(15, 23, 42, 0.7);
+    color: rgba(0, 0, 0, 0.7);
   }
   :root[data-theme="light"] .text-white\/80,
   :root.light .text-white\/80 {
-    color: rgba(15, 23, 42, 0.8);
+    color: rgba(0, 0, 0, 0.8);
   }
   :root[data-theme="light"] .hover\:text-white:hover,
   :root.light .hover\:text-white:hover {
-    color: #0F172A;
+    color: #000000;
   }
   :root[data-theme="light"] .bg-white\/\[0\.04\],
   :root.light .bg-white\/\[0\.04\] {
@@ -811,14 +811,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   }
   :root[data-theme="light"] .border-white\/\[0\.06\],
   :root.light .border-white\/\[0\.06\] {
-    border-color: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.1);
   }
   :root[data-theme="light"] .border-white\/\[0\.08\],
   :root.light .border-white\/\[0\.08\] {
-    border-color: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.12);
   }
   :root[data-theme="light"] .border-white\/\[0\.12\],
   :root.light .border-white\/\[0\.12\] {
-    border-color: rgba(0, 0, 0, 0.15);
+    border-color: rgba(0, 0, 0, 0.18);
   }
 }
