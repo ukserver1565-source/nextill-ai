@@ -113,7 +113,7 @@ export default async function PricingPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-white/[0.06]">
+                    <tr className="border-b border-border">
                       <th className="text-left p-4 text-xs font-medium text-muted">Feature</th>
                       <th className="text-center p-4 text-xs font-medium text-muted">Free</th>
                       <th className="text-center p-4 text-xs font-medium text-primary">Starter</th>
@@ -134,8 +134,8 @@ export default async function PricingPage() {
                       { feature: "Team Members", free: "—", starter: "—", pro: "—", business: "Up to 10" },
                       { feature: "Dedicated Account Manager", free: "—", starter: "—", pro: "—", business: "✓" },
                     ].map((row, i) => (
-                      <tr key={row.feature} className={`border-b border-white/[0.06] ${i % 2 === 0 ? "bg-white/[0.01]" : ""}`}>
-                        <td className="p-4 text-xs text-white font-medium">{row.feature}</td>
+                      <tr key={row.feature} className={`border-b border-border ${i % 2 === 0 ? "bg-muted/5" : ""}`}>
+                        <td className="p-4 text-xs text-foreground font-medium">{row.feature}</td>
                         {["free", "starter", "pro", "business"].map(plan => (
                           <td key={plan} className="p-4 text-center">
                             {row[plan as keyof typeof row] === "✓" ? (
@@ -143,7 +143,7 @@ export default async function PricingPage() {
                             ) : row[plan as keyof typeof row] === "—" ? (
                               <span className="text-muted/30 text-xs">—</span>
                             ) : (
-                              <span className="text-xs text-white">{row[plan as keyof typeof row]}</span>
+                              <span className="text-xs text-foreground">{row[plan as keyof typeof row]}</span>
                             )}
                           </td>
                         ))}

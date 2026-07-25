@@ -50,7 +50,7 @@ export function PublicFooter() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-xs text-muted hover:text-white transition-colors"
+                      className="text-xs text-muted hover:text-foreground transition-colors"
                     >
                       {link.label}
                     </Link>

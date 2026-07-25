@@ -135,7 +135,7 @@ export function BlogListClient() {
                     </span>
                   )}
 
-                  <h2 className="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                  <h2 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
                     {post.title}
                   </h2>
 
@@ -167,7 +167,7 @@ export function BlogListClient() {
           <button
             onClick={loadMore}
             disabled={loadingMore}
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white text-sm font-medium hover:bg-white/[0.06] transition-all disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-foreground text-sm font-medium hover:bg-white/[0.06] transition-all disabled:opacity-50"
           >
             {loadingMore ? (
               <Loader2 className="w-4 h-4 animate-spin" />

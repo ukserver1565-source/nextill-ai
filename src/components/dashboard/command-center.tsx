@@ -47,7 +47,7 @@ export function CommandCenter() {
                   <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center shadow-lg`}>
                     <Icon className="w-4 h-4 text-white" />
                   </div>
-                  <span className="text-sm font-medium text-white group-hover:text-[#6D5EF5] transition-colors">{action.label}</span>
+                  <span className="text-sm font-medium text-foreground group-hover:text-[#6D5EF5] transition-colors">{action.label}</span>
                 </div>
               </Link>
             </motion.div>

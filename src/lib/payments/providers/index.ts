@@ -6,6 +6,7 @@ import { easypaisaAdapter } from './easypaisa.adapter'
 import { payoneerAdapter } from './payoneer.adapter'
 import { bankTransferAdapter } from './bank_transfer.adapter'
 import { cryptoAdapter } from './crypto.adapter'
+import { gofastpayAdapter } from './gofastpay.adapter'
 
 /**
  * Registry of all payment verification adapters.
@@ -19,6 +20,7 @@ import { cryptoAdapter } from './crypto.adapter'
  *   - jazzcash:  STUB    — requires Pakistani merchant credentials
  *   - easypaisa: STUB    — requires Pakistani merchant credentials
  *   - payoneer:  STUB    — requires enterprise partnership
+ *   - gofastpay: STUB    — requires GoFastPay merchant credentials
  *   - bank_transfer: MANUAL — always requires admin approval
  *   - crypto:    MANUAL — always requires admin approval
  */
@@ -28,6 +30,7 @@ export const adapters: Record<string, PaymentVerificationAdapter> = {
   jazzcash: jazzcashAdapter,
   easypaisa: easypaisaAdapter,
   payoneer: payoneerAdapter,
+  gofastpay: gofastpayAdapter,
   bank_transfer: bankTransferAdapter,
   crypto: cryptoAdapter,
 }

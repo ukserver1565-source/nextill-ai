@@ -283,14 +283,14 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               <Link
                 key={item.label}
                 href={item.href}
-                className="text-muted hover:text-white transition-colors duration-200 underline-slide"
+                className="text-muted hover:text-foreground transition-colors duration-200 underline-slide"
               >
                 {item.label}
               </Link>
             ))}
             <Link
               href="/blog"
-              className="text-muted hover:text-white transition-colors duration-200"
+              className="text-muted hover:text-foreground transition-colors duration-200"
             >
               Blog
             </Link>
@@ -309,7 +309,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
             </Link>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 text-muted hover:text-white transition-colors"
+              className="md:hidden p-2 text-muted hover:text-foreground transition-colors"
               aria-label="Toggle menu"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -334,7 +334,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                     key={item.label}
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
-                    className="block text-sm text-muted hover:text-white transition-colors py-2"
+                    className="block text-sm text-muted hover:text-foreground transition-colors py-2"
                   >
                     {item.label}
                   </Link>
@@ -342,7 +342,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                 <Link
                   href="/blog"
                   onClick={() => setMobileOpen(false)}
-                  className="block text-sm text-muted hover:text-white transition-colors py-2"
+                  className="block text-sm text-muted hover:text-foreground transition-colors py-2"
                 >
                   Blog
                 </Link>
@@ -501,8 +501,8 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                     aria-pressed={activeDemo === i}
                     className={`flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-medium transition-[color,background-color,box-shadow] duration-300 ${
                       activeDemo === i
-                        ? "text-white bg-white/[0.04] shadow-[inset_0_-2px_0_0_var(--color-primary)]"
-                        : "text-muted hover:text-white hover:bg-white/[0.02]"
+                        ? "text-foreground bg-white/[0.04] shadow-[inset_0_-2px_0_0_var(--color-primary)]"
+                        : "text-muted hover:text-foreground hover:bg-white/[0.02]"
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -543,7 +543,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                               className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]"
                             >
                               <span className="text-xs text-muted">{line.label}</span>
-                              <span className="text-xs text-white font-medium">{line.value}</span>
+                              <span className="text-xs text-foreground font-medium">{line.value}</span>
                             </div>
                           ))}
                         </div>
@@ -773,13 +773,13 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
           <div className="flex items-center justify-center gap-3 mb-8">
             <button
               onClick={() => setBillingCycle("monthly")}
-              className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "monthly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-white"}`}
+              className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "monthly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-foreground"}`}
             >
               Monthly
             </button>
             <button
               onClick={() => setBillingCycle("yearly")}
-              className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "yearly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-white"}`}
+              className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "yearly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-foreground"}`}
             >
               Yearly
               <span className="ml-1.5 text-[10px] font-bold text-emerald-400">Save 2 months</span>
@@ -815,7 +815,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                         document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })
                       }
                     }}
-                    className="px-6 py-2.5 rounded-xl text-sm font-medium border border-white/[0.12] hover:bg-white/[0.04] transition-colors text-muted hover:text-white"
+                    className="px-6 py-2.5 rounded-xl text-sm font-medium border border-white/[0.12] hover:bg-white/[0.04] transition-colors text-muted hover:text-foreground"
                   >
                     {showAllPlans ? "See Less Plans" : "See More Plans"}
                   </button>
@@ -840,23 +840,23 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                 </thead>
                 <tbody>
                   <tr className="border-b border-white/[0.03]">
-                    <td className="p-4 text-white text-xs sm:text-sm">Domain Intelligence — basic/local</td>
+                    <td className="p-4 text-foreground text-xs sm:text-sm">Domain Intelligence — basic/local</td>
                     <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />{getCreditCost("domain-intelligence")}</span></td>
                   </tr>
                   <tr className="border-b border-white/[0.03]">
-                    <td className="p-4 text-white text-xs sm:text-sm">Post Generator — 1,000 words</td>
+                    <td className="p-4 text-foreground text-xs sm:text-sm">Post Generator — 1,000 words</td>
                     <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />5</span></td>
                   </tr>
                   <tr className="border-b border-white/[0.03]">
-                    <td className="p-4 text-white text-xs sm:text-sm">Post Generator — 2,000 words</td>
+                    <td className="p-4 text-foreground text-xs sm:text-sm">Post Generator — 2,000 words</td>
                     <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />8</span></td>
                   </tr>
                   <tr className="border-b border-white/[0.03]">
-                    <td className="p-4 text-white text-xs sm:text-sm">Post Generator — 5,000 words</td>
+                    <td className="p-4 text-foreground text-xs sm:text-sm">Post Generator — 5,000 words</td>
                     <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />20</span></td>
                   </tr>
                   <tr className="border-b border-white/[0.03]">
-                    <td className="p-4 text-white text-xs sm:text-sm">Plagiarism & Authenticity check</td>
+                    <td className="p-4 text-foreground text-xs sm:text-sm">Plagiarism & Authenticity check</td>
                     <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />{getCreditCost("plagiarism-checker")}</span></td>
                   </tr>
                 </tbody>
@@ -897,7 +897,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               return (
                 <div key={stat.label} className="text-center">
                   <Icon className="w-5 h-5 text-primary mx-auto mb-1" />
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                   <p className="text-[10px] text-muted">{stat.label}</p>
                 </div>
               )
@@ -942,7 +942,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                   ))}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-white">{t.name}</p>
+                  <p className="text-sm font-medium text-foreground">{t.name}</p>
                   <p className="text-[10px] text-muted">{t.role}</p>
                 </div>
               </motion.div>

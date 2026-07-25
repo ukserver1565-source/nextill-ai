@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const siteUrl = getSiteUrl()
   const title = post.seo_title || post.title
   const description = post.meta_description || post.excerpt || ""
-  const ogImage = post.featured_image_url || `${siteUrl}/og-image.png`
+  const ogImage = post.featured_image_url || `${siteUrl}/api/og`
 
   return {
     title,
@@ -112,7 +112,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     "@type": "Article",
     headline: post.title,
     description: post.excerpt || post.meta_description || "",
-    image: post.featured_image_url || `${siteUrl}/og-image.png`,
+    image: post.featured_image_url || `${siteUrl}/api/og`,
     datePublished: publishDate,
     dateModified: post.updated_at,
     author: {
@@ -222,7 +222,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                           {related.blog_categories.name}
                         </span>
                       )}
-                      <h3 className="text-sm font-bold text-white group-hover:text-primary transition-colors line-clamp-2 mb-2">
+                      <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
                         {related.title}
                       </h3>
                       {related.excerpt && (

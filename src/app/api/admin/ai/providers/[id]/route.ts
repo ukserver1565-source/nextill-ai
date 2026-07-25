@@ -41,7 +41,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    await supabaseAdmin.from("ai_models").delete().eq("provider_id", id)
+    await supabaseAdmin.from("ai_models").delete().eq("provider_slug", id)
     const { error } = await supabaseAdmin.from("ai_providers").delete().eq("id", id)
     if (error) throw new Error(error.message)
     return NextResponse.json({ success: true })

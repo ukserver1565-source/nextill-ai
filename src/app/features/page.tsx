@@ -131,7 +131,7 @@ export default function FeaturesPage() {
                 <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-white font-semibold text-base hover:opacity-90 transition-all">
                   Start Free
                 </Link>
-                <Link href="/pricing" className="inline-flex items-center justify-center px-8 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white font-semibold text-base hover:bg-white/[0.06] transition-all">
+                <Link href="/pricing" className="inline-flex items-center justify-center px-8 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-foreground font-semibold text-base hover:bg-white/[0.06] transition-all">
                   View Pricing
                 </Link>
               </div>

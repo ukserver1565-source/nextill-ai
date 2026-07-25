@@ -49,6 +49,7 @@ function SignupPageContent() {
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [successMessage, setSuccessMessage] = useState("")
 
   const strength = useMemo(() => getStrength(password), [password])
   const passwordMismatch = confirmPassword.length > 0 && password !== confirmPassword
@@ -86,6 +87,9 @@ function SignupPageContent() {
       const result = await signup(formData)
       if (result?.redirect) { window.location.href = result.redirect; return }
       if (result?.error) setError(result.error)
+      if (result?.success && result?.message) {
+        setSuccessMessage(result.message)
+      }
     } catch {
       setError("Something went wrong. Please try again.")
     }
@@ -119,13 +123,19 @@ function SignupPageContent() {
             </div>
 
             <div className="text-center">
-              <h1 className="text-2xl font-bold text-white">Create your account</h1>
+              <h1 className="text-2xl font-bold text-foreground">Create your account</h1>
               <p className="text-[#A7B0C0] text-sm mt-1">Get started with Nextill AI — it&apos;s free</p>
             </div>
 
             {error && (
               <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400">
                 {error}
+              </div>
+            )}
+
+            {successMessage && (
+              <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-xs text-green-400">
+                {successMessage}
               </div>
             )}
 
@@ -189,7 +199,7 @@ function SignupPageContent() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -226,7 +236,7 @@ function SignupPageContent() {
                     type="button"
                     onClick={() => setShowConfirm(!showConfirm)}
                     aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-foreground transition-colors"
                   >
                     {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>

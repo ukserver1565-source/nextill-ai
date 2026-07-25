@@ -93,7 +93,7 @@ export default function HowItWorksPage() {
               <div key={step.number} className={`flex flex-col ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} gap-8 items-center`}>
                 <div className="flex-1">
                   <div className="text-6xl font-bold gradient-primary-text opacity-30 mb-2">{step.number}</div>
-                  <h2 className="text-2xl font-bold text-white mb-3">{step.title}</h2>
+                  <h2 className="text-2xl font-bold text-foreground mb-3">{step.title}</h2>
                   <p className="text-muted leading-relaxed mb-6">{step.description}</p>
                   <ul className="space-y-2">
                     {step.details.map(d => (
@@ -126,7 +126,7 @@ export default function HowItWorksPage() {
                 <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-white font-semibold text-base hover:opacity-90 transition-all">
                   Start Free <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
-                <Link href="/tools" className="inline-flex items-center justify-center px-8 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white font-semibold text-base hover:bg-white/[0.06] transition-all">
+                <Link href="/tools" className="inline-flex items-center justify-center px-8 py-3 rounded-xl border border-white/[0.08] bg-white/[0.03] text-foreground font-semibold text-base hover:bg-white/[0.06] transition-all">
                   Explore Tools
                 </Link>
               </div>

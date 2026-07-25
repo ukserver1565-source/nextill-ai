@@ -137,7 +137,7 @@ function BillingContent() {
           {subscription ? (
             <div className="glass-card rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-semibold text-white">Current Subscription</h2>
+                <h2 className="text-sm font-semibold text-foreground">Current Subscription</h2>
                 <span className="text-xs px-2.5 py-1 rounded-full bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20">
                   {subscription.status}
                 </span>
@@ -145,11 +145,11 @@ function BillingContent() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-muted mb-1">Plan</p>
-                  <p className="text-sm font-medium text-white capitalize">{subscription.plan_slug || plan}</p>
+                  <p className="text-sm font-medium text-foreground capitalize">{subscription.plan_slug || plan}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted mb-1">Current Period</p>
-                  <p className="text-sm font-medium text-white">
+                  <p className="text-sm font-medium text-foreground">
                     {subscription.current_period_start ? new Date(subscription.current_period_start).toLocaleDateString() : "—"}
                     {" — "}
                     {subscription.current_period_end ? new Date(subscription.current_period_end).toLocaleDateString() : "—"}
@@ -161,7 +161,7 @@ function BillingContent() {
             <div className="glass-card rounded-xl p-6">
               <div className="flex items-center gap-3 mb-3">
                 <CreditCard className="w-5 h-5 text-muted" />
-                <h2 className="text-sm font-semibold text-white">Free Plan</h2>
+                <h2 className="text-sm font-semibold text-foreground">Free Plan</h2>
               </div>
               <p className="text-sm text-muted mb-4">
                 You are currently on the Free plan. Upgrade to unlock premium AI tools and higher credit limits.
@@ -175,11 +175,11 @@ function BillingContent() {
           {/* Last Payment */}
           {recentPayment && (
             <div className="glass-card rounded-xl p-6">
-              <h2 className="text-sm font-semibold text-white mb-3">Last Payment</h2>
+              <h2 className="text-sm font-semibold text-foreground mb-3">Last Payment</h2>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted">Amount</p>
-                  <p className="text-lg font-bold text-white">${Number(recentPayment.amount || 0).toFixed(2)}</p>
+                  <p className="text-lg font-bold text-foreground">${Number(recentPayment.amount || 0).toFixed(2)}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-muted">Status</p>
@@ -194,7 +194,7 @@ function BillingContent() {
           {/* Payment Methods */}
           <div className="glass-card rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-semibold text-white">Payment Methods</h2>
+              <h2 className="text-sm font-semibold text-foreground">Payment Methods</h2>
               <button
                 onClick={() => setShowAddForm(!showAddForm)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#6D5EF5]/10 text-[#6D5EF5] border border-[#6D5EF5]/20 hover:bg-[#6D5EF5]/20 transition-colors"
@@ -221,7 +221,7 @@ function BillingContent() {
                           <Icon className="w-5 h-5 text-[#A7B0C0]" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-white">{method.name}</p>
+                          <p className="text-sm font-medium text-foreground">{method.name}</p>
                           <p className="text-xs text-[#A7B0C0]">
                             {method.brand || method.type}
                             {method.is_default && <span className="ml-2 text-[#22C55E]">• Default</span>}
@@ -254,7 +254,7 @@ function BillingContent() {
             {/* Add Card Form */}
             {showAddForm && (
               <div className="mt-4 p-4 rounded-lg bg-white/[0.02] border border-white/[0.04] space-y-3">
-                <h3 className="text-xs font-semibold text-white mb-2">Add Payment Card</h3>
+                <h3 className="text-xs font-semibold text-foreground mb-2">Add Payment Card</h3>
                 {addError && <p className="text-xs text-[#EF4444]">{addError}</p>}
                 <div>
                   <label className="text-[10px] text-[#A7B0C0] mb-1 block">Cardholder Name</label>
@@ -312,7 +312,7 @@ function BillingContent() {
                   </button>
                   <button
                     onClick={() => { setShowAddForm(false); setAddError("") }}
-                    className="px-4 py-2 rounded-lg border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white transition-colors"
+                    className="px-4 py-2 rounded-lg border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-foreground transition-colors"
                   >
                     Cancel
                   </button>

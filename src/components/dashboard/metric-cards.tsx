@@ -61,7 +61,7 @@ export function MetricCards({ stats }: MetricCardsProps) {
                   )}
                 </div>
               </div>
-              <span className="text-2xl font-bold tracking-tight text-white">{metric.value}</span>
+              <span className="text-2xl font-bold tracking-tight text-foreground">{metric.value}</span>
               <p className="text-xs text-[#A7B0C0] mt-1">{metric.label}</p>
             </div>
           </motion.div>

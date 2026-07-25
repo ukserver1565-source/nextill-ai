@@ -41,7 +41,7 @@ export function QuickActions() {
                 <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center`}>
                   <Icon className="w-3.5 h-3.5 text-white" />
                 </div>
-                <span className="text-xs font-medium text-white">{action.label}</span>
+                <span className="text-xs font-medium text-foreground">{action.label}</span>
               </div>
             </Link>
           </motion.div>

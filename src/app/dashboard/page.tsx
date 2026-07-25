@@ -133,7 +133,7 @@ export default function Dashboard() {
         <Breadcrumbs className="mb-4" />
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               {clientDate ? clientDate.split("|")[0] : "Hello"}, {userName.split(" ")[0]}
             </h1>
             <p className="text-sm text-[#A7B0C0] mt-1">{clientDate ? clientDate.split("|")[1] : ""}</p>

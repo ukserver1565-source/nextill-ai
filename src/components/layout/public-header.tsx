@@ -54,7 +54,7 @@ export function PublicHeader() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-3 py-2 rounded-lg text-sm text-muted hover:text-white hover:bg-white/[0.06] transition-colors"
+                className="px-3 py-2 rounded-lg text-sm text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors"
               >
                 {link.label}
               </Link>
@@ -73,7 +73,7 @@ export function PublicHeader() {
               >
                 <Avatar fallback={initials} size="sm" />
                 <div className="hidden sm:block text-left">
-                  <p className="text-xs font-medium text-white leading-tight whitespace-nowrap">{profile?.full_name || "User"}</p>
+                  <p className="text-xs font-medium text-foreground leading-tight whitespace-nowrap">{profile?.full_name || "User"}</p>
                   <p className="text-[10px] text-[#A7B0C0] leading-tight capitalize whitespace-nowrap">{profile?.plan || "Free"} Plan</p>
                 </div>
                 <ChevronDown className="w-3 h-3 text-[#A7B0C0] hidden sm:block" />

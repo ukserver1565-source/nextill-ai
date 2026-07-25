@@ -131,19 +131,19 @@ export function PricingCard({ plan, billingCycle, couponResult, couponCode, isLo
       <div className="mt-4 pt-4 border-t border-white/[0.06] space-y-1.5">
         <div className="flex justify-between text-[11px]">
           <span className="text-[#A7B0C0]">Projects</span>
-          <span className="text-white font-medium">{formatLimit(plan.max_projects)}</span>
+          <span className="text-foreground font-medium">{formatLimit(plan.max_projects)}</span>
         </div>
         <div className="flex justify-between text-[11px]">
           <span className="text-[#A7B0C0]">Documents</span>
-          <span className="text-white font-medium">{formatLimit(plan.max_documents)}</span>
+          <span className="text-foreground font-medium">{formatLimit(plan.max_documents)}</span>
         </div>
         <div className="flex justify-between text-[11px]">
           <span className="text-[#A7B0C0]">Max article length</span>
-          <span className="text-white font-medium">{formatLimit(plan.max_article_length, "words")}</span>
+          <span className="text-foreground font-medium">{formatLimit(plan.max_article_length, "words")}</span>
         </div>
         <div className="flex justify-between text-[11px]">
           <span className="text-[#A7B0C0]">Report history</span>
-          <span className="text-white font-medium">{plan.report_history_days >= 9999 ? "Unlimited" : `${plan.report_history_days} days`}</span>
+          <span className="text-foreground font-medium">{plan.report_history_days >= 9999 ? "Unlimited" : `${plan.report_history_days} days`}</span>
         </div>
       </div>
     </div>

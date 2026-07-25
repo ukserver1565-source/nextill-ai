@@ -47,7 +47,7 @@ export function AIToolCards() {
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold tracking-tight text-white">AI Workflows</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">AI Workflows</h2>
         <span className="text-xs text-[#A7B0C0]">3 available</span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -71,7 +71,7 @@ export function AIToolCards() {
                     <ArrowRight className="w-4 h-4 text-[#6D5EF5]" />
                   </div>
                 </div>
-                <h3 className="text-base font-semibold text-white mb-2">{tool.name}</h3>
+                <h3 className="text-base font-semibold text-foreground mb-2">{tool.name}</h3>
                 <p className="text-xs text-[#A7B0C0] leading-relaxed mb-4 flex-1">
                   {tool.description}
                 </p>

@@ -90,7 +90,7 @@ export default function RootLayout({
     "@type": "Organization",
     "name": "Nextill AI",
     "url": siteUrl,
-    "logo": `${siteUrl}/og-image.png`,
+    "logo": `${siteUrl}/api/og`,
     "description": "AI-powered SEO and content generation platform for keyword research, post generation, and plagiarism checking.",
     "sameAs": [],
   }

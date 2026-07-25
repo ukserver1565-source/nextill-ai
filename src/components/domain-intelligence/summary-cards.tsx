@@ -91,7 +91,7 @@ export function SummaryCards({ overview, loading }: SummaryCardsProps) {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-xl font-bold text-white">
+            <span className="text-xl font-bold text-foreground">
               {card.status === "loading" ? (
                 <span className="inline-flex items-center gap-1"><Loader2 className="w-4 h-4 animate-spin" />...</span>
               ) : card.status === "unavailable" ? (

@@ -2,9 +2,25 @@ import { NextRequest, NextResponse } from "next/server"
 import { blogRepo } from "@/lib/repositories/blog-repo"
 import { paginationSchema, createBlogPostSchema } from "@/lib/validation/admin-schemas"
 import { sanitizeHtml } from "@/lib/security/html-sanitizer"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
+
+async function requireAdmin() {
+  const supabase = await createSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) }
+  }
+  const { data: profile } = await supabase.from("profiles").select("role").eq("user_id", user.id).single()
+  if (!profile || !["admin", "super_admin"].includes(profile.role)) {
+    return { error: NextResponse.json({ error: "Forbidden" }, { status: 403 }) }
+  }
+  return { user }
+}
 
 export async function GET(req: NextRequest) {
   try {
+    const auth = await requireAdmin()
+    if (auth.error) return auth.error
     const params = paginationSchema.parse(Object.fromEntries(req.nextUrl.searchParams))
     const data = await blogRepo.list(params)
     return NextResponse.json(data)
@@ -15,6 +31,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const auth = await requireAdmin()
+    if (auth.error) return auth.error
     const body = await req.json()
     const parsed = createBlogPostSchema.parse(body)
     const status = parsed.status || "draft"

@@ -82,7 +82,7 @@ function LoginPageContent() {
             </div>
 
             <div className="text-center">
-              <h1 className="text-2xl font-bold text-white">Welcome back</h1>
+              <h1 className="text-2xl font-bold text-foreground">Welcome back</h1>
               <p className="text-muted text-sm mt-1">Sign in to your account</p>
             </div>
 
@@ -127,7 +127,7 @@ function LoginPageContent() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>

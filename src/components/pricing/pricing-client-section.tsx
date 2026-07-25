@@ -59,13 +59,13 @@ export function PricingClientSection({ initialPlans, initialCreditCosts }: Props
       <div className="flex items-center justify-center gap-3 mb-8">
         <button
           onClick={() => setBillingCycle("monthly")}
-          className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "monthly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-white"}`}
+          className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "monthly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-foreground"}`}
         >
           Monthly
         </button>
         <button
           onClick={() => setBillingCycle("yearly")}
-          className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "yearly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-white"}`}
+          className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "yearly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-foreground"}`}
         >
           Yearly
           <span className="ml-1.5 text-[10px] font-bold text-emerald-400">Save 2 months</span>
@@ -98,7 +98,7 @@ export function PricingClientSection({ initialPlans, initialCreditCosts }: Props
           <div className="liquid-glass-card rounded-xl p-5">
             <div className="flex items-center gap-2 mb-3">
               <Tag className="w-4 h-4 text-[#6D5EF5]" />
-              <span className="text-sm font-medium text-white">Have a coupon?</span>
+              <span className="text-sm font-medium text-foreground">Have a coupon?</span>
             </div>
             <div className="flex gap-2">
               <input
@@ -142,23 +142,23 @@ export function PricingClientSection({ initialPlans, initialCreditCosts }: Props
             </thead>
             <tbody>
               <tr className="border-b border-white/[0.03]">
-                <td className="p-4 text-white text-xs sm:text-sm">Domain Intelligence — basic/local</td>
+                <td className="p-4 text-foreground text-xs sm:text-sm">Domain Intelligence — basic/local</td>
                 <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />{getCreditCost("domain-intelligence")}</span></td>
               </tr>
               <tr className="border-b border-white/[0.03]">
-                <td className="p-4 text-white text-xs sm:text-sm">Post Generator — 1,000 words</td>
+                <td className="p-4 text-foreground text-xs sm:text-sm">Post Generator — 1,000 words</td>
                 <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />5</span></td>
               </tr>
               <tr className="border-b border-white/[0.03]">
-                <td className="p-4 text-white text-xs sm:text-sm">Post Generator — 2,000 words</td>
+                <td className="p-4 text-foreground text-xs sm:text-sm">Post Generator — 2,000 words</td>
                 <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />8</span></td>
               </tr>
               <tr className="border-b border-white/[0.03]">
-                <td className="p-4 text-white text-xs sm:text-sm">Post Generator — 5,000 words</td>
+                <td className="p-4 text-foreground text-xs sm:text-sm">Post Generator — 5,000 words</td>
                 <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />20</span></td>
               </tr>
               <tr className="border-b border-white/[0.03]">
-                <td className="p-4 text-white text-xs sm:text-sm">Plagiarism & Authenticity check</td>
+                <td className="p-4 text-foreground text-xs sm:text-sm">Plagiarism & Authenticity check</td>
                 <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />{getCreditCost("plagiarism-checker")}</span></td>
               </tr>
             </tbody>

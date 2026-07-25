@@ -108,7 +108,7 @@ export default function ResetPasswordPage() {
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] mb-4 shadow-lg shadow-[#6D5EF5]/30">
               <Sparkles className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Reset your password</h1>
+            <h1 className="text-2xl font-bold text-foreground">Reset your password</h1>
             <p className="text-[#A7B0C0] text-sm mt-1">
               {recoveryMode ? "Enter your new password" : "Enter your email to receive a reset link"}
             </p>
@@ -131,9 +131,9 @@ export default function ResetPasswordPage() {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 mx-auto">
                 <CheckCircle2 className="w-8 h-8 text-green-400" />
               </div>
-              <p className="text-white font-medium">Check your email</p>
+              <p className="text-foreground font-medium">Check your email</p>
               <p className="text-sm text-[#A7B0C0]">
-                We&apos;ve sent a reset link to <span className="text-white">{email}</span>
+                We&apos;ve sent a reset link to <span className="text-foreground">{email}</span>
               </p>
               <Button
                 variant="outline"
@@ -169,7 +169,7 @@ export default function ResetPasswordPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A7B0C0] hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>

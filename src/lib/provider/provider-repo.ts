@@ -96,7 +96,7 @@ export const providerRepo = {
     if (!data) return []
     return (data as any[]).map((m) => ({
       id: m.id,
-      providerId: m.provider_id,
+      providerId: m.provider_slug,
       providerSlug: m.provider_slug,
       displayName: m.display_name,
       modelName: m.model_name,
