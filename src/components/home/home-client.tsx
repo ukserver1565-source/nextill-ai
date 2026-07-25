@@ -499,9 +499,9 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                     onClick={() => setActiveDemo(i)}
                     aria-label={`View ${demo.name} demo`}
                     aria-pressed={activeDemo === i}
-                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-medium transition-[color,background-color] duration-300 ${
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-medium transition-[color,background-color,box-shadow] duration-300 ${
                       activeDemo === i
-                        ? "text-white bg-white/[0.04] border-b-2 border-primary"
+                        ? "text-white bg-white/[0.04] shadow-[inset_0_-2px_0_0_var(--color-primary)]"
                         : "text-muted hover:text-white hover:bg-white/[0.02]"
                     }`}
                   >
@@ -1084,7 +1084,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
             </div>
             {footerColumns.map((col) => (
               <div key={col.title}>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-dark mb-4">{col.title}</h4>
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-dark mb-4">{col.title}</h2>
                 <ul className="space-y-3">
                   {col.links.map((link) => (
                     <li key={link.label}>
