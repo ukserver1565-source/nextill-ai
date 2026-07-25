@@ -33,7 +33,7 @@ const footerColumns = [
 
 export function PublicFooter() {
   return (
-    <footer className="liquid-glass border-t border-white/[0.06] mt-20">
+    <footer className="liquid-glass border-t border-border mt-20">
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2 md:col-span-1">
@@ -44,7 +44,7 @@ export function PublicFooter() {
           </div>
           {footerColumns.map((col) => (
             <div key={col.title}>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-white/70 mb-4">{col.title}</h4>
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-dark mb-4">{col.title}</h4>
               <ul className="space-y-3">
                 {col.links.map((link) => (
                   <li key={link.label}>
@@ -60,7 +60,7 @@ export function PublicFooter() {
             </div>
           ))}
         </div>
-        <div className="mt-10 pt-6 border-t border-white/[0.06] text-center">
+        <div className="mt-10 pt-6 border-t border-border text-center">
           <p className="text-xs text-muted">
             &copy; {new Date().getFullYear()} Nextill AI. All rights reserved.
           </p>

@@ -408,7 +408,7 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
         >
           <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
           <span>{saveError}</span>
-          <button onClick={() => setSaveError("")} className="ml-auto shrink-0">
+          <button onClick={() => setSaveError("")} className="ml-auto shrink-0" aria-label="Dismiss error">
             <X className="w-3.5 h-3.5 hover:opacity-70 transition-opacity" />
           </button>
         </motion.div>

@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { Sparkles } from "lucide-react"
 import { useSiteLogo } from "@/hooks/use-site-logo"
 
@@ -15,19 +16,22 @@ export function SiteLogo({ size = "md", showText = true, href = "/", className }
   const logoUrl = useSiteLogo()
 
   const sizes = {
-    sm: { box: "w-7 h-7", icon: "w-3.5 h-3.5", img: "w-7 h-7", text: "text-sm" },
-    md: { box: "w-8 h-8", icon: "w-4 h-4", img: "w-8 h-8", text: "text-lg" },
-    lg: { box: "w-16 h-16 rounded-2xl", icon: "w-8 h-8", img: "w-16 h-16 rounded-2xl", text: "text-4xl" },
+    sm: { box: "w-7 h-7", icon: "w-3.5 h-3.5", img: "w-7 h-7", px: 28, text: "text-sm" },
+    md: { box: "w-8 h-8", icon: "w-4 h-4", img: "w-8 h-8", px: 32, text: "text-lg" },
+    lg: { box: "w-16 h-16 rounded-2xl", icon: "w-8 h-8", img: "w-16 h-16 rounded-2xl", px: 64, text: "text-4xl" },
   }
   const s = sizes[size]
 
   const logoContent = logoUrl ? (
-    <img
+    <Image
       src={logoUrl}
-      alt="Nextill AI"
+      alt=""
+      width={s.px}
+      height={s.px}
+      sizes={`${s.px}px`}
       className={`${s.img} object-contain rounded-lg`}
+      priority={size !== "sm"}
       onError={(e) => {
-        // If image fails to load, hide it and let the fallback show
         ;(e.target as HTMLImageElement).style.display = "none"
         const fallback = (e.target as HTMLImageElement).nextElementSibling as HTMLElement
         if (fallback) fallback.style.display = "flex"
