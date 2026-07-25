@@ -74,7 +74,7 @@ export default async function PricingPage() {
           {/* Feature Comparison Table */}
           <div className="mt-16">
             <h2 className="text-xl sm:text-2xl font-bold text-center mb-8">Feature Comparison</h2>
-            <div className="glass-card rounded-2xl overflow-hidden">
+            <div className="liquid-glass-card rounded-2xl overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>

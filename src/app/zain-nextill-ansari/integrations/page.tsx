@@ -98,7 +98,7 @@ export default function IntegrationsPage() {
           <button onClick={fetchData} className="mt-3 text-xs text-[#EF4444] underline hover:no-underline">Retry</button>
         </div>
       ) : integrations.length === 0 ? (
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-12 text-center">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-12 text-center">
           <Link className="w-10 h-10 text-[#A7B0C0] mx-auto mb-3" />
           <p className="text-sm text-[#A7B0C0]">No integrations configured</p>
           <p className="text-xs text-[#A7B0C0]/60 mt-1">Connect third-party services to extend functionality</p>
@@ -111,7 +111,7 @@ export default function IntegrationsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.03 }}
-              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all"
+              className="liquid-glass-card border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">

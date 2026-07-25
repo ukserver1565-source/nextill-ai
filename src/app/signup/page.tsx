@@ -110,7 +110,7 @@ function SignupPageContent() {
       {/* Right - Form Panel */}
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-md">
-          <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-8 space-y-6">
+          <div className="liquid-glass-card rounded-xl p-8 space-y-6">
             {/* Mobile Logo */}
             <div className="lg:hidden text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] mb-4">

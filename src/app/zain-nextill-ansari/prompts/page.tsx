@@ -148,7 +148,7 @@ export default function PromptsPage() {
         ))}
       </div>
 
-      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="liquid-glass-card border border-white/[0.06] rounded-xl overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center p-12">
             <Loader2 className="w-6 h-6 text-[#6D5EF5] animate-spin" />

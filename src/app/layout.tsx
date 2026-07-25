@@ -4,6 +4,7 @@ import { AuthProvider } from "@/lib/auth/AuthProvider"
 import { ThemeProvider } from "@/lib/theme/theme-provider"
 import { ScrollToTop } from "@/components/layout/scroll-to-top"
 import { NavigationProgressWrapper } from "@/components/layout/navigation-progress-wrapper"
+import { GoogleAnalytics } from "@/components/analytics/google-analytics"
 import { getSiteUrl } from "@/lib/site-url"
 import "./globals.css"
 
@@ -105,6 +106,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <head>
+        <meta name="google-site-verification" content="RlOwPuXymU_VATwzE1bgeeEMsk4pv71H-kgh7D0whvI" />
         {/* Prevent flash of wrong theme — runs before first paint */}
         <script
           dangerouslySetInnerHTML={{
@@ -121,6 +123,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-background text-foreground antialiased" suppressHydrationWarning>
+        <GoogleAnalytics />
         <NavigationProgressWrapper />
         <ThemeProvider>
           <AuthProvider>

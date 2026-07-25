@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge"
 import { SiteLogo } from "@/components/shared/site-logo"
 import { ThemeToggle } from "@/components/shared/theme-toggle"
 import { LatestBlogPosts } from "@/components/home/latest-blog-posts"
+import { CursorGlow } from "@/components/shared/cursor-glow"
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -264,26 +265,25 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <CursorGlow />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       {/* NAV */}
-      <header className="fixed top-0 left-0 right-0 z-50 glass-topbar h-16">
+      <header className="fixed top-0 left-0 right-0 z-50 liquid-glass h-16">
         <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
           <SiteLogo size="md" />
           <nav className="hidden md:flex items-center gap-8 text-sm">
             {[
               { label: "Features", href: "#features" },
-              { label: "How It Works", href: "/how-it-works" },
-              { label: "Tools", href: "#tools" },
               { label: "Pricing", href: "#pricing" },
               { label: "FAQ", href: "#faq" },
             ].map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
-                className="text-muted hover:text-white transition-colors duration-200"
+                className="text-muted hover:text-white transition-colors duration-200 underline-slide"
               >
                 {item.label}
               </Link>
@@ -322,13 +322,11 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              className="md:hidden bg-[#090B16]/80 backdrop-blur-2xl border-t border-white/[0.06] shadow-2xl"
+              className="md:hidden liquid-glass border-t border-white/[0.06] shadow-2xl"
             >
               <div className="px-4 py-4 space-y-3">
                 {[
                   { label: "Features", href: "#features" },
-                  { label: "How It Works", href: "/how-it-works" },
-                  { label: "Tools", href: "#tools" },
                   { label: "Pricing", href: "#pricing" },
                   { label: "FAQ", href: "#faq" },
                 ].map((item) => (
@@ -369,9 +367,9 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
       {/* HERO */}
       <section className="relative pt-32 pb-20 px-4 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-          <div className="absolute -top-40 left-1/4 w-[600px] h-[600px] rounded-full bg-primary/20 blur-[140px]" />
-          <div className="absolute -bottom-40 right-1/4 w-[500px] h-[500px] rounded-full bg-secondary/15 blur-[120px]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-accent/10 blur-[160px]" />
+          <div className="liquid-orb liquid-orb-1" />
+          <div className="liquid-orb liquid-orb-2" />
+          <div className="liquid-orb liquid-orb-3" />
         </div>
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <motion.div
@@ -379,7 +377,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <Badge variant="info" className="mb-6 px-4 py-1.5 text-sm">
+            <Badge variant="info" className="mb-6 px-4 py-1.5 text-sm float">
               <Sparkles className="w-3.5 h-3.5 mr-1.5" />
               AI-Powered SEO Tools
             </Badge>
@@ -408,12 +406,12 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <Link href="/signup">
+            <Link href="/signup" className="press-scale">
               <Button variant="gradient" size="lg" className="w-full sm:w-auto text-base px-8">
                 Get Started Free <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
-            <Link href={dashboardHref}>
+            <Link href={dashboardHref} className="press-scale">
               <Button variant="glass" size="lg" className="w-full sm:w-auto text-base px-8">
                 Dashboard
               </Button>
@@ -461,7 +459,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
             ].map((s) => {
               const Icon = s.icon
               return (
-                <div key={s.label} className="glass-card rounded-xl p-4 text-center hover:-translate-y-1 hover:border-white/[0.12] transition-all duration-300">
+                <div key={s.label} className="liquid-glass-card rounded-xl p-4 text-center hover:-translate-y-1 hover:border-white/[0.12] transition-all duration-300">
                   <Icon className="w-5 h-5 text-primary-light mx-auto mb-2" />
                   <p className="text-sm font-semibold">{s.label}</p>
                   <p className="text-xs text-muted mt-0.5">{s.desc}</p>
@@ -491,7 +489,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               Watch how each workflow delivers instant results — cycling automatically.
             </p>
           </div>
-          <div className="glass-card rounded-2xl overflow-hidden">
+          <div className="liquid-glass-card rounded-2xl overflow-hidden">
             <div className="flex border-b border-border">
               {demos.map((demo, i) => {
                 const Icon = demo.icon
@@ -588,7 +586,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                 <motion.div key={w.name} variants={staggerItem}>
                   <Link
                     href={`/${w.slug}`}
-                    className="glass-card rounded-2xl p-6 sm:p-8 h-full flex flex-col group hover:border-primary/30 transition-all duration-300 hover:-translate-y-1"
+                    className="liquid-glass-card p-6 sm:p-8 h-full flex flex-col group cursor-glow hover-lift press-scale"
                   >
                     <div
                       className={`w-12 h-12 rounded-xl bg-gradient-to-br ${w.color} flex items-center justify-center mb-4 shadow-lg ${w.glow}`}
@@ -637,7 +635,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
-                  className="glass-card rounded-2xl p-6 text-center hover:border-white/[0.12] transition-all duration-300"
+                  className="liquid-glass-card rounded-2xl p-6 text-center hover:border-white/[0.12] transition-all duration-300"
                 >
                   <Icon className="w-6 h-6 text-primary-light mx-auto mb-3" />
                   <p className="text-2xl font-bold">{s.value}</p>
@@ -732,7 +730,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               return (
                 <motion.div key={t.name} variants={staggerItem}>
                   <Link href={t.href} className="block">
-                    <div className="glass-card rounded-xl p-5 hover:border-primary/30 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer group">
+                    <div className="liquid-glass-card p-5 cursor-pointer group press-scale hover-lift">
                       <Icon className="w-5 h-5 text-primary-light mb-3 group-hover:scale-110 transition-transform" />
                       <h3 className="font-semibold">{t.name}</h3>
                       <p className="text-xs text-muted mt-1">{t.desc}</p>
@@ -830,7 +828,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-2">How <span className="gradient-primary-text">Credits</span> Work</h2>
               <p className="text-muted text-sm">Each action costs credits. Credits reset monthly with your plan.</p>
             </div>
-            <div className="glass-card rounded-xl overflow-hidden">
+            <div className="liquid-glass-card rounded-xl overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
@@ -932,7 +930,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="glass-card rounded-2xl p-6 hover:border-primary/30 transition-all"
+                className="liquid-glass-card rounded-2xl p-6 hover:border-primary/30 transition-all"
               >
                 <Quote className="w-8 h-8 text-primary/30 mb-4" />
                 <p className="text-sm text-muted leading-relaxed mb-6">{t.text}</p>
@@ -999,7 +997,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
             {faqs.map((faq, i) => (
               <div
                 key={i}
-                className={`glass-card rounded-xl overflow-hidden transition-all duration-300 ${
+                className={`liquid-glass-card rounded-xl overflow-hidden transition-all duration-300 ${
                   openFaq === i ? "border-primary/30" : "hover:border-white/[0.12]"
                 }`}
               >
@@ -1042,7 +1040,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
         className="px-4 pb-20"
       >
         <div className="max-w-4xl mx-auto">
-          <div className="glass-card rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
+          <div className="liquid-glass-card rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
             <div
               className="absolute inset-0 pointer-events-none"
               aria-hidden="true"

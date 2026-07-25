@@ -138,7 +138,7 @@ export default function AnalyticsPage() {
           const Icon = stat.icon
           return (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4">
+              className="liquid-glass-card border border-white/[0.06] rounded-xl p-4">
               {loading ? (
                 <Loader2 className="w-5 h-5 mb-2 animate-spin text-[#A7B0C0]" />
               ) : (
@@ -152,7 +152,7 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-5">
           <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
             <Eye className="w-4 h-4 text-[#6D5EF5]" /> Usage Events ({range})
           </h3>
@@ -175,7 +175,7 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-5">
           <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
             <Users className="w-4 h-4 text-[#4CC9F0]" /> New Users per Month
           </h3>
@@ -198,7 +198,7 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        <div className="xl:col-span-2 bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
+        <div className="xl:col-span-2 liquid-glass-card border border-white/[0.06] rounded-xl p-5">
           <h3 className="text-sm font-semibold text-white mb-4">Top Tools Used</h3>
           {loading ? (
             <div className="flex items-center justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" /></div>

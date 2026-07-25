@@ -149,7 +149,7 @@ export default function AIHubPromptsPage() {
         </div>
       </div>
 
-      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="liquid-glass-card border border-white/[0.06] rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -225,7 +225,7 @@ export default function AIHubPromptsPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6"
+          className="liquid-glass-card border border-white/[0.06] rounded-xl p-6"
         >
           <h3 className="text-sm font-semibold text-white mb-4">
             {editing === -1 ? "New Prompt Template" : `Editing: ${editForm.name}`}

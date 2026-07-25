@@ -121,7 +121,7 @@ export default function PlansPage() {
   if (error) {
     return (
       <div className="flex items-center justify-center py-32">
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-8 text-center max-w-sm">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-8 text-center max-w-sm">
           <p className="text-sm text-[#EF4444] mb-3">Failed to load plans</p>
           <p className="text-xs text-[#A7B0C0] mb-4">{error}</p>
           <button onClick={fetchPlans} className="h-9 px-4 rounded-xl bg-[#6D5EF5] text-white text-xs font-medium hover:opacity-90 transition-opacity">
@@ -145,7 +145,7 @@ export default function PlansPage() {
       </div>
 
       {plans.length === 0 && (
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-12 text-center">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-12 text-center">
           <CreditCard className="w-8 h-8 text-[#A7B0C0] mx-auto mb-3" />
           <p className="text-sm text-[#A7B0C0]">No plans created yet</p>
         </div>
@@ -158,7 +158,7 @@ export default function PlansPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6 hover:border-white/[0.12] transition-all relative overflow-hidden"
+            className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 hover:border-white/[0.12] transition-all relative overflow-hidden"
           >
             {plan.price_monthly === 0 && (
               <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/20 text-[10px] font-medium text-[#22C55E]">

@@ -52,12 +52,13 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
   }
 
   return (
-    <header className="h-16 border-b border-white/[0.04] flex items-center justify-between px-3 sm:px-4 lg:px-6 bg-[#090B16]/80 backdrop-blur-xl sticky top-0 z-30">
-      <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+    <header className="h-14 sm:h-16 border-b border-white/[0.06] flex items-center justify-between px-3 sm:px-4 lg:px-6 liquid-glass sticky top-0 z-30 gap-2">
+      {/* Left section — mobile menu + back + admin badge + search */}
+      <div className="flex items-center gap-2 flex-1 min-w-0">
         {onMenuClick && (
           <button
             onClick={onMenuClick}
-            className="lg:hidden p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors -ml-1 shrink-0"
+            className="lg:hidden p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors shrink-0"
             aria-label="Open menu"
           >
             <Menu className="w-5 h-5" />
@@ -66,53 +67,55 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
         {showBackButton && (
           <button
             onClick={handleBack}
-            className="hidden sm:flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] border border-white/[0.06] hover:border-white/[0.12] transition-all text-xs shrink-0"
+            className="hidden sm:flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] transition-all text-xs shrink-0"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span className="hidden md:inline">Back</span>
           </button>
         )}
-        <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#6D5EF5]/10 border border-[#6D5EF5]/20">
-          <Shield className="w-3.5 h-3.5 text-[#6D5EF5]" />
-          <span className="text-[11px] font-semibold text-[#6D5EF5]">Admin</span>
+        <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#6D5EF5]/10 border border-[#6D5EF5]/20 shrink-0">
+          <Shield className="w-3 h-3 text-[#6D5EF5]" />
+          <span className="text-[10px] font-semibold text-[#6D5EF5]">Admin</span>
         </div>
+
+        {/* Search bar — flex-1, no overlap */}
         <button
           onClick={onSearch}
-          className="hidden sm:flex items-center gap-2 lg:gap-3 w-full max-w-[200px] lg:max-w-md h-10 px-3 lg:px-4 rounded-lg bg-[#151C2E] border border-white/[0.06] hover:border-white/[0.12] transition-all group cursor-pointer shrink-0"
+          className="flex items-center gap-2 flex-1 h-9 px-3 rounded-xl bg-white/[0.04] border border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.06] transition-all group cursor-pointer min-w-0"
         >
           <Search className="w-4 h-4 text-[#A7B0C0] shrink-0" />
-          <span className="text-xs lg:text-sm text-[#A7B0C0] flex-1 text-left truncate">Search admin panel...</span>
-          <kbd className="hidden xl:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-[#A7B0C0] bg-[#090B16] rounded border border-white/[0.06]">
+          <span className="text-xs text-[#A7B0C0] truncate hidden sm:inline">Search admin panel...</span>
+          <kbd className="hidden xl:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium text-[#A7B0C0]/60 bg-white/[0.04] rounded border border-white/[0.06] ml-auto shrink-0">
             <span className="text-[9px]">⌘</span>K
           </kbd>
         </button>
       </div>
 
-      <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
+      {/* Right section — view site, bell, live, profile */}
+      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
         <Link
           href="/"
           target="_blank"
-          className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] border border-transparent hover:border-white/[0.06] transition-all text-xs"
+          className="hidden md:flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] transition-all text-xs shrink-0"
         >
           <Globe className="w-3.5 h-3.5" />
           <span>View Site</span>
         </Link>
 
-        <div className="relative">
-          <button className="relative p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors">
-            <Bell className="w-4 h-4" />
-          </button>
-        </div>
+        <button className="relative p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors shrink-0">
+          <Bell className="w-4 h-4" />
+        </button>
 
-        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#22C55E]/10 border border-[#22C55E]/20">
+        <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#22C55E]/10 border border-[#22C55E]/20 shrink-0">
           <div className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
           <span className="text-[10px] font-medium text-[#22C55E]">Live</span>
         </div>
 
+        {/* Profile dropdown */}
         <div className="relative" ref={profileRef}>
           <button
             onClick={() => setProfileOpen(!profileOpen)}
-            className="flex items-center gap-2 pl-2 border-l border-white/[0.06] hover:bg-[#151C2E] rounded-lg pr-2 py-1 transition-colors"
+            className="flex items-center gap-1.5 sm:gap-2 pl-1 sm:pl-2 border-l border-white/[0.06] hover:bg-white/[0.06] rounded-lg pr-1 sm:pr-2 py-1 transition-colors shrink-0"
           >
             <Avatar fallback={userInitials} size="sm" />
             <div className="hidden lg:block text-left">
@@ -122,15 +125,15 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
             <ChevronDown className="w-3 h-3 text-[#A7B0C0] hidden lg:block" />
           </button>
           {profileOpen && (
-            <div className="absolute right-0 top-full mt-2 w-52 bg-[#111827]/95 backdrop-blur-xl border border-white/[0.06] rounded-xl shadow-2xl z-50 overflow-hidden">
-              <div className="px-4 py-3 border-b border-white/[0.06]">
+            <div className="absolute right-0 top-full mt-2 w-52 liquid-glass-card !rounded-xl shadow-2xl z-50 overflow-hidden p-1">
+              <div className="px-3 py-2.5 border-b border-white/[0.06]">
                 <p className="text-sm font-medium text-white">{userName}</p>
                 <p className="text-xs text-[#A7B0C0]">{userEmail || "Admin"}</p>
               </div>
               <div className="p-1">
                 <Link
                   href="/zain-nextill-ansari/settings"
-                  className="flex items-center gap-2 px-3 py-2 text-sm text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] rounded-lg transition-colors"
                   onClick={() => setProfileOpen(false)}
                 >
                   <Settings className="w-4 h-4" />

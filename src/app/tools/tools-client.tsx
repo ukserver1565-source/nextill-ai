@@ -169,7 +169,7 @@ export default function ToolsPage() {
               const clickable = isToolClickable(tool.slug)
               const isComingSoon = workflowStatuses[tool.slug] === "coming_soon"
               const isMaintenance = workflowStatuses[tool.slug] === "maintenance"
-              const cardClassName = `glass-card rounded-2xl p-6 sm:p-8 h-full flex flex-col group transition-all duration-300 ${
+              const cardClassName = `liquid-glass-card rounded-2xl p-6 sm:p-8 h-full flex flex-col group transition-all duration-300 ${
                 clickable
                   ? "hover:border-primary/30 hover:-translate-y-1 cursor-pointer"
                   : "opacity-75 cursor-default border-white/[0.04]"
@@ -235,7 +235,7 @@ export default function ToolsPage() {
         className="px-4 pb-20"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="glass-card rounded-2xl p-6 sm:p-8">
+          <div className="liquid-glass-card rounded-2xl p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
               <div>
                 <h2 className="text-xl font-bold">Legacy Tools</h2>

@@ -65,7 +65,7 @@ export default function AiModelsPage() {
           <button onClick={fetchData} className="mt-3 text-xs text-[#EF4444] underline hover:no-underline">Retry</button>
         </div>
       ) : models.length === 0 ? (
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-12 text-center">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-12 text-center">
           <Cpu className="w-10 h-10 text-[#A7B0C0] mx-auto mb-3" />
           <p className="text-sm text-[#A7B0C0]">No AI models configured</p>
           <p className="text-xs text-[#A7B0C0]/60 mt-1">Add models to enable AI-powered features</p>
@@ -76,7 +76,7 @@ export default function AiModelsPage() {
             const Icon = providerIcons[m.provider] || Cpu
             return (
               <motion.div key={m.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all">
+                className="liquid-glass-card border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br ${providerColors[m.provider] || "from-[#6D5EF5] to-[#8B5CF6]"}`}>

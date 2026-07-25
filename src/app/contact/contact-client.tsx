@@ -91,7 +91,7 @@ export default function ContactPage() {
       <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
         <PublicHeader />
         <div className="pt-20 sm:pt-24 pb-10 sm:pb-16 px-3 sm:px-4 flex items-start justify-center">
-          <div className="glass-card rounded-xl sm:rounded-2xl p-6 sm:p-8 max-w-md w-full text-center">
+          <div className="liquid-glass-card rounded-xl sm:rounded-2xl p-6 sm:p-8 max-w-md w-full text-center">
             <div className="mb-4">
               <BackButton fallback="/" />
             </div>
@@ -118,7 +118,7 @@ export default function ContactPage() {
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-2 sm:mb-3">Contact Us</h1>
           <p className="text-muted text-sm sm:text-base">Have a question or need help? Send us a message.</p>
         </div>
-        <form onSubmit={handleSubmit} className="glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6 space-y-3 sm:space-y-4">
+        <form onSubmit={handleSubmit} className="liquid-glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6 space-y-3 sm:space-y-4">
           {formError && (
             <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400">
               {formError}
@@ -153,7 +153,7 @@ export default function ContactPage() {
               <h2 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Connect With Us</h2>
               <p className="text-muted text-xs sm:text-sm">Reach out on social media</p>
             </div>
-            <div className="glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6">
+            <div className="liquid-glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6">
               <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
                 {socialLinks.map((link) => {
                   const Icon = socialIcons[link.icon] || Link2

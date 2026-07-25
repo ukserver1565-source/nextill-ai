@@ -67,7 +67,7 @@ export default function SEOPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6 space-y-5">
+          <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 space-y-5">
             <h2 className="text-sm font-semibold text-white flex items-center gap-2">
               <Search className="w-4 h-4 text-[#6D5EF5]" /> Global Meta Tags
             </h2>
@@ -83,7 +83,7 @@ export default function SEOPage() {
             </div>
           </div>
 
-          <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6 space-y-5">
+          <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 space-y-5">
             <h2 className="text-sm font-semibold text-white flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-[#4CC9F0]" /> Google Analytics
             </h2>
@@ -93,7 +93,7 @@ export default function SEOPage() {
             </div>
           </div>
 
-          <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6 space-y-5">
+          <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 space-y-5">
             <h2 className="text-sm font-semibold text-white flex items-center gap-2">
               <FileCode className="w-4 h-4 text-[#8B5CF6]" /> Robots.txt & Sitemap
             </h2>

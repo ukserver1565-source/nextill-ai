@@ -95,7 +95,7 @@ export function PricingClientSection({ initialPlans, initialCreditCosts }: Props
       {/* Coupon Section — only when plans loaded */}
       {plans.length > 0 && (
         <div className="mt-10 sm:mt-12 max-w-md mx-auto">
-          <div className="glass-card rounded-xl p-5">
+          <div className="liquid-glass-card rounded-xl p-5">
             <div className="flex items-center gap-2 mb-3">
               <Tag className="w-4 h-4 text-[#6D5EF5]" />
               <span className="text-sm font-medium text-white">Have a coupon?</span>
@@ -132,7 +132,7 @@ export function PricingClientSection({ initialPlans, initialCreditCosts }: Props
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight mb-2">How Credits Work</h2>
           <p className="text-muted text-sm">Each action costs credits. Credits reset monthly with your plan.</p>
         </div>
-        <div className="glass-card rounded-xl overflow-hidden">
+        <div className="liquid-glass-card rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/[0.06]">

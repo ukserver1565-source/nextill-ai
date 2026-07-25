@@ -77,7 +77,7 @@ export default function SecurityPage() {
       </div>
 
       <div className="space-y-6">
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6 space-y-5">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 space-y-5">
           <h2 className="text-sm font-semibold text-white flex items-center gap-2">
             <Shield className="w-4 h-4 text-[#6D5EF5]" /> Security Settings
           </h2>
@@ -123,7 +123,7 @@ export default function SecurityPage() {
           )}
         </div>
 
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6">
           <h2 className="text-sm font-semibold text-white flex items-center gap-2 mb-4">
             <AlertTriangle className="w-4 h-4 text-[#F59E0B]" /> Security Events
           </h2>

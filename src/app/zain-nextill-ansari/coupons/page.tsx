@@ -110,7 +110,7 @@ export default function CouponsPage() {
   if (error) {
     return (
       <div className="flex items-center justify-center py-32">
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-8 text-center max-w-sm">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-8 text-center max-w-sm">
           <p className="text-sm text-[#EF4444] mb-3">Failed to load coupons</p>
           <p className="text-xs text-[#A7B0C0] mb-4">{error}</p>
           <button onClick={fetchCoupons} className="h-9 px-4 rounded-xl bg-[#6D5EF5] text-white text-xs font-medium hover:opacity-90 transition-opacity">
@@ -138,7 +138,7 @@ export default function CouponsPage() {
         <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} placeholder="Search coupons..." className="w-full h-10 pl-10 pr-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
       </div>
 
-      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="liquid-glass-card border border-white/[0.06] rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>

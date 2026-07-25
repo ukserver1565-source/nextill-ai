@@ -1,4 +1,6 @@
 import { generateWithProvider } from "@/lib/ai/providers/registry"
+import { PageSpeedProvider } from "@/lib/domain-intelligence/pagespeed.provider"
+import { humanizeContentWithAI } from "@/lib/services/ai-humanizer.service"
 import {
   runPlagiarismLocal,
   detectAiLocal,
@@ -13,6 +15,8 @@ import {
   humanizeContentLocal,
   summarizeText,
 } from "@/lib/engine"
+
+const pageSpeed = new PageSpeedProvider()
 
 export interface ToolRunnerResult {
   success: boolean
@@ -70,9 +74,10 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
     }
   },
 
-  "ai-humanizer": (input) => {
+  "ai-humanizer": async (input) => {
     const text = (input.text as string) || ""
-    const result = humanizeContentLocal(text)
+    const wordCount = text.split(/\s+/).filter(Boolean).length
+    const result = await humanizeContentWithAI(text)
     return {
       success: true,
       type: "humanized",
@@ -82,7 +87,7 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
         changes: result.changes.slice(0, 20),
         readabilityImprovement: result.readabilityImprovement,
       },
-      wordCount: text.split(/\s+/).filter(Boolean).length,
+      wordCount,
     }
   },
 
@@ -189,17 +194,86 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
     }
   },
 
-  "website-audit": (input) => {
+  "website-audit": async (input) => {
     const url = (input.url as string) || ""
+    if (!url) {
+      return { success: false, type: "error", content: "URL is required for website audit", error: "Missing URL" }
+    }
+
+    const target = url.startsWith("http") ? url : `https://${url}`
+    const [technicalResult, recsResult] = await Promise.all([
+      pageSpeed.analyze(target),
+      pageSpeed.analyze(target).then(r => r.data ? pageSpeed.getRecommendations(r.data, target) : { data: [], error: r.error, provider: "pagespeed" as const, latencyMs: 0 }),
+    ])
+
+    const tech = technicalResult.data
+    if (!tech) {
+      return {
+        success: false,
+        type: "audit",
+        content: { url: target, score: 0, issues: [], checks: [], summary: `PageSpeed API error: ${technicalResult.error}` },
+        error: technicalResult.error || "Failed to fetch PageSpeed data",
+      }
+    }
+
+    // Calculate overall score from available categories
+    const scores = [tech.performance, tech.accessibility, tech.bestPractices, tech.seo].filter((s): s is number => s != null)
+    const overallScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0
+
+    const recommendations = recsResult.data || []
+    const issues = recommendations.map(r => ({
+      priority: r.priority,
+      issue: r.issue,
+      evidence: r.evidence,
+      impact: r.impact,
+      fix: r.fix,
+    }))
+
+    const checks = [
+      { name: "Performance", score: tech.performance, value: `${tech.performance}/100` },
+      { name: "Accessibility", score: tech.accessibility, value: `${tech.accessibility}/100` },
+      { name: "Best Practices", score: tech.bestPractices, value: `${tech.bestPractices}/100` },
+      { name: "SEO", score: tech.seo, value: `${tech.seo}/100` },
+      { name: "LCP", score: tech.lcp != null && tech.lcp < 2500 ? 100 : tech.lcp != null && tech.lcp < 4000 ? 50 : 0, value: tech.lcp != null ? `${Math.round(tech.lcp)}ms` : "N/A" },
+      { name: "CLS", score: tech.cls != null && tech.cls < 0.1 ? 100 : tech.cls != null && tech.cls < 0.25 ? 50 : 0, value: tech.cls != null ? tech.cls.toFixed(3) : "N/A" },
+      { name: "FCP", score: tech.fcp != null && tech.fcp < 1800 ? 100 : tech.fcp != null && tech.fcp < 3000 ? 50 : 0, value: tech.fcp != null ? `${Math.round(tech.fcp)}ms` : "N/A" },
+      { name: "TTFB", score: tech.ttfb != null && tech.ttfb < 800 ? 100 : tech.ttfb != null && tech.ttfb < 1800 ? 50 : 0, value: tech.ttfb != null ? `${Math.round(tech.ttfb)}ms` : "N/A" },
+      { name: "HTTPS", score: tech.https ? 100 : 0, value: tech.https ? "Yes" : "No" },
+      { name: "Title Tag", score: tech.title === "Present" ? 100 : 0, value: tech.title },
+      { name: "Meta Description", score: tech.metaDescription === "Present" ? 100 : 0, value: tech.metaDescription },
+      { name: "Canonical Tag", score: tech.canonical === "Present" ? 100 : 0, value: tech.canonical },
+      { name: "Mobile Friendly", score: tech.mobileUsable ? 100 : 0, value: tech.mobileUsable ? "Yes" : "No" },
+    ]
+
     return {
       success: true,
       type: "audit",
       content: {
-        url,
-        score: 0,
-        issues: [],
-        checks: [],
-        summary: `Website audit for ${url} requires live API integration. Connect PageSpeed Insights API for real audit data.`,
+        url: target,
+        score: overallScore,
+        technical: {
+          performance: tech.performance,
+          accessibility: tech.accessibility,
+          bestPractices: tech.bestPractices,
+          seo: tech.seo,
+          cls: tech.cls,
+          lcp: tech.lcp,
+          inp: tech.inp,
+          fcp: tech.fcp,
+          ttfb: tech.ttfb,
+          https: tech.https,
+          mobileUsable: tech.mobileUsable,
+        },
+        issues,
+        checks,
+        recommendations: recommendations.map(r => ({
+          priority: r.priority,
+          issue: r.issue,
+          evidence: r.evidence,
+          impact: r.impact,
+          fix: r.fix,
+        })),
+        summary: `Website audit complete for ${target}. Overall score: ${overallScore}/100. Performance: ${tech.performance}, Accessibility: ${tech.accessibility}, Best Practices: ${tech.bestPractices}, SEO: ${tech.seo}. ${recommendations.length} issues found.`,
       },
       wordCount: 0,
     }

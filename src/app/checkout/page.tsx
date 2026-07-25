@@ -203,7 +203,7 @@ function CheckoutContent() {
     return (
       <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-10 sm:pb-16 px-3 sm:px-4">
         <div className="w-full max-w-lg mx-auto text-center">
-          <div className="glass-card rounded-2xl p-8 sm:p-10">
+          <div className="liquid-glass-card rounded-2xl p-8 sm:p-10">
             {checkoutResult.status === "pending" ? (
               <>
                 <div className="w-16 h-16 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mx-auto mb-6">
@@ -256,7 +256,7 @@ function CheckoutContent() {
 
           {/* Payment Method Info */}
           {selectedMethod && (
-            <div className="glass-card rounded-2xl p-5 mb-4 flex items-center gap-3">
+            <div className="liquid-glass-card rounded-2xl p-5 mb-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#6D5EF5]/10 flex items-center justify-center">
                 {(() => { const I = getCheckoutIcon(selectedMethod.icon); return <I className="w-5 h-5 text-[#6D5EF5]" /> })()}
               </div>
@@ -269,7 +269,7 @@ function CheckoutContent() {
 
           {/* ── Dynamic Payment Form ── */}
           {selectedMethod && (
-            <div className="glass-card rounded-2xl p-5 mb-4">
+            <div className="liquid-glass-card rounded-2xl p-5 mb-4">
               {/* ── Card / Stripe / Paddle ── */}
               {(selectedMethod.id === "stripe" || selectedMethod.id === "paddle" || selectedMethod.type === "card") && (
                 <>
@@ -447,7 +447,7 @@ function CheckoutContent() {
           )}
 
           {/* Order Summary */}
-          <div className="glass-card rounded-2xl p-5 mb-4">
+          <div className="liquid-glass-card rounded-2xl p-5 mb-4">
             <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-[#6D5EF5]" /> Order Summary
             </h3>
@@ -520,7 +520,7 @@ function CheckoutContent() {
         <p className="text-muted text-sm mb-8">Complete your purchase to activate your plan.</p>
 
         {/* Plan Summary */}
-        <div className="glass-card rounded-2xl p-6 mb-6">
+        <div className="liquid-glass-card rounded-2xl p-6 mb-6">
           <h2 className="text-lg font-bold mb-4">{plan.name} Plan</h2>
 
           {/* Billing Toggle */}
@@ -564,7 +564,7 @@ function CheckoutContent() {
 
         {/* Coupon */}
         {!isFree && (
-          <div className="glass-card rounded-2xl p-6 mb-6">
+          <div className="liquid-glass-card rounded-2xl p-6 mb-6">
             <div className="flex items-center gap-2 mb-3">
               <Tag className="w-4 h-4 text-[#6D5EF5]" />
               <span className="text-sm font-medium">Have a coupon?</span>
@@ -590,7 +590,7 @@ function CheckoutContent() {
 
         {/* Payment Method Selection (radio buttons — original style) */}
         {paymentMethods.length > 0 && !isFree && (
-          <div className="glass-card rounded-2xl p-6 mb-6">
+          <div className="liquid-glass-card rounded-2xl p-6 mb-6">
             <h3 className="text-sm font-medium mb-4 flex items-center gap-2">
               <CreditCard className="w-4 h-4 text-[#6D5EF5]" />
               Select Payment Method

@@ -65,7 +65,7 @@ export function ToolLayout({ title, description, creditsCost, guestLimit, icon, 
         {/* Mobile: stacked | Tablet (md 768+): 50/50 | Desktop (lg 1024+): 40/60 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
           <div className="md:col-span-1 lg:col-span-2 space-y-3 sm:space-y-4">
-            <div className="glass-card rounded-xl p-4 sm:p-5">
+            <div className="liquid-glass-card rounded-xl p-4 sm:p-5">
               {children}
             </div>
           </div>
@@ -103,7 +103,7 @@ export function EmptyState({ title, description }: { title: string; description:
 
 export function ErrorBox({ message }: { message: string }) {
   return (
-    <div className="glass-card rounded-xl p-4 border border-danger/30">
+    <div className="liquid-glass-card rounded-xl p-4 border border-danger/30">
       <p className="text-sm text-danger">{message}</p>
     </div>
   )

@@ -74,7 +74,7 @@ export default function AboutPage() {
 
       <section className="px-4 pb-16">
         <div className="max-w-4xl mx-auto">
-          <div className="glass-card rounded-2xl p-8 sm:p-10">
+          <div className="liquid-glass-card rounded-2xl p-8 sm:p-10">
             <p className="text-muted leading-relaxed text-base">
               Nextill AI is a premium suite of AI-powered content tools designed to help marketers, SEO professionals, and content creators produce high-quality, search-optimized content at scale.
             </p>
@@ -101,7 +101,7 @@ export default function AboutPage() {
             {features.map((f) => {
               const Icon = f.icon
               return (
-                <div key={f.title} className="glass-card rounded-2xl p-6 h-full flex flex-col group hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
+                <div key={f.title} className="liquid-glass-card rounded-2xl p-6 h-full flex flex-col group hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-4 shadow-lg`}>
                     <Icon className="w-6 h-6 text-white" />
                   </div>
@@ -120,7 +120,7 @@ export default function AboutPage() {
             {stats.map((s) => {
               const Icon = s.icon
               return (
-                <div key={s.label} className="glass-card rounded-2xl p-6 text-center">
+                <div key={s.label} className="liquid-glass-card rounded-2xl p-6 text-center">
                   <Icon className="w-6 h-6 text-primary-light mx-auto mb-3" />
                   <p className="text-2xl font-bold">{s.value}</p>
                   <p className="text-xs text-muted mt-1">{s.label}</p>
@@ -133,7 +133,7 @@ export default function AboutPage() {
 
       <section className="px-4 pb-20">
         <div className="max-w-4xl mx-auto">
-          <div className="glass-card rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
+          <div className="liquid-glass-card rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
             <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
               <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-primary/20 blur-[80px]" />
               <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-secondary/15 blur-[80px]" />

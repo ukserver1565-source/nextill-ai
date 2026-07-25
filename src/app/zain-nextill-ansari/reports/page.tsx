@@ -134,7 +134,7 @@ export default function ReportsPage() {
           { label: "Generated", value: loading ? "—" : String(reports.filter((r: any) => r.status === "ready" || r.status === "completed").length) },
         ].map((s, i) => (
           <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-            className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4 text-center">
+            className="liquid-glass-card border border-white/[0.06] rounded-xl p-4 text-center">
             <p className="text-xl font-bold text-white">{s.value}</p>
             <p className="text-[11px] text-[#A7B0C0]">{s.label}</p>
           </motion.div>
@@ -153,7 +153,7 @@ export default function ReportsPage() {
           const Icon = r.icon
           return (
             <motion.div key={r.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all">
+              className="liquid-glass-card border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all">
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${r.color} flex items-center justify-center mb-4 shadow-lg`}>
                 <Icon className="w-5 h-5 text-white" />
               </div>
@@ -167,7 +167,7 @@ export default function ReportsPage() {
         })}
       </div>
 
-      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="liquid-glass-card border border-white/[0.06] rounded-xl overflow-hidden">
         <div className="p-5 border-b border-white/[0.06]">
           <h3 className="text-sm font-semibold text-white">Recent Reports</h3>
         </div>

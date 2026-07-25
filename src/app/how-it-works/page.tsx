@@ -116,7 +116,7 @@ export default function HowItWorksPage() {
 
       <section className="px-4 pb-20">
         <div className="max-w-4xl mx-auto">
-          <div className="glass-card rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
+          <div className="liquid-glass-card rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
             <div className="relative z-10">
               <h2 className="text-2xl sm:text-3xl font-bold mb-3">Ready to Get Started?</h2>
               <p className="text-muted mt-3 max-w-lg mx-auto">

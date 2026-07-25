@@ -216,7 +216,7 @@ export default function AIHubProvidersPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
-                className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl hover:border-white/[0.12] transition-all"
+                className="liquid-glass-card border border-white/[0.06] rounded-xl hover:border-white/[0.12] transition-all"
               >
                 <div className="p-5">
                   <div className="flex items-start justify-between mb-4">

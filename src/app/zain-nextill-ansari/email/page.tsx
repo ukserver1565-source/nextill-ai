@@ -112,7 +112,7 @@ export default function EmailPage() {
           <Loader2 className="w-6 h-6 text-[#6D5EF5] animate-spin" />
         </div>
       ) : (
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6 space-y-6">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 space-y-6">
           <div className="flex items-center gap-1 p-1 bg-[#090B16] rounded-xl border border-white/[0.06] w-fit">
             {(["smtp", "resend"] as const).map(p => (
               <button key={p} onClick={() => setProvider(p)} className={`px-5 py-2 rounded-lg text-xs font-medium transition-all capitalize ${provider === p ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-white"}`}>

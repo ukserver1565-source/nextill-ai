@@ -79,7 +79,7 @@ export default function FeaturesPage() {
             {features.map((f) => {
               const Icon = f.icon
               return (
-                <div key={f.title} className="glass-card rounded-2xl p-6 sm:p-8 h-full flex flex-col group hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
+                <div key={f.title} className="liquid-glass-card rounded-2xl p-6 sm:p-8 h-full flex flex-col group hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-start justify-between mb-4">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center shadow-lg`}>
                       <Icon className="w-6 h-6 text-white" />
@@ -117,7 +117,7 @@ export default function FeaturesPage() {
 
       <section className="px-4 pb-20">
         <div className="max-w-4xl mx-auto">
-          <div className="glass-card rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
+          <div className="liquid-glass-card rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
             <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
               <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-primary/20 blur-[80px]" />
               <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-secondary/15 blur-[80px]" />

@@ -163,13 +163,13 @@ export default function ApiKeysPage() {
           <button onClick={fetchData} className="mt-3 text-xs text-[#EF4444] underline hover:no-underline">Retry</button>
         </div>
       ) : keys.length === 0 ? (
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-12 text-center">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-12 text-center">
           <Key className="w-10 h-10 text-[#A7B0C0] mx-auto mb-3" />
           <p className="text-sm text-[#A7B0C0]">No API keys configured yet</p>
           <p className="text-xs text-[#A7B0C0]/60 mt-1">Add a key to get started with AI providers</p>
         </div>
       ) : (
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/[0.06] text-xs text-[#A7B0C0]">

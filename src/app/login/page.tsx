@@ -73,7 +73,7 @@ function LoginPageContent() {
       {/* Right - Form Panel */}
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-md">
-          <div className="glass-card rounded-2xl p-8 space-y-6">
+          <div className="liquid-glass-card rounded-2xl p-8 space-y-6">
             {/* Mobile Logo */}
             <div className="lg:hidden text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent mb-4">

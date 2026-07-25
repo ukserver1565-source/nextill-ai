@@ -69,7 +69,7 @@ export default function AdminLoginPage() {
 
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
-          <div className="glass-card rounded-2xl p-8">
+          <div className="liquid-glass-card p-8">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-white">Admin Login</h2>
               <p className="text-sm text-muted mt-1">Authorized administrators only</p>

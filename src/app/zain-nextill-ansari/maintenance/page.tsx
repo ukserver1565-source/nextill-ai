@@ -64,7 +64,7 @@ export default function MaintenancePage() {
           <Loader2 className="w-6 h-6 text-[#6D5EF5] animate-spin" />
         </div>
       ) : (
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6 space-y-6">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 space-y-6">
           <div className="flex items-center justify-between p-5 rounded-xl bg-[#090B16] border border-white/[0.06]">
             <div className="flex items-center gap-4">
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${maintenanceMode ? "bg-[#EF4444]/10" : "bg-[#22C55E]/10"}`}>

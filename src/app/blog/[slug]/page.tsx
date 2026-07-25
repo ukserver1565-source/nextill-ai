@@ -190,7 +190,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           )}
 
           {/* Content */}
-          <div className="glass-card rounded-2xl p-6 sm:p-10">
+          <div className="liquid-glass-card rounded-2xl p-6 sm:p-10">
             <BlogPostContent content={post.content || ""} />
           </div>
 
@@ -203,7 +203,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   <Link
                     key={related.id}
                     href={`/blog/${related.slug}`}
-                    className="glass-card rounded-2xl overflow-hidden group hover:border-primary/30 transition-all duration-300 hover:-translate-y-1"
+                    className="liquid-glass-card rounded-2xl overflow-hidden group hover:border-primary/30 transition-all duration-300 hover:-translate-y-1"
                   >
                     {related.featured_image_url ? (
                       <div className="relative h-40 overflow-hidden">

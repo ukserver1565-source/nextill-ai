@@ -61,7 +61,7 @@ export default function AdminDashboard() {
           <h1 className="text-2xl font-bold text-white">Dashboard</h1>
           <p className="text-sm text-[#A7B0C0] mt-1">{date}</p>
         </div>
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-red-500/20 rounded-xl p-8 text-center">
+        <div className="liquid-glass-card border border-red-500/20 rounded-xl p-8 text-center">
           <p className="text-sm text-red-400">Failed to load dashboard data: {error}</p>
         </div>
       </div>
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
               onClick={() => router.push(stat.path)}
-              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.12] hover:bg-white/[0.03] transition-all cursor-pointer group"
+              className="liquid-glass-card border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.12] hover:bg-white/[0.03] transition-all cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20 border border-white/[0.06] flex items-center justify-center">
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-white flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-[#6D5EF5]" /> Revenue (30 days)
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-white flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-[#4CC9F0]" /> New Users (30 days)
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2 bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
+        <div className="xl:col-span-2 liquid-glass-card border border-white/[0.06] rounded-xl p-5">
           <h2 className="text-sm font-semibold text-white flex items-center gap-2 mb-4">
             <Clock className="w-4 h-4 text-[#F59E0B]" /> Recent Payments
           </h2>
@@ -198,7 +198,7 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-5">
           <h2 className="text-sm font-semibold text-white mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-3">
             {quickActions.map((action) => {

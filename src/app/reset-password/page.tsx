@@ -101,9 +101,9 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#090B16] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-8 space-y-6">
+        <div className="liquid-glass-card rounded-xl p-8 space-y-6">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] mb-4 shadow-lg shadow-[#6D5EF5]/30">
               <Sparkles className="w-7 h-7 text-white" />

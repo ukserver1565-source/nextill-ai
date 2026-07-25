@@ -26,7 +26,7 @@ export default function UnauthorizedPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="glass-card rounded-2xl p-8 space-y-6 text-center">
+        <div className="liquid-glass-card rounded-2xl p-8 space-y-6 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#EF4444]/10 border border-[#EF4444]/20">
             <ShieldAlert className="w-8 h-8 text-[#EF4444]" />
           </div>

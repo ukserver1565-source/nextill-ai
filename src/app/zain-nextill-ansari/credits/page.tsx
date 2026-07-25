@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Search, Coins, TrendingUp, Sparkles, Users, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
+import { Search, Coins, TrendingUp, Sparkles, Users, ChevronLeft, ChevronRight, Loader2, RefreshCw } from "lucide-react"
 
 const PAGE_SIZE = 8
 
@@ -13,6 +13,8 @@ export default function CreditsPage() {
   const [error, setError] = useState("")
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
+  const [renewing, setRenewing] = useState(false)
+  const [renewResult, setRenewResult] = useState<string | null>(null)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -35,6 +37,26 @@ export default function CreditsPage() {
   useEffect(() => { fetchData() }, [fetchData])
 
   const totalPages = Math.ceil(total / PAGE_SIZE)
+
+  const handleRenewAll = async () => {
+    if (!confirm("Renew credits for ALL users based on their current plans? This cannot be undone.")) return
+    setRenewing(true)
+    setRenewResult(null)
+    try {
+      const res = await fetch("/api/cron/credits/renew", {
+        method: "POST",
+        headers: { "x-cron-secret": prompt("Enter cron secret:") || "" },
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || "Renewal failed")
+      setRenewResult(`✅ ${json.message}`)
+      fetchData()
+    } catch (err: any) {
+      setRenewResult(`❌ ${err.message}`)
+    } finally {
+      setRenewing(false)
+    }
+  }
 
   const totalDistributed = data.reduce((s, t) => s + (t.type === "added" ? Number(t.amount) : 0), 0)
   const totalUsed = data.reduce((s, t) => s + (t.type === "used" ? Number(t.amount) : 0), 0)
@@ -74,7 +96,18 @@ export default function CreditsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A7B0C0]" />
           <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} placeholder="Search transactions..." className="w-full h-10 pl-10 pr-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
         </div>
+        <button onClick={handleRenewAll} disabled={renewing}
+          className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[#6D5EF5] hover:bg-[#5B4BD4] text-white text-xs font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+          <RefreshCw className={`w-4 h-4 ${renewing ? "animate-spin" : ""}`} />
+          {renewing ? "Renewing..." : "Renew All Credits"}
+        </button>
       </div>
+
+      {renewResult && (
+        <div className={`p-3 rounded-xl text-xs ${renewResult.startsWith("✅") ? "bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20" : "bg-[#EF4444]/10 text-[#EF4444] border border-[#EF4444]/20"}`}>
+          {renewResult}
+        </div>
+      )}
 
       <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
         <div className="overflow-x-auto">

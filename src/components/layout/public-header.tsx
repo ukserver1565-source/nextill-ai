@@ -12,8 +12,6 @@ import { ThemeToggle } from "@/components/shared/theme-toggle"
 
 const navLinks = [
   { href: "/features", label: "Features" },
-  { href: "/how-it-works", label: "How It Works" },
-  { href: "/tools", label: "Tools" },
   { href: "/pricing", label: "Pricing" },
   { href: "/blog", label: "Blog" },
 ]
@@ -47,7 +45,7 @@ export function PublicHeader() {
   }
 
   return (
-    <header className="glass-topbar sticky top-0 z-50 h-16">
+    <header className="liquid-glass sticky top-0 z-50 h-16">
       <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
         <div className="flex items-center gap-8">
           <SiteLogo size="md" />

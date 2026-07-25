@@ -204,7 +204,7 @@ export default function AIHubModelsPage() {
       )}
 
       {!loading && !error && (
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+        <div className="liquid-glass-card border border-white/[0.06] rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>

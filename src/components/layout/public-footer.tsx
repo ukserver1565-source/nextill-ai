@@ -6,17 +6,13 @@ const footerColumns = [
     title: "Product",
     links: [
       { label: "Features", href: "/features" },
-      { label: "How It Works", href: "/how-it-works" },
       { label: "Pricing", href: "/pricing" },
-      { label: "Tools", href: "/tools" },
     ],
   },
   {
     title: "Resources",
     links: [
       { label: "Blog", href: "/blog" },
-      { label: "RSS Feed", href: "/feed.xml" },
-      { label: "API Docs", href: "/tools" },
     ],
   },
   {
@@ -37,13 +33,13 @@ const footerColumns = [
 
 export function PublicFooter() {
   return (
-    <footer className="border-t border-border">
+    <footer className="liquid-glass border-t border-white/[0.06] mt-20">
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2 md:col-span-1">
             <SiteLogo size="md" className="mb-4" />
             <p className="text-xs text-muted leading-relaxed max-w-xs">
-              AI-powered SEO and content tools for modern creators. Research keywords, generate content, and verify originality.
+              AI-powered SEO and content tools for modern creators.
             </p>
           </div>
           {footerColumns.map((col) => (
@@ -64,7 +60,7 @@ export function PublicFooter() {
             </div>
           ))}
         </div>
-        <div className="mt-10 pt-6 border-t border-border text-center">
+        <div className="mt-10 pt-6 border-t border-white/[0.06] text-center">
           <p className="text-xs text-muted">
             &copy; {new Date().getFullYear()} Nextill AI. All rights reserved.
           </p>

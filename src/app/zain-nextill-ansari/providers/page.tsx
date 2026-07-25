@@ -192,7 +192,7 @@ export default function ProvidersPage() {
             const Icon = providerIcons[p.provider] || Cpu
             return (
               <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all">
+                className="liquid-glass-card border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${p.is_enabled ? `bg-gradient-to-br ${providerColors[p.provider] || "from-[#6D5EF5] to-[#8B5CF6]"}` : "bg-[#090B16] border border-white/[0.06]"}`}>

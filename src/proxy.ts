@@ -96,7 +96,7 @@ export async function proxy(request: NextRequest) {
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             path: "/",
-            maxAge: SESSION_TIMEOUT_MS / 1000,
+            // No maxAge = session cookie = dies when browser closes
           })
           return NextResponse.redirect(new URL("/zain-nextill-ansari", request.url))
         }

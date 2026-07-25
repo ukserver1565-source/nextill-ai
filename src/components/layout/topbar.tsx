@@ -69,7 +69,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
   }
 
   return (
-    <header className="h-16 border-b border-white/[0.04] flex items-center justify-between px-3 sm:px-4 lg:px-6 bg-[#090B16]/80 backdrop-blur-xl sticky top-0 z-30">
+    <header className="h-16 border-b border-white/[0.06] flex items-center justify-between px-3 sm:px-4 lg:px-6 liquid-glass sticky top-0 z-30">
       <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
         {onMenuClick && (
           <button
@@ -148,7 +148,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
             <Bell className="w-4 h-4" />
           </button>
           {notifOpen && (
-            <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-[#111827]/95 backdrop-blur-xl border border-white/[0.06] rounded-xl shadow-2xl z-50 overflow-hidden">
+            <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 liquid-glass-card !rounded-xl shadow-2xl z-50 overflow-hidden p-0">
               <div className="px-4 py-3 border-b border-white/[0.06]">
                 <p className="text-sm font-semibold text-white">Notifications</p>
               </div>
@@ -180,7 +180,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
             <ChevronDown className="w-3 h-3 text-[#A7B0C0] hidden xl:block" />
           </button>
           {profileOpen && (
-            <div className="absolute right-0 top-full mt-2 w-52 bg-[#111827]/95 backdrop-blur-xl border border-white/[0.06] rounded-xl shadow-2xl z-50 overflow-hidden">
+            <div className="absolute right-0 top-full mt-2 w-52 liquid-glass-card !rounded-xl shadow-2xl z-50 overflow-hidden p-1">
               <div className="px-4 py-3 border-b border-white/[0.06]">
                 <p className="text-sm font-medium text-white">{profile?.full_name || "User"}</p>
                 <p className="text-xs text-[#A7B0C0]">{profile?.email || user?.email || ""}</p>

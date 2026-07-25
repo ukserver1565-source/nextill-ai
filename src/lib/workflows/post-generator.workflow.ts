@@ -1,4 +1,6 @@
 import { generateText, localEngine } from "@/lib/provider"
+import { humanizeContentWithAI } from "@/lib/services/ai-humanizer.service"
+import { rewriteContentWithAI } from "@/lib/services/ai-rewriter.service"
 import type { PostGeneratorResult, WorkflowStep } from "./workflow-types"
 import { createWorkflowRunner } from "./background-services"
 import {
@@ -152,10 +154,10 @@ Write the complete article now:`
     result: { wordCount: articleContent.split(/\s+/).length },
   })
 
-  // Step 4: humanizer
+  // Step 4: humanizer (AI-powered with local fallback)
   runner.startStep(3)
   runner.updateProgress(3, 50)
-  const humanized = humanizeContentLocal(articleContent)
+  const humanized = await humanizeContentWithAI(articleContent)
   runner.updateProgress(3, 100)
   runner.completeStep(3, { changes: humanized.changes.length })
   pipelineSteps.push({
@@ -164,19 +166,22 @@ Write the complete article now:`
     result: { changes: humanized.changes.length },
   })
 
-  // Step 5: rewriter
+  // Step 5: rewriter (AI-powered polish with local fallback)
   runner.startStep(4)
+  runner.updateProgress(4, 50)
+  const rewriteResult = await rewriteContentWithAI(humanized.humanized)
   runner.updateProgress(4, 100)
-  runner.completeStep(4, {})
+  runner.completeStep(4, { changes: rewriteResult.changes, method: rewriteResult.method })
   pipelineSteps.push({
     id: "step_5_active", name: "Rewriter", slug: "rewriter",
     status: "completed", progress: 100, completedAt: new Date().toISOString(),
+    result: { changes: rewriteResult.changes, method: rewriteResult.method },
   })
 
   // Step 6: grammar_check
   runner.startStep(5)
   runner.updateProgress(5, 50)
-  const grammarResult = checkGrammarLocal(humanized.humanized)
+  const grammarResult = checkGrammarLocal(rewriteResult.rewritten)
   runner.updateProgress(5, 100)
   runner.completeStep(5, { errors: grammarResult.issues.length })
   pipelineSteps.push({
@@ -301,16 +306,18 @@ Write the complete article now:`
     result: { seoScore: readability.score, keywordDensity: 0 },
   })
 
-  const htmlContent = `<article>\n<h1>${h1}</h1>\n${sections.map((s) =>
-    `<section>\n<h2>${s.h2}</h2>\n<p>${s.content}</p>\n</section>`
-  ).join("\n")}\n</article>`
+  // Parse the final AI-generated content into structured sections
+  const parsedSections = parseArticleSections(finalContent)
+  const structuredH1 = parsedSections.length > 0 && parsedSections[0].h1 ? parsedSections[0].h1 : h1
+  const articleIntro = parsedSections.length > 0 ? parsedSections[0].content : ""
+  const articleBody = parsedSections.map((s) => `## ${s.h2}\n\n${s.content}`).join("\n\n")
+  const lastSection = parsedSections[parsedSections.length - 1]
+  const articleConclusion = lastSection && /conclusion|summary|final/i.test(lastSection.h2)
+    ? lastSection.content
+    : `${primaryKeyword} continues to offer opportunities for ${audience} to achieve meaningful results.`
 
-  const markdownContent = [`# ${h1}`, "", ...sections.flatMap((s) => [`## ${s.h2}`, "", s.content, ""])].join("\n")
-
-  const intro = sections.length > 0 ? sections[0].content : ""
-  const body = sections.map((s) => `## ${s.h2}\n\n${s.content}`).join("\n\n")
-  const conclusion = `${primaryKeyword} continues to offer opportunities for ${audience} to achieve meaningful results.`
-  const cta = `Ready to apply these ${primaryKeyword} strategies? Start implementing today.`
+  const htmlContent = buildHtmlFromSections(structuredH1, parsedSections)
+  const markdownContent = buildMarkdownFromSections(structuredH1, parsedSections)
 
   const tags = [primaryKeyword, articleType, tone, audience].filter(Boolean)
   const categorySuggestions = [primaryKeyword, "Guides", "Content Strategy"]
@@ -321,13 +328,13 @@ Write the complete article now:`
     seoTitle,
     metaDescription,
     slug,
-    h1,
-    sections: sections.map((s) => ({ h2: s.h2, h3: s.h3, content: s.content })),
-    intro,
-    body,
+    h1: structuredH1,
+    sections: parsedSections.map((s) => ({ h2: s.h2, h3: s.h3 || [], content: s.content })),
+    intro: articleIntro,
+    body: articleBody,
     faqs: faqData.faqs,
-    conclusion,
-    cta,
+    conclusion: articleConclusion,
+    cta: `Ready to apply these ${primaryKeyword} strategies? Start implementing today.`,
     internalLinks: linkData.links.map((l) => ({ text: l.anchor, url: l.target, relevance: l.relevance })),
     schemaJson: schemaJson as Record<string, unknown>,
     tags,
@@ -347,4 +354,115 @@ Write the complete article now:`
       ? "Running on local engine. Add AI API key in Admin Panel for premium output."
       : String(writerResult.provider || "remote"),
   }
+}
+
+interface ParsedSection {
+  h1?: string
+  h2: string
+  h3: string[]
+  content: string
+}
+
+function parseArticleSections(content: string): ParsedSection[] {
+  const lines = content.split("\n")
+  const sections: ParsedSection[] = []
+  let currentH1 = ""
+  let currentH2 = ""
+  let currentH3s: string[] = []
+  let currentContent: string[] = []
+
+  for (const line of lines) {
+    const h1Match = line.match(/^#\s+(.+)/)
+    const h2Match = line.match(/^##\s+(.+)/)
+    const h3Match = line.match(/^###\s+(.+)/)
+
+    if (h1Match && !h2Match) {
+      currentH1 = h1Match[1].trim()
+      continue
+    }
+
+    if (h2Match) {
+      // Save previous section
+      if (currentH2) {
+        sections.push({
+          ...(currentH1 && sections.length === 0 ? { h1: currentH1 } : {}),
+          h2: currentH2,
+          h3: [...currentH3s],
+          content: currentContent.join("\n").trim(),
+        })
+      }
+      currentH2 = h2Match[1].trim()
+      currentH3s = []
+      currentContent = []
+      continue
+    }
+
+    if (h3Match) {
+      currentH3s.push(h3Match[1].trim())
+      currentContent.push(line)
+      continue
+    }
+
+    currentContent.push(line)
+  }
+
+  // Push last section
+  if (currentH2) {
+    sections.push({
+      ...(currentH1 && sections.length === 0 ? { h1: currentH1 } : {}),
+      h2: currentH2,
+      h3: [...currentH3s],
+      content: currentContent.join("\n").trim(),
+    })
+  }
+
+  // If no sections found (plain text without headings), split by double newlines
+  if (sections.length === 0 && content.trim()) {
+    const paragraphs = content.split(/\n\s*\n/).filter(p => p.trim())
+    sections.push({
+      h2: `Guide to ${currentH1 || "Content"}`,
+      h3: [],
+      content: paragraphs.join("\n\n"),
+    })
+  }
+
+  return sections
+}
+
+function buildHtmlFromSections(h1: string, sections: ParsedSection[]): string {
+  let html = `<article>\n<h1>${escapeHtml(h1)}</h1>\n`
+  for (const section of sections) {
+    html += `<section>\n<h2>${escapeHtml(section.h2)}</h2>\n`
+    for (const h3 of section.h3) {
+      html += `<h3>${escapeHtml(h3)}</h3>\n`
+    }
+    // Convert markdown paragraphs to HTML
+    const paragraphs = section.content.split(/\n\s*\n/).filter(p => p.trim())
+    for (const para of paragraphs) {
+      html += `<p>${escapeHtml(para.trim())}</p>\n`
+    }
+    html += `</section>\n`
+  }
+  html += `</article>`
+  return html
+}
+
+function buildMarkdownFromSections(h1: string, sections: ParsedSection[]): string {
+  const parts: string[] = [`# ${h1}`, ""]
+  for (const section of sections) {
+    parts.push(`## ${section.h2}`, "")
+    for (const h3 of section.h3) {
+      parts.push(`### ${h3}`, "")
+    }
+    parts.push(section.content, "")
+  }
+  return parts.join("\n")
+}
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
 }

@@ -21,7 +21,7 @@ export default function MaintenancePage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
-        <div className="glass-card rounded-2xl p-8 sm:p-10">
+        <div className="liquid-glass-card rounded-2xl p-8 sm:p-10">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#F59E0B] to-[#EF4444] flex items-center justify-center mx-auto mb-6 shadow-lg">
             <Wrench className="w-8 h-8 text-white" />
           </div>
