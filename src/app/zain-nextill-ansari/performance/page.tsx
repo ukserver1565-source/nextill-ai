@@ -8,10 +8,10 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-[#151C2E]/95 backdrop-blur-xl border border-white/[0.06] rounded-lg px-3 py-2 shadow-xl">
-      <p className="text-[#A7B0C0] text-xs mb-1">{label}</p>
+    <div className="bg-card/95 backdrop-blur-xl border border-border rounded-lg px-3 py-2 shadow-xl">
+      <p className="text-muted text-xs mb-1">{label}</p>
       {payload.map((entry: any, i: number) => (
-        <p key={i} className="flex items-center gap-2 text-xs font-medium text-white">
+        <p key={i} className="flex items-center gap-2 text-xs font-medium text-foreground">
           <span className="w-2 h-2 rounded-full" style={{ background: entry.color }} />
           {entry.name}: {typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}
         </p>
@@ -66,8 +66,8 @@ export default function PerformancePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Performance</h1>
-        <p className="text-sm text-[#A7B0C0] mt-1">System performance and metrics monitoring</p>
+        <h1 className="text-2xl font-bold text-foreground">Performance</h1>
+        <p className="text-sm text-muted mt-1">System performance and metrics monitoring</p>
       </div>
 
       {loadError && (
@@ -82,32 +82,32 @@ export default function PerformancePage() {
           const Icon = m.icon
           return (
             <motion.div key={m.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4">
+              className="bg-card/80 backdrop-blur-xl border border-border rounded-xl p-4">
               {loading ? (
-                <Loader2 className="w-5 h-5 mb-2 animate-spin text-[#A7B0C0]" />
+                <Loader2 className="w-5 h-5 mb-2 animate-spin text-muted" />
               ) : (
                 <Icon className="w-5 h-5 mb-2" style={{ color: m.color }} />
               )}
-              <p className="text-xl font-bold text-white">{loading ? "—" : m.value}</p>
-              <p className="text-[11px] text-[#A7B0C0]">{m.label}</p>
+              <p className="text-xl font-bold text-foreground">{loading ? "—" : m.value}</p>
+              <p className="text-[11px] text-muted">{m.label}</p>
               {m.change && <span className={`text-[10px] font-medium ${m.up ? "text-[#22C55E]" : "text-[#EF4444]"}`}>{m.change}</span>}
             </motion.div>
           )
         })}
       </div>
 
-      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+      <div className="bg-card/80 backdrop-blur-xl border border-border rounded-xl p-5">
+        <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-[#6D5EF5]" /> Response Time (7 days)
         </h3>
         <div className="h-[300px]">
           {loading ? (
-            <div className="h-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" /></div>
+            <div className="h-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted" /></div>
           ) : performanceData.length === 0 ? (
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
-                <Inbox className="w-10 h-10 text-[#A7B0C0] mb-3 mx-auto" />
-                <p className="text-sm font-medium text-[#A7B0C0]">No performance data yet</p>
+                <Inbox className="w-10 h-10 text-muted mb-3 mx-auto" />
+                <p className="text-sm font-medium text-muted">No performance data yet</p>
               </div>
             </div>
           ) : (

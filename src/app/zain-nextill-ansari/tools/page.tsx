@@ -181,28 +181,28 @@ export default function ToolsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Tools</h1>
-        <p className="text-sm text-[#A7B0C0] mt-1">Manage AI tools, their status, and API verification</p>
+        <h1 className="text-2xl font-bold text-foreground">Tools</h1>
+        <p className="text-sm text-muted mt-1">Manage AI tools, their status, and API verification</p>
       </div>
 
       {error && (
         <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4 flex items-center justify-between">
           <p className="text-sm text-[#EF4444]">{error}</p>
-          <button onClick={() => setError("")} className="text-[#EF4444] hover:text-white"><X className="w-4 h-4" /></button>
+          <button onClick={() => setError("")} className="text-[#EF4444] hover:text-foreground"><X className="w-4 h-4" /></button>
         </div>
       )}
 
       {loading ? (
         <div className="flex items-center justify-center p-12">
           <Loader2 className="w-6 h-6 text-[#6D5EF5] animate-spin" />
-          <span className="ml-3 text-sm text-[#A7B0C0]">Loading tools...</span>
+          <span className="ml-3 text-sm text-muted">Loading tools...</span>
         </div>
       ) : tools.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-12 text-center">
           <div className="w-12 h-12 rounded-xl bg-[#6D5EF5]/10 flex items-center justify-center mb-3">
             <Package className="w-6 h-6 text-[#6D5EF5]" />
           </div>
-          <p className="text-sm text-[#A7B0C0]">No tools configured</p>
+          <p className="text-sm text-muted">No tools configured</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -216,11 +216,11 @@ export default function ToolsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
-                className="liquid-glass-card border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all"
+                className="liquid-glass-card border border-border rounded-xl p-5 hover:border-white/[0.12] transition-all"
               >
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${tool.is_enabled ? "bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6]" : "bg-[#090B16] border border-white/[0.06]"}`}>
-                    <Icon className={`w-5 h-5 ${tool.is_enabled ? "text-white" : "text-[#A7B0C0]"}`} />
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${tool.is_enabled ? "bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6]" : "bg-background border border-border"}`}>
+                    <Icon className={`w-5 h-5 ${tool.is_enabled ? "text-foreground" : "text-muted"}`} />
                   </div>
                   <button
                     onClick={() => toggleTool(tool)}
@@ -230,15 +230,15 @@ export default function ToolsPage() {
                   </button>
                 </div>
 
-                <h3 className="text-sm font-semibold text-white">{tool.tool_name}</h3>
+                <h3 className="text-sm font-semibold text-foreground">{tool.tool_name}</h3>
 
-                <div className="mt-2 flex items-center gap-3 text-[10px] text-[#A7B0C0]">
+                <div className="mt-2 flex items-center gap-3 text-[10px] text-muted">
                   <span>{tool.credits_cost} credits</span>
                   {tool.api_verified && <span className="text-[#22C55E]">✓ Verified</span>}
                 </div>
 
                 {/* Status + Actions */}
-                <div className="mt-4 pt-4 border-t border-white/[0.06] space-y-3">
+                <div className="mt-4 pt-4 border-t border-border space-y-3">
                   {/* Status Badge + Dropdown */}
                   <div className="flex items-center justify-between">
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${status.bg} ${status.color} ${status.border}`}>
@@ -248,7 +248,7 @@ export default function ToolsPage() {
                     <select
                       value={tool.status}
                       onChange={e => changeStatus(tool, e.target.value as any)}
-                      className="h-7 px-2 rounded-lg bg-[#090B16] border border-white/[0.06] text-[10px] text-[#A7B0C0] focus:outline-none focus:ring-1 focus:ring-[#6D5EF5]/30 cursor-pointer"
+                      className="h-7 px-2 rounded-lg bg-background border border-border text-[10px] text-muted focus:outline-none focus:ring-1 focus:ring-[#6D5EF5]/30 cursor-pointer"
                     >
                       <option value="coming_soon">Coming Soon</option>
                       <option value="published" disabled={!tool.api_verified} title={!tool.api_verified ? "Test API key first" : ""}>Published</option>
@@ -272,7 +272,7 @@ export default function ToolsPage() {
                     <button
                       onClick={() => testConnection(tool)}
                       disabled={testingId === tool.id}
-                      className="flex-1 h-8 rounded-lg bg-[#090B16] border border-white/[0.06] text-[10px] font-medium text-[#A7B0C0] hover:text-white hover:bg-white/[0.04] transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
+                      className="flex-1 h-8 rounded-lg bg-background border border-border text-[10px] font-medium text-muted hover:text-foreground hover:bg-card/40 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
                     >
                       {testingId === tool.id ? (
                         <Loader2 className="w-3 h-3 animate-spin" />
@@ -293,7 +293,7 @@ export default function ToolsPage() {
 
                   {/* Settings */}
                   <div className="flex items-center justify-end">
-                    <button onClick={() => openSettings(tool)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all">
+                    <button onClick={() => openSettings(tool)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-foreground transition-all">
                       <Settings className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -307,32 +307,32 @@ export default function ToolsPage() {
       {/* Settings Modal */}
       {editTool && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setEditTool(null)}>
-          <div className="bg-[#090B16] border border-white/[0.06] rounded-xl p-6 w-full max-w-sm space-y-4" onClick={e => e.stopPropagation()}>
+          <div className="bg-background border border-border rounded-xl p-6 w-full max-w-sm space-y-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white">{editTool.tool_name} Settings</h3>
-              <button onClick={() => setEditTool(null)} className="text-[#A7B0C0] hover:text-white transition-colors"><X className="w-5 h-5" /></button>
+              <h3 className="text-sm font-bold text-foreground">{editTool.tool_name} Settings</h3>
+              <button onClick={() => setEditTool(null)} className="text-muted hover:text-foreground transition-colors"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-3">
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-[#A7B0C0]">Credits Cost</label>
-                <input type="number" value={editForm.credits_cost} onChange={e => setEditForm(f => ({ ...f, credits_cost: Number(e.target.value) }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
+                <label className="text-xs font-medium text-muted">Credits Cost</label>
+                <input type="number" value={editForm.credits_cost} onChange={e => setEditForm(f => ({ ...f, credits_cost: Number(e.target.value) }))} className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-[#A7B0C0]">Guest Daily Limit</label>
-                <input type="number" value={editForm.guest_daily_limit} onChange={e => setEditForm(f => ({ ...f, guest_daily_limit: Number(e.target.value) }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
+                <label className="text-xs font-medium text-muted">Guest Daily Limit</label>
+                <input type="number" value={editForm.guest_daily_limit} onChange={e => setEditForm(f => ({ ...f, guest_daily_limit: Number(e.target.value) }))} className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-[#A7B0C0]">Free Daily Limit</label>
-                <input type="number" value={editForm.free_daily_limit} onChange={e => setEditForm(f => ({ ...f, free_daily_limit: Number(e.target.value) }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
+                <label className="text-xs font-medium text-muted">Free Daily Limit</label>
+                <input type="number" value={editForm.free_daily_limit} onChange={e => setEditForm(f => ({ ...f, free_daily_limit: Number(e.target.value) }))} className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-[#A7B0C0]">Premium Daily Limit</label>
-                <input type="number" value={editForm.premium_daily_limit} onChange={e => setEditForm(f => ({ ...f, premium_daily_limit: Number(e.target.value) }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
+                <label className="text-xs font-medium text-muted">Premium Daily Limit</label>
+                <input type="number" value={editForm.premium_daily_limit} onChange={e => setEditForm(f => ({ ...f, premium_daily_limit: Number(e.target.value) }))} className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
               </div>
             </div>
             <div className="flex justify-end gap-3 pt-2">
-              <button onClick={() => setEditTool(null)} className="h-9 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs font-medium hover:bg-white/[0.06] transition-all">Cancel</button>
-              <button onClick={saveSettings} disabled={saving} className="h-9 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50">
+              <button onClick={() => setEditTool(null)} className="h-9 px-4 rounded-xl bg-card/80 border border-border text-foreground text-xs font-medium hover:bg-white/[0.06] transition-all">Cancel</button>
+              <button onClick={saveSettings} disabled={saving} className="h-9 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-foreground text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50">
                 {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                 Save
               </button>
@@ -343,7 +343,7 @@ export default function ToolsPage() {
       )}
 
       {toggleError && (
-        <div className="fixed bottom-4 right-4 bg-[#EF4444]/90 backdrop-blur-xl text-white text-xs px-4 py-2.5 rounded-xl shadow-lg z-50">
+        <div className="fixed bottom-4 right-4 bg-[#EF4444]/90 backdrop-blur-xl text-foreground text-xs px-4 py-2.5 rounded-xl shadow-lg z-50">
           {toggleError}
         </div>
       )}

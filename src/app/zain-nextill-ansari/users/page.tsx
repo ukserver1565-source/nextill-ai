@@ -24,7 +24,7 @@ interface UserProfile {
 const emptyForm = { email: "", name: "", password: "", role: "free_user", plan: "free" }
 
 const planColors: Record<string, string> = {
-  free: "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]",
+  free: "bg-[#A7B0C0]/10 text-muted border-border",
   starter: "bg-[#4CC9F0]/10 text-[#4CC9F0] border-[#4CC9F0]/20",
   pro: "bg-[#6D5EF5]/10 text-[#6D5EF5] border-[#6D5EF5]/20",
   enterprise: "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20",
@@ -173,10 +173,10 @@ export default function UsersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Users</h1>
-          <p className="text-sm text-[#A7B0C0] mt-1">{total.toLocaleString()} total users</p>
+          <h1 className="text-2xl font-bold text-foreground">Users</h1>
+          <p className="text-sm text-muted mt-1">{total.toLocaleString()} total users</p>
         </div>
-        <button onClick={() => { setShowCreateModal(true); setCreateForm(emptyForm) }} className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20">
+        <button onClick={() => { setShowCreateModal(true); setCreateForm(emptyForm) }} className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-foreground text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20">
           <UserPlus className="w-4 h-4" /> Add User
         </button>
       </div>
@@ -185,26 +185,26 @@ export default function UsersPage() {
       {error && (
         <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4 flex items-center justify-between">
           <p className="text-sm text-[#EF4444]">{error}</p>
-          <button onClick={() => setError("")} className="text-[#EF4444] hover:text-white" aria-label="Dismiss error"><X className="w-4 h-4" /></button>
+          <button onClick={() => setError("")} className="text-[#EF4444] hover:text-foreground" aria-label="Dismiss error"><X className="w-4 h-4" /></button>
         </div>
       )}
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px] max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A7B0C0]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
           <input
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1) }}
             placeholder="Search by name or email..."
-            className="w-full h-10 pl-10 pr-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+            className="w-full h-10 pl-10 pr-4 rounded-xl bg-card/80 border border-border text-foreground text-xs placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
           />
         </div>
-        <select value={planFilter} onChange={(e) => { setPlanFilter(e.target.value); setPage(1) }} className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-xs text-white outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
+        <select value={planFilter} onChange={(e) => { setPlanFilter(e.target.value); setPage(1) }} className="h-10 px-4 rounded-xl bg-card/80 border border-border text-xs text-foreground outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
           <option value="all">All Plans</option>
           {plans.map(p => <option key={p.slug} value={p.slug}>{p.name}</option>)}
         </select>
-        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1) }} className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-xs text-white outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
+        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1) }} className="h-10 px-4 rounded-xl bg-card/80 border border-border text-xs text-foreground outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
           <option value="all">All Status</option>
           <option value="active">Active</option>
           <option value="suspended">Suspended</option>
@@ -213,25 +213,25 @@ export default function UsersPage() {
       </div>
 
       {/* Table */}
-      <div className="liquid-glass-card border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="liquid-glass-card border border-border rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/[0.06]">
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">User</th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Plan</th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Credits</th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Role</th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Status</th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Joined</th>
-                <th className="text-right p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Actions</th>
+              <tr className="border-b border-border">
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">User</th>
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Plan</th>
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Credits</th>
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Role</th>
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Status</th>
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Joined</th>
+                <th className="text-right p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={7} className="p-12 text-center"><Loader2 className="w-5 h-5 animate-spin text-[#A7B0C0] mx-auto" /></td></tr>
+                <tr><td colSpan={7} className="p-12 text-center"><Loader2 className="w-5 h-5 animate-spin text-muted mx-auto" /></td></tr>
               ) : users.length === 0 ? (
-                <tr><td colSpan={7} className="p-8 text-center text-xs text-[#A7B0C0]">No users found</td></tr>
+                <tr><td colSpan={7} className="p-8 text-center text-xs text-muted">No users found</td></tr>
               ) : (
                 users.map((user, i) => (
                   <motion.tr
@@ -239,17 +239,17 @@ export default function UsersPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03 }}
-                    className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors cursor-pointer"
+                    className="border-b border-border last:border-0 hover:bg-white/[0.02] transition-colors cursor-pointer"
                     onClick={() => openDetail(user)}
                   >
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20 border border-white/[0.06] flex items-center justify-center text-xs font-bold text-white">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20 border border-border flex items-center justify-center text-xs font-bold text-foreground">
                           {(user.full_name || user.email || "U").charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-white">{user.full_name || "Unnamed"}</p>
-                          <p className="text-[11px] text-[#A7B0C0]">{user.email}</p>
+                          <p className="text-sm font-medium text-foreground">{user.full_name || "Unnamed"}</p>
+                          <p className="text-[11px] text-muted">{user.email}</p>
                         </div>
                       </div>
                     </td>
@@ -259,7 +259,7 @@ export default function UsersPage() {
                       </span>
                     </td>
                     <td className="p-4">
-                      <span className="text-xs text-[#A7B0C0] flex items-center gap-1">
+                      <span className="text-xs text-muted flex items-center gap-1">
                         <CreditCard className="w-3 h-3" />
                         {(user.credits ?? 0).toLocaleString()}
                       </span>
@@ -268,7 +268,7 @@ export default function UsersPage() {
                       <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${
                         user.role === "admin" || user.role === "super_admin"
                           ? "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
-                          : "bg-white/[0.04] text-[#A7B0C0] border-white/[0.06]"
+                          : "bg-card/40 text-muted border-border"
                       }`}>
                         {user.role || "free_user"}
                       </span>
@@ -279,21 +279,21 @@ export default function UsersPage() {
                           ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20"
                           : user.status === "suspended"
                           ? "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20"
-                          : "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]"
+                          : "bg-[#A7B0C0]/10 text-muted border-border"
                       }`}>
                         {user.status}
                       </span>
                     </td>
-                    <td className="p-4 text-xs text-[#A7B0C0]">{user.created_at ? new Date(user.created_at).toLocaleDateString("en-US") : "—"}</td>
+                    <td className="p-4 text-xs text-muted">{user.created_at ? new Date(user.created_at).toLocaleDateString("en-US") : "—"}</td>
                     <td className="p-4 text-right" onClick={e => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => openDetail(user)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all" title="View details" aria-label="View user details">
+                        <button onClick={() => openDetail(user)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-foreground transition-all" title="View details" aria-label="View user details">
                           <Eye className="w-3.5 h-3.5" />
                         </button>
-                        <button onClick={() => handleUpdateProfile(user.id, { status: user.status === "suspended" ? "active" : "suspended" })} className={`p-1.5 rounded-lg hover:bg-white/[0.06] transition-all ${user.status === "suspended" ? "text-[#22C55E] hover:text-[#22C55E]" : "text-[#A7B0C0] hover:text-[#EF4444]"}`} title={user.status === "suspended" ? "Unblock" : "Block"} aria-label={user.status === "suspended" ? "Unblock user" : "Block user"}>
+                        <button onClick={() => handleUpdateProfile(user.id, { status: user.status === "suspended" ? "active" : "suspended" })} className={`p-1.5 rounded-lg hover:bg-white/[0.06] transition-all ${user.status === "suspended" ? "text-[#22C55E] hover:text-[#22C55E]" : "text-muted hover:text-[#EF4444]"}`} title={user.status === "suspended" ? "Unblock" : "Block"} aria-label={user.status === "suspended" ? "Unblock user" : "Block user"}>
                           {user.status === "suspended" ? <ShieldOff className="w-3.5 h-3.5" /> : <Shield className="w-3.5 h-3.5" />}
                         </button>
-                        <button onClick={() => setConfirmDelete(user.id)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all" title="Delete" aria-label="Delete user">
+                        <button onClick={() => setConfirmDelete(user.id)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-[#EF4444] transition-all" title="Delete" aria-label="Delete user">
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -309,16 +309,16 @@ export default function UsersPage() {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-xs text-[#A7B0C0]">Page {page} of {totalPages} ({total} total)</p>
+          <p className="text-xs text-muted">Page {page} of {totalPages} ({total} total)</p>
           <div className="flex items-center gap-2">
-            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all" aria-label="Previous page"><ChevronLeft className="w-4 h-4" /></button>
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg bg-card/80 border border-border text-foreground disabled:opacity-30 hover:bg-white/[0.06] transition-all" aria-label="Previous page"><ChevronLeft className="w-4 h-4" /></button>
             {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
               const start = Math.max(1, Math.min(page - 2, totalPages - 4))
               const p = start + i
               if (p > totalPages) return null
-              return <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === p ? "bg-[#6D5EF5] text-white" : "bg-[#151C2E]/80 border border-white/[0.06] text-[#A7B0C0] hover:text-white"}`}>{p}</button>
+              return <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === p ? "bg-[#6D5EF5] text-foreground" : "bg-card/80 border border-border text-muted hover:text-foreground"}`}>{p}</button>
             })}
-            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all" aria-label="Next page"><ChevronRight className="w-4 h-4" /></button>
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg bg-card/80 border border-border text-foreground disabled:opacity-30 hover:bg-white/[0.06] transition-all" aria-label="Next page"><ChevronRight className="w-4 h-4" /></button>
           </div>
         </div>
       )}
@@ -337,25 +337,25 @@ export default function UsersPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-[#090B16] border border-white/[0.06] rounded-xl w-full max-w-lg mx-4 overflow-hidden"
+              className="bg-background border border-border rounded-xl w-full max-w-lg mx-4 overflow-hidden"
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-white/[0.06]">
+              <div className="flex items-center justify-between p-4 border-b border-border">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20 border border-white/[0.06] flex items-center justify-center text-sm font-bold text-white">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20 border border-border flex items-center justify-center text-sm font-bold text-foreground">
                     {(detailUser.full_name || detailUser.email || "U").charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-white">{detailUser.full_name || "Unnamed"}</h3>
-                    <p className="text-[11px] text-[#A7B0C0]">{detailUser.email}</p>
+                    <h3 className="text-sm font-bold text-foreground">{detailUser.full_name || "Unnamed"}</h3>
+                    <p className="text-[11px] text-muted">{detailUser.email}</p>
                   </div>
                 </div>
-                <button onClick={() => setDetailUser(null)} className="text-[#A7B0C0] hover:text-white transition-colors" aria-label="Close user details"><X className="w-5 h-5" /></button>
+                <button onClick={() => setDetailUser(null)} className="text-muted hover:text-foreground transition-colors" aria-label="Close user details"><X className="w-5 h-5" /></button>
               </div>
 
               {/* Tabs */}
-              <div className="flex border-b border-white/[0.06]">
+              <div className="flex border-b border-border">
                 {(["overview", "credits", "settings"] as const).map(tab => (
                   <button
                     key={tab}
@@ -363,7 +363,7 @@ export default function UsersPage() {
                     className={`flex-1 py-3 text-xs font-medium transition-colors ${
                       detailTab === tab
                         ? "text-[#6D5EF5] border-b-2 border-[#6D5EF5]"
-                        : "text-[#A7B0C0] hover:text-white"
+                        : "text-muted hover:text-foreground"
                     }`}
                   >
                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -376,38 +376,38 @@ export default function UsersPage() {
                 {detailTab === "overview" && (
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-[#151C2E]/80 rounded-xl p-3">
-                        <p className="text-[10px] text-[#A7B0C0] uppercase tracking-wider mb-1">Plan</p>
+                      <div className="bg-card/80 rounded-xl p-3">
+                        <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Plan</p>
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${planColors[detailUser.plan?.toLowerCase()] || planColors.free}`}>
                           {detailUser.plan || "free"}
                         </span>
                       </div>
-                      <div className="bg-[#151C2E]/80 rounded-xl p-3">
-                        <p className="text-[10px] text-[#A7B0C0] uppercase tracking-wider mb-1">Credits</p>
-                        <p className="text-sm font-bold text-white">{(detailUser.credits ?? 0).toLocaleString()}</p>
+                      <div className="bg-card/80 rounded-xl p-3">
+                        <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Credits</p>
+                        <p className="text-sm font-bold text-foreground">{(detailUser.credits ?? 0).toLocaleString()}</p>
                       </div>
-                      <div className="bg-[#151C2E]/80 rounded-xl p-3">
-                        <p className="text-[10px] text-[#A7B0C0] uppercase tracking-wider mb-1">Role</p>
-                        <p className="text-xs font-medium text-white">{detailUser.role || "free_user"}</p>
+                      <div className="bg-card/80 rounded-xl p-3">
+                        <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Role</p>
+                        <p className="text-xs font-medium text-foreground">{detailUser.role || "free_user"}</p>
                       </div>
-                      <div className="bg-[#151C2E]/80 rounded-xl p-3">
-                        <p className="text-[10px] text-[#A7B0C0] uppercase tracking-wider mb-1">Status</p>
+                      <div className="bg-card/80 rounded-xl p-3">
+                        <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Status</p>
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${
                           detailUser.status === "active" ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20"
                           : detailUser.status === "suspended" ? "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20"
-                          : "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]"
+                          : "bg-[#A7B0C0]/10 text-muted border-border"
                         }`}>
                           {detailUser.status}
                         </span>
                       </div>
                     </div>
-                    <div className="bg-[#151C2E]/80 rounded-xl p-3">
-                      <p className="text-[10px] text-[#A7B0C0] uppercase tracking-wider mb-1">Joined</p>
-                      <p className="text-xs text-white">{detailUser.created_at ? new Date(detailUser.created_at).toLocaleString("en-US") : "—"}</p>
+                    <div className="bg-card/80 rounded-xl p-3">
+                      <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Joined</p>
+                      <p className="text-xs text-foreground">{detailUser.created_at ? new Date(detailUser.created_at).toLocaleString("en-US") : "—"}</p>
                     </div>
-                    <div className="bg-[#151C2E]/80 rounded-xl p-3">
-                      <p className="text-[10px] text-[#A7B0C0] uppercase tracking-wider mb-1">User ID</p>
-                      <p className="text-[10px] text-[#A7B0C0] font-mono break-all">{detailUser.user_id}</p>
+                    <div className="bg-card/80 rounded-xl p-3">
+                      <p className="text-[10px] text-muted uppercase tracking-wider mb-1">User ID</p>
+                      <p className="text-[10px] text-muted font-mono break-all">{detailUser.user_id}</p>
                     </div>
                   </div>
                 )}
@@ -415,38 +415,38 @@ export default function UsersPage() {
                 {/* Credits Tab */}
                 {detailTab === "credits" && (
                   <div className="space-y-4">
-                    <div className="bg-[#151C2E]/80 rounded-xl p-4 text-center">
-                      <p className="text-[10px] text-[#A7B0C0] uppercase tracking-wider mb-1">Current Balance</p>
-                      <p className="text-3xl font-bold text-white">{(detailUser.credits ?? 0).toLocaleString()}</p>
-                      <p className="text-[10px] text-[#A7B0C0] mt-1">credits</p>
+                    <div className="bg-card/80 rounded-xl p-4 text-center">
+                      <p className="text-[10px] text-muted uppercase tracking-wider mb-1">Current Balance</p>
+                      <p className="text-3xl font-bold text-foreground">{(detailUser.credits ?? 0).toLocaleString()}</p>
+                      <p className="text-[10px] text-muted mt-1">credits</p>
                     </div>
                     <div className="space-y-3">
-                      <h4 className="text-xs font-bold text-white">Add Credits</h4>
+                      <h4 className="text-xs font-bold text-foreground">Add Credits</h4>
                       <div className="space-y-2">
                         <input
                           type="number"
                           value={creditAmount}
                           onChange={e => setCreditAmount(e.target.value)}
                           placeholder="Amount to add"
-                          className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
+                          className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
                         />
                         <input
                           value={creditReason}
                           onChange={e => setCreditReason(e.target.value)}
                           placeholder="Reason (optional)"
-                          className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
+                          className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
                         />
                         <button
                           onClick={handleAddCredits}
                           disabled={!creditAmount || isNaN(Number(creditAmount)) || Number(creditAmount) <= 0}
-                          className="w-full h-10 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16A34A] text-white text-xs font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+                          className="w-full h-10 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16A34A] text-foreground text-xs font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
                         >
                           Add Credits
                         </button>
                       </div>
                       <div className="flex gap-2 flex-wrap">
                         {[10, 50, 100, 500].map(amt => (
-                          <button key={amt} onClick={() => setCreditAmount(String(amt))} className="px-3 py-1.5 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-[10px] text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-all">
+                          <button key={amt} onClick={() => setCreditAmount(String(amt))} className="px-3 py-1.5 rounded-lg bg-card/80 border border-border text-[10px] text-muted hover:text-foreground hover:bg-white/[0.06] transition-all">
                             +{amt}
                           </button>
                         ))}
@@ -460,28 +460,28 @@ export default function UsersPage() {
                   <div className="space-y-4">
                     {/* Name */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-[#A7B0C0]">Full Name</label>
+                      <label className="text-xs font-medium text-muted">Full Name</label>
                       <div className="flex gap-2">
                         <input
                           defaultValue={detailUser.full_name || ""}
                           id="detail-name"
-                          className="flex-1 h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
+                          className="flex-1 h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
                         />
                         <button onClick={() => {
                           const el = document.getElementById("detail-name") as HTMLInputElement
                           if (el) handleUpdateProfile(detailUser.id, { full_name: el.value })
-                        }} className="h-10 px-4 rounded-xl bg-[#6D5EF5] text-white text-xs font-medium hover:opacity-90 transition-opacity">Save</button>
+                        }} className="h-10 px-4 rounded-xl bg-[#6D5EF5] text-foreground text-xs font-medium hover:opacity-90 transition-opacity">Save</button>
                       </div>
                     </div>
 
                     {/* Plan */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-[#A7B0C0]">Plan</label>
+                      <label className="text-xs font-medium text-muted">Plan</label>
                       <div className="flex gap-2">
                         <select
                           value={newPlan}
                           onChange={e => setNewPlan(e.target.value)}
-                          className="flex-1 h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
+                          className="flex-1 h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
                         >
                           {plans.length > 0 ? plans.map(p => <option key={p.slug} value={p.slug}>{p.name}</option>) : (
                             <>
@@ -492,18 +492,18 @@ export default function UsersPage() {
                             </>
                           )}
                         </select>
-                        <button onClick={() => handleUpdateProfile(detailUser.id, { plan: newPlan })} className="h-10 px-4 rounded-xl bg-[#6D5EF5] text-white text-xs font-medium hover:opacity-90 transition-opacity">Update</button>
+                        <button onClick={() => handleUpdateProfile(detailUser.id, { plan: newPlan })} className="h-10 px-4 rounded-xl bg-[#6D5EF5] text-foreground text-xs font-medium hover:opacity-90 transition-opacity">Update</button>
                       </div>
                     </div>
 
                     {/* Role */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-[#A7B0C0]">Role</label>
+                      <label className="text-xs font-medium text-muted">Role</label>
                       <div className="flex gap-2">
                         <select
                           defaultValue={detailUser.role || "free_user"}
                           id="detail-role"
-                          className="flex-1 h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
+                          className="flex-1 h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
                         >
                           <option value="free_user">User</option>
                           <option value="admin">Admin</option>
@@ -512,12 +512,12 @@ export default function UsersPage() {
                         <button onClick={() => {
                           const el = document.getElementById("detail-role") as HTMLSelectElement
                           if (el) handleUpdateProfile(detailUser.id, { role: el.value })
-                        }} className="h-10 px-4 rounded-xl bg-[#6D5EF5] text-white text-xs font-medium hover:opacity-90 transition-opacity">Update</button>
+                        }} className="h-10 px-4 rounded-xl bg-[#6D5EF5] text-foreground text-xs font-medium hover:opacity-90 transition-opacity">Update</button>
                       </div>
                     </div>
 
                     {/* Block / Unblock */}
-                    <div className="pt-2 border-t border-white/[0.06]">
+                    <div className="pt-2 border-t border-border">
                       <button
                         onClick={() => handleUpdateProfile(detailUser.id, { status: detailUser.status === "suspended" ? "active" : "suspended" })}
                         className={`w-full h-10 rounded-xl text-xs font-medium flex items-center justify-center gap-2 transition-all ${
@@ -561,7 +561,7 @@ export default function UsersPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-[#090B16] border border-[#EF4444]/20 rounded-xl p-6 w-full max-w-sm"
+              className="bg-background border border-[#EF4444]/20 rounded-xl p-6 w-full max-w-sm"
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 mb-4">
@@ -569,16 +569,16 @@ export default function UsersPage() {
                   <AlertTriangle className="w-5 h-5 text-[#EF4444]" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">Delete User</h3>
-                  <p className="text-xs text-[#A7B0C0]">This action cannot be undone.</p>
+                  <h3 className="text-sm font-bold text-foreground">Delete User</h3>
+                  <p className="text-xs text-muted">This action cannot be undone.</p>
                 </div>
               </div>
-              <p className="text-xs text-[#A7B0C0] mb-6">
+              <p className="text-xs text-muted mb-6">
                 This will permanently delete the user&apos;s auth account, profile, and all related data.
               </p>
               <div className="flex justify-end gap-3">
-                <button onClick={() => setConfirmDelete(null)} className="h-9 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs font-medium hover:bg-white/[0.06] transition-all">Cancel</button>
-                <button onClick={() => confirmDelete && handleDelete(confirmDelete)} className="h-9 px-4 rounded-xl bg-[#EF4444] text-white text-xs font-medium hover:opacity-90 transition-opacity">Delete</button>
+                <button onClick={() => setConfirmDelete(null)} className="h-9 px-4 rounded-xl bg-card/80 border border-border text-foreground text-xs font-medium hover:bg-white/[0.06] transition-all">Cancel</button>
+                <button onClick={() => confirmDelete && handleDelete(confirmDelete)} className="h-9 px-4 rounded-xl bg-[#EF4444] text-foreground text-xs font-medium hover:opacity-90 transition-opacity">Delete</button>
               </div>
             </motion.div>
           </motion.div>
@@ -599,45 +599,45 @@ export default function UsersPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-[#090B16] border border-white/[0.06] rounded-xl p-6 w-full max-w-md space-y-4"
+              className="bg-background border border-border rounded-xl p-6 w-full max-w-md space-y-4"
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-white">Add User</h2>
-                <button onClick={() => setShowCreateModal(false)} className="text-[#A7B0C0] hover:text-white"><X className="w-5 h-5" /></button>
+                <h2 className="text-lg font-bold text-foreground">Add User</h2>
+                <button onClick={() => setShowCreateModal(false)} className="text-muted hover:text-foreground"><X className="w-5 h-5" /></button>
               </div>
               <div className="space-y-3">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-[#A7B0C0]">Email *</label>
-                  <input value={createForm.email} onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
+                  <label className="text-xs font-medium text-muted">Email *</label>
+                  <input value={createForm.email} onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-[#A7B0C0]">Name</label>
-                  <input value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
+                  <label className="text-xs font-medium text-muted">Name</label>
+                  <input value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-[#A7B0C0]">Password</label>
-                  <input type="password" value={createForm.password} onChange={e => setCreateForm(f => ({ ...f, password: e.target.value }))} placeholder="Leave empty for auto-generated" className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
+                  <label className="text-xs font-medium text-muted">Password</label>
+                  <input type="password" value={createForm.password} onChange={e => setCreateForm(f => ({ ...f, password: e.target.value }))} placeholder="Leave empty for auto-generated" className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30" />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-[#A7B0C0]">Role</label>
-                    <select value={createForm.role} onChange={e => setCreateForm(f => ({ ...f, role: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
+                    <label className="text-xs font-medium text-muted">Role</label>
+                    <select value={createForm.role} onChange={e => setCreateForm(f => ({ ...f, role: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
                       <option value="free_user">User</option>
                       <option value="admin">Admin</option>
                     </select>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-[#A7B0C0]">Plan</label>
-                    <select value={createForm.plan} onChange={e => setCreateForm(f => ({ ...f, plan: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
+                    <label className="text-xs font-medium text-muted">Plan</label>
+                    <select value={createForm.plan} onChange={e => setCreateForm(f => ({ ...f, plan: e.target.value }))} className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30">
                       {plans.length > 0 ? plans.map(p => <option key={p.slug} value={p.slug}>{p.name}</option>) : <option value="free">Free</option>}
                     </select>
                   </div>
                 </div>
               </div>
               <div className="flex justify-end gap-3 pt-2">
-                <button onClick={() => setShowCreateModal(false)} className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs font-medium hover:bg-white/[0.06] transition-all">Cancel</button>
-                <button onClick={handleCreate} disabled={saving || !createForm.email.trim()} className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50">
+                <button onClick={() => setShowCreateModal(false)} className="h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-xs font-medium hover:bg-white/[0.06] transition-all">Cancel</button>
+                <button onClick={handleCreate} disabled={saving || !createForm.email.trim()} className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-foreground text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50">
                   {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />} Create
                 </button>
               </div>
@@ -653,17 +653,17 @@ export default function UsersPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-4 right-4 bg-[#151C2E]/95 backdrop-blur-xl border border-[#22C55E]/30 rounded-xl shadow-lg z-50 p-4 max-w-sm"
+            className="fixed bottom-4 right-4 bg-card/95 backdrop-blur-xl border border-[#22C55E]/30 rounded-xl shadow-lg z-50 p-4 max-w-sm"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-[#22C55E]">User Created</span>
-              <button onClick={() => setCreatedUser(null)} className="text-[#A7B0C0] hover:text-white text-xs">✕</button>
+              <button onClick={() => setCreatedUser(null)} className="text-muted hover:text-foreground text-xs">✕</button>
             </div>
-            <p className="text-xs text-[#A7B0C0] mb-1">Email: <span className="text-white">{createdUser.email}</span></p>
-            <p className="text-xs text-[#A7B0C0] mb-2">Temporary Password:</p>
-            <div className="flex items-center gap-2 bg-[#090B16] rounded-lg px-3 py-2">
+            <p className="text-xs text-muted mb-1">Email: <span className="text-foreground">{createdUser.email}</span></p>
+            <p className="text-xs text-muted mb-2">Temporary Password:</p>
+            <div className="flex items-center gap-2 bg-background rounded-lg px-3 py-2">
               <code className="text-xs text-[#22C55E] font-mono flex-1 break-all">{createdUser.tempPassword}</code>
-              <button onClick={() => navigator.clipboard.writeText(createdUser.tempPassword)} className="text-[#A7B0C0] hover:text-white text-xs shrink-0">Copy</button>
+              <button onClick={() => navigator.clipboard.writeText(createdUser.tempPassword)} className="text-muted hover:text-foreground text-xs shrink-0">Copy</button>
             </div>
           </motion.div>
         )}

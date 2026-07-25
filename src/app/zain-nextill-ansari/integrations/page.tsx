@@ -84,8 +84,8 @@ export default function IntegrationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Integrations</h1>
-        <p className="text-sm text-[#A7B0C0] mt-1">Manage third-party service connections</p>
+        <h1 className="text-2xl font-bold text-foreground">Integrations</h1>
+        <p className="text-sm text-muted mt-1">Manage third-party service connections</p>
       </div>
 
       {loading ? (
@@ -98,10 +98,10 @@ export default function IntegrationsPage() {
           <button onClick={fetchData} className="mt-3 text-xs text-[#EF4444] underline hover:no-underline">Retry</button>
         </div>
       ) : integrations.length === 0 ? (
-        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-12 text-center">
-          <Link className="w-10 h-10 text-[#A7B0C0] mx-auto mb-3" />
-          <p className="text-sm text-[#A7B0C0]">No integrations configured</p>
-          <p className="text-xs text-[#A7B0C0]/60 mt-1">Connect third-party services to extend functionality</p>
+        <div className="liquid-glass-card border border-border rounded-xl p-12 text-center">
+          <Link className="w-10 h-10 text-muted mx-auto mb-3" />
+          <p className="text-sm text-muted">No integrations configured</p>
+          <p className="text-xs text-muted/60 mt-1">Connect third-party services to extend functionality</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -111,36 +111,36 @@ export default function IntegrationsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.03 }}
-              className="liquid-glass-card border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all"
+              className="liquid-glass-card border border-border rounded-xl p-5 hover:border-white/[0.12] transition-all"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-[#090B16] border border-white/[0.06] flex items-center justify-center text-xl">
+                  <div className="w-11 h-11 rounded-xl bg-background border border-border flex items-center justify-center text-xl">
                     {providerIcons[int.provider_slug] || "🔗"}
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white">{int.provider_name}</h3>
-                    <p className="text-[10px] text-[#A7B0C0]">{int.provider_slug}</p>
+                    <h3 className="text-sm font-semibold text-foreground">{int.provider_name}</h3>
+                    <p className="text-[10px] text-muted">{int.provider_slug}</p>
                   </div>
                 </div>
                 {int.is_connected ? (
                   <CheckCircle className="w-5 h-5 text-[#22C55E]" />
                 ) : (
-                  <XCircle className="w-5 h-5 text-[#A7B0C0]" />
+                  <XCircle className="w-5 h-5 text-muted" />
                 )}
               </div>
               {int.last_synced_at && (
-                <p className="text-[10px] text-[#A7B0C0] mb-3">Last synced: {formatDate(int.last_synced_at)}</p>
+                <p className="text-[10px] text-muted mb-3">Last synced: {formatDate(int.last_synced_at)}</p>
               )}
               <div className="flex items-center gap-2">
                 <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${
                   int.is_connected
                     ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20"
-                    : "bg-[#A7B0C0]/10 text-[#A7B0C0] border-white/[0.06]"
+                    : "bg-[#A7B0C0]/10 text-muted border-border"
                 }`}>
                   {int.is_connected ? "Connected" : "Disconnected"}
                 </span>
-                <button onClick={() => setSettingsItem(int)} className="ml-auto p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all">
+                <button onClick={() => setSettingsItem(int)} className="ml-auto p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-foreground transition-all">
                   <Settings className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -154,39 +154,39 @@ export default function IntegrationsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-[#151C2E] border border-white/[0.06] rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl"
+            className="bg-card border border-border rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl"
           >
             <div className="flex items-center justify-between mb-1">
-              <h2 className="text-lg font-semibold text-white">{settingsItem.provider_name}</h2>
-              <button onClick={() => setSettingsItem(null)} className="p-1 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all">
+              <h2 className="text-lg font-semibold text-foreground">{settingsItem.provider_name}</h2>
+              <button onClick={() => setSettingsItem(null)} className="p-1 rounded-lg hover:bg-white/[0.06] text-muted hover:text-foreground transition-all">
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-xs text-[#A7B0C0] mb-5">Integration configuration details</p>
+            <p className="text-xs text-muted mb-5">Integration configuration details</p>
             <div className="space-y-3 text-xs">
-              <div className="flex justify-between py-2 border-b border-white/[0.06]">
-                <span className="text-[#A7B0C0]">Provider</span>
-                <span className="text-white font-medium">{settingsItem.provider_name}</span>
+              <div className="flex justify-between py-2 border-b border-border">
+                <span className="text-muted">Provider</span>
+                <span className="text-foreground font-medium">{settingsItem.provider_name}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/[0.06]">
-                <span className="text-[#A7B0C0]">Slug</span>
-                <span className="text-white font-medium font-mono">{settingsItem.provider_slug}</span>
+              <div className="flex justify-between py-2 border-b border-border">
+                <span className="text-muted">Slug</span>
+                <span className="text-foreground font-medium font-mono">{settingsItem.provider_slug}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/[0.06]">
-                <span className="text-[#A7B0C0]">Status</span>
-                <span className={`font-medium ${settingsItem.is_connected ? "text-[#22C55E]" : "text-[#A7B0C0]"}`}>{settingsItem.is_connected ? "Connected" : "Disconnected"}</span>
+              <div className="flex justify-between py-2 border-b border-border">
+                <span className="text-muted">Status</span>
+                <span className={`font-medium ${settingsItem.is_connected ? "text-[#22C55E]" : "text-muted"}`}>{settingsItem.is_connected ? "Connected" : "Disconnected"}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/[0.06]">
-                <span className="text-[#A7B0C0]">Enabled</span>
-                <span className={`font-medium ${settingsItem.is_enabled ? "text-[#22C55E]" : "text-[#A7B0C0]"}`}>{settingsItem.is_enabled ? "Yes" : "No"}</span>
+              <div className="flex justify-between py-2 border-b border-border">
+                <span className="text-muted">Enabled</span>
+                <span className={`font-medium ${settingsItem.is_enabled ? "text-[#22C55E]" : "text-muted"}`}>{settingsItem.is_enabled ? "Yes" : "No"}</span>
               </div>
               <div className="flex justify-between py-2">
-                <span className="text-[#A7B0C0]">Last Synced</span>
-                <span className="text-white font-medium">{formatDate(settingsItem.last_synced_at)}</span>
+                <span className="text-muted">Last Synced</span>
+                <span className="text-foreground font-medium">{formatDate(settingsItem.last_synced_at)}</span>
               </div>
             </div>
             <div className="flex justify-end pt-5">
-              <button onClick={() => setSettingsItem(null)} className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20">Close</button>
+              <button onClick={() => setSettingsItem(null)} className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-foreground text-xs font-medium hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20">Close</button>
             </div>
           </motion.div>
         </div>

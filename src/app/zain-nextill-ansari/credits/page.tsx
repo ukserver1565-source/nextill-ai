@@ -73,8 +73,8 @@ export default function CreditsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Credits</h1>
-        <p className="text-sm text-[#A7B0C0] mt-1">Monitor and manage AI credit usage</p>
+        <h1 className="text-2xl font-bold text-foreground">Credits</h1>
+        <p className="text-sm text-muted mt-1">Monitor and manage AI credit usage</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -82,10 +82,10 @@ export default function CreditsPage() {
           const Icon = stat.icon
           return (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4">
+              className="bg-card/80 backdrop-blur-xl border border-border rounded-xl p-4">
               <Icon className="w-5 h-5 mb-2" style={{ color: stat.color }} />
-              <p className="text-xl font-bold text-white">{stat.value}</p>
-              <p className="text-[11px] text-[#A7B0C0]">{stat.label}</p>
+              <p className="text-xl font-bold text-foreground">{stat.value}</p>
+              <p className="text-[11px] text-muted">{stat.label}</p>
             </motion.div>
           )
         })}
@@ -93,11 +93,11 @@ export default function CreditsPage() {
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="relative w-full max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A7B0C0]" />
-          <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} placeholder="Search transactions..." className="w-full h-10 pl-10 pr-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+          <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1) }} placeholder="Search transactions..." className="w-full h-10 pl-10 pr-4 rounded-xl bg-card/80 border border-border text-foreground text-xs placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
         </div>
         <button onClick={handleRenewAll} disabled={renewing}
-          className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[#6D5EF5] hover:bg-[#5B4BD4] text-white text-xs font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+          className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[#6D5EF5] hover:bg-[#5B4BD4] text-foreground text-xs font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed">
           <RefreshCw className={`w-4 h-4 ${renewing ? "animate-spin" : ""}`} />
           {renewing ? "Renewing..." : "Renew All Credits"}
         </button>
@@ -109,16 +109,16 @@ export default function CreditsPage() {
         </div>
       )}
 
-      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="bg-card/80 backdrop-blur-xl border border-border rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/[0.06]">
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">User</th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Amount</th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Type</th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Description</th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Date</th>
+              <tr className="border-b border-border">
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">User</th>
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Amount</th>
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Type</th>
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Description</th>
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Date</th>
               </tr>
             </thead>
             <tbody>
@@ -127,13 +127,13 @@ export default function CreditsPage() {
               ) : error ? (
                 <tr><td colSpan={5} className="p-8 text-center text-xs text-[#EF4444]">{error}</td></tr>
               ) : data.length === 0 ? (
-                <tr><td colSpan={5} className="p-8 text-center text-xs text-[#A7B0C0]">No transactions found</td></tr>
+                <tr><td colSpan={5} className="p-8 text-center text-xs text-muted">No transactions found</td></tr>
               ) : (
                 data.map((t, i) => (
                   <motion.tr key={t.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
-                    className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors">
+                    className="border-b border-border last:border-0 hover:bg-white/[0.02] transition-colors">
                     <td className="p-4">
-                      <p className="text-sm text-white">{t.profiles?.full_name || "—"}</p>
+                      <p className="text-sm text-foreground">{t.profiles?.full_name || "—"}</p>
                     </td>
                     <td className="p-4">
                       <span className={`text-sm font-bold ${t.type === "added" ? "text-[#22C55E]" : t.type === "used" ? "text-[#F59E0B]" : "text-[#EF4444]"}`}>
@@ -145,8 +145,8 @@ export default function CreditsPage() {
                         t.type === "added" ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
                       }`}>{t.type}</span>
                     </td>
-                    <td className="p-4 text-xs text-[#A7B0C0] max-w-[200px] truncate">{t.description || t.tool || "—"}</td>
-                    <td className="p-4 text-xs text-[#A7B0C0]">{t.created_at ? new Date(t.created_at).toLocaleDateString() : "—"}</td>
+                    <td className="p-4 text-xs text-muted max-w-[200px] truncate">{t.description || t.tool || "—"}</td>
+                    <td className="p-4 text-xs text-muted">{t.created_at ? new Date(t.created_at).toLocaleDateString() : "—"}</td>
                   </motion.tr>
                 ))
               )}
@@ -156,13 +156,13 @@ export default function CreditsPage() {
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="text-xs text-[#A7B0C0]">{total === 0 ? "No results" : `Showing ${(page - 1) * PAGE_SIZE + 1}-${Math.min(page * PAGE_SIZE, total)} of ${total}`}</p>
+        <p className="text-xs text-muted">{total === 0 ? "No results" : `Showing ${(page - 1) * PAGE_SIZE + 1}-${Math.min(page * PAGE_SIZE, total)} of ${total}`}</p>
         <div className="flex items-center gap-2">
-          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronLeft className="w-4 h-4" /></button>
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg bg-card/80 border border-border text-foreground disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronLeft className="w-4 h-4" /></button>
           {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-            <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === p ? "bg-[#6D5EF5] text-white" : "bg-[#151C2E]/80 border border-white/[0.06] text-[#A7B0C0] hover:text-white"}`}>{p}</button>
+            <button key={p} onClick={() => setPage(p)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === p ? "bg-[#6D5EF5] text-foreground" : "bg-card/80 border border-border text-muted hover:text-foreground"}`}>{p}</button>
           ))}
-          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || totalPages === 0} className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronRight className="w-4 h-4" /></button>
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages || totalPages === 0} className="p-2 rounded-lg bg-card/80 border border-border text-foreground disabled:opacity-30 hover:bg-white/[0.06] transition-all"><ChevronRight className="w-4 h-4" /></button>
         </div>
       </div>
     </div>

@@ -15,7 +15,7 @@ export default function NotFound() {
             The page you&apos;re looking for doesn&apos;t exist or has been moved.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl gradient-primary text-white text-sm font-medium hover:opacity-90 transition-all">
+            <Link href="/" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl gradient-primary text-foreground text-sm font-medium hover:opacity-90 transition-all">
               <Home className="w-4 h-4" /> Go Home
             </Link>
             <Link href="/tools" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border bg-card/30 text-foreground text-sm font-medium hover:bg-white/[0.06] transition-all">

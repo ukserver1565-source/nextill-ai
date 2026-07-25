@@ -156,7 +156,7 @@ export default function TermsPage() {
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-primary mb-6 shadow-lg shadow-primary/30">
-            <FileText className="w-8 h-8 text-white" />
+            <FileText className="w-8 h-8 text-foreground" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
             Terms of <span className="gradient-primary-text">Service</span>
@@ -202,7 +202,7 @@ export default function TermsPage() {
                 <div key={section.number} className="liquid-glass-card rounded-2xl p-6 sm:p-8 group hover:border-primary/30 transition-all duration-300">
                   <div className="flex items-center gap-4 mb-5">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${section.color} flex items-center justify-center shadow-lg shrink-0`}>
-                      <Icon className="w-6 h-6 text-white" />
+                      <Icon className="w-6 h-6 text-foreground" />
                     </div>
                     <div>
                       <span className="text-xs font-medium text-muted uppercase tracking-wider">Section {section.number}</span>
@@ -242,7 +242,7 @@ export default function TermsPage() {
                 Join thousands of creators using Nextill AI to work smarter, create faster, and rank higher.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-white font-semibold text-base hover:opacity-90 transition-all">
+                <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-foreground font-semibold text-base hover:opacity-90 transition-all">
                   Start Free
                 </Link>
                 <Link href="/pricing" className="inline-flex items-center justify-center px-8 py-3 rounded-xl border border-border bg-card/30 text-foreground font-semibold text-base hover:bg-white/[0.06] transition-all">

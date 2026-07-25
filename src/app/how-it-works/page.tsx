@@ -74,7 +74,7 @@ export default function HowItWorksPage() {
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-primary mb-6 shadow-lg shadow-primary/30">
-            <Zap className="w-8 h-8 text-white" />
+            <Zap className="w-8 h-8 text-foreground" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
             How <span className="gradient-primary-text">Nextill AI</span> Works
@@ -105,7 +105,7 @@ export default function HowItWorksPage() {
                 </div>
                 <div className="flex-shrink-0">
                   <div className={`w-32 h-32 rounded-3xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-2xl`}>
-                    <Icon className="w-16 h-16 text-white" />
+                    <Icon className="w-16 h-16 text-foreground" />
                   </div>
                 </div>
               </div>
@@ -123,7 +123,7 @@ export default function HowItWorksPage() {
                 Join thousands of creators using Nextill AI to work smarter, create faster, and rank higher.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-white font-semibold text-base hover:opacity-90 transition-all">
+                <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-foreground font-semibold text-base hover:opacity-90 transition-all">
                   Start Free <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
                 <Link href="/tools" className="inline-flex items-center justify-center px-8 py-3 rounded-xl border border-border bg-card/30 text-foreground font-semibold text-base hover:bg-white/[0.06] transition-all">

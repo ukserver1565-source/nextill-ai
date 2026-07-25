@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import localFont from "next/font/local"
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { AuthProvider } from "@/lib/auth/AuthProvider"
 import { ThemeProvider } from "@/lib/theme/theme-provider"
 import { ScrollToTop } from "@/components/layout/scroll-to-top"
@@ -133,6 +134,7 @@ export default function RootLayout({
           </AuthProvider>
         </ThemeProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

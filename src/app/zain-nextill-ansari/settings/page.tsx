@@ -69,7 +69,7 @@ function SocialIconSelect({ value, onChange }: { value: string; onChange: (v: st
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="h-10 px-3 rounded-xl bg-[#090B16] border border-white/[0.06] text-white text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+      className="h-10 px-3 rounded-xl bg-background border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
     >
       {SOCIAL_ICON_OPTIONS.map((opt) => (
         <option key={opt.value} value={opt.value}>
@@ -192,8 +192,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-sm text-[#A7B0C0] mt-1">Configure your application settings</p>
+        <h1 className="text-2xl font-bold text-foreground">Settings</h1>
+        <p className="text-sm text-muted mt-1">Configure your application settings</p>
       </div>
 
       {loading ? (
@@ -202,25 +202,25 @@ export default function SettingsPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 space-y-5">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+          <div className="liquid-glass-card border border-border rounded-xl p-6 space-y-5">
+            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <Globe className="w-4 h-4 text-[#6D5EF5]" /> Site Settings
             </h2>
             <div className="space-y-2">
-              <label className="text-xs font-medium text-[#A7B0C0]">Site Name</label>
-              <input value={form.siteName} onChange={(e) => setForm(f => ({ ...f, siteName: e.target.value }))} className="w-full h-11 px-4 rounded-xl bg-[#090B16] border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50 transition-all" />
+              <label className="text-xs font-medium text-muted">Site Name</label>
+              <input value={form.siteName} onChange={(e) => setForm(f => ({ ...f, siteName: e.target.value }))} className="w-full h-11 px-4 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50 transition-all" />
             </div>
 
             {/* Logo Upload */}
             <div className="space-y-3">
-              <label className="text-xs font-medium text-[#A7B0C0]">Site Logo</label>
+              <label className="text-xs font-medium text-muted">Site Logo</label>
               <div className="flex items-center gap-4">
                 {/* Logo Preview */}
-                <div className="w-16 h-16 rounded-xl bg-[#090B16] border border-white/[0.06] flex items-center justify-center overflow-hidden shrink-0">
+                <div className="w-16 h-16 rounded-xl bg-background border border-border flex items-center justify-center overflow-hidden shrink-0">
                   {form.logoUrl && form.logoUrl !== "/logo.png" ? (
                     <img src={form.logoUrl} alt="Site logo preview" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }} />
                   ) : (
-                    <Image className="w-6 h-6 text-[#A7B0C0]/40" />
+                    <Image className="w-6 h-6 text-muted/40" />
                   )}
                 </div>
                 {/* Upload Button */}
@@ -235,7 +235,7 @@ export default function SettingsPage() {
                   <button
                     onClick={() => logoFileRef.current?.click()}
                     disabled={logoUploading}
-                    className="flex items-center gap-2 h-9 px-4 rounded-lg bg-[#090B16] border border-white/[0.06] text-xs font-medium text-[#A7B0C0] hover:text-white hover:border-white/[0.12] transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 h-9 px-4 rounded-lg bg-background border border-border text-xs font-medium text-muted hover:text-foreground hover:border-white/[0.12] transition-colors disabled:opacity-50"
                   >
                     {logoUploading ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -244,25 +244,25 @@ export default function SettingsPage() {
                     )}
                     {logoUploading ? "Uploading..." : "Upload Logo"}
                   </button>
-                  <p className="text-[10px] text-[#A7B0C0]/60">PNG, JPG, or SVG. Max 2MB.</p>
+                  <p className="text-[10px] text-muted/60">PNG, JPG, or SVG. Max 2MB.</p>
                   {logoError && <p className="text-[10px] text-red-400">{logoError}</p>}
                 </div>
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-medium text-[#A7B0C0]">Site Description</label>
-              <textarea value={form.description} onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))} rows={3} className="w-full px-4 py-3 rounded-xl bg-[#090B16] border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50 transition-all resize-none" />
+              <label className="text-xs font-medium text-muted">Site Description</label>
+              <textarea value={form.description} onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))} rows={3} className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50 transition-all resize-none" />
             </div>
           </div>
 
-          <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 space-y-5">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+          <div className="liquid-glass-card border border-border rounded-xl p-6 space-y-5">
+            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <ToggleLeft className="w-4 h-4 text-[#4CC9F0]" /> Registration Settings
             </h2>
-            <div className="flex items-center justify-between p-4 rounded-xl bg-[#090B16] border border-white/[0.06]">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-background border border-border">
               <div>
-                <p className="text-sm text-white font-medium">Public Registration</p>
-                <p className="text-xs text-[#A7B0C0] mt-0.5">Allow new users to sign up</p>
+                <p className="text-sm text-foreground font-medium">Public Registration</p>
+                <p className="text-xs text-muted mt-0.5">Allow new users to sign up</p>
               </div>
               <button onClick={() => setRegistrationOpen(!registrationOpen)} className={`relative w-12 h-6 rounded-full transition-colors ${registrationOpen ? "bg-[#22C55E]" : "bg-white/[0.06]"}`}>
                 <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform ${registrationOpen ? "translate-x-6" : "translate-x-0.5"}`} />
@@ -270,29 +270,29 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 space-y-5">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+          <div className="liquid-glass-card border border-border rounded-xl p-6 space-y-5">
+            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <Coins className="w-4 h-4 text-[#F59E0B]" /> Default Credits
             </h2>
             <div className="space-y-2 max-w-xs">
-              <label className="text-xs font-medium text-[#A7B0C0]">New User Credits</label>
-              <input type="number" value={defaultCredits} onChange={(e) => setDefaultCredits(Number(e.target.value))} className="w-full h-11 px-4 rounded-xl bg-[#090B16] border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50 transition-all" />
+              <label className="text-xs font-medium text-muted">New User Credits</label>
+              <input type="number" value={defaultCredits} onChange={(e) => setDefaultCredits(Number(e.target.value))} className="w-full h-11 px-4 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 focus:border-[#6D5EF5]/50 transition-all" />
             </div>
           </div>
 
-          <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 space-y-5">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+          <div className="liquid-glass-card border border-border rounded-xl p-6 space-y-5">
+            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <Link2 className="w-4 h-4 text-[#EC4899]" /> Social Links
             </h2>
-            <p className="text-xs text-[#A7B0C0] -mt-3">Manage social media links shown on the contact page</p>
+            <p className="text-xs text-muted -mt-3">Manage social media links shown on the contact page</p>
             <div className="space-y-3">
               {socialLinks.map((link, i) => {
                 const iconOption = SOCIAL_ICON_OPTIONS.find(o => o.value === link.icon)
                 const IconComponent = iconOption?.Icon || Link2
                 return (
-                  <div key={i} className="flex items-center gap-2 p-3 rounded-xl bg-[#090B16] border border-white/[0.06]">
-                    <GripVertical className="w-4 h-4 text-[#A7B0C0]/40 cursor-grab shrink-0" />
-                    <IconComponent className="w-4 h-4 text-[#A7B0C0] shrink-0" />
+                  <div key={i} className="flex items-center gap-2 p-3 rounded-xl bg-background border border-border">
+                    <GripVertical className="w-4 h-4 text-muted/40 cursor-grab shrink-0" />
+                    <IconComponent className="w-4 h-4 text-muted shrink-0" />
                     <input
                       value={link.name}
                       onChange={(e) => {
@@ -301,7 +301,7 @@ export default function SettingsPage() {
                         setSocialLinks(next)
                       }}
                       placeholder="Name"
-                      className="w-28 h-9 px-3 rounded-lg bg-[#151C2E] border border-white/[0.06] text-white text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+                      className="w-28 h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
                     />
                     <SocialIconSelect
                       value={link.icon}
@@ -319,7 +319,7 @@ export default function SettingsPage() {
                         setSocialLinks(next)
                       }}
                       placeholder="https://..."
-                      className="flex-1 h-9 px-3 rounded-lg bg-[#151C2E] border border-white/[0.06] text-white text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+                      className="flex-1 h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
                     />
                     <button
                       onClick={() => {
@@ -333,12 +333,12 @@ export default function SettingsPage() {
                       {link.is_visible ? (
                         <Eye className="w-3.5 h-3.5 text-[#22C55E]" />
                       ) : (
-                        <EyeOff className="w-3.5 h-3.5 text-[#A7B0C0]" />
+                        <EyeOff className="w-3.5 h-3.5 text-muted" />
                       )}
                     </button>
                     <button
                       onClick={() => setSocialLinks(socialLinks.filter((_, j) => j !== i))}
-                      className="p-2 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all"
+                      className="p-2 rounded-lg hover:bg-white/[0.06] text-muted hover:text-[#EF4444] transition-all"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -355,15 +355,15 @@ export default function SettingsPage() {
           </div>
 
           {/* Payment Methods Section */}
-          <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-6 space-y-5">
+          <div className="liquid-glass-card border border-border rounded-xl p-6 space-y-5">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+                <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
                   <CreditCard className="w-4 h-4 text-[#22C55E]" /> Payment Methods
                 </h2>
-                <p className="text-xs text-[#A7B0C0] mt-1">Manage available payment methods for checkout</p>
+                <p className="text-xs text-muted mt-1">Manage available payment methods for checkout</p>
               </div>
-              <span className="text-xs text-[#A7B0C0] bg-[#090B16] px-2.5 py-1 rounded-lg border border-white/[0.06]">
+              <span className="text-xs text-muted bg-background px-2.5 py-1 rounded-lg border border-border">
                 {paymentMethods.filter(m => m.enabled).length} enabled
               </span>
             </div>
@@ -374,13 +374,13 @@ export default function SettingsPage() {
                 const isEditing = editingPaymentId === method.id
 
                 return (
-                  <div key={method.id} className={`rounded-xl border transition-all ${isEditing ? "bg-[#090B16] border-[#6D5EF5]/30" : "bg-[#090B16] border-white/[0.06]"}`}>
+                  <div key={method.id} className={`rounded-xl border transition-all ${isEditing ? "bg-background border-[#6D5EF5]/30" : "bg-background border-border"}`}>
                     {/* Method Header */}
                     <div className="flex items-center gap-2 p-3">
-                      <IconComponent className="w-4 h-4 text-[#A7B0C0] shrink-0" />
+                      <IconComponent className="w-4 h-4 text-muted shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-white font-medium truncate">{method.name}</p>
-                        <p className="text-[10px] text-[#A7B0C0] truncate">{method.description}</p>
+                        <p className="text-sm text-foreground font-medium truncate">{method.name}</p>
+                        <p className="text-[10px] text-muted truncate">{method.description}</p>
                       </div>
 
                       {/* Reorder buttons */}
@@ -397,7 +397,7 @@ export default function SettingsPage() {
                           disabled={i === 0}
                           className="p-1 rounded hover:bg-white/[0.06] disabled:opacity-20 transition-all"
                         >
-                          <ChevronUp className="w-3 h-3 text-[#A7B0C0]" />
+                          <ChevronUp className="w-3 h-3 text-muted" />
                         </button>
                         <button
                           onClick={() => {
@@ -411,14 +411,14 @@ export default function SettingsPage() {
                           disabled={i === paymentMethods.length - 1}
                           className="p-1 rounded hover:bg-white/[0.06] disabled:opacity-20 transition-all"
                         >
-                          <ChevronDown className="w-3 h-3 text-[#A7B0C0]" />
+                          <ChevronDown className="w-3 h-3 text-muted" />
                         </button>
                       </div>
 
                       {/* Edit button */}
                       <button
                         onClick={() => setEditingPaymentId(isEditing ? null : method.id)}
-                        className={`p-2 rounded-lg transition-all ${isEditing ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "hover:bg-white/[0.06] text-[#A7B0C0]"}`}
+                        className={`p-2 rounded-lg transition-all ${isEditing ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "hover:bg-white/[0.06] text-muted"}`}
                         title={isEditing ? "Close editor" : "Edit details"}
                       >
                         {isEditing ? <X className="w-3.5 h-3.5" /> : <Pencil className="w-3.5 h-3.5" />}
@@ -442,7 +442,7 @@ export default function SettingsPage() {
                       <div className="px-3 pb-3 space-y-3 border-t border-white/[0.04] pt-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div className="space-y-1.5">
-                            <label className="text-[10px] font-medium text-[#A7B0C0] uppercase tracking-wider">Name</label>
+                            <label className="text-[10px] font-medium text-muted uppercase tracking-wider">Name</label>
                             <input
                               value={method.name}
                               onChange={(e) => {
@@ -450,11 +450,11 @@ export default function SettingsPage() {
                                 next[i] = { ...next[i], name: e.target.value }
                                 setPaymentMethods(next)
                               }}
-                              className="w-full h-9 px-3 rounded-lg bg-[#151C2E] border border-white/[0.06] text-white text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+                              className="w-full h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
                             />
                           </div>
                           <div className="space-y-1.5">
-                            <label className="text-[10px] font-medium text-[#A7B0C0] uppercase tracking-wider">Type</label>
+                            <label className="text-[10px] font-medium text-muted uppercase tracking-wider">Type</label>
                             <select
                               value={method.type}
                               onChange={(e) => {
@@ -462,7 +462,7 @@ export default function SettingsPage() {
                                 next[i] = { ...next[i], type: e.target.value }
                                 setPaymentMethods(next)
                               }}
-                              className="w-full h-9 px-3 rounded-lg bg-[#151C2E] border border-white/[0.06] text-white text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+                              className="w-full h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
                             >
                               {PAYMENT_TYPE_OPTIONS.map(opt => (
                                 <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -472,7 +472,7 @@ export default function SettingsPage() {
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-medium text-[#A7B0C0] uppercase tracking-wider">Description</label>
+                          <label className="text-[10px] font-medium text-muted uppercase tracking-wider">Description</label>
                           <input
                             value={method.description}
                             onChange={(e) => {
@@ -480,12 +480,12 @@ export default function SettingsPage() {
                               next[i] = { ...next[i], description: e.target.value }
                               setPaymentMethods(next)
                             }}
-                            className="w-full h-9 px-3 rounded-lg bg-[#151C2E] border border-white/[0.06] text-white text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+                            className="w-full h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-medium text-[#A7B0C0] uppercase tracking-wider">Wallet Address</label>
+                          <label className="text-[10px] font-medium text-muted uppercase tracking-wider">Wallet Address</label>
                           <input
                             value={method.wallet_address}
                             onChange={(e) => {
@@ -494,12 +494,12 @@ export default function SettingsPage() {
                               setPaymentMethods(next)
                             }}
                             placeholder="Enter wallet address (for crypto/mobile payments)"
-                            className="w-full h-9 px-3 rounded-lg bg-[#151C2E] border border-white/[0.06] text-white text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all font-mono"
+                            className="w-full h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all font-mono"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-medium text-[#A7B0C0] uppercase tracking-wider">QR Code URL</label>
+                          <label className="text-[10px] font-medium text-muted uppercase tracking-wider">QR Code URL</label>
                           <input
                             value={method.qr_code_url}
                             onChange={(e) => {
@@ -508,12 +508,12 @@ export default function SettingsPage() {
                               setPaymentMethods(next)
                             }}
                             placeholder="https://... (URL to QR code image)"
-                            className="w-full h-9 px-3 rounded-lg bg-[#151C2E] border border-white/[0.06] text-white text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+                            className="w-full h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-medium text-[#A7B0C0] uppercase tracking-wider">Instructions</label>
+                          <label className="text-[10px] font-medium text-muted uppercase tracking-wider">Instructions</label>
                           <textarea
                             value={method.instructions}
                             onChange={(e) => {
@@ -523,12 +523,12 @@ export default function SettingsPage() {
                             }}
                             rows={3}
                             placeholder="Payment instructions for customers..."
-                            className="w-full px-3 py-2 rounded-lg bg-[#151C2E] border border-white/[0.06] text-white text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all resize-none"
+                            className="w-full px-3 py-2 rounded-lg bg-card border border-border text-foreground text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all resize-none"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-medium text-[#A7B0C0] uppercase tracking-wider">Icon</label>
+                          <label className="text-[10px] font-medium text-muted uppercase tracking-wider">Icon</label>
                           <select
                             value={method.icon}
                             onChange={(e) => {
@@ -536,7 +536,7 @@ export default function SettingsPage() {
                               next[i] = { ...next[i], icon: e.target.value }
                               setPaymentMethods(next)
                             }}
-                            className="w-full h-9 px-3 rounded-lg bg-[#151C2E] border border-white/[0.06] text-white text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+                            className="w-full h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
                           >
                             {Object.entries(PAYMENT_ICON_OPTIONS).map(([val, opt]) => (
                               <option key={val} value={val}>{opt.label}</option>
@@ -550,11 +550,11 @@ export default function SettingsPage() {
               })}
             </div>
 
-            <p className="text-[10px] text-[#A7B0C0]/60">Use arrow buttons to reorder. Toggle enabled to show/hide during checkout.</p>
+            <p className="text-[10px] text-muted/60">Use arrow buttons to reorder. Toggle enabled to show/hide during checkout.</p>
           </div>
 
           {saveError && <p className="text-xs text-[#EF4444]">{saveError}</p>}
-          <button onClick={handleSave} disabled={saving} className="h-11 px-6 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50">
+          <button onClick={handleSave} disabled={saving} className="h-11 px-6 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-foreground text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} {saved ? "Saved!" : "Save Settings"}
           </button>
         </div>

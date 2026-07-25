@@ -113,22 +113,22 @@ function RichEditor({ value, onChange }: { value: string; onChange: (v: string) 
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-1 flex-wrap p-2 bg-[#0D1120] rounded-t-xl border border-white/[0.06] border-b-0">
-        <button type="button" onClick={() => execCmd("bold")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("bold") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-[#A7B0C0] hover:text-white hover:bg-white/[0.06]"}`} title="Bold" aria-label="Bold"><Bold className="w-3.5 h-3.5" /></button>
-        <button type="button" onClick={() => execCmd("italic")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("italic") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-[#A7B0C0] hover:text-white hover:bg-white/[0.06]"}`} title="Italic" aria-label="Italic"><Italic className="w-3.5 h-3.5" /></button>
+      <div className="flex items-center gap-1 flex-wrap p-2 bg-[#0D1120] rounded-t-xl border border-border border-b-0">
+        <button type="button" onClick={() => execCmd("bold")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("bold") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-muted hover:text-foreground hover:bg-white/[0.06]"}`} title="Bold" aria-label="Bold"><Bold className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={() => execCmd("italic")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("italic") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-muted hover:text-foreground hover:bg-white/[0.06]"}`} title="Italic" aria-label="Italic"><Italic className="w-3.5 h-3.5" /></button>
         <div className="w-px h-4 bg-white/[0.06] mx-1" />
-        <button type="button" onClick={() => execCmd("formatBlock", "h2")} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Heading 2" aria-label="H2"><Heading1 className="w-3.5 h-3.5" /></button>
-        <button type="button" onClick={() => execCmd("formatBlock", "h3")} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Heading 3" aria-label="H3"><Heading2 className="w-3.5 h-3.5" /></button>
-        <button type="button" onClick={() => execCmd("formatBlock", "p")} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Paragraph" aria-label="Paragraph"><Type className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={() => execCmd("formatBlock", "h2")} className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors" title="Heading 2" aria-label="H2"><Heading1 className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={() => execCmd("formatBlock", "h3")} className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors" title="Heading 3" aria-label="H3"><Heading2 className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={() => execCmd("formatBlock", "p")} className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors" title="Paragraph" aria-label="Paragraph"><Type className="w-3.5 h-3.5" /></button>
         <div className="w-px h-4 bg-white/[0.06] mx-1" />
-        <button type="button" onClick={() => execCmd("insertUnorderedList")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("list") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-[#A7B0C0] hover:text-white hover:bg-white/[0.06]"}`} title="Bullet List" aria-label="List"><List className="w-3.5 h-3.5" /></button>
-        <button type="button" onClick={insertLink} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Insert Link" aria-label="Link"><LinkIcon className="w-3.5 h-3.5" /></button>
-        <button type="button" onClick={insertInlineImage} className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors" title="Insert Image" aria-label="Image"><ImageIcon className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={() => execCmd("insertUnorderedList")} className={`p-1.5 rounded-lg transition-colors ${activeFormats.has("list") ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-muted hover:text-foreground hover:bg-white/[0.06]"}`} title="Bullet List" aria-label="List"><List className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={insertLink} className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors" title="Insert Link" aria-label="Link"><LinkIcon className="w-3.5 h-3.5" /></button>
+        <button type="button" onClick={insertInlineImage} className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors" title="Insert Image" aria-label="Image"><ImageIcon className="w-3.5 h-3.5" /></button>
       </div>
       <div
         ref={editorRef}
         contentEditable
-        className="min-h-[300px] max-h-[600px] overflow-y-auto p-4 bg-[#0D1120] rounded-b-xl border border-white/[0.06] border-t-0 text-sm text-white prose prose-invert prose-headings:text-white prose-p:text-[#A7B0C0] prose-a:text-[#6D5EF5] prose-img:rounded-lg prose-img:max-w-full focus:outline-none"
+        className="min-h-[300px] max-h-[600px] overflow-y-auto p-4 bg-[#0D1120] rounded-b-xl border border-border border-t-0 text-sm text-foreground prose prose-invert prose-headings:text-foreground prose-p:text-muted prose-a:text-[#6D5EF5] prose-img:rounded-lg prose-img:max-w-full focus:outline-none"
         onInput={() => {
           onChange(editorRef.current?.innerHTML || "")
         }}
@@ -346,12 +346,12 @@ export default function BlogPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Blog Posts</h1>
-          <p className="text-sm text-[#A7B0C0] mt-1">Manage your blog content</p>
+          <h1 className="text-2xl font-bold text-foreground">Blog Posts</h1>
+          <p className="text-sm text-muted mt-1">Manage your blog content</p>
         </div>
         <button
           onClick={openCreate}
-          className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20"
+          className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-foreground text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20"
         >
           <Plus className="w-4 h-4" /> New Post
         </button>
@@ -361,25 +361,25 @@ export default function BlogPage() {
       {error && (
         <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4 flex items-center justify-between">
           <p className="text-sm text-[#EF4444]">{error}</p>
-          <button onClick={() => setError("")} className="text-[#EF4444] hover:text-white" aria-label="Dismiss error"><X className="w-4 h-4" /></button>
+          <button onClick={() => setError("")} className="text-[#EF4444] hover:text-foreground" aria-label="Dismiss error"><X className="w-4 h-4" /></button>
         </div>
       )}
 
       {/* Filters */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px] max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A7B0C0]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
           <input
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1) }}
             placeholder="Search posts..."
-            className="w-full h-10 pl-10 pr-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+            className="w-full h-10 pl-10 pr-4 rounded-xl bg-card/80 border border-border text-foreground text-xs placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setPage(1) }}
-          className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+          className="h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
         >
           <option value="">All Status</option>
           <option value="draft">Draft</option>
@@ -388,7 +388,7 @@ export default function BlogPage() {
         <select
           value={categoryFilter}
           onChange={(e) => { setCategoryFilter(e.target.value); setPage(1) }}
-          className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+          className="h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
         >
           <option value="">All Categories</option>
           {categories.map(c => (
@@ -398,15 +398,15 @@ export default function BlogPage() {
       </div>
 
       {/* Table */}
-      <div className="liquid-glass-card border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="liquid-glass-card border border-border rounded-xl overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 text-[#6D5EF5] animate-spin" />
           </div>
         ) : posts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <p className="text-sm text-[#A7B0C0] mb-4">No blog posts yet</p>
-            <button onClick={openCreate} className="h-9 px-4 rounded-xl bg-[#6D5EF5] text-white text-xs font-medium hover:opacity-90 transition-opacity">
+            <p className="text-sm text-muted mb-4">No blog posts yet</p>
+            <button onClick={openCreate} className="h-9 px-4 rounded-xl bg-[#6D5EF5] text-foreground text-xs font-medium hover:opacity-90 transition-opacity">
               Create your first post
             </button>
           </div>
@@ -414,13 +414,13 @@ export default function BlogPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/[0.06]">
-                  <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Title</th>
-                  <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Category</th>
-                  <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Status</th>
-                  <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Views</th>
-                  <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Date</th>
-                  <th className="text-right p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Actions</th>
+                <tr className="border-b border-border">
+                  <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Title</th>
+                  <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Category</th>
+                  <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Status</th>
+                  <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Views</th>
+                  <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Date</th>
+                  <th className="text-right p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -430,20 +430,20 @@ export default function BlogPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.03 }}
-                    className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors"
+                    className="border-b border-border last:border-0 hover:bg-white/[0.02] transition-colors"
                   >
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         {post.featured_image_url ? (
-                          <img src={post.featured_image_url} alt={post.title || "Blog post image"} className="w-10 h-10 rounded-lg object-cover border border-white/[0.06]" />
+                          <img src={post.featured_image_url} alt={post.title || "Blog post image"} className="w-10 h-10 rounded-lg object-cover border border-border" />
                         ) : (
-                          <div className="w-10 h-10 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
-                            <ImageIcon className="w-4 h-4 text-[#A7B0C0]" />
+                          <div className="w-10 h-10 rounded-lg bg-card/40 border border-border flex items-center justify-center">
+                            <ImageIcon className="w-4 h-4 text-muted" />
                           </div>
                         )}
                         <div>
-                          <p className="text-sm font-medium text-white">{post.title}</p>
-                          <p className="text-[10px] text-[#A7B0C0]">/{post.slug}</p>
+                          <p className="text-sm font-medium text-foreground">{post.title}</p>
+                          <p className="text-[10px] text-muted">/{post.slug}</p>
                         </div>
                       </div>
                     </td>
@@ -457,7 +457,7 @@ export default function BlogPage() {
                             {cat.name}
                           </span>
                         ) : (
-                          <span className="text-[10px] text-[#A7B0C0]">—</span>
+                          <span className="text-[10px] text-muted">—</span>
                         )
                       })()}
                     </td>
@@ -472,13 +472,13 @@ export default function BlogPage() {
                       </span>
                     </td>
                     <td className="p-4">
-                      <span className="text-xs text-[#A7B0C0] flex items-center gap-1">
+                      <span className="text-xs text-muted flex items-center gap-1">
                         <BarChart3 className="w-3 h-3" />
                         {post.view_count || 0}
                       </span>
                     </td>
                     <td className="p-4">
-                      <div className="text-xs text-[#A7B0C0]">
+                      <div className="text-xs text-muted">
                         {post.published_at ? (
                           <div className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
@@ -493,7 +493,7 @@ export default function BlogPage() {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => window.open(`/blog/${post.slug}`, "_blank")}
-                          className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#4CC9F0] transition-all"
+                          className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-[#4CC9F0] transition-all"
                           title="View public"
                           aria-label="View public post"
                         >
@@ -501,7 +501,7 @@ export default function BlogPage() {
                         </button>
                         <button
                           onClick={() => handleDuplicate(post)}
-                          className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#F59E0B] transition-all"
+                          className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-[#F59E0B] transition-all"
                           title="Duplicate"
                           aria-label="Duplicate post"
                         >
@@ -509,7 +509,7 @@ export default function BlogPage() {
                         </button>
                         <button
                           onClick={() => openEdit(post)}
-                          className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"
+                          className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-foreground transition-all"
                           title="Edit"
                           aria-label="Edit post"
                         >
@@ -517,7 +517,7 @@ export default function BlogPage() {
                         </button>
                         <button
                           onClick={() => setDeleteConfirm(post.id)}
-                          className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-[#EF4444] transition-all"
+                          className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-[#EF4444] transition-all"
                           title="Delete"
                           aria-label="Delete post"
                         >
@@ -536,14 +536,14 @@ export default function BlogPage() {
       {/* Pagination */}
       {total > 0 && (
         <div className="flex items-center justify-between">
-          <p className="text-xs text-[#A7B0C0]">
+          <p className="text-xs text-muted">
             Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} of {total}
           </p>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"
+              className="p-2 rounded-lg bg-card/80 border border-border text-foreground disabled:opacity-30 hover:bg-white/[0.06] transition-all"
               aria-label="Previous page"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -563,7 +563,7 @@ export default function BlogPage() {
                 <button
                   key={p}
                   onClick={() => setPage(p)}
-                  className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === p ? "bg-[#6D5EF5] text-white" : "bg-[#151C2E]/80 border border-white/[0.06] text-[#A7B0C0] hover:text-white"}`}
+                  className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${page === p ? "bg-[#6D5EF5] text-foreground" : "bg-card/80 border border-border text-muted hover:text-foreground"}`}
                 >
                   {p}
                 </button>
@@ -572,7 +572,7 @@ export default function BlogPage() {
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="p-2 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white disabled:opacity-30 hover:bg-white/[0.06] transition-all"
+              className="p-2 rounded-lg bg-card/80 border border-border text-foreground disabled:opacity-30 hover:bg-white/[0.06] transition-all"
               aria-label="Next page"
             >
               <ChevronRight className="w-4 h-4" />
@@ -595,7 +595,7 @@ export default function BlogPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-[#090B16] border border-[#EF4444]/20 rounded-xl p-6 w-full max-w-sm"
+              className="bg-background border border-[#EF4444]/20 rounded-xl p-6 w-full max-w-sm"
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-center gap-3 mb-4">
@@ -603,23 +603,23 @@ export default function BlogPage() {
                   <AlertTriangle className="w-5 h-5 text-[#EF4444]" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">Delete Post</h3>
-                  <p className="text-xs text-[#A7B0C0]">This action cannot be undone.</p>
+                  <h3 className="text-sm font-bold text-foreground">Delete Post</h3>
+                  <p className="text-xs text-muted">This action cannot be undone.</p>
                 </div>
               </div>
-              <p className="text-xs text-[#A7B0C0] mb-6">
+              <p className="text-xs text-muted mb-6">
                 Are you sure you want to permanently delete this post? All content and data will be lost.
               </p>
               <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}
-                  className="h-9 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs font-medium hover:bg-white/[0.06] transition-all"
+                  className="h-9 px-4 rounded-xl bg-card/80 border border-border text-foreground text-xs font-medium hover:bg-white/[0.06] transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => deleteConfirm && handleDelete(deleteConfirm)}
-                  className="h-9 px-4 rounded-xl bg-[#EF4444] text-white text-xs font-medium hover:opacity-90 transition-opacity"
+                  className="h-9 px-4 rounded-xl bg-[#EF4444] text-foreground text-xs font-medium hover:opacity-90 transition-opacity"
                 >
                   Delete
                 </button>
@@ -643,15 +643,15 @@ export default function BlogPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-[#090B16] border border-white/[0.06] rounded-xl w-full max-w-4xl mx-4 space-y-0"
+              className="bg-background border border-border rounded-xl w-full max-w-4xl mx-4 space-y-0"
               onClick={e => e.stopPropagation()}
             >
               {/* Editor Header */}
-              <div className="flex items-center justify-between p-4 border-b border-white/[0.06]">
-                <h2 className="text-lg font-bold text-white">
+              <div className="flex items-center justify-between p-4 border-b border-border">
+                <h2 className="text-lg font-bold text-foreground">
                   {editingPost ? "Edit Post" : "New Post"}
                 </h2>
-                <button onClick={() => setShowEditor(false)} className="text-[#A7B0C0] hover:text-white transition-colors" aria-label="Close editor">
+                <button onClick={() => setShowEditor(false)} className="text-muted hover:text-foreground transition-colors" aria-label="Close editor">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -659,7 +659,7 @@ export default function BlogPage() {
               <div className="p-6 space-y-6">
                 {/* Title */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-[#A7B0C0]">Title *</label>
+                  <label className="text-xs font-medium text-muted">Title *</label>
                   <input
                     value={formState.title}
                     onChange={e => {
@@ -671,40 +671,40 @@ export default function BlogPage() {
                       }))
                     }}
                     placeholder="Enter post title..."
-                    className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
+                    className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
                   />
                 </div>
 
                 {/* Slug */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-[#A7B0C0]">URL Slug</label>
+                  <label className="text-xs font-medium text-muted">URL Slug</label>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-[#A7B0C0] whitespace-nowrap">/blog/</span>
+                    <span className="text-xs text-muted whitespace-nowrap">/blog/</span>
                     <input
                       value={formState.slug}
                       onChange={e => setFormState(f => ({ ...f, slug: slugify(e.target.value) }))}
                       placeholder="post-url-slug"
-                      className="flex-1 h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
+                      className="flex-1 h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
                     />
                   </div>
                 </div>
 
                 {/* Featured Image */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-[#A7B0C0]">Featured Image</label>
+                  <label className="text-xs font-medium text-muted">Featured Image</label>
                   <div className="relative">
                     {formState.featured_image_url ? (
-                      <div className="relative group rounded-xl overflow-hidden border border-white/[0.06]">
+                      <div className="relative group rounded-xl overflow-hidden border border-border">
                         <img src={formState.featured_image_url} alt={formState.title || "Featured image"} className="w-full h-48 object-cover" />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                          <label className="h-9 px-4 rounded-xl bg-[#6D5EF5] text-white text-xs font-medium cursor-pointer hover:opacity-90 transition-opacity flex items-center gap-2">
+                          <label className="h-9 px-4 rounded-xl bg-[#6D5EF5] text-foreground text-xs font-medium cursor-pointer hover:opacity-90 transition-opacity flex items-center gap-2">
                             <Upload className="w-3.5 h-3.5" /> Replace
                             <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" className="hidden" onChange={e => e.target.files?.[0] && handleImageUpload(e.target.files[0])} />
                           </label>
                           <button
                             type="button"
                             onClick={() => setFormState(f => ({ ...f, featured_image_url: "" }))}
-                            className="h-9 px-4 rounded-xl bg-[#EF4444] text-white text-xs font-medium hover:opacity-90 transition-opacity"
+                            className="h-9 px-4 rounded-xl bg-[#EF4444] text-foreground text-xs font-medium hover:opacity-90 transition-opacity"
                           >
                             Remove
                           </button>
@@ -716,14 +716,14 @@ export default function BlogPage() {
                         )}
                       </div>
                     ) : (
-                      <label className="flex flex-col items-center justify-center h-32 rounded-xl border-2 border-dashed border-white/[0.1] hover:border-[#6D5EF5]/30 bg-[#151C2E]/40 cursor-pointer transition-all group">
+                      <label className="flex flex-col items-center justify-center h-32 rounded-xl border-2 border-dashed border-white/[0.1] hover:border-[#6D5EF5]/30 bg-card/40 cursor-pointer transition-all group">
                         {uploadingImage ? (
                           <Loader2 className="w-6 h-6 text-[#6D5EF5] animate-spin" />
                         ) : (
                           <>
-                            <ImageIcon className="w-8 h-8 text-[#A7B0C0] group-hover:text-[#6D5EF5] transition-colors mb-2" />
-                            <p className="text-xs text-[#A7B0C0] group-hover:text-[#6D5EF5] transition-colors">Click to upload featured image</p>
-                            <p className="text-[10px] text-[#A7B0C0]/50 mt-1">PNG, JPG, WebP, GIF — Max 5MB</p>
+                            <ImageIcon className="w-8 h-8 text-muted group-hover:text-[#6D5EF5] transition-colors mb-2" />
+                            <p className="text-xs text-muted group-hover:text-[#6D5EF5] transition-colors">Click to upload featured image</p>
+                            <p className="text-[10px] text-muted/50 mt-1">PNG, JPG, WebP, GIF — Max 5MB</p>
                           </>
                         )}
                         <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" className="hidden" onChange={e => e.target.files?.[0] && handleImageUpload(e.target.files[0])} />
@@ -734,12 +734,12 @@ export default function BlogPage() {
 
                 {/* Category */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-[#A7B0C0]">Category</label>
+                  <label className="text-xs font-medium text-muted">Category</label>
                   <div className="flex items-center gap-2">
                     <select
                       value={formState.category_id}
                       onChange={e => setFormState(f => ({ ...f, category_id: e.target.value }))}
-                      className="flex-1 h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
+                      className="flex-1 h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
                     >
                       <option value="">No category</option>
                       {categories.map(c => (
@@ -749,7 +749,7 @@ export default function BlogPage() {
                     <button
                       type="button"
                       onClick={() => setShowNewCategoryInput(!showNewCategoryInput)}
-                      className="h-10 px-3 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-all text-xs font-medium flex items-center gap-1"
+                      className="h-10 px-3 rounded-xl bg-card/80 border border-border text-muted hover:text-foreground hover:bg-white/[0.06] transition-all text-xs font-medium flex items-center gap-1"
                     >
                       <Plus className="w-3.5 h-3.5" /> New
                     </button>
@@ -761,13 +761,13 @@ export default function BlogPage() {
                         onChange={e => setNewCategoryName(e.target.value)}
                         onKeyDown={e => e.key === "Enter" && handleCreateCategory()}
                         placeholder="Category name..."
-                        className="flex-1 h-9 px-3 rounded-lg bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
+                        className="flex-1 h-9 px-3 rounded-lg bg-card/80 border border-border text-foreground text-xs placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
                       />
                       <button
                         type="button"
                         onClick={handleCreateCategory}
                         disabled={creatingCategory || !newCategoryName.trim()}
-                        className="h-9 px-3 rounded-lg bg-[#6D5EF5] text-white text-xs font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+                        className="h-9 px-3 rounded-lg bg-[#6D5EF5] text-foreground text-xs font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
                       >
                         {creatingCategory ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Create"}
                       </button>
@@ -777,7 +777,7 @@ export default function BlogPage() {
 
                 {/* Content Editor */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-[#A7B0C0]">Content</label>
+                  <label className="text-xs font-medium text-muted">Content</label>
                   <RichEditor
                     value={formState.content}
                     onChange={v => setFormState(f => ({ ...f, content: v }))}
@@ -787,7 +787,7 @@ export default function BlogPage() {
                 {/* Excerpt */}
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-medium text-[#A7B0C0]">Excerpt</label>
+                    <label className="text-xs font-medium text-muted">Excerpt</label>
                     {!formState.excerpt && formState.content && (
                       <button
                         type="button"
@@ -803,17 +803,17 @@ export default function BlogPage() {
                     onChange={e => setFormState(f => ({ ...f, excerpt: e.target.value }))}
                     placeholder="A brief summary of the post..."
                     rows={2}
-                    className="w-full px-4 py-3 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 resize-none"
+                    className="w-full px-4 py-3 rounded-xl bg-card/80 border border-border text-foreground text-sm placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 resize-none"
                   />
                 </div>
 
                 {/* SEO Fields */}
-                <div className="p-4 rounded-xl bg-[#0D1120] border border-white/[0.06] space-y-4">
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider">SEO Settings</h3>
+                <div className="p-4 rounded-xl bg-[#0D1120] border border-border space-y-4">
+                  <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">SEO Settings</h3>
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-medium text-[#A7B0C0]">Meta Title</label>
-                      <span className={`text-[10px] ${(formState.seo_title || formState.title).length > 60 ? "text-[#F59E0B]" : "text-[#A7B0C0]"}`}>
+                      <label className="text-xs font-medium text-muted">Meta Title</label>
+                      <span className={`text-[10px] ${(formState.seo_title || formState.title).length > 60 ? "text-[#F59E0B]" : "text-muted"}`}>
                         {(formState.seo_title || formState.title).length}/60
                       </span>
                     </div>
@@ -821,13 +821,13 @@ export default function BlogPage() {
                       value={formState.seo_title}
                       onChange={e => setFormState(f => ({ ...f, seo_title: e.target.value }))}
                       placeholder={formState.title || "SEO title (defaults to post title)"}
-                      className="w-full h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
+                      className="w-full h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-sm placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30"
                     />
                   </div>
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-medium text-[#A7B0C0]">Meta Description</label>
-                      <span className={`text-[10px] ${(formState.meta_description || formState.excerpt).length > 155 ? "text-[#F59E0B]" : "text-[#A7B0C0]"}`}>
+                      <label className="text-xs font-medium text-muted">Meta Description</label>
+                      <span className={`text-[10px] ${(formState.meta_description || formState.excerpt).length > 155 ? "text-[#F59E0B]" : "text-muted"}`}>
                         {(formState.meta_description || formState.excerpt).length}/155
                       </span>
                     </div>
@@ -836,14 +836,14 @@ export default function BlogPage() {
                       onChange={e => setFormState(f => ({ ...f, meta_description: e.target.value }))}
                       placeholder={formState.excerpt || "SEO description (defaults to excerpt)"}
                       rows={2}
-                      className="w-full px-4 py-3 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-sm placeholder:text-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 resize-none"
+                      className="w-full px-4 py-3 rounded-xl bg-card/80 border border-border text-foreground text-sm placeholder:text-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 resize-none"
                     />
                   </div>
                 </div>
 
                 {/* Status */}
                 <div className="flex items-center gap-4">
-                  <label className="text-xs font-medium text-[#A7B0C0]">Status</label>
+                  <label className="text-xs font-medium text-muted">Status</label>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
@@ -851,7 +851,7 @@ export default function BlogPage() {
                       className={`h-8 px-4 rounded-lg text-xs font-medium transition-all ${
                         formState.status === "draft"
                           ? "bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20"
-                          : "bg-[#151C2E]/80 border border-white/[0.06] text-[#A7B0C0] hover:text-white"
+                          : "bg-card/80 border border-border text-muted hover:text-foreground"
                       }`}
                     >
                       Draft
@@ -862,7 +862,7 @@ export default function BlogPage() {
                       className={`h-8 px-4 rounded-lg text-xs font-medium transition-all ${
                         formState.status === "published"
                           ? "bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20"
-                          : "bg-[#151C2E]/80 border border-white/[0.06] text-[#A7B0C0] hover:text-white"
+                          : "bg-card/80 border border-border text-muted hover:text-foreground"
                       }`}
                     >
                       Published
@@ -872,10 +872,10 @@ export default function BlogPage() {
               </div>
 
               {/* Editor Footer */}
-              <div className="flex items-center justify-between p-4 border-t border-white/[0.06]">
+              <div className="flex items-center justify-between p-4 border-t border-border">
                 <button
                   onClick={() => setShowEditor(false)}
-                  className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs font-medium hover:bg-white/[0.06] transition-all"
+                  className="h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-xs font-medium hover:bg-white/[0.06] transition-all"
                 >
                   Cancel
                 </button>
@@ -883,7 +883,7 @@ export default function BlogPage() {
                   <button
                     onClick={() => handleSave("draft")}
                     disabled={saving || !formState.title.trim()}
-                    className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-white text-xs font-medium flex items-center gap-2 hover:bg-white/[0.06] transition-all disabled:opacity-50"
+                    className="h-10 px-4 rounded-xl bg-card/80 border border-border text-foreground text-xs font-medium flex items-center gap-2 hover:bg-white/[0.06] transition-all disabled:opacity-50"
                   >
                     {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                     Save Draft
@@ -891,7 +891,7 @@ export default function BlogPage() {
                   <button
                     onClick={() => handleSave("published")}
                     disabled={saving || !formState.title.trim()}
-                    className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16A34A] text-white text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#22C55E]/20 disabled:opacity-50"
+                    className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16A34A] text-foreground text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#22C55E]/20 disabled:opacity-50"
                   >
                     {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                     {editingPost?.status === "published" ? "Update & Publish" : "Publish"}

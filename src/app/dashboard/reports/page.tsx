@@ -71,10 +71,10 @@ export default function ReportsPage() {
       )}
 
       {!loading && !error && reports.length > 0 && (
-        <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl overflow-hidden">
+        <div className="bg-card/80 border border-border rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.06]">
+              <tr className="border-b border-border">
                 <th className="text-left p-4 text-xs text-muted font-medium uppercase">Domain</th>
                 <th className="text-left p-4 text-xs text-muted font-medium uppercase">Created</th>
                 <th className="text-right p-4 text-xs text-muted font-medium uppercase">Actions</th>

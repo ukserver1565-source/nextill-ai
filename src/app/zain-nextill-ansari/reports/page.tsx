@@ -122,8 +122,8 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Reports</h1>
-        <p className="text-sm text-[#A7B0C0] mt-1">Generate and export admin reports</p>
+        <h1 className="text-2xl font-bold text-foreground">Reports</h1>
+        <p className="text-sm text-muted mt-1">Generate and export admin reports</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -134,9 +134,9 @@ export default function ReportsPage() {
           { label: "Generated", value: loading ? "—" : String(reports.filter((r: any) => r.status === "ready" || r.status === "completed").length) },
         ].map((s, i) => (
           <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-            className="liquid-glass-card border border-white/[0.06] rounded-xl p-4 text-center">
-            <p className="text-xl font-bold text-white">{s.value}</p>
-            <p className="text-[11px] text-[#A7B0C0]">{s.label}</p>
+            className="liquid-glass-card border border-border rounded-xl p-4 text-center">
+            <p className="text-xl font-bold text-foreground">{s.value}</p>
+            <p className="text-[11px] text-muted">{s.label}</p>
           </motion.div>
         ))}
       </div>
@@ -153,13 +153,13 @@ export default function ReportsPage() {
           const Icon = r.icon
           return (
             <motion.div key={r.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="liquid-glass-card border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all">
+              className="liquid-glass-card border border-border rounded-xl p-5 hover:border-white/[0.12] transition-all">
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${r.color} flex items-center justify-center mb-4 shadow-lg`}>
-                <Icon className="w-5 h-5 text-white" />
+                <Icon className="w-5 h-5 text-foreground" />
               </div>
-              <h3 className="text-sm font-semibold text-white mb-1">{r.label}</h3>
-              <p className="text-xs text-[#A7B0C0] mb-3">{r.desc}</p>
-              <button onClick={() => handleExportCSV(r.label)} className="w-full h-9 rounded-xl bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center justify-center gap-1.5 transition-all">
+              <h3 className="text-sm font-semibold text-foreground mb-1">{r.label}</h3>
+              <p className="text-xs text-muted mb-3">{r.desc}</p>
+              <button onClick={() => handleExportCSV(r.label)} className="w-full h-9 rounded-xl bg-background border border-border text-xs text-muted hover:text-foreground flex items-center justify-center gap-1.5 transition-all">
                 <Download className="w-3.5 h-3.5" /> Export CSV
               </button>
             </motion.div>
@@ -167,52 +167,52 @@ export default function ReportsPage() {
         })}
       </div>
 
-      <div className="liquid-glass-card border border-white/[0.06] rounded-xl overflow-hidden">
-        <div className="p-5 border-b border-white/[0.06]">
-          <h3 className="text-sm font-semibold text-white">Recent Reports</h3>
+      <div className="liquid-glass-card border border-border rounded-xl overflow-hidden">
+        <div className="p-5 border-b border-border">
+          <h3 className="text-sm font-semibold text-foreground">Recent Reports</h3>
         </div>
         {loading ? (
           <div className="flex flex-col items-center justify-center py-16">
             <Loader2 className="w-8 h-8 text-[#6D5EF5] animate-spin mb-4" />
-            <p className="text-sm text-[#A7B0C0]">Loading reports...</p>
+            <p className="text-sm text-muted">Loading reports...</p>
           </div>
         ) : error ? (
           <div className="flex flex-col items-center justify-center py-16">
             <p className="text-sm font-medium text-[#EF4444] mb-1">Failed to load reports</p>
-            <p className="text-xs text-[#A7B0C0]">{error}</p>
+            <p className="text-xs text-muted">{error}</p>
           </div>
         ) : reports.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">
-            <Inbox className="w-10 h-10 text-[#A7B0C0] mb-3" />
-            <p className="text-sm font-medium text-[#A7B0C0] mb-1">No reports generated yet</p>
-            <p className="text-xs text-[#A7B0C0]">Generated reports will appear here</p>
+            <Inbox className="w-10 h-10 text-muted mb-3" />
+            <p className="text-sm font-medium text-muted mb-1">No reports generated yet</p>
+            <p className="text-xs text-muted">Generated reports will appear here</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/[0.06]">
-                  <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Name</th>
-                  <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Type</th>
-                  <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Generated</th>
-                  <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Status</th>
-                  <th className="text-right p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">Actions</th>
+                <tr className="border-b border-border">
+                  <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Name</th>
+                  <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Type</th>
+                  <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Generated</th>
+                  <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Status</th>
+                  <th className="text-right p-4 text-[11px] font-medium text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {reports.map((r: any, i: number) => (
                   <motion.tr key={r.id || i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
-                    className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors">
-                    <td className="p-4 text-sm text-white">{r.name}</td>
-                    <td className="p-4 text-xs text-[#A7B0C0]">{r.type}</td>
-                    <td className="p-4 text-xs text-[#A7B0C0]">{r.generated || r.created_at}</td>
+                    className="border-b border-border last:border-0 hover:bg-white/[0.02] transition-colors">
+                    <td className="p-4 text-sm text-foreground">{r.name}</td>
+                    <td className="p-4 text-xs text-muted">{r.type}</td>
+                    <td className="p-4 text-xs text-muted">{r.generated || r.created_at}</td>
                     <td className="p-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${
                         r.status === "ready" || r.status === "completed" ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
                       }`}>{r.status}</span>
                     </td>
                     <td className="p-4 text-right">
-                      <button onClick={() => handleDownloadReport(r)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all">
+                      <button onClick={() => handleDownloadReport(r)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-foreground transition-all">
                         <Download className="w-3.5 h-3.5" />
                       </button>
                     </td>

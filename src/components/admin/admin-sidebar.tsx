@@ -106,19 +106,19 @@ export function AdminSidebar({ collapsed, onToggle }: { collapsed: boolean; onTo
 
   return (
     <aside className={cn(
-      "h-full liquid-glass border-r border-white/[0.06] flex flex-col transition-all duration-300 shrink-0",
+      "h-full liquid-glass border-r border-border flex flex-col transition-all duration-300 shrink-0",
       collapsed ? "w-[72px]" : "w-[280px]"
     )}>
       <div className="flex items-center gap-3 px-4 h-16 shrink-0 border-b border-white/[0.04]">
         <div className="w-9 h-9 rounded-xl bg-gradient-to-r from-[#6D5EF5] to-[#8B5CF6] flex items-center justify-center shrink-0 shadow-lg shadow-[#6D5EF5]/20">
-          <Sparkles className="w-5 h-5 text-white" />
+          <Sparkles className="w-5 h-5 text-foreground" />
         </div>
         {!collapsed && (
           <div className="overflow-hidden">
-            <span className="text-sm font-bold tracking-tight text-white">
+            <span className="text-sm font-bold tracking-tight text-foreground">
               Nextill<span className="text-[#6D5EF5]"> AI</span>
             </span>
-            <span className="block text-[9px] text-[#A7B0C0] font-medium tracking-widest uppercase">Admin Panel</span>
+            <span className="block text-[9px] text-muted font-medium tracking-widest uppercase">Admin Panel</span>
           </div>
         )}
       </div>
@@ -127,7 +127,7 @@ export function AdminSidebar({ collapsed, onToggle }: { collapsed: boolean; onTo
         <button
           onClick={onToggle}
           className={cn(
-            "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] transition-colors text-xs",
+            "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-foreground hover:bg-card transition-colors text-xs",
             collapsed && "justify-center"
           )}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -150,12 +150,12 @@ export function AdminSidebar({ collapsed, onToggle }: { collapsed: boolean; onTo
                     "group relative flex items-center justify-center w-full p-2 rounded-lg transition-colors",
                     isActive
                       ? "bg-[#6D5EF5]/10 text-[#6D5EF5]"
-                      : "text-[#A7B0C0] hover:text-white hover:bg-[#151C2E]"
+                      : "text-muted hover:text-foreground hover:bg-card"
                   )}
                   title={item.label}
                 >
                   <Icon className="w-4 h-4 shrink-0" />
-                  <span className="absolute left-full ml-2 px-2 py-1 text-xs font-medium text-white bg-[#111827]/90 backdrop-blur-xl border border-white/[0.06] rounded-lg shadow-xl whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+                  <span className="absolute left-full ml-2 px-2 py-1 text-xs font-medium text-foreground bg-surface/90 backdrop-blur-xl border border-border rounded-lg shadow-xl whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
                     {item.label}
                   </span>
                 </Link>
@@ -169,7 +169,7 @@ export function AdminSidebar({ collapsed, onToggle }: { collapsed: boolean; onTo
               <div key={section.section} className="mb-0.5">
                 <button
                   onClick={() => toggleSection(section.section)}
-                  className="flex w-full items-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-[#A7B0C0] hover:text-white transition-colors"
+                  className="flex w-full items-center gap-1.5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted hover:text-foreground transition-colors"
                 >
                   {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
                   <span>{section.section}</span>
@@ -187,7 +187,7 @@ export function AdminSidebar({ collapsed, onToggle }: { collapsed: boolean; onTo
                             "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 group relative",
                             isActive
                               ? "bg-[#6D5EF5]/10 text-[#6D5EF5]"
-                              : "text-[#A7B0C0] hover:text-white hover:bg-[#151C2E]"
+                              : "text-muted hover:text-foreground hover:bg-card"
                           )}
                         >
                           {isActive && (
@@ -212,7 +212,7 @@ export function AdminSidebar({ collapsed, onToggle }: { collapsed: boolean; onTo
           <div className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse shadow-lg shadow-[#22C55E]/30" />
           {!collapsed && (
             <>
-              <span className="text-xs text-[#A7B0C0]">System</span>
+              <span className="text-xs text-muted">System</span>
               <span className="text-[11px] font-medium text-[#22C55E] ml-auto">All Systems Operational</span>
             </>
           )}

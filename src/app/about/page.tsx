@@ -61,7 +61,7 @@ export default function AboutPage() {
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-primary mb-6 shadow-lg shadow-primary/30">
-            <Sparkles className="w-8 h-8 text-white" />
+            <Sparkles className="w-8 h-8 text-foreground" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
             About <span className="gradient-primary-text">Nextill AI</span>
@@ -103,7 +103,7 @@ export default function AboutPage() {
               return (
                 <div key={f.title} className="liquid-glass-card rounded-2xl p-6 h-full flex flex-col group hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-4 shadow-lg`}>
-                    <Icon className="w-6 h-6 text-white" />
+                    <Icon className="w-6 h-6 text-foreground" />
                   </div>
                   <h3 className="text-lg font-bold mb-2">{f.title}</h3>
                   <p className="text-sm text-muted flex-1 leading-relaxed">{f.desc}</p>
@@ -144,7 +144,7 @@ export default function AboutPage() {
                 Join thousands of creators using Nextill AI to work smarter, create faster, and rank higher.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-white font-semibold text-base hover:opacity-90 transition-all">
+                <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-foreground font-semibold text-base hover:opacity-90 transition-all">
                   Start Free
                 </Link>
                 <Link href="/pricing" className="inline-flex items-center justify-center px-8 py-3 rounded-xl border border-border bg-card/30 text-foreground font-semibold text-base hover:bg-white/[0.06] transition-all">

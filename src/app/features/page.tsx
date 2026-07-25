@@ -82,7 +82,7 @@ export default function FeaturesPage() {
                 <div key={f.title} className="liquid-glass-card rounded-2xl p-6 sm:p-8 h-full flex flex-col group hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-start justify-between mb-4">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center shadow-lg`}>
-                      <Icon className="w-6 h-6 text-white" />
+                      <Icon className="w-6 h-6 text-foreground" />
                     </div>
                     <Badge variant="success" size="sm" showDot>
                       Live
@@ -128,7 +128,7 @@ export default function FeaturesPage() {
                 Start for free with credits included. No credit card required.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-white font-semibold text-base hover:opacity-90 transition-all">
+                <Link href="/signup" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-foreground font-semibold text-base hover:opacity-90 transition-all">
                   Start Free
                 </Link>
                 <Link href="/pricing" className="inline-flex items-center justify-center px-8 py-3 rounded-xl border border-border bg-card/30 text-foreground font-semibold text-base hover:bg-white/[0.06] transition-all">

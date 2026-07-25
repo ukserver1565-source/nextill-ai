@@ -52,13 +52,13 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
   }
 
   return (
-    <header className="h-14 sm:h-16 border-b border-white/[0.06] flex items-center justify-between px-3 sm:px-4 lg:px-6 liquid-glass sticky top-0 z-30 gap-2">
+    <header className="h-14 sm:h-16 border-b border-border flex items-center justify-between px-3 sm:px-4 lg:px-6 liquid-glass sticky top-0 z-30 gap-2">
       {/* Left section — mobile menu + back + admin badge + search */}
       <div className="flex items-center gap-2 flex-1 min-w-0">
         {onMenuClick && (
           <button
             onClick={onMenuClick}
-            className="lg:hidden p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors shrink-0"
+            className="lg:hidden p-2 rounded-lg text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors shrink-0"
             aria-label="Open menu"
           >
             <Menu className="w-5 h-5" />
@@ -67,7 +67,7 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
         {showBackButton && (
           <button
             onClick={handleBack}
-            className="hidden sm:flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] transition-all text-xs shrink-0"
+            className="hidden sm:flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-muted hover:text-foreground hover:bg-white/[0.06] border border-border hover:border-white/[0.12] transition-all text-xs shrink-0"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span className="hidden md:inline">Back</span>
@@ -81,11 +81,11 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
         {/* Search bar — flex-1, no overlap */}
         <button
           onClick={onSearch}
-          className="flex items-center gap-2 flex-1 h-9 px-3 rounded-xl bg-white/[0.04] border border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.06] transition-all group cursor-pointer min-w-0"
+          className="flex items-center gap-2 flex-1 h-9 px-3 rounded-xl bg-card/40 border border-border hover:border-white/[0.12] hover:bg-white/[0.06] transition-all group cursor-pointer min-w-0"
         >
-          <Search className="w-4 h-4 text-[#A7B0C0] shrink-0" />
-          <span className="text-xs text-[#A7B0C0] truncate hidden sm:inline">Search admin panel...</span>
-          <kbd className="hidden xl:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium text-[#A7B0C0]/60 bg-white/[0.04] rounded border border-white/[0.06] ml-auto shrink-0">
+          <Search className="w-4 h-4 text-muted shrink-0" />
+          <span className="text-xs text-muted truncate hidden sm:inline">Search admin panel...</span>
+          <kbd className="hidden xl:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium text-muted/60 bg-card/40 rounded border border-border ml-auto shrink-0">
             <span className="text-[9px]">⌘</span>K
           </kbd>
         </button>
@@ -96,14 +96,14 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
         <Link
           href="/"
           target="_blank"
-          className="hidden md:flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] border border-white/[0.06] hover:border-white/[0.12] transition-all text-xs shrink-0"
+          className="hidden md:flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-muted hover:text-foreground hover:bg-white/[0.06] border border-border hover:border-white/[0.12] transition-all text-xs shrink-0"
         >
           <Globe className="w-3.5 h-3.5" />
           <span>View Site</span>
         </Link>
 
         <button
-          className="relative p-2 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors shrink-0"
+          className="relative p-2 rounded-lg text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors shrink-0"
           aria-label="Notifications"
         >
           <Bell className="w-4 h-4" />
@@ -118,26 +118,26 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
         <div className="relative" ref={profileRef}>
           <button
             onClick={() => setProfileOpen(!profileOpen)}
-            className="flex items-center gap-1.5 sm:gap-2 pl-1 sm:pl-2 border-l border-white/[0.06] hover:bg-white/[0.06] rounded-lg pr-1 sm:pr-2 py-1 transition-colors shrink-0"
+            className="flex items-center gap-1.5 sm:gap-2 pl-1 sm:pl-2 border-l border-border hover:bg-white/[0.06] rounded-lg pr-1 sm:pr-2 py-1 transition-colors shrink-0"
             aria-label="User menu"
           >
             <Avatar fallback={userInitials} size="sm" />
             <div className="hidden lg:block text-left">
-              <p className="text-xs font-medium text-white leading-tight">{userName}</p>
-              <p className="text-[10px] text-[#A7B0C0] leading-tight">{userEmail || "Admin"}</p>
+              <p className="text-xs font-medium text-foreground leading-tight">{userName}</p>
+              <p className="text-[10px] text-muted leading-tight">{userEmail || "Admin"}</p>
             </div>
-            <ChevronDown className="w-3 h-3 text-[#A7B0C0] hidden lg:block" />
+            <ChevronDown className="w-3 h-3 text-muted hidden lg:block" />
           </button>
           {profileOpen && (
             <div className="absolute right-0 top-full mt-2 w-52 liquid-glass-card !rounded-xl shadow-2xl z-50 overflow-hidden p-1">
-              <div className="px-3 py-2.5 border-b border-white/[0.06]">
-                <p className="text-sm font-medium text-white">{userName}</p>
-                <p className="text-xs text-[#A7B0C0]">{userEmail || "Admin"}</p>
+              <div className="px-3 py-2.5 border-b border-border">
+                <p className="text-sm font-medium text-foreground">{userName}</p>
+                <p className="text-xs text-muted">{userEmail || "Admin"}</p>
               </div>
               <div className="p-1">
                 <Link
                   href="/zain-nextill-ansari/settings"
-                  className="flex items-center gap-2 px-3 py-2 text-sm text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-muted hover:text-foreground hover:bg-white/[0.06] rounded-lg transition-colors"
                   onClick={() => setProfileOpen(false)}
                 >
                   <Settings className="w-4 h-4" />
@@ -145,7 +145,7 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-[#A7B0C0] hover:text-[#EF4444] hover:bg-[#EF4444]/10 rounded-lg transition-colors"
+                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-muted hover:text-[#EF4444] hover:bg-[#EF4444]/10 rounded-lg transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
                   Sign Out

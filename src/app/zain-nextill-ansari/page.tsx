@@ -21,10 +21,10 @@ const quickActions = [
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-[#151C2E]/95 backdrop-blur-xl border border-white/[0.06] rounded-lg px-3 py-2 shadow-xl">
-      <p className="text-[#A7B0C0] text-xs mb-1">{label}</p>
+    <div className="bg-card/95 backdrop-blur-xl border border-border rounded-lg px-3 py-2 shadow-xl">
+      <p className="text-muted text-xs mb-1">{label}</p>
       {payload.map((entry: any, i: number) => (
-        <p key={i} className="flex items-center gap-2 text-xs font-medium text-white">
+        <p key={i} className="flex items-center gap-2 text-xs font-medium text-foreground">
           <span className="w-2 h-2 rounded-full" style={{ background: entry.color }} />
           {entry.name}: {typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}
         </p>
@@ -58,8 +58,8 @@ export default function AdminDashboard() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-sm text-[#A7B0C0] mt-1">{date}</p>
+          <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-sm text-muted mt-1">{date}</p>
         </div>
         <div className="liquid-glass-card border border-red-500/20 rounded-xl p-8 text-center">
           <p className="text-sm text-red-400">Failed to load dashboard data: {error}</p>
@@ -72,8 +72,8 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-sm text-[#A7B0C0] mt-1">{date}</p>
+          <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-sm text-muted mt-1">{date}</p>
         </div>
       </div>
 
@@ -87,10 +87,10 @@ export default function AdminDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
               onClick={() => router.push(stat.path)}
-              className="liquid-glass-card border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.12] hover:bg-white/[0.03] transition-all cursor-pointer group"
+              className="liquid-glass-card border border-border rounded-xl p-4 hover:border-white/[0.12] hover:bg-card/30 transition-all cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-3">
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20 border border-white/[0.06] flex items-center justify-center">
+                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20 border border-border flex items-center justify-center">
                   <Icon className="w-4 h-4" style={{ color: stat.color }} />
                 </div>
                 <span className={`flex items-center gap-0.5 text-[10px] font-medium ${stat.up ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
@@ -99,28 +99,28 @@ export default function AdminDashboard() {
                 </span>
               </div>
               {loading ? (
-                <div className="h-7 w-20 bg-white/[0.04] rounded animate-pulse mb-1" />
+                <div className="h-7 w-20 bg-card/40 rounded animate-pulse mb-1" />
               ) : (
-                <p className="text-xl font-bold text-white">{stat.value}</p>
+                <p className="text-xl font-bold text-foreground">{stat.value}</p>
               )}
-              <p className="text-[11px] text-[#A7B0C0] mt-0.5">{stat.label}</p>
+              <p className="text-[11px] text-muted mt-0.5">{stat.label}</p>
             </motion.div>
           )
         })}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-5">
+        <div className="liquid-glass-card border border-border rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-[#6D5EF5]" /> Revenue (30 days)
             </h2>
           </div>
           <div className="h-[280px]">
             {loading ? (
-              <div className="h-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" /></div>
+              <div className="h-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted" /></div>
             ) : revenueChart.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-xs text-[#A7B0C0]">No revenue data yet</div>
+              <div className="h-full flex items-center justify-center text-xs text-muted">No revenue data yet</div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={revenueChart}>
@@ -141,17 +141,17 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-5">
+        <div className="liquid-glass-card border border-border rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-[#4CC9F0]" /> New Users (30 days)
             </h2>
           </div>
           <div className="h-[280px]">
             {loading ? (
-              <div className="h-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" /></div>
+              <div className="h-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted" /></div>
             ) : userChart.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-xs text-[#A7B0C0]">No user data yet</div>
+              <div className="h-full flex items-center justify-center text-xs text-muted">No user data yet</div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={userChart}>
@@ -168,25 +168,25 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2 liquid-glass-card border border-white/[0.06] rounded-xl p-5">
-          <h2 className="text-sm font-semibold text-white flex items-center gap-2 mb-4">
+        <div className="xl:col-span-2 liquid-glass-card border border-border rounded-xl p-5">
+          <h2 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-4">
             <Clock className="w-4 h-4 text-[#F59E0B]" /> Recent Payments
           </h2>
           {loading ? (
-            <div className="space-y-3">{[...Array(5)].map((_, i) => <div key={i} className="h-10 bg-white/[0.04] rounded animate-pulse" />)}</div>
+            <div className="space-y-3">{[...Array(5)].map((_, i) => <div key={i} className="h-10 bg-card/40 rounded animate-pulse" />)}</div>
           ) : recentPayments.length === 0 ? (
-            <p className="text-xs text-[#A7B0C0] py-8 text-center">No payments yet</p>
+            <p className="text-xs text-muted py-8 text-center">No payments yet</p>
           ) : (
             <div className="space-y-1">
               {recentPayments.map((p: any, i: number) => (
-                <div key={p.id || i} className="flex items-center justify-between py-2.5 border-b border-white/[0.06] last:border-0">
+                <div key={p.id || i} className="flex items-center justify-between py-2.5 border-b border-border last:border-0">
                   <div className="flex items-center gap-3">
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20 border border-white/[0.06] flex items-center justify-center text-[10px] font-bold text-white">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/20 border border-border flex items-center justify-center text-[10px] font-bold text-foreground">
                       ${Number(p.amount || 0).toFixed(0)}
                     </div>
                     <div>
-                      <p className="text-xs text-white">{p.plan_slug || p.plan_id || "Payment"}</p>
-                      <p className="text-[10px] text-[#A7B0C0]">{p.status} &middot; {p.created_at?.slice(0, 10)}</p>
+                      <p className="text-xs text-foreground">{p.plan_slug || p.plan_id || "Payment"}</p>
+                      <p className="text-[10px] text-muted">{p.status} &middot; {p.created_at?.slice(0, 10)}</p>
                     </div>
                   </div>
                   <span className={`text-[10px] font-medium ${p.status === "completed" ? "text-[#22C55E]" : p.status === "failed" ? "text-[#EF4444]" : "text-[#F59E0B]"}`}>
@@ -198,8 +198,8 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-5">
-          <h2 className="text-sm font-semibold text-white mb-4">Quick Actions</h2>
+        <div className="liquid-glass-card border border-border rounded-xl p-5">
+          <h2 className="text-sm font-semibold text-foreground mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-3">
             {quickActions.map((action) => {
               const Icon = action.icon
@@ -207,17 +207,17 @@ export default function AdminDashboard() {
                 <button
                   key={action.label}
                   onClick={() => router.push(action.path)}
-                  className="bg-[#090B16] border border-white/[0.06] rounded-xl p-4 text-center hover:border-white/[0.12] transition-all group cursor-pointer"
+                  className="bg-background border border-border rounded-xl p-4 text-center hover:border-white/[0.12] transition-all group cursor-pointer"
                 >
                   <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-5 h-5 text-white" />
+                    <Icon className="w-5 h-5 text-foreground" />
                   </div>
-                  <p className="text-xs text-white font-medium">{action.label}</p>
+                  <p className="text-xs text-foreground font-medium">{action.label}</p>
                 </button>
               )
             })}
           </div>
-          <button onClick={() => router.push("/zain-nextill-ansari/settings")} className="w-full mt-4 py-2.5 rounded-lg bg-[#090B16] border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white hover:border-white/[0.12] transition-all flex items-center justify-center gap-1">
+          <button onClick={() => router.push("/zain-nextill-ansari/settings")} className="w-full mt-4 py-2.5 rounded-lg bg-background border border-border text-xs text-muted hover:text-foreground hover:border-white/[0.12] transition-all flex items-center justify-center gap-1">
             View All Actions <ChevronRight className="w-3 h-3" />
           </button>
         </div>

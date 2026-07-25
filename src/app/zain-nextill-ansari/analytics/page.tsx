@@ -9,10 +9,10 @@ import { supabase } from "@/lib/supabase/client"
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-[#151C2E]/95 backdrop-blur-xl border border-white/[0.06] rounded-lg px-3 py-2 shadow-xl">
-      <p className="text-[#A7B0C0] text-xs mb-1">{label}</p>
+    <div className="bg-card/95 backdrop-blur-xl border border-border rounded-lg px-3 py-2 shadow-xl">
+      <p className="text-muted text-xs mb-1">{label}</p>
       {payload.map((entry: any, i: number) => (
-        <p key={i} className="flex items-center gap-2 text-xs font-medium text-white">
+        <p key={i} className="flex items-center gap-2 text-xs font-medium text-foreground">
           <span className="w-2 h-2 rounded-full" style={{ background: entry.color }} />
           {entry.name}: {typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}
         </p>
@@ -116,12 +116,12 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Analytics</h1>
-          <p className="text-sm text-[#A7B0C0] mt-1">Track usage, users, and tool activity</p>
+          <h1 className="text-2xl font-bold text-foreground">Analytics</h1>
+          <p className="text-sm text-muted mt-1">Track usage, users, and tool activity</p>
         </div>
-        <div className="flex items-center gap-1 p-1 bg-[#090B16] rounded-xl border border-white/[0.06]">
+        <div className="flex items-center gap-1 p-1 bg-background rounded-xl border border-border">
           {(["7d", "30d", "90d"] as const).map(r => (
-            <button key={r} onClick={() => setRange(r)} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${range === r ? "bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-white" : "text-[#A7B0C0] hover:text-white"}`}>{r}</button>
+            <button key={r} onClick={() => setRange(r)} className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${range === r ? "bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-foreground" : "text-muted hover:text-foreground"}`}>{r}</button>
           ))}
         </div>
       </div>
@@ -138,29 +138,29 @@ export default function AnalyticsPage() {
           const Icon = stat.icon
           return (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="liquid-glass-card border border-white/[0.06] rounded-xl p-4">
+              className="liquid-glass-card border border-border rounded-xl p-4">
               {loading ? (
-                <Loader2 className="w-5 h-5 mb-2 animate-spin text-[#A7B0C0]" />
+                <Loader2 className="w-5 h-5 mb-2 animate-spin text-muted" />
               ) : (
                 <Icon className="w-5 h-5 mb-2" style={{ color: stat.color }} />
               )}
-              <p className="text-xl font-bold text-white">{loading ? "—" : stat.value}</p>
-              <p className="text-[11px] text-[#A7B0C0]">{stat.label}</p>
+              <p className="text-xl font-bold text-foreground">{loading ? "—" : stat.value}</p>
+              <p className="text-[11px] text-muted">{stat.label}</p>
             </motion.div>
           )
         })}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+        <div className="liquid-glass-card border border-border rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
             <Eye className="w-4 h-4 text-[#6D5EF5]" /> Usage Events ({range})
           </h3>
           <div className="h-[280px]">
             {loading ? (
-              <div className="h-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" /></div>
+              <div className="h-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted" /></div>
             ) : pageViewsData.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-xs text-[#A7B0C0]">No usage data yet</div>
+              <div className="h-full flex items-center justify-center text-xs text-muted">No usage data yet</div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={pageViewsData}>
@@ -175,15 +175,15 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        <div className="liquid-glass-card border border-white/[0.06] rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+        <div className="liquid-glass-card border border-border rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
             <Users className="w-4 h-4 text-[#4CC9F0]" /> New Users per Month
           </h3>
           <div className="h-[280px]">
             {loading ? (
-              <div className="h-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" /></div>
+              <div className="h-full flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted" /></div>
             ) : usersData.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-xs text-[#A7B0C0]">No user data yet</div>
+              <div className="h-full flex items-center justify-center text-xs text-muted">No user data yet</div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={usersData}>
@@ -198,24 +198,24 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        <div className="xl:col-span-2 liquid-glass-card border border-white/[0.06] rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-4">Top Tools Used</h3>
+        <div className="xl:col-span-2 liquid-glass-card border border-border rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Top Tools Used</h3>
           {loading ? (
-            <div className="flex items-center justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" /></div>
+            <div className="flex items-center justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-muted" /></div>
           ) : topPages.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8">
-              <Inbox className="w-10 h-10 text-[#A7B0C0] mb-3" />
-              <p className="text-sm font-medium text-[#A7B0C0]">No tool usage yet</p>
+              <Inbox className="w-10 h-10 text-muted mb-3" />
+              <p className="text-sm font-medium text-muted">No tool usage yet</p>
             </div>
           ) : (
             <div className="space-y-2">
               {topPages.map((p, i) => (
-                <div key={i} className="flex items-center justify-between py-2.5 border-b border-white/[0.06] last:border-0">
+                <div key={i} className="flex items-center justify-between py-2.5 border-b border-border last:border-0">
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-[#A7B0C0] w-5">{i + 1}</span>
-                    <span className="text-xs text-white font-medium">{p.page}</span>
+                    <span className="text-xs text-muted w-5">{i + 1}</span>
+                    <span className="text-xs text-foreground font-medium">{p.page}</span>
                   </div>
-                  <div className="flex items-center gap-6 text-xs text-[#A7B0C0]">
+                  <div className="flex items-center gap-6 text-xs text-muted">
                     <span>{p.views.toLocaleString()} uses</span>
                   </div>
                 </div>

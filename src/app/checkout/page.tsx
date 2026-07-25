@@ -280,23 +280,23 @@ function CheckoutContent() {
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-muted">Cardholder Name</label>
                       <input value={cardName} onChange={e => setCardName(e.target.value)} placeholder="John Smith"
-                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-muted">Card Number</label>
                       <input value={cardNumber} onChange={e => setCardNumber(formatCardNumber(e.target.value))} placeholder="1234 5678 9012 3456" maxLength={19}
-                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
                         <label className="text-[11px] font-medium text-muted">Expiry</label>
                         <input value={cardExpiry} onChange={e => setCardExpiry(formatExpiry(e.target.value))} placeholder="MM/YY" maxLength={5}
-                          className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                          className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[11px] font-medium text-muted">CVV</label>
                         <input value={cardCVV} onChange={e => setCardCVV(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="123" maxLength={4} type="password"
-                          className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                          className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                       </div>
                     </div>
                   </div>
@@ -325,7 +325,7 @@ function CheckoutContent() {
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-muted">{selectedMethod.name} Registered Phone Number</label>
                       <input value={mobileNumber} onChange={e => setMobileNumber(e.target.value)} placeholder="03XX XXXXXXX"
-                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                   </div>
                   {selectedMethod.instructions && (
@@ -357,12 +357,12 @@ function CheckoutContent() {
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-muted">{selectedMethod.name} Account Email</label>
                       <input type="email" value={accountEmail} onChange={e => setAccountEmail(e.target.value)} placeholder="you@example.com"
-                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-muted">{selectedMethod.name} Account ID</label>
                       <input value={accountId} onChange={e => setAccountId(e.target.value)} placeholder="Your account ID (optional)"
-                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                   </div>
                   {selectedMethod.instructions && (
@@ -395,12 +395,12 @@ function CheckoutContent() {
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-muted">Your Name (as on bank transfer)</label>
                       <input value={bankHolderName} onChange={e => setBankHolderName(e.target.value)} placeholder="John Smith"
-                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-muted">Transaction Reference / Last 4 digits</label>
                       <input value={bankAccountNumber} onChange={e => setBankAccountNumber(e.target.value)} placeholder="e.g. TX12345 or last 4 digits"
-                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                   </div>
                 </>
@@ -428,12 +428,12 @@ function CheckoutContent() {
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-muted">Your Wallet Address (from which you sent)</label>
                       <input value={walletAddress} onChange={e => setWalletAddress(e.target.value)} placeholder="0x... or bc1..."
-                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-medium text-muted">Transaction Hash (optional)</label>
                       <input value={txHash} onChange={e => setTxHash(e.target.value)} placeholder="Paste tx hash for faster verification"
-                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-[#A7B0C0]/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
+                        className="w-full h-11 px-4 rounded-lg bg-background border border-border text-sm text-foreground font-mono placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all" />
                     </div>
                   </div>
                   {selectedMethod.instructions && (
@@ -573,7 +573,7 @@ function CheckoutContent() {
               <input type="text" value={couponCode}
                 onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponResult(null) }}
                 placeholder="Enter coupon code"
-                className="flex-1 h-10 px-3 rounded-lg bg-background border border-border text-sm text-foreground placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 font-mono uppercase" />
+                className="flex-1 h-10 px-3 rounded-lg bg-background border border-border text-sm text-foreground placeholder-muted focus:outline-none focus:border-[#6D5EF5]/50 font-mono uppercase" />
               <button onClick={validateCoupon} disabled={couponLoading || !couponCode.trim()}
                 className="h-10 px-4 rounded-lg bg-[#6D5EF5] text-foreground text-xs font-medium hover:brightness-110 transition-all disabled:opacity-50">
                 {couponLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Apply"}

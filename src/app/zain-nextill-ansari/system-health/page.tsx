@@ -22,10 +22,10 @@ export default function SystemHealthPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">System Health</h1>
-          <p className="text-sm text-[#A7B0C0] mt-1">Monitor all system components and services</p>
+          <h1 className="text-2xl font-bold text-foreground">System Health</h1>
+          <p className="text-sm text-muted mt-1">Monitor all system components and services</p>
         </div>
-        <button onClick={refetch} className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center gap-2 transition-all">
+        <button onClick={refetch} className="h-10 px-4 rounded-xl bg-card/80 border border-border text-xs text-muted hover:text-foreground flex items-center gap-2 transition-all">
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
@@ -40,24 +40,24 @@ export default function SystemHealthPage() {
           const Icon = stat.icon
           return (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4 text-center">
+              className="bg-card/80 backdrop-blur-xl border border-border rounded-xl p-4 text-center">
               <Icon className="w-6 h-6 mx-auto mb-2" style={{ color: stat.color }} />
-              <p className="text-xl font-bold text-white">{stat.value}</p>
-              <p className="text-[11px] text-[#A7B0C0]">{stat.label}</p>
+              <p className="text-xl font-bold text-foreground">{stat.value}</p>
+              <p className="text-[11px] text-muted">{stat.label}</p>
             </motion.div>
           )
         })}
       </div>
 
-      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="bg-card/80 backdrop-blur-xl border border-border rounded-xl overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" />
+            <Loader2 className="w-6 h-6 animate-spin text-muted" />
           </div>
         ) : services.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
-            <Inbox className="w-10 h-10 text-[#A7B0C0] mb-3" />
-            <p className="text-sm font-medium text-[#A7B0C0]">No services to display</p>
+            <Inbox className="w-10 h-10 text-muted mb-3" />
+            <p className="text-sm font-medium text-muted">No services to display</p>
           </div>
         ) : (
           services.map((svc: any, i: number) => {
@@ -69,15 +69,15 @@ export default function SystemHealthPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className={`flex items-center justify-between p-5 ${i < services.length - 1 ? "border-b border-white/[0.06]" : ""} hover:bg-white/[0.02] transition-colors`}
+                className={`flex items-center justify-between p-5 ${i < services.length - 1 ? "border-b border-border" : ""} hover:bg-white/[0.02] transition-colors`}
               >
                 <div className="flex items-center gap-4">
                   <div className={`w-10 h-10 rounded-xl ${config.bg} flex items-center justify-center`}>
                     <Icon className="w-5 h-5" style={{ color: config.color }} />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white">{svc.label}</p>
-                    <p className="text-[10px] text-[#A7B0C0]">Last checked: {svc.lastChecked || "—"}</p>
+                    <p className="text-sm font-medium text-foreground">{svc.label}</p>
+                    <p className="text-[10px] text-muted">Last checked: {svc.lastChecked || "—"}</p>
                   </div>
                 </div>
                 <div className="text-right">
@@ -88,7 +88,7 @@ export default function SystemHealthPage() {
                       ? "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
                       : "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20"
                   }`}>{svc.status}</span>
-                  <p className="text-[10px] text-[#A7B0C0] mt-1">{svc.responseTime || 0}ms &middot; {svc.uptime || 0}% uptime</p>
+                  <p className="text-[10px] text-muted mt-1">{svc.responseTime || 0}ms &middot; {svc.uptime || 0}% uptime</p>
                 </div>
               </motion.div>
             )
