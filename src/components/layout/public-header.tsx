@@ -46,22 +46,26 @@ export function PublicHeader() {
 
   return (
     <header className="liquid-glass sticky top-0 z-50 h-16">
-      <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
-        <div className="flex items-center gap-8">
+      <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between relative">
+        {/* Left: Logo */}
+        <div className="flex items-center">
           <SiteLogo size="md" />
-          <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="px-3 py-2 rounded-lg text-sm text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
         </div>
 
+        {/* Center: Nav links */}
+        <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="px-3 py-2 rounded-lg text-sm text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Right: Actions */}
         <div className="flex items-center gap-3">
           <ThemeToggle />
           {isLoggedIn ? (
@@ -81,7 +85,7 @@ export function PublicHeader() {
               {profileOpen && (
                 <div className="absolute right-0 top-full mt-2 w-52 bg-[#111827]/95 backdrop-blur-xl border border-white/[0.06] rounded-xl shadow-2xl z-50 overflow-hidden">
                   <div className="px-4 py-3 border-b border-white/[0.06]">
-                    <p className="text-sm font-medium text-white">{profile?.full_name || "User"}</p>
+                    <p className="text-sm font-medium text-foreground">{profile?.full_name || "User"}</p>
                     <p className="text-xs text-[#A7B0C0]">{profile?.email || user?.email || ""}</p>
                     <div className="mt-1.5">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[#6D5EF5]/10 text-[#6D5EF5] border border-[#6D5EF5]/20 capitalize">
