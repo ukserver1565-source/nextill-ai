@@ -27,6 +27,8 @@ const footerColumns = [
     links: [
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms of Service", href: "/terms" },
+      { label: "Refund Policy", href: "/refund-policy" },
+      { label: "Service Policy", href: "/service-policy" },
     ],
   },
 ]
@@ -61,9 +63,18 @@ export function PublicFooter() {
           ))}
         </div>
         <div className="mt-10 pt-6 border-t border-border text-center">
-          <p className="text-xs text-muted">
+          <p className="text-xs text-muted mb-3">
             &copy; {new Date().getFullYear()} Nextill AI. All rights reserved.
           </p>
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-muted">
+            <span>Faisalabad, Punjab, Pakistan</span>
+            <span className="hidden sm:inline text-border">|</span>
+            <span>+92 319 0244898</span>
+            <span className="hidden sm:inline text-border">|</span>
+            <a href="mailto:support@nextill.ai" className="hover:text-foreground transition-colors">support@nextill.ai</a>
+            <span className="hidden sm:inline text-border">|</span>
+            <span>Mon - Fri, 9:00 AM - 6:00 PM (PKT)</span>
+          </div>
         </div>
       </div>
     </footer>

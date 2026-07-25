@@ -392,18 +392,22 @@ $$;
 -- ============================================================
 alter table public.profiles enable row level security;
 
+DROP POLICY IF EXISTS "Users can read own profile" ON public.profiles;
 create policy "Users can read own profile"
   on public.profiles for select
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 create policy "Users can update own profile"
   on public.profiles for update
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins can read all profiles" ON public.profiles;
 create policy "Admins can read all profiles"
   on public.profiles for select
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can update all profiles" ON public.profiles;
 create policy "Admins can update all profiles"
   on public.profiles for update
   using (public.is_admin());
@@ -413,26 +417,32 @@ create policy "Admins can update all profiles"
 -- ============================================================
 alter table public.projects enable row level security;
 
+DROP POLICY IF EXISTS "Users can insert own projects" ON public.projects;
 create policy "Users can insert own projects"
   on public.projects for insert
   with check (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can read own projects" ON public.projects;
 create policy "Users can read own projects"
   on public.projects for select
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can update own projects" ON public.projects;
 create policy "Users can update own projects"
   on public.projects for update
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can delete own projects" ON public.projects;
 create policy "Users can delete own projects"
   on public.projects for delete
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins can read all projects" ON public.projects;
 create policy "Admins can read all projects"
   on public.projects for select
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can delete all projects" ON public.projects;
 create policy "Admins can delete all projects"
   on public.projects for delete
   using (public.is_admin());
@@ -442,26 +452,32 @@ create policy "Admins can delete all projects"
 -- ============================================================
 alter table public.documents enable row level security;
 
+DROP POLICY IF EXISTS "Users can insert own documents" ON public.documents;
 create policy "Users can insert own documents"
   on public.documents for insert
   with check (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can read own documents" ON public.documents;
 create policy "Users can read own documents"
   on public.documents for select
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can update own documents" ON public.documents;
 create policy "Users can update own documents"
   on public.documents for update
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can delete own documents" ON public.documents;
 create policy "Users can delete own documents"
   on public.documents for delete
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins can read all documents" ON public.documents;
 create policy "Admins can read all documents"
   on public.documents for select
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can delete all documents" ON public.documents;
 create policy "Admins can delete all documents"
   on public.documents for delete
   using (public.is_admin());
@@ -471,18 +487,22 @@ create policy "Admins can delete all documents"
 -- ============================================================
 alter table public.contact_messages enable row level security;
 
+DROP POLICY IF EXISTS "Anyone can insert contact messages" ON public.contact_messages;
 create policy "Anyone can insert contact messages"
   on public.contact_messages for insert
   with check (true);
 
+DROP POLICY IF EXISTS "Admins can read contact messages" ON public.contact_messages;
 create policy "Admins can read contact messages"
   on public.contact_messages for select
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can update contact messages" ON public.contact_messages;
 create policy "Admins can update contact messages"
   on public.contact_messages for update
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can delete contact messages" ON public.contact_messages;
 create policy "Admins can delete contact messages"
   on public.contact_messages for delete
   using (public.is_admin());
@@ -492,22 +512,27 @@ create policy "Admins can delete contact messages"
 -- ============================================================
 alter table public.blog_posts enable row level security;
 
+DROP POLICY IF EXISTS "Public can read published posts" ON public.blog_posts;
 create policy "Public can read published posts"
   on public.blog_posts for select
   using (status = 'published');
 
+DROP POLICY IF EXISTS "Admins can insert blog posts" ON public.blog_posts;
 create policy "Admins can insert blog posts"
   on public.blog_posts for insert
   with check (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can read all blog posts" ON public.blog_posts;
 create policy "Admins can read all blog posts"
   on public.blog_posts for select
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can update blog posts" ON public.blog_posts;
 create policy "Admins can update blog posts"
   on public.blog_posts for update
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can delete blog posts" ON public.blog_posts;
 create policy "Admins can delete blog posts"
   on public.blog_posts for delete
   using (public.is_admin());
@@ -517,18 +542,22 @@ create policy "Admins can delete blog posts"
 -- ============================================================
 alter table public.blog_categories enable row level security;
 
+DROP POLICY IF EXISTS "Public can read blog categories" ON public.blog_categories;
 create policy "Public can read blog categories"
   on public.blog_categories for select
   using (true);
 
+DROP POLICY IF EXISTS "Admins can insert blog categories" ON public.blog_categories;
 create policy "Admins can insert blog categories"
   on public.blog_categories for insert
   with check (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can update blog categories" ON public.blog_categories;
 create policy "Admins can update blog categories"
   on public.blog_categories for update
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can delete blog categories" ON public.blog_categories;
 create policy "Admins can delete blog categories"
   on public.blog_categories for delete
   using (public.is_admin());
@@ -538,22 +567,27 @@ create policy "Admins can delete blog categories"
 -- ============================================================
 alter table public.plans enable row level security;
 
+DROP POLICY IF EXISTS "Public can read active plans" ON public.plans;
 create policy "Public can read active plans"
   on public.plans for select
   using (is_active = true);
 
+DROP POLICY IF EXISTS "Admins can insert plans" ON public.plans;
 create policy "Admins can insert plans"
   on public.plans for insert
   with check (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can read all plans" ON public.plans;
 create policy "Admins can read all plans"
   on public.plans for select
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can update plans" ON public.plans;
 create policy "Admins can update plans"
   on public.plans for update
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can delete plans" ON public.plans;
 create policy "Admins can delete plans"
   on public.plans for delete
   using (public.is_admin());
@@ -563,22 +597,27 @@ create policy "Admins can delete plans"
 -- ============================================================
 alter table public.tool_settings enable row level security;
 
+DROP POLICY IF EXISTS "Public can read enabled tool settings" ON public.tool_settings;
 create policy "Public can read enabled tool settings"
   on public.tool_settings for select
   using (is_enabled = true);
 
+DROP POLICY IF EXISTS "Admins can insert tool settings" ON public.tool_settings;
 create policy "Admins can insert tool settings"
   on public.tool_settings for insert
   with check (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can read all tool settings" ON public.tool_settings;
 create policy "Admins can read all tool settings"
   on public.tool_settings for select
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can update tool settings" ON public.tool_settings;
 create policy "Admins can update tool settings"
   on public.tool_settings for update
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can delete tool settings" ON public.tool_settings;
 create policy "Admins can delete tool settings"
   on public.tool_settings for delete
   using (public.is_admin());
@@ -588,22 +627,27 @@ create policy "Admins can delete tool settings"
 -- ============================================================
 alter table public.ai_models enable row level security;
 
+DROP POLICY IF EXISTS "Public can read enabled AI models" ON public.ai_models;
 create policy "Public can read enabled AI models"
   on public.ai_models for select
   using (is_enabled = true);
 
+DROP POLICY IF EXISTS "Admins can insert AI models" ON public.ai_models;
 create policy "Admins can insert AI models"
   on public.ai_models for insert
   with check (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can read all AI models" ON public.ai_models;
 create policy "Admins can read all AI models"
   on public.ai_models for select
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can update AI models" ON public.ai_models;
 create policy "Admins can update AI models"
   on public.ai_models for update
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can delete AI models" ON public.ai_models;
 create policy "Admins can delete AI models"
   on public.ai_models for delete
   using (public.is_admin());
@@ -613,14 +657,17 @@ create policy "Admins can delete AI models"
 -- ============================================================
 alter table public.payments enable row level security;
 
+DROP POLICY IF EXISTS "Users can insert own payments" ON public.payments;
 create policy "Users can insert own payments"
   on public.payments for insert
   with check (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Users can read own payments" ON public.payments;
 create policy "Users can read own payments"
   on public.payments for select
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins can read all payments" ON public.payments;
 create policy "Admins can read all payments"
   on public.payments for select
   using (public.is_admin());
@@ -630,10 +677,12 @@ create policy "Admins can read all payments"
 -- ============================================================
 alter table public.subscriptions enable row level security;
 
+DROP POLICY IF EXISTS "Users can read own subscriptions" ON public.subscriptions;
 create policy "Users can read own subscriptions"
   on public.subscriptions for select
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins can read all subscriptions" ON public.subscriptions;
 create policy "Admins can read all subscriptions"
   on public.subscriptions for select
   using (public.is_admin());
@@ -643,10 +692,12 @@ create policy "Admins can read all subscriptions"
 -- ============================================================
 alter table public.credits enable row level security;
 
+DROP POLICY IF EXISTS "Users can read own credit balance" ON public.credits;
 create policy "Users can read own credit balance"
   on public.credits for select
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins can read all credit balances" ON public.credits;
 create policy "Admins can read all credit balances"
   on public.credits for select
   using (public.is_admin());
@@ -656,10 +707,12 @@ create policy "Admins can read all credit balances"
 -- ============================================================
 alter table public.credit_logs enable row level security;
 
+DROP POLICY IF EXISTS "Users can read own credit logs" ON public.credit_logs;
 create policy "Users can read own credit logs"
   on public.credit_logs for select
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins can read all credit logs" ON public.credit_logs;
 create policy "Admins can read all credit logs"
   on public.credit_logs for select
   using (public.is_admin());
@@ -669,10 +722,12 @@ create policy "Admins can read all credit logs"
 -- ============================================================
 alter table public.usage_logs enable row level security;
 
+DROP POLICY IF EXISTS "Users can read own usage logs" ON public.usage_logs;
 create policy "Users can read own usage logs"
   on public.usage_logs for select
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins can read all usage logs" ON public.usage_logs;
 create policy "Admins can read all usage logs"
   on public.usage_logs for select
   using (public.is_admin());
@@ -682,6 +737,7 @@ create policy "Admins can read all usage logs"
 -- ============================================================
 alter table public.guest_usage enable row level security;
 
+DROP POLICY IF EXISTS "Admins can read guest usage" ON public.guest_usage;
 create policy "Admins can read guest usage"
   on public.guest_usage for select
   using (public.is_admin());
@@ -691,22 +747,27 @@ create policy "Admins can read guest usage"
 -- ============================================================
 alter table public.coupons enable row level security;
 
+DROP POLICY IF EXISTS "Public can read active coupons" ON public.coupons;
 create policy "Public can read active coupons"
   on public.coupons for select
   using (is_active = true);
 
+DROP POLICY IF EXISTS "Admins can insert coupons" ON public.coupons;
 create policy "Admins can insert coupons"
   on public.coupons for insert
   with check (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can read all coupons" ON public.coupons;
 create policy "Admins can read all coupons"
   on public.coupons for select
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can update coupons" ON public.coupons;
 create policy "Admins can update coupons"
   on public.coupons for update
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins can delete coupons" ON public.coupons;
 create policy "Admins can delete coupons"
   on public.coupons for delete
   using (public.is_admin());
@@ -716,10 +777,12 @@ create policy "Admins can delete coupons"
 -- ============================================================
 alter table public.api_keys enable row level security;
 
+DROP POLICY IF EXISTS "Users can read own API keys" ON public.api_keys;
 create policy "Users can read own API keys"
   on public.api_keys for select
   using (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins can read all API keys" ON public.api_keys;
 create policy "Admins can read all API keys"
   on public.api_keys for select
   using (public.is_admin());
@@ -729,6 +792,7 @@ create policy "Admins can read all API keys"
 -- ============================================================
 alter table public.security_logs enable row level security;
 
+DROP POLICY IF EXISTS "Admins can read security logs" ON public.security_logs;
 create policy "Admins can read security logs"
   on public.security_logs for select
   using (public.is_admin());
@@ -738,10 +802,12 @@ create policy "Admins can read security logs"
 -- ============================================================
 alter table public.admin_logs enable row level security;
 
+DROP POLICY IF EXISTS "Admins can read admin logs" ON public.admin_logs;
 create policy "Admins can read admin logs"
   on public.admin_logs for select
   using (public.is_admin());
 
+DROP POLICY IF EXISTS "Super admins can insert admin logs" ON public.admin_logs;
 create policy "Super admins can insert admin logs"
   on public.admin_logs for insert
   with check (public.is_super_admin());
@@ -751,10 +817,12 @@ create policy "Super admins can insert admin logs"
 -- ============================================================
 alter table public.site_settings enable row level security;
 
+DROP POLICY IF EXISTS "Public can read site settings" ON public.site_settings;
 create policy "Public can read site settings"
   on public.site_settings for select
   using (true);
 
+DROP POLICY IF EXISTS "Admins can update site settings" ON public.site_settings;
 create policy "Admins can update site settings"
   on public.site_settings for update
   using (public.is_admin());
@@ -764,6 +832,7 @@ create policy "Admins can update site settings"
 -- ============================================================
 alter table public.system_logs enable row level security;
 
+DROP POLICY IF EXISTS "Admins can read system logs" ON public.system_logs;
 create policy "Admins can read system logs"
   on public.system_logs for select
   using (public.is_admin());

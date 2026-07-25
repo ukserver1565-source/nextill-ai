@@ -159,6 +159,8 @@ const footerColumns = [
     links: [
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms of Service", href: "/terms" },
+      { label: "Refund Policy", href: "/refund-policy" },
+      { label: "Service Policy", href: "/service-policy" },
     ],
   },
 ]

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { MessageSquare, Send, Loader2, MessageCircle, Instagram, Facebook, AtSign, Hash, ExternalLink, Link2 } from "lucide-react"
+import { MessageSquare, Send, Loader2, MessageCircle, Instagram, Facebook, AtSign, Hash, ExternalLink, Link2, MapPin, Phone, Clock } from "lucide-react"
 import { supabase } from "@/lib/supabase/client"
 import { BackButton } from "@/components/shared/back-button"
 import { useAuth } from "@/lib/auth/AuthProvider"
@@ -146,6 +146,44 @@ export default function ContactPage() {
             {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</> : <><Send className="w-3 h-3 sm:w-4 sm:h-4" /> Send Message</>}
           </button>
         </form>
+
+        <div className="mt-8">
+          <div className="liquid-glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-2 rounded-lg bg-primary-light/10">
+                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary-light" />
+              </div>
+              <h2 className="text-base sm:text-lg font-bold">Office Address</h2>
+            </div>
+            <div className="space-y-3 text-xs sm:text-sm">
+              <div className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 text-muted mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-medium text-foreground">Nextill AI</p>
+                  <p className="text-muted">Faisalabad, Punjab, Pakistan</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone className="w-4 h-4 text-muted shrink-0" />
+                <div>
+                  <p className="text-muted">Phone: <a href="tel:+923190244898" className="text-foreground hover:text-primary-light transition-colors">+92 319 0244898</a></p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <AtSign className="w-4 h-4 text-muted shrink-0" />
+                <div>
+                  <p className="text-muted">Email: <a href="mailto:support@nextill.ai" className="text-foreground hover:text-primary-light transition-colors">support@nextill.ai</a></p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Clock className="w-4 h-4 text-muted shrink-0" />
+                <div>
+                  <p className="text-muted">Business Hours: <span className="text-foreground">Monday - Friday, 9:00 AM - 6:00 PM (PKT)</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {socialLinks.length > 0 && (
           <div className="mt-8">
