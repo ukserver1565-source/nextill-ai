@@ -8,8 +8,8 @@
 
 | Metric | Value |
 |--------|-------|
-| Git commits | 8 total on main |
-| Last commit | `43b9213` — feat: GoPayFast adapter |
+| Git commits | 10+ total on main |
+| Last commit | `89a7869` — feat: Vercel Speed Insights |
 | Build | ✅ Passing (152 pages) |
 | TypeScript | ✅ 0 errors |
 | Lint | ✅ 0 errors, 15 warnings |
@@ -92,13 +92,13 @@
 ### HIGH Priority
 1. **GoPayFast activation** — Merchant signup submitted, waiting for approval. After approval: get credentials → add to .env.local → run migration 015 → test in admin panel
 2. **Run schema.sql on live Supabase** — If not already applied, run the full consolidated schema (3729 lines, fully idempotent)
-3. **~50 page files** still have hardcoded dark-mode colors (visual issue in light mode only)
+3. **~50 page files** — ✅ FIXED: All hardcoded dark-mode colors replaced with theme tokens across dashboard, public, and admin pages
 
 ### MEDIUM Priority
 4. **PCI compliance** — Checkout collects raw card data (should use Stripe Checkout redirect instead)
-5. **Credit renewal cron** — API route exists but no cron job configured
+5. **Credit renewal cron** — ✅ FIXED: Added to vercel.json (runs 1st of every month), GET endpoint updated to trigger renewal
 6. **Resend API key** — Needs to be set for production emails
-7. **Signup email confirmation UX** — Verify works with Supabase email confirmation enabled
+7. **Signup email confirmation UX** — ✅ FIXED: Added successMessage state + green success banner
 
 ### LOW Priority
 8. **`api_keys` table mismatch** — Schema has different columns than what some API routes expect
