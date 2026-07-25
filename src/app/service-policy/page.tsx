@@ -69,7 +69,7 @@ const sections = [
     title: "Technical Support",
     color: "from-pink-500 to-rose-500",
     paragraphs: [
-      "Technical support is available to all users via email at support@nextill.ai. Our support team aims to respond to all inquiries within 24 to 48 business hours.",
+      "Technical support is available to all users via email at support@adultpulse.co.uk. Our support team aims to respond to all inquiries within 24 to 48 business hours.",
       "Support covers platform functionality issues, billing inquiries, account access problems, and general questions about using our tools. We do not provide on-site or phone support.",
       "For urgent issues affecting your ability to use the platform, please include \"URGENT\" in your email subject line and provide as much detail as possible about the issue, including your account email and a description of the problem.",
     ],
@@ -195,7 +195,7 @@ export default function ServicePolicyPage() {
                 Our team is ready to help. Reach out if you have any questions about service delivery or support.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="mailto:support@nextill.ai" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-foreground font-semibold text-base hover:opacity-90 transition-all">
+                <Link href="mailto:support@adultpulse.co.uk" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-foreground font-semibold text-base hover:opacity-90 transition-all">
                   <Mail className="w-4 h-4 mr-2" />
                   Contact Support
                 </Link>

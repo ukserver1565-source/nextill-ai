@@ -172,7 +172,7 @@ export default function ContactPage() {
               <div className="flex items-center gap-3">
                 <AtSign className="w-4 h-4 text-muted shrink-0" />
                 <div>
-                  <p className="text-muted">Email: <a href="mailto:support@nextill.ai" className="text-foreground hover:text-primary-light transition-colors">support@nextill.ai</a></p>
+                  <p className="text-muted">Email: <a href="mailto:support@adultpulse.co.uk" className="text-foreground hover:text-primary-light transition-colors">support@adultpulse.co.uk</a></p>
                 </div>
               </div>
               <div className="flex items-center gap-3">

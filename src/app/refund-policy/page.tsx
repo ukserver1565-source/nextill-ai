@@ -47,7 +47,7 @@ const sections = [
     title: "Refund Request Process",
     color: "from-blue-500 to-cyan-500",
     paragraphs: [
-      "To request a refund, you must contact our support team by sending an email to support@nextill.ai. Please include your account email address, order details, and the reason for your refund request.",
+      "To request a refund, you must contact our support team by sending an email to support@adultpulse.co.uk. Please include your account email address, order details, and the reason for your refund request.",
       "Our support team will acknowledge your refund request within 48 business hours. We may ask for additional information to verify your identity and process the refund.",
       "Once your refund request is approved, the refund will be initiated to your original payment method. You will receive an email confirmation once the refund has been processed.",
     ],
@@ -94,7 +94,7 @@ const sections = [
     title: "Contact Us",
     color: "from-indigo-500 to-purple-500",
     paragraphs: [
-      "If you have any questions about this Refund Policy or need assistance with a refund request, please contact our support team at support@nextill.ai.",
+      "If you have any questions about this Refund Policy or need assistance with a refund request, please contact our support team at support@adultpulse.co.uk.",
       "We are committed to resolving all refund-related inquiries promptly and fairly. Our team will work with you to address any concerns regarding your purchase.",
       "Nextill AI reserves the right to update this Refund Policy at any time. Changes will be posted on this page with an updated revision date. We recommend reviewing this policy periodically.",
     ],
@@ -198,7 +198,7 @@ export default function RefundPolicyPage() {
                 Contact our support team and we will assist you with your refund request promptly.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="mailto:support@nextill.ai" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-foreground font-semibold text-base hover:opacity-90 transition-all">
+                <Link href="mailto:support@adultpulse.co.uk" className="inline-flex items-center justify-center px-8 py-3 rounded-xl gradient-primary text-foreground font-semibold text-base hover:opacity-90 transition-all">
                   <Mail className="w-4 h-4 mr-2" />
                   Contact Support
                 </Link>

@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
                 <label className="text-xs font-medium text-muted">Email</label>
                 <input
                   type="email"
-                  placeholder="admin@nextill.ai"
+                  placeholder="admin@adultpulse.co.uk"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); setError("") }}
                   required

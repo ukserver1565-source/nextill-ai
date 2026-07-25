@@ -2,7 +2,7 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY || ""
 const SMTP_HOST = process.env.SMTP_HOST || ""
 const SMTP_USER = process.env.SMTP_USER || ""
 const SMTP_PASS = process.env.SMTP_PASS || ""
-const FROM_EMAIL = process.env.EMAIL_FROM || "noreply@nextill.ai"
+const FROM_EMAIL = process.env.EMAIL_FROM || "noreply@adultpulse.co.uk"
 
 interface EmailPayload {
   to: string

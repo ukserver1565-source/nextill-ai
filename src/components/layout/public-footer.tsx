@@ -71,7 +71,7 @@ export function PublicFooter() {
             <span className="hidden sm:inline text-border">|</span>
             <span>+92 319 0244898</span>
             <span className="hidden sm:inline text-border">|</span>
-            <a href="mailto:support@nextill.ai" className="hover:text-foreground transition-colors">support@nextill.ai</a>
+            <a href="mailto:support@adultpulse.co.uk" className="hover:text-foreground transition-colors">support@adultpulse.co.uk</a>
             <span className="hidden sm:inline text-border">|</span>
             <span>Mon - Fri, 9:00 AM - 6:00 PM (PKT)</span>
           </div>

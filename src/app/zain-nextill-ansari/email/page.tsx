@@ -13,7 +13,7 @@ export default function EmailPage() {
     smtpUser: "apikey",
     smtpPass: "",
     apiKey: "",
-    fromEmail: "noreply@nextill.ai",
+    fromEmail: "noreply@adultpulse.co.uk",
     fromName: "Nextill AI",
   })
   const [saved, setSaved] = useState(false)
