@@ -70,6 +70,11 @@
   /* Fix hardcoded dark-mode colors in light mode */
   color-scheme: light;
 }
+/* Force dark text in light mode — global fallback */
+:root[data-theme="light"] body,
+:root.light body {
+  color: #0F172A;
+}
 
 @layer base {
   * {
@@ -771,47 +776,49 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
    when data-theme="light" is set on <html>
    ══════════════════════════════════════════ */
 
-:root[data-theme="light"] .text-white,
-:root.light .text-white {
-  color: #0F172A !important;
-}
-:root[data-theme="light"] .text-white\/70,
-:root.light .text-white\/70 {
-  color: rgba(15, 23, 42, 0.7) !important;
-}
-:root[data-theme="light"] .text-white\/80,
-:root.light .text-white\/80 {
-  color: rgba(15, 23, 42, 0.8) !important;
-}
-:root[data-theme="light"] .hover\:text-white:hover,
-:root.light .hover\:text-white:hover {
-  color: #0F172A !important;
-}
-:root[data-theme="light"] .bg-white\/\[0\.04\],
-:root.light .bg-white\/\[0\.04\] {
-  background-color: rgba(0, 0, 0, 0.04) !important;
-}
-:root[data-theme="light"] .bg-white\/\[0\.02\],
-:root.light .bg-white\/\[0\.02\] {
-  background-color: rgba(0, 0, 0, 0.02) !important;
-}
-:root[data-theme="light"] .bg-white\/\[0\.06\],
-:root.light .bg-white\/\[0\.06\] {
-  background-color: rgba(0, 0, 0, 0.06) !important;
-}
-:root[data-theme="light"] .bg-white\/\[0\.01\],
-:root.light .bg-white\/\[0\.01\] {
-  background-color: rgba(0, 0, 0, 0.01) !important;
-}
-:root[data-theme="light"] .border-white\/\[0\.06\],
-:root.light .border-white\/\[0\.06\] {
-  border-color: rgba(0, 0, 0, 0.08) !important;
-}
-:root[data-theme="light"] .border-white\/\[0\.08\],
-:root.light .border-white\/\[0\.08\] {
-  border-color: rgba(0, 0, 0, 0.1) !important;
-}
-:root[data-theme="light"] .border-white\/\[0\.12\],
-:root.light .border-white\/\[0\.12\] {
-  border-color: rgba(0, 0, 0, 0.15) !important;
+@layer utilities {
+  :root[data-theme="light"] .text-white,
+  :root.light .text-white {
+    color: #0F172A;
+  }
+  :root[data-theme="light"] .text-white\/70,
+  :root.light .text-white\/70 {
+    color: rgba(15, 23, 42, 0.7);
+  }
+  :root[data-theme="light"] .text-white\/80,
+  :root.light .text-white\/80 {
+    color: rgba(15, 23, 42, 0.8);
+  }
+  :root[data-theme="light"] .hover\:text-white:hover,
+  :root.light .hover\:text-white:hover {
+    color: #0F172A;
+  }
+  :root[data-theme="light"] .bg-white\/\[0\.04\],
+  :root.light .bg-white\/\[0\.04\] {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  :root[data-theme="light"] .bg-white\/\[0\.02\],
+  :root.light .bg-white\/\[0\.02\] {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  :root[data-theme="light"] .bg-white\/\[0\.06\],
+  :root.light .bg-white\/\[0\.06\] {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+  :root[data-theme="light"] .bg-white\/\[0\.01\],
+  :root.light .bg-white\/\[0\.01\] {
+    background-color: rgba(0, 0, 0, 0.01);
+  }
+  :root[data-theme="light"] .border-white\/\[0\.06\],
+  :root.light .border-white\/\[0\.06\] {
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+  :root[data-theme="light"] .border-white\/\[0\.08\],
+  :root.light .border-white\/\[0\.08\] {
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+  :root[data-theme="light"] .border-white\/\[0\.12\],
+  :root.light .border-white\/\[0\.12\] {
+    border-color: rgba(0, 0, 0, 0.15);
+  }
 }
