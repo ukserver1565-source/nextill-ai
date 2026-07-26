@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { getAdapter } from "@/lib/payments/providers"
+import { sendEmail } from "@/lib/email"
+import { paymentConfirmedEmail, paymentPendingEmail } from "@/lib/email/templates"
 
 // Shared plan upgrade logic — used by checkout AND admin approval
 export async function upgradeUserPlan(
@@ -234,6 +236,13 @@ export async function POST(req: NextRequest) {
     if (verificationStatus === "auto_verified") {
       await upgradeUserPlan(user.id, plan.slug, billing_cycle || "monthly")
 
+      // Send confirmation email (fire-and-forget)
+      const emailTemplate = paymentConfirmedEmail(
+        user.email?.split("@")[0] || "there",
+        plan.name, finalAmount, billing_cycle || "monthly"
+      )
+      sendEmail({ to: user.email || "", subject: emailTemplate.subject, html: emailTemplate.html }).catch(() => {})
+
       return NextResponse.json({
         success: true,
         verified: true,
@@ -244,6 +253,13 @@ export async function POST(req: NextRequest) {
     }
 
     // MANUAL mode: payment pending — do NOT upgrade yet
+    // Send pending notification email (fire-and-forget)
+    const pendingTemplate = paymentPendingEmail(
+      user.email?.split("@")[0] || "there",
+      plan.name, finalAmount
+    )
+    sendEmail({ to: user.email || "", subject: pendingTemplate.subject, html: pendingTemplate.html }).catch(() => {})
+
     return NextResponse.json({
       success: true,
       verified: false,

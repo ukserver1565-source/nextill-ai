@@ -1,7 +1,5 @@
-import { profileRepo } from "@/lib/repositories/profile-repo"
 import { paymentRepo } from "@/lib/repositories/payment-repo"
 import { toolRepo } from "@/lib/repositories/tool-repo"
-import { systemHealthRepo } from "@/lib/repositories/system-health-repo"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 
 export interface AdminOverview {
@@ -27,42 +25,111 @@ export interface AdminOverview {
   topTools: { name: string; count: number }[]
 }
 
+// Safe query wrapper — returns default value on error instead of crashing
+async function safe<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+  try { return await fn() } catch { return fallback }
+}
+
 export const adminService = {
   async getOverview(): Promise<AdminOverview> {
-    const [userStats, paymentStats, projects, health] = await Promise.all([
-      profileRepo.getStats(),
-      paymentRepo.getStats(),
-      supabaseAdmin.from("projects").select("count", { count: "exact", head: true }),
-      systemHealthRepo.check(),
+    // Each query is wrapped independently so one failure doesn't kill the dashboard
+    const [userStats, paymentStats, projectsCount] = await Promise.all([
+      safe(async () => {
+        const { data: all } = await supabaseAdmin.from("profiles").select("role, plan, status")
+        const users = all || []
+        const premium = users.filter((u) => u.plan !== "free" && u.plan !== "Free" && u.status === "active").length
+        const free = users.filter((u) => (u.plan === "free" || u.plan === "Free" || !u.plan) && u.status === "active").length
+
+        let totalCredits = 0
+        let totalUsed = 0
+        try {
+          const { data: creditRows } = await supabaseAdmin.from("credits").select("balance")
+          totalCredits = creditRows?.reduce((s: number, r: any) => s + (r.balance || 0), 0) || 0
+        } catch { /* credits table may not exist */ }
+
+        try {
+          const { count } = await supabaseAdmin
+            .from("credit_logs")
+            .select("id", { count: "exact", head: true })
+            .eq("type", "used")
+          totalUsed = count || 0
+        } catch { /* credit_logs table may not exist */ }
+
+        return {
+          total: users.length,
+          activeToday: 0,
+          premium,
+          free,
+          totalCredits,
+          totalUsed,
+        }
+      }, { total: 0, activeToday: 0, premium: 0, free: 0, totalCredits: 0, totalUsed: 0 }),
+
+      safe(() => paymentRepo.getStats(), { totalRevenue: 0, monthlyRevenue: 0, totalTransactions: 0, completedCount: 0 }),
+
+      safe(async () => {
+        const { count } = await supabaseAdmin.from("projects").select("id", { count: "exact", head: true })
+        return count || 0
+      }, 0),
     ])
 
-    const recentUsers = await profileRepo.list({ page: 1, limit: 5 })
-    const recentPayments = await paymentRepo.list({ page: 1, limit: 5 })
-    const tools = await toolRepo.list()
+    // Recent users — wrapped in safe
+    const recentUsers = await safe(async () => {
+      const { data } = await supabaseAdmin
+        .from("profiles")
+        .select("id, full_name, email, role, plan, status, created_at")
+        .order("created_at", { ascending: false })
+        .limit(5)
+      return data || []
+    }, [])
 
-    const topTools = tools
-      .slice(0, 5)
-      .map((t) => ({ name: t.tool_name, count: 0 }))
+    // Recent payments — use simple query (no join) to avoid failures
+    const recentPayments = await safe(async () => {
+      const { data } = await supabaseAdmin
+        .from("payments")
+        .select("id, plan_slug, amount, status, provider, created_at")
+        .order("created_at", { ascending: false })
+        .limit(5)
+      return data || []
+    }, [])
 
+    // Tools — wrapped in safe
+    const tools = await safe(() => toolRepo.list(), [])
+    const topTools = tools.slice(0, 5).map((t: any) => ({ name: t.tool_name, count: 0 }))
+
+    // Chart data — 30-day user + revenue charts
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
     const cutoff = thirtyDaysAgo.toISOString()
 
     const [userDailyRaw, revenueDailyRaw] = await Promise.all([
-      supabaseAdmin.from("profiles").select("created_at").gte("created_at", cutoff),
-      supabaseAdmin.from("payments").select("created_at, amount").eq("status", "completed").gte("created_at", cutoff),
+      safe(async () => {
+        const { data } = await supabaseAdmin
+          .from("profiles")
+          .select("created_at")
+          .gte("created_at", cutoff)
+        return data || []
+      }, []),
+      safe(async () => {
+        const { data } = await supabaseAdmin
+          .from("payments")
+          .select("created_at, amount")
+          .eq("status", "completed")
+          .gte("created_at", cutoff)
+        return data || []
+      }, []),
     ])
 
     const userCountByDate = new Map<string, number>()
-    for (const row of userDailyRaw.data || []) {
-      const d = row.created_at.slice(0, 10)
-      userCountByDate.set(d, (userCountByDate.get(d) || 0) + 1)
+    for (const row of userDailyRaw) {
+      const d = row.created_at?.slice(0, 10)
+      if (d) userCountByDate.set(d, (userCountByDate.get(d) || 0) + 1)
     }
 
     const revenueByDate = new Map<string, number>()
-    for (const row of revenueDailyRaw.data || []) {
-      const d = row.created_at.slice(0, 10)
-      revenueByDate.set(d, (revenueByDate.get(d) || 0) + Number(row.amount))
+    for (const row of revenueDailyRaw) {
+      const d = row.created_at?.slice(0, 10)
+      if (d) revenueByDate.set(d, (revenueByDate.get(d) || 0) + Number(row.amount || 0))
     }
 
     const now = new Date()
@@ -84,14 +151,14 @@ export const adminService = {
         totalRevenue: paymentStats.totalRevenue,
         monthlyRevenue: paymentStats.monthlyRevenue,
         totalTransactions: paymentStats.totalTransactions,
-        totalProjects: projects.count || 0,
+        totalProjects: projectsCount,
         totalCredits: userStats.totalCredits,
         totalUsed: userStats.totalUsed,
       },
-      recentUsers: recentUsers.data,
-      recentPayments: recentPayments.data,
+      recentUsers,
+      recentPayments,
       chartData: { users: userChart, revenue: revenueChart },
-      health,
+      health: [],
       topTools,
     }
   },

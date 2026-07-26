@@ -4,6 +4,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { checkRateLimit } from "@/lib/security/rate-limit"
 import { validateRealEmail } from "@/lib/security/email-validator"
+import { sendEmail } from "@/lib/email"
+import { welcomeEmail } from "@/lib/email/templates"
 
 export async function login(formData: FormData) {
   const supabase = await createSupabaseServerClient()
@@ -79,6 +81,10 @@ export async function signup(formData: FormData) {
   if (error) return { error: error.message }
 
   if (data?.session && data.user) {
+    // Send welcome email (fire-and-forget, don't block signup)
+    const welcome = welcomeEmail(fullName || "there", email)
+    sendEmail({ to: email, subject: welcome.subject, html: welcome.html }).catch(() => {})
+
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
