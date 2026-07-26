@@ -167,7 +167,6 @@ export async function POST(req: NextRequest) {
               final_amount: finalAmount,
               billing_cycle: billing_cycle || "monthly",
               verification_status: "rejected",
-              auto_verification_response: result.rawResponse || { message: result.message },
               rejection_reason: result.message,
             })
 
@@ -199,7 +198,6 @@ export async function POST(req: NextRequest) {
       final_amount: finalAmount,
       billing_cycle: billing_cycle || "monthly",
       verification_status: verificationStatus,
-      auto_verification_response: isAutoVerified ? { verified_at: new Date().toISOString() } : null,
     }).select("id").single()
 
     if (_paymentError) {

@@ -24,15 +24,16 @@ interface PaymentMethod {
 }
 
 const DEFAULT_PAYMENT_METHODS: PaymentMethod[] = [
-  { id: "stripe", name: "Stripe", enabled: true, icon: "credit-card", type: "card", description: "Credit/Debit Cards via Stripe", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 0 },
-  { id: "paypal", name: "PayPal", enabled: false, icon: "wallet", type: "online", description: "PayPal online payments", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 1 },
-  { id: "jazzcash", name: "JazzCash", enabled: false, icon: "smartphone", type: "mobile", description: "JazzCash mobile wallet", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 2 },
-  { id: "easypaisa", name: "EasyPaisa", enabled: false, icon: "smartphone", type: "mobile", description: "EasyPaisa mobile wallet", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 3 },
-  { id: "bank_transfer", name: "Bank Transfer", enabled: false, icon: "building", type: "bank", description: "Direct bank transfer", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 4 },
-  { id: "binance_pay", name: "Binance Pay", enabled: false, icon: "coins", type: "crypto", description: "Crypto payments via Binance", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 5 },
-  { id: "crypto_wallet", name: "Crypto Wallet", enabled: false, icon: "wallet", type: "crypto", description: "Direct crypto wallet transfer", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 6 },
-  { id: "payoneer", name: "Payoneer", enabled: false, icon: "globe", type: "online", description: "Payoneer international payments", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 7 },
-  { id: "paddle", name: "Paddle", enabled: false, icon: "credit-card", type: "card", description: "Paddle payment processing", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 8 },
+  { id: "gopayfast", name: "GoPayFast (PayFast)", enabled: true, icon: "credit-card", type: "card", description: "Cards, JazzCash, EasyPaisa, UPaisa, Raast, Bank Transfer via PayFast", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 0 },
+  { id: "stripe", name: "Stripe", enabled: false, icon: "credit-card", type: "card", description: "Credit/Debit Cards via Stripe", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 1 },
+  { id: "paypal", name: "PayPal", enabled: false, icon: "wallet", type: "online", description: "PayPal online payments", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 2 },
+  { id: "jazzcash", name: "JazzCash", enabled: false, icon: "smartphone", type: "mobile", description: "JazzCash mobile wallet", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 3 },
+  { id: "easypaisa", name: "EasyPaisa", enabled: false, icon: "smartphone", type: "mobile", description: "EasyPaisa mobile wallet", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 4 },
+  { id: "bank_transfer", name: "Bank Transfer", enabled: false, icon: "building", type: "bank", description: "Direct bank transfer", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 5 },
+  { id: "binance_pay", name: "Binance Pay", enabled: false, icon: "coins", type: "crypto", description: "Crypto payments via Binance", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 6 },
+  { id: "crypto_wallet", name: "Crypto Wallet", enabled: false, icon: "wallet", type: "crypto", description: "Direct crypto wallet transfer", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 7 },
+  { id: "payoneer", name: "Payoneer", enabled: false, icon: "globe", type: "online", description: "Payoneer international payments", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 8 },
+  { id: "paddle", name: "Paddle", enabled: false, icon: "credit-card", type: "card", description: "Paddle payment processing", wallet_address: "", qr_code_url: "", instructions: "", sort_order: 9 },
 ]
 
 const PAYMENT_ICON_OPTIONS: Record<string, { label: string; Icon: any }> = {

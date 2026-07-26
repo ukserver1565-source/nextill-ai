@@ -52,7 +52,7 @@ export function AdminTopbar({ onSearch, onMenuClick }: { onSearch?: () => void; 
   }
 
   return (
-    <header className="h-14 sm:h-16 border-b border-border flex items-center justify-between px-3 sm:px-4 lg:px-6 liquid-glass sticky top-0 z-30 gap-2">
+    <header className="h-14 sm:h-16 border-b border-border flex items-center justify-between px-3 sm:px-4 lg:px-6 glass-topbar sticky top-0 z-30 gap-2">
       {/* Left section — mobile menu + back + admin badge + search */}
       <div className="flex items-center gap-2 flex-1 min-w-0">
         {onMenuClick && (
