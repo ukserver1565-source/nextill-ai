@@ -156,6 +156,16 @@
 - Sitemap: Removed 21 legacy tool pages (duplicates)
 - Sitemap: Added all 24 public tool pages
 
+### Round 4: Backup System Fix (Jul 26)
+
+**Backup System:**
+1. API pointed at wrong table (`system_logs` instead of `backup_exports`) — all calls silently failed
+2. Rewrote `GET /api/admin/backups` — queries `backup_exports` table correctly
+3. Rewrote `POST /api/admin/backups` — gathers real data from settings/prompts/providers, stores as JSON, tracks size
+4. Rewrote `DELETE /api/admin/backups/[id]` — deletes from `backup_exports` with admin auth
+5. Added admin auth checks (`requireAdmin`) to all backup routes
+6. UI: color-coded type badges (full/settings/prompts/providers), delete button, dismissible errors
+
 ### Round 3: PayFast Onboarding (Jul 26)
 
 **PayFast Website Requirements:**
@@ -245,6 +255,7 @@ dcebcb4 fix: final lint cleanup — remove 4 unused imports/variables
 | Jul 25 | Liquid glass UI | Theme toggle, glass CSS, AI humanizer, PageSpeed, GA, email |
 | Jul 25-26 | Audit + fixes | Dashboard session fix, TopBar fix, light mode, GoPayFast, SEO |
 | Jul 26 (PM) | PayFast onboarding | Policy pages, office address, email fixes, cron, 50+ color fixes |
+| Jul 26 (PM2) | Backup system fix | API pointed at wrong table, rewrote to use backup_exports, admin auth, UI |
 
 ---
 

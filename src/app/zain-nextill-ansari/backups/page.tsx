@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Download, Plus, CheckCircle, XCircle, HardDrive, Loader2 } from "lucide-react"
+import { Download, Plus, CheckCircle, XCircle, HardDrive, Loader2, Trash2, Database } from "lucide-react"
 
 interface BackupExport {
   id: string
@@ -25,12 +25,20 @@ function formatDate(d: string): string {
   return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })
 }
 
+const TYPE_COLORS: Record<string, string> = {
+  full: "bg-[#6D5EF5]/10 text-[#6D5EF5] border-[#6D5EF5]/20",
+  settings: "bg-[#4CC9F0]/10 text-[#4CC9F0] border-[#4CC9F0]/20",
+  prompts: "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20",
+  providers: "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20",
+}
+
 export default function BackupsPage() {
   const [backups, setBackups] = useState<BackupExport[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [creating, setCreating] = useState(false)
   const [actionError, setActionError] = useState("")
+  const [deleting, setDeleting] = useState<string | null>(null)
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -54,10 +62,29 @@ export default function BackupsPage() {
     setActionError("")
     try {
       const res = await fetch("/api/admin/backups", { method: "POST" })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error || "Failed")
+      }
+      fetchData()
+    } catch (e: any) {
+      setActionError(e.message || "Failed to create backup")
+    } finally {
+      setCreating(false)
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this backup?")) return
+    setDeleting(id)
+    try {
+      const res = await fetch(`/api/admin/backups/${id}`, { method: "DELETE" })
       if (!res.ok) throw new Error("Failed")
       fetchData()
-    } catch (e: any) { setActionError(e.message || "Failed to create backup") } finally {
-      setCreating(false)
+    } catch (e: any) {
+      setActionError(e.message || "Failed to delete backup")
+    } finally {
+      setDeleting(null)
     }
   }
 
@@ -68,12 +95,21 @@ export default function BackupsPage() {
           <h1 className="text-2xl font-bold text-foreground">Backups</h1>
           <p className="text-sm text-muted mt-1">Manage database and system backups</p>
         </div>
-        <button onClick={handleCreate} disabled={creating} className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-foreground text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50">
+        <button
+          onClick={handleCreate}
+          disabled={creating}
+          className="h-10 px-4 rounded-xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] text-foreground text-xs font-medium flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6D5EF5]/20 disabled:opacity-50"
+        >
           {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />} Create Backup
         </button>
       </div>
 
-      {actionError && <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4 text-xs text-[#EF4444]">{actionError}</div>}
+      {actionError && (
+        <div className="bg-[#EF4444]/10 border border-[#EF4444]/20 rounded-xl p-4 text-xs text-[#EF4444]">
+          {actionError}
+          <button onClick={() => setActionError("")} className="ml-2 underline">dismiss</button>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
@@ -115,10 +151,10 @@ export default function BackupsPage() {
                   >
                     <td className="p-4 text-xs font-mono text-[#4CC9F0]">#{b.id.slice(0, 8)}</td>
                     <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <HardDrive className="w-4 h-4 text-muted" />
-                        <span className="text-xs text-foreground capitalize">{b.type}</span>
-                      </div>
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium border ${TYPE_COLORS[b.type] || "bg-muted/10 text-muted border-border"}`}>
+                        <Database className="w-3 h-3" />
+                        {b.type}
+                      </span>
                     </td>
                     <td className="p-4 text-xs text-muted">{formatDate(b.created_at)}</td>
                     <td className="p-4 text-xs text-foreground font-medium">{formatSize(b.size_bytes)}</td>
@@ -135,22 +171,34 @@ export default function BackupsPage() {
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      {b.file_url ? (
-                        <a href={b.file_url} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-foreground transition-all inline-block">
-                          <Download className="w-3.5 h-3.5" />
-                        </a>
-                      ) : (
-                        <button disabled className="p-1.5 rounded-lg text-muted/30 cursor-not-allowed inline-block">
-                          <Download className="w-3.5 h-3.5" />
+                      <div className="flex items-center justify-end gap-1">
+                        {b.status === "completed" && (
+                          <a
+                            href={`/api/admin/backups/${b.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-foreground transition-all"
+                            aria-label="Download backup"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                        <button
+                          onClick={() => handleDelete(b.id)}
+                          disabled={deleting === b.id}
+                          className="p-1.5 rounded-lg hover:bg-[#EF4444]/10 text-muted hover:text-[#EF4444] transition-all disabled:opacity-50"
+                          aria-label="Delete backup"
+                        >
+                          {deleting === b.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                         </button>
-                      )}
+                      </div>
                     </td>
                   </motion.tr>
                 ))}
-                </tbody>
-              </table>
-            </div>
+              </tbody>
+            </table>
           </div>
+        </div>
       )}
     </div>
   )
