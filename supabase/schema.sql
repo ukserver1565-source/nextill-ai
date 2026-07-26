@@ -861,7 +861,6 @@ begin
 end;
 $$;
 
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row
@@ -1402,10 +1401,12 @@ on conflict (provider_slug) do nothing;
 -- ============================================================
 
 -- Fix profiles role check constraint to match codebase
+-- First update any existing 'user' roles to 'free_user' (codebase standard)
+UPDATE public.profiles SET role = 'free_user' WHERE role = 'user';
 alter table public.profiles drop constraint if exists profiles_role_check;
-alter table public.profiles add constraint profiles_role_check check (role in ('user', 'admin', 'super_admin'));
+alter table public.profiles add constraint profiles_role_check check (role in ('free_user', 'admin', 'super_admin'));
 
--- Fix handle_new_user trigger to use "user" instead of "free_user"
+-- Fix handle_new_user trigger to use "free_user" (matches check constraint)
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -1417,7 +1418,7 @@ begin
     new.id,
     new.email,
     coalesce(new.raw_user_meta_data ->> 'full_name', split_part(new.email, '@', 1)),
-    'user',
+    'free_user',
     'free',
     100
   );
