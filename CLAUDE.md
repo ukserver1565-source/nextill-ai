@@ -13,10 +13,10 @@ Then START WORKING on the first pending item. Do NOT ask the user what to do.
 
 ---
 
-## CURRENT STATUS (Last updated: Jul 26, 2026)
+## CURRENT STATUS (Last updated: Jul 27, 2026)
 
-**Last commit:** `d8b7f21` — docs: add CLAUDE.md
-**Build:** ✅ Passing (152 pages, 0 TS errors, 0 lint errors)
+**Last commit:** `5829f92` — docs: update CHANGELOG
+**Build:** ✅ Passing (152+ pages, 0 TS errors)
 **Site:** https://www.adultpulse.co.uk
 **Repo:** https://github.com/ukserver1565-source/nextill-ai.git
 
@@ -25,28 +25,16 @@ Then START WORKING on the first pending item. Do NOT ask the user what to do.
 ## PENDING ITEMS (Do in this order)
 
 ### 1. GoPayFast merchant approval — CHECK EMAIL
-GoPayFast (PayFast Pakistan) merchant signup was submitted for:
-- Name: Zain Ali
-- Company: Nextill AI
-- Email: muzamal57gansari@icloud.com
-- URL: adultpulse.co.uk
+Waiting for credentials (Merchant ID, Store ID, Secured Key).
 
-**If approved:** Get Merchant ID, Store ID, Secured Key from GoPayFast dashboard.
-Then:
-- Add to `.env.local`: `GOPAYFAST_MERCHANT_ID=xxx`, `GOPAYFAST_STORE_ID=xxx`, `GOPAYFAST_SECURED_KEY=xxx`
-- Run migration `supabase/migrations/015_add_gopayfast_provider.sql` on live Supabase
-- Test connection in admin panel at `/zain-nextill-ansari/settings`
+### 2. ~~Run schema.sql on live Supabase~~ ✅ DONE
+Schema has been run. All fixes applied (role constraint, trigger, DROP IF EXISTS).
 
-### 2. Run schema.sql on live Supabase (if not done)
-The file `supabase/schema.sql` (3729 lines) is fully idempotent — safe to run anytime.
+### 3. ~~Fix hardcoded dark-mode colors~~ ✅ DONE
+CSS safety net + 30+ component files fixed. Light mode works.
 
-### 3. Fix ~50 page files with hardcoded dark-mode colors
-Pages still use `text-white`, `bg-[#151C2E]`, `text-[#A7B0C0]` instead of theme tokens.
-Visual issue in light mode only — pages still load and function.
-
-### 4. Set up credit renewal cron
-API route exists at `/api/cron/credits/renew` but no cron job is configured.
-Add to vercel.json: `{ "crons": [{ "path": "/api/cron/credits/renew", "schedule": "0 0 1 *" }] }`
+### 4. ~~Set up credit renewal cron~~ ✅ DONE
+Added to vercel.json.
 
 ### 5. Configure RESEND_API_KEY
 Add `RESEND_API_KEY=xxx` to `.env.local` for production emails.
@@ -62,14 +50,17 @@ Checkout collects raw card data directly — should use Stripe Checkout redirect
 - ✅ Dashboard (projects, documents, credits, billing, history, reports, settings)
 - ✅ Admin panel (37 pages, all wired to real DB)
 - ✅ 20+ AI tools with real execution
-- ✅ Blog system (CRUD + public + SEO)
+- ✅ Blog system (CRUD + public + SEO + 5 SEO articles seeded)
 - ✅ Payment system (GoPayFast adapter built, Stripe/PayPal adapters exist)
-- ✅ Dark/light theme toggle
-- ✅ Liquid glass UI
+- ✅ Dark/light theme toggle (light mode fully fixed)
+- ✅ Liquid glass UI + cursor glow
 - ✅ SEO (robots.txt, sitemap, OG image, JSON-LD)
 - ✅ Google Analytics (G-6VKXTDV48B)
 - ✅ Google Search Console (verification tag)
 - ✅ PageSpeed API integration
+- ✅ Vercel Analytics + Speed Insights
+- ✅ RewriteAI API (Humanizer + Writer)
+- ✅ PlagiarismCheck.org API (plagiarism checker)
 - ✅ proxy.ts route protection (session timeout, admin auth, maintenance mode)
 - ✅ Session persistence fixed
 - ✅ TopBar sticky fixed
