@@ -83,7 +83,7 @@ export default function ProjectsPage() {
                       </div>
                     </td>
                     <td className="p-4 text-xs text-foreground">{proj.profiles?.full_name || "—"}</td>
-                    <td className="p-4 text-xs text-muted">{proj.articles ?? 0}</td>
+                    <td className="p-4 text-xs text-muted">{Array.isArray(proj.documents) ? proj.documents.length : proj.articles ?? 0}</td>
                     <td className="p-4 text-xs text-muted">{proj.created_at ? new Date(proj.created_at).toLocaleDateString() : "—"}</td>
                     <td className="p-4 text-right">
                       <button onClick={() => proj.domain ? window.open(proj.domain, '_blank') : undefined} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-[#4CC9F0] transition-all">

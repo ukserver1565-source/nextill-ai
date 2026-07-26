@@ -2,6 +2,7 @@ import { generateWithProvider } from "@/lib/ai/providers/registry"
 import { PageSpeedProvider } from "@/lib/domain-intelligence/pagespeed.provider"
 import { humanizeContentWithAI } from "@/lib/services/ai-humanizer.service"
 import { humanizeText, generateText } from "@/lib/ai/rewriteai"
+import { checkPlagiarism } from "@/lib/ai/plagiarismcheck"
 import {
   runPlagiarismLocal,
   detectAiLocal,
@@ -150,15 +151,36 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
     }
   },
 
-  "plagiarism-checker": (input) => {
+  "plagiarism-checker": async (input) => {
     const text = (input.text as string) || ""
     const wordCount = text.split(/\s+/).filter(Boolean).length
+
+    // Try PlagiarismCheck.org API first
+    const apiResult = await checkPlagiarism(text)
+    if (apiResult.success) {
+      return {
+        success: true,
+        type: "plagiarism",
+        content: {
+          originalityScore: apiResult.originalityScore,
+          similarityScore: apiResult.similarityScore,
+          wordCount: apiResult.totalWords,
+          matchedSources: apiResult.matchedSources,
+          safeToPublish: apiResult.originalityScore >= 80,
+          summary: `Plagiarism check complete via PlagiarismCheck.org. Originality: ${apiResult.originalityScore}%. Similarity: ${apiResult.similarityScore}%. ${apiResult.matchedSources.length} sources matched.`,
+          engine: "PlagiarismCheck.org",
+        },
+        wordCount,
+      }
+    }
+
+    // Fallback to local analysis
     const result = runPlagiarismLocal(text)
     return {
       success: true,
       type: "plagiarism",
       available: false,
-      message: "API Not Configured - Local analysis only. Connect Copyleaks API for web-based plagiarism detection across billions of sources.",
+      message: apiResult.error || "Local analysis only. PlagiarismCheck.org API available for web-based detection.",
       content: {
         originalityScore: result.originalityScore,
         wordCount: result.wordCount,
@@ -170,7 +192,7 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
         repeatedPhrases: result.repeatedPhrases,
         repeatedSentences: result.repeatedSentences,
         safeToPublish: result.safeToPublish,
-        summary: `Plagiarism check complete. Originality: ${result.originalityScore}%. ${result.matches.length} matches found, ${result.duplicateParagraphs.length} duplicate paragraphs detected.`,
+        summary: `Plagiarism check complete (local). Originality: ${result.originalityScore}%. ${result.matches.length} matches found.`,
       },
       wordCount,
     }

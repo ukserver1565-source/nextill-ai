@@ -4,15 +4,15 @@
 
 ---
 
-## Current Status (Jul 26, 2026 — Night)
+## Current Status (Jul 27, 2026 — All 4 chats done)
 
 | Metric | Value |
 |--------|-------|
-| Git commits | 25+ on main |
-| Last commit | `55d9a90` — fix: backup system |
+| Git commits | 30+ on main |
+| Last commit | `bc9f117` — feat: blog seed + daily limits |
 | Build | ✅ Passing (152+ pages) |
 | TypeScript | ✅ 0 errors |
-| Lint | ✅ 0 errors, 15 warnings |
+| Lint | ✅ 0 errors |
 | Performance | 91 mobile / 94 desktop |
 | Accessibility | 95 mobile / 95 desktop |
 | Best Practices | 100 |
@@ -162,6 +162,39 @@
 
 ## 🔧 All Fixes Applied (Chronological)
 
+### Chat 4: Jul 26 — Full Admin Panel Audit (20+ files)
+**Full audit of every admin API route + page against schema.sql:**
+
+**Critical data mismatches fixed:**
+1. Workflows page — expected `row.key`/`row.value` JSON blob, but `workflow_settings` has individual columns. Rewrote page to use correct fields.
+2. Integrations API — returned `{id, name, enabled}` but page expected `{provider_slug, provider_name, is_enabled}`. Fixed field mapping.
+3. Credits page — accessed `t.profiles?.full_name` (no join) and `t.description` (column is `reason`). Added profile join to credit-repo, fixed field name.
+4. Reports page — API returned summary object but page expected array. Rewrote page to fetch users/payments directly and export CSVs.
+5. Coupons page — expected `usage_count` but column is `used_count`. Fixed.
+6. Contact page — expected `m.read` boolean but column is `status` string. API now maps status to read boolean.
+7. Payments page — missing profile join. Added to payment-repo.
+8. Projects page — missing profile join + nonexistent `articles` field. Added document count join.
+9. Documents page — missing profile join. Added to documents-repo.
+
+**Schema/column mismatches fixed:**
+10. `security_logs` — missing `severity`, `blocked`, `ip_address` columns. Added to schema.sql + migration 017.
+11. `payments` — missing `verification_status`, `reviewed_by`, `reviewed_at`, `rejection_reason`, `provider_transaction_id`. Added via migration 018.
+12. `payment_provider_credentials` — table didn't exist. Created via migration 018.
+13. `workflow_settings` — missing `status`, `api_verified`, `last_tested_at`, `last_test_result`. Added via migration 018.
+14. `ai_models` — missing `display_name`, `provider_model_id`, `config`. Added via migration 018.
+
+**Wrong table/column references fixed:**
+15. Backup API — queried `system_logs` instead of `backup_exports`. (Fixed in Chat 3)
+16. `ai/api-keys/rotate` — used wrong table `api_keys` instead of `ai_api_keys`. Fixed.
+17. `tool-repo` — referenced 4 non-existent columns. Removed.
+18. Payments pending route — `provider_transaction_id` → `provider_payment_id`.
+19. Logs API — returned bare array instead of `{data, total}`. Fixed.
+
+**Dark mode fixes:**
+20. Emails page — replaced all hardcoded `text-white`, `bg-[#151C2E]`, `text-[#A7B0C0]` with theme tokens.
+21. Logs page — replaced `border-white/[0.03]`, `bg-[#151C2E]` with theme tokens.
+
+
 ### Chat 1: Jul 25 — Liquid Glass UI + PageSpeed
 - Liquid glass CSS system (globals.css)
 - Dark/light theme toggle
@@ -221,6 +254,56 @@
 - RewriteAI API integration for Humanizer + Writer
 - Backup system fix (wrong table → backup_exports)
 - Schema.sql fixes (DROP TRIGGER IF EXISTS, role constraint)
+
+### Chat 4: Jul 26-27 — PageSpeed + Light Mode + Blogs + SEO
+**PageSpeed Optimization (88/87 → 91/95):**
+1. `<main>` landmark in root layout
+2. ~50 `aria-label`s on icon-only buttons (18 files)
+3. Heading hierarchy fixed across 12+ pages
+4. Color contrast: `#5A6577` → `#8895A7`, `#6B7280` → `#9CA3AF`
+5. Logo: `img` → Next.js `Image` (1.5MB → 5KB WebP/AVIF)
+6. Cache headers: fonts (1yr), images (1day)
+7. Non-composited animations fixed (box-shadow)
+8. Product schema: image, brand, mpn, return policy, shipping
+
+**Light Mode Fix (text-white invisible on white bg):**
+- CSS safety net in globals.css: `@layer utilities` overrides for text-white → #000000
+- Body fallback: `color: #000000` in light mode
+- 30+ component files: text-white → text-foreground
+- Pure white bg (#FFFFFF) + full black text (#000000)
+- Border/bg overrides for light mode
+
+**Header + Cursor Glow:**
+- Nav links centered (absolute positioning)
+- Cursor glow: 400px→500px, opacity 0.06→0.12, dual-color violet+cyan, rAF animation
+
+**Blog Posts (5 SEO articles, 2000+ words each):**
+1. How to Humanize AI Content: Complete Guide to Pass AI Detection
+2. AI vs Human Writing: Which Is Better for SEO Rankings
+3. Top 10 AI SEO Tools Every Content Creator Needs
+4. Mastering Keyword Research: A Step-by-Step Guide
+5. Plagiarism Detection Explained: How to Ensure Originality
+- Blog seed API at `/api/admin/blog/seed` (RewriteAI humanization)
+- Content chunked at 400 words for RewriteAI 500-word limit
+
+**Database Fixes:**
+- Schema.sql: DROP POLICY IF EXISTS (60+ policies)
+- Schema.sql: DROP TRIGGER IF EXISTS on_auth_user_created
+- Migration 015: role constraint fix ('user' → 'free_user')
+- handle_new_user trigger: role 'user' → 'free_user'
+- Migration 016: daily limits for all 22 tools
+- Migration 017+018: security log columns + payment columns
+
+**API Integrations:**
+- Vercel Analytics (`@vercel/analytics`)
+- Vercel Speed Insights (`@vercel/speed-insights`)
+- RewriteAI API: /api/v1/humanize + /api/v1/write
+- PlagiarismCheck.org API key: `g8wx9zI_K4XhrX7XBuslyphJRg4hVaYh`
+
+**Admin Fixes:**
+- Contact page: m.status → m.read (TS errors fixed)
+- Blog seed API: fixed auth (server client instead of admin)
+- Backup system: correct table (backup_exports)
 
 ---
 
@@ -303,6 +386,7 @@ dcebcb4 fix: final lint cleanup
 | Jul 25 | Chat 1 | Liquid glass UI, theme toggle, AI humanizer, PageSpeed, GA, email |
 | Jul 25-26 | Chat 2 | Full audit, dashboard fix, TopBar fix, light mode, GoPayFast adapter, SEO |
 | Jul 26 PM | Chat 3 | PayFast onboarding (policies, address, email), 50+ color fixes, cron, CLAUDE.md |
+| Jul 26-27 | Chat 4 | PageSpeed 88→91, light mode 849 fixes, 5 blog posts, RewriteAI, PlagCheck, Vercel Analytics |
 
 ---
 

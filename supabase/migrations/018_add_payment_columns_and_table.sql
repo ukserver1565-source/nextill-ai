@@ -1,7 +1,7 @@
 -- Migration 018: Add payment review columns + payment_provider_credentials table
 
 -- 1. Add review columns to payments table
-ALTER TABLE public.payments ADD COLUMN IF NOT EXISTS verification_status text DEFAULT 'pending' CHECK (verification_status IN ('pending', 'verified', 'rejected'));
+ALTER TABLE public.payments ADD COLUMN IF NOT EXISTS verification_status text DEFAULT 'pending' CHECK (verification_status IN ('pending', 'pending_manual_review', 'manually_approved', 'auto_verified', 'rejected'));
 ALTER TABLE public.payments ADD COLUMN IF NOT EXISTS reviewed_by uuid REFERENCES auth.users(id) ON DELETE SET NULL;
 ALTER TABLE public.payments ADD COLUMN IF NOT EXISTS reviewed_at timestamptz;
 ALTER TABLE public.payments ADD COLUMN IF NOT EXISTS rejection_reason text;
