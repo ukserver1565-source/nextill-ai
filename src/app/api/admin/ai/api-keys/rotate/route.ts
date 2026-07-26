@@ -24,21 +24,21 @@ export async function POST(req: NextRequest) {
     const { id, new_key } = await req.json()
     if (!id || !new_key) throw new Error("Key ID and new key are required")
     const { data: existing } = await supabaseAdmin
-      .from("api_keys")
-      .select("id, provider_id, name")
+      .from("ai_api_keys")
+      .select("id, provider_slug, name")
       .eq("id", id)
       .single()
     if (!existing) throw new Error("API key not found")
-    await supabaseAdmin.from("api_keys").delete().eq("id", id)
+    await supabaseAdmin.from("ai_api_keys").delete().eq("id", id)
     const encrypted = encrypt(new_key)
     const preview = maskKey(new_key)
     const { data, error } = await supabaseAdmin
-      .from("api_keys")
+      .from("ai_api_keys")
       .insert({
-        provider_id: existing.provider_id,
+        provider_slug: existing.provider_slug,
         name: existing.name + " (rotated)",
         key_encrypted: encrypted,
-        key_preview: preview,
+        key_prefix: preview,
         is_enabled: true,
       })
       .select()

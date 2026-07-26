@@ -14,7 +14,7 @@ export interface ProjectRow {
 
 export const projectRepo = {
   async list(params: PaginationParams) {
-    let query = supabaseAdmin.from("projects").select("*", { count: "exact" })
+    let query = supabaseAdmin.from("projects").select("*, profiles:user_id(full_name), documents:documents(count)", { count: "exact" })
     if (params.search) {
       query = query.or(`name.ilike.%${params.search}%,domain.ilike.%${params.search}%`)
     }

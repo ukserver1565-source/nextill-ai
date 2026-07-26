@@ -60,7 +60,7 @@ export async function GET(req: NextRequest) {
       }))
     }
 
-    return NextResponse.json(data)
+    return NextResponse.json({ data, total: data.length })
   } catch (_err) {
     return NextResponse.json({ error: "Failed to fetch logs" }, { status: 500 })
   }

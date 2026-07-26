@@ -168,7 +168,7 @@ export default function CouponsPage() {
                     </div>
                   </td>
                   <td className="p-4 text-sm font-bold text-foreground">{c.discount_type === "percentage" ? `${c.discount_value}%` : `$${c.discount_value}`}</td>
-                  <td className="p-4 text-xs text-muted">{c.usage_count ?? 0}/{c.usage_limit ?? "∞"}</td>
+                  <td className="p-4 text-xs text-muted">{c.used_count ?? 0}/{c.usage_limit ?? "∞"}</td>
                   <td className="p-4 text-xs text-muted">{c.expires_at ? new Date(c.expires_at).toLocaleDateString() : "Never"}</td>
                   <td className="p-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border ${c.is_active ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20"}`}>

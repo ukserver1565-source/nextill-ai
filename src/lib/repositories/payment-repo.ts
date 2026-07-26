@@ -17,7 +17,7 @@ export const paymentRepo = {
   async list(params: PaginationParams) {
     let query = supabaseAdmin
       .from("payments")
-      .select("*", { count: "exact" })
+      .select("*, profiles:user_id(full_name, email)", { count: "exact" })
 
     if (params.search) {
       query = query.or(`plan_slug.ilike.%${params.search}%,provider.ilike.%${params.search}%`)

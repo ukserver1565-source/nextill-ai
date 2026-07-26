@@ -78,7 +78,7 @@ export default function LogsPage() {
       )}
 
       {!loading && !error && (
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-gradient-to-b from-[#151C2E]/40 to-transparent backdrop-blur-xl border border-border rounded-xl overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-card/80 backdrop-blur-xl border border-border rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -100,7 +100,7 @@ export default function LogsPage() {
                   </tr>
                 ) : (
                   filtered.map((log: any) => (
-                    <tr key={log.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                    <tr key={log.id} className="border-b border-border hover:bg-white/[0.02] transition-colors">
                       <td className="p-4">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-3.5 h-3.5 text-muted" />

@@ -66,7 +66,7 @@ export const documentsRepo = {
   async listAll(params: PaginationParams) {
     let query = supabaseAdmin
       .from("documents")
-      .select("*", { count: "exact" })
+      .select("*, profiles:user_id(full_name)", { count: "exact" })
 
     if (params.search) {
       query = query.ilike("title", `%${params.search}%`)

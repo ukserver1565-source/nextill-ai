@@ -300,12 +300,16 @@ create table if not exists public.security_logs (
   user_id uuid references auth.users(id) on delete set null,
   event_type text not null check (event_type in ('login', 'failed_login', 'admin_action', 'api_call')),
   ip_hash text,
+  ip_address text,
   user_agent text,
+  severity text default 'low' check (severity in ('low', 'medium', 'high', 'critical')),
+  blocked boolean default false,
   created_at timestamptz default now()
 );
 
 create index if not exists idx_security_logs_event_type on public.security_logs(event_type);
 create index if not exists idx_security_logs_created_at on public.security_logs(created_at);
+create index if not exists idx_security_logs_severity on public.security_logs(severity);
 
 -- ============================================================
 -- ADMIN LOGS
@@ -1234,6 +1238,23 @@ create table if not exists public.backup_exports (
 );
 
 -- ============================================================
+-- PAYMENT PROVIDER CREDENTIALS
+-- ============================================================
+create table if not exists public.payment_provider_credentials (
+  id uuid primary key default gen_random_uuid(),
+  provider text not null unique,
+  merchant_id text,
+  api_key_encrypted text,
+  api_secret_encrypted text,
+  is_verified boolean default false,
+  last_tested_at timestamptz,
+  last_test_result text,
+  last_test_error text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- ============================================================
 -- KEYWORD RESEARCH
 -- ============================================================
 create table if not exists public.keyword_research (
@@ -1706,6 +1727,23 @@ create table if not exists public.backup_exports (
   size_bytes integer default 0,
   created_by uuid references auth.users(id) on delete set null,
   created_at timestamptz default now()
+);
+
+-- ============================================================
+-- PAYMENT PROVIDER CREDENTIALS
+-- ============================================================
+create table if not exists public.payment_provider_credentials (
+  id uuid primary key default gen_random_uuid(),
+  provider text not null unique,
+  merchant_id text,
+  api_key_encrypted text,
+  api_secret_encrypted text,
+  is_verified boolean default false,
+  last_tested_at timestamptz,
+  last_test_result text,
+  last_test_error text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
 );
 
 -- ============================================================
