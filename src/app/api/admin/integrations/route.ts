@@ -12,11 +12,12 @@ export async function GET() {
     if (error) throw new Error(error.message)
 
     const integrations = (data || []).map((i: any) => ({
-      id: i.provider_slug,
-      name: i.provider_name,
-      enabled: i.is_enabled,
-      type: i.config?.type || "integration",
+      id: i.id,
+      provider_slug: i.provider_slug,
+      provider_name: i.provider_name,
+      is_enabled: i.is_enabled || false,
       is_connected: i.is_connected || false,
+      last_synced_at: i.last_synced_at || null,
     }))
 
     return NextResponse.json(integrations)

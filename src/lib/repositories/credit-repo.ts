@@ -14,7 +14,7 @@ export const creditRepo = {
   async list(params: PaginationParams) {
     let query = supabaseAdmin
       .from("credit_logs")
-      .select("*", { count: "exact" })
+      .select("*, profiles:user_id(full_name)", { count: "exact" })
 
     if (params.search) {
       query = query.or(`reason.ilike.%${params.search}%`)

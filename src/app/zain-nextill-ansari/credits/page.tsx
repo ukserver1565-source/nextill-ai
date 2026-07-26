@@ -145,7 +145,7 @@ export default function CreditsPage() {
                         t.type === "added" ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" : "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
                       }`}>{t.type}</span>
                     </td>
-                    <td className="p-4 text-xs text-muted max-w-[200px] truncate">{t.description || t.tool || "—"}</td>
+                    <td className="p-4 text-xs text-muted max-w-[200px] truncate">{t.reason || "—"}</td>
                     <td className="p-4 text-xs text-muted">{t.created_at ? new Date(t.created_at).toLocaleDateString() : "—"}</td>
                   </motion.tr>
                 ))
