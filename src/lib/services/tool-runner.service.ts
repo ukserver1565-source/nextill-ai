@@ -1,6 +1,7 @@
 import { generateWithProvider } from "@/lib/ai/providers/registry"
 import { PageSpeedProvider } from "@/lib/domain-intelligence/pagespeed.provider"
 import { humanizeContentWithAI } from "@/lib/services/ai-humanizer.service"
+import { humanizeText, generateText } from "@/lib/ai/rewriteai"
 import {
   runPlagiarismLocal,
   detectAiLocal,
@@ -48,6 +49,18 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
 
     const prompt = `Write a comprehensive, SEO-optimized article about "${topic}". Use a ${tone} tone, targeting ${audience}. Target approximately ${wordCount} words. Include relevant keywords: ${keywords}. Format with proper headings, paragraphs, and structure.`
 
+    // Try RewriteAI API first
+    const rewriteResult = await generateText(prompt, { wordCount, category: "auto" })
+    if (rewriteResult.success && rewriteResult.content) {
+      return {
+        success: true,
+        type: "article",
+        content: rewriteResult.content,
+        wordCount: rewriteResult.wordsUsed || wordCount,
+      }
+    }
+
+    // Fallback to existing AI provider
     const providerResult = await generateWithProvider("ai-writer", prompt, { temperature: 0.7, maxTokens: wordCount * 4 })
 
     if (providerResult.success) {
@@ -77,6 +90,25 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
   "ai-humanizer": async (input) => {
     const text = (input.text as string) || ""
     const wordCount = text.split(/\s+/).filter(Boolean).length
+
+    // Try RewriteAI API first
+    const rewriteResult = await humanizeText(text)
+    if (rewriteResult.success && rewriteResult.content) {
+      return {
+        success: true,
+        type: "humanized",
+        content: {
+          original: text,
+          humanized: rewriteResult.content,
+          changes: [{ from: "AI text", to: "Humanized text", type: "rewrite" }],
+          readabilityImprovement: 15,
+          engine: "RewriteAI",
+        },
+        wordCount,
+      }
+    }
+
+    // Fallback to local service
     const result = await humanizeContentWithAI(text)
     return {
       success: true,
