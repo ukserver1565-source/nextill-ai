@@ -31,13 +31,14 @@
 - `proxy.ts` handles all route protection (middleware not needed)
 
 ### Payment System ⏳
-- GoPayFast (PayFast Pakistan) adapter — REAL, committed, awaiting merchant approval
+- GoPayFast (PayFast Pakistan) adapter — REAL, committed, **merchant approval email sent, awaiting credentials**
 - Stripe adapter — REAL (needs STRIPE_SECRET_KEY)
 - PayPal adapter — REAL (needs credentials)
 - JazzCash/EasyPaisa — stubs (manual mode)
 - Bank Transfer/Crypto — manual by design
 - Hybrid verification: auto-verify if credentials verified, else manual admin approval
 - Admin approval/rejection workflow for pending payments
+- Website requirements for PayFast met: privacy, refund, service, terms policies + office address + 7-8 products
 
 ### AI Tools (20+) ✅
 - AI Writer, Humanizer, Detector, Plagiarism Checker
@@ -90,9 +91,11 @@
 ## What's NOT Done / Needs Attention
 
 ### HIGH Priority
-1. **GoPayFast activation** — Merchant signup submitted, waiting for approval. After approval: get credentials → add to .env.local → run migration 015 → test in admin panel
+1. **GoPayFast activation** — ✅ Acknowledge email sent to cs@gopayfast.com. Waiting for credentials (Merchant ID, Store ID, Secured Key). After receiving: add to .env.local → run migration 015 → test in admin panel
 2. **Run schema.sql on live Supabase** — If not already applied, run the full consolidated schema (3729 lines, fully idempotent)
 3. **~50 page files** — ✅ FIXED: All hardcoded dark-mode colors replaced with theme tokens across dashboard, public, and admin pages
+4. **PayFast website requirements** — ✅ All met: privacy policy, refund policy, service policy, terms, office address, contact number, 20+ products listed
+5. **Email domain** — ⏳ No email hosting for adultpulse.co.uk yet. Using muzamal57gansari@icloud.com. Need to set up email hosting (Zoho free or Namecheap) later
 
 ### MEDIUM Priority
 4. **PCI compliance** — Checkout collects raw card data (should use Stripe Checkout redirect instead)
@@ -153,6 +156,23 @@
 - Sitemap: Removed 21 legacy tool pages (duplicates)
 - Sitemap: Added all 24 public tool pages
 
+### Round 3: PayFast Onboarding (Jul 26)
+
+**PayFast Website Requirements:**
+1. Created `/refund-policy` page — 7-day money-back guarantee, refund process
+2. Created `/service-policy` page — digital delivery, 24/7 availability, SLA
+3. Added office address to `/contact` page + footer (Faisalabad, Punjab, Pakistan)
+4. Added refund/service policy links to both footers
+
+**Email Cleanup:**
+- Replaced all `nextill.ai` email references with `adultpulse.co.uk`
+- Files: contact, refund-policy, service-policy, footer, admin login, email settings, .env.example
+
+**Other Fixes:**
+- Credit renewal cron added to vercel.json (runs 1st of every month)
+- Cron GET endpoint updated to trigger renewal (Vercel sends GET)
+- Proxy.ts updated to allow /api/cron/ routes through
+
 ---
 
 ## 📊 PageSpeed Scores (Mobile / Desktop)
@@ -169,6 +189,19 @@
 ## Git History (All Commits)
 
 ```
+938e07a fix: replace all nextill.ai email refs with adultpulse.co.uk
+60b9740 fix: schema.sql — add DROP TRIGGER IF EXISTS before CREATE TRIGGER
+f0db631 feat: PayFast onboarding — refund policy, service policy, office address
+be9aea1 docs: update CHANGELOG — light mode fixes done, cron setup done
+89a7869 feat: add Vercel Speed Insights for real user performance metrics
+dac7edf feat: add Vercel Analytics for visitor tracking
+4e83d01 fix: light mode — pure white bg + full black text
+25ee6c9 docs: CLAUDE.md with full inline status — no external file reads needed
+d8b7f21 docs: add CLAUDE.md for automatic session continuation
+79abe0b fix: light mode CSS — move overrides into @layer utilities + body color fallback
+8f3a6fc fix: centered header nav + enhanced cursor glow effect
+c6688d2 docs: update CHANGELOG-ALL.md with full audit session summary
+4514c24 fix: light mode CSS overrides — move after all layers with !important
 43b9213 feat: GoPayFast (PayFast Pakistan) real payment adapter
 f6df9ee fix: light mode text visibility across entire app + CSS safety net
 0a8a857 fix: footer contrast, heading hierarchy, non-composited animations
@@ -211,6 +244,7 @@ dcebcb4 fix: final lint cleanup — remove 4 unused imports/variables
 | Jul 18-22 | Initial build | Core app, auth, admin, payments, blog, tools |
 | Jul 25 | Liquid glass UI | Theme toggle, glass CSS, AI humanizer, PageSpeed, GA, email |
 | Jul 25-26 | Audit + fixes | Dashboard session fix, TopBar fix, light mode, GoPayFast, SEO |
+| Jul 26 (PM) | PayFast onboarding | Policy pages, office address, email fixes, cron, 50+ color fixes |
 
 ---
 
