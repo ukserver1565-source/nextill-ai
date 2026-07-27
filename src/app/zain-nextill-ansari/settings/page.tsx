@@ -82,7 +82,7 @@ export default function SettingsPage() {
   const [registrationOpen, setRegistrationOpen] = useState(true)
   const [defaultCredits, setDefaultCredits] = useState(5000)
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([])
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(DEFAULT_PAYMENT_METHODS)
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([])
   const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -111,7 +111,12 @@ export default function SettingsPage() {
         if (data.payment_methods) {
           try {
             const parsed = typeof data.payment_methods === "string" ? JSON.parse(data.payment_methods) : data.payment_methods
-            if (Array.isArray(parsed) && parsed.length > 0) setPaymentMethods(parsed)
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              // Only keep allowed payment methods (GoPayFast + Stripe)
+              const allowed = parsed.filter((m: PaymentMethod) => ["gopayfast", "stripe"].includes(m.id))
+              if (allowed.length > 0) setPaymentMethods(allowed)
+              else setPaymentMethods(DEFAULT_PAYMENT_METHODS)
+            }
           } catch { /* ignore */ }
         }
       })

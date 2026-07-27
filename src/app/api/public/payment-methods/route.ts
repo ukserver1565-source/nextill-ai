@@ -14,6 +14,9 @@ interface PaymentMethod {
   instructions: string
 }
 
+// Only these payment methods are allowed on the public checkout
+const ALLOWED_METHODS = new Set(["gopayfast", "stripe"])
+
 export async function GET() {
   try {
     const { data, error } = await supabaseAdmin
@@ -22,11 +25,7 @@ export async function GET() {
       .eq("key", "payment_methods")
       .single()
 
-    if (error) {
-      // Table or key might not exist yet
-      return NextResponse.json([])
-    }
-
+    if (error) return NextResponse.json([])
     if (!data?.value) return NextResponse.json([])
 
     let methods: PaymentMethod[]
@@ -42,9 +41,9 @@ export async function GET() {
 
     if (!Array.isArray(methods)) return NextResponse.json([])
 
-    // Return only enabled methods, strip sensitive fields
+    // ONLY return allowed, enabled methods (GoPayFast + Stripe)
     const publicMethods = methods
-      .filter((m) => m.enabled)
+      .filter((m) => m.enabled && ALLOWED_METHODS.has(m.id))
       .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
       .map((m) => ({
         id: m.id,
