@@ -348,6 +348,13 @@
 24. **Emails page** — replaced all hardcoded `text-white`, `bg-[#151C2E]`, `text-[#A7B0C0]` with theme tokens.
 25. **Logs page** — replaced `border-white/[0.03]`, `bg-[#151C2E]` with theme tokens.
 
+#### Chat 4: Settings, Auth, Sessions
+26. **Settings API** — robust PATCH with jsonb-aware value formatting, upsert fallback to individual insert/update per key.
+27. **Payment methods** — GoPayFast + Stripe always guaranteed in defaults, even if DB has stale or empty data.
+28. **Auth error messages** — unique, readable messages for admin/user login and signup (rate limits, wrong password, email exists, weak password). All still generic enough to not reveal account existence.
+29. **Admin session timeout** — 30 minutes (down from 4 hours). User timeout stays at 4 hours. Separate `ADMIN_SESSION_TIMEOUT_MS` constant.
+30. **User login rate limiting** — changed from 5 attempts/15min to 5 attempts/hour.
+
 ### Earlier Sessions (Jul 18-26)
 See full details in git history — 25+ commits covering:
 - Core app build (auth, admin, payments, blog, tools)
