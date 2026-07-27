@@ -35,8 +35,8 @@ const toolProviderMap: Record<string, string> = {
   "rank-tracker": "dataforseo",
   "backlink-checker": "dataforseo",
   "schema-generator": "gemini",
-  "sitemap-generator": "openai",
-  "robots-txt-generator": "openai",
+  "sitemap-generator": "gemini",
+  "robots-txt-generator": "gemini",
   "internal-link-generator": "gemini",
 }
 
