@@ -60,8 +60,10 @@ export default function EmailPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       })
-      if (!res.ok) throw new Error("Failed")
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.details || data.error || "Failed to save")
       setSaved(true)
+      setSaveError("")
       setTimeout(() => setSaved(false), 2000)
     } catch (e: any) { setSaveError(e.message || "Failed to save") } finally {
       setSaving(false)

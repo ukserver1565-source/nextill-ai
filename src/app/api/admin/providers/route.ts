@@ -11,8 +11,8 @@ export async function GET() {
     const data = await providersService.list()
     return NextResponse.json(data)
   } catch (err) {
-    if (isTableMissing(err)) return NextResponse.json([])
-    return NextResponse.json({ error: "Failed to fetch providers", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/providers]", err)
+    return NextResponse.json([])
   }
 }
 

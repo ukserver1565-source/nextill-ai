@@ -8,7 +8,8 @@ export async function GET(req: NextRequest) {
     const data = await auditService.list(page, perPage)
     return NextResponse.json(data)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch audit logs", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/audit]", err)
+    return NextResponse.json([])
   }
 }
 

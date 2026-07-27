@@ -13,8 +13,8 @@ export async function GET(req: NextRequest) {
     const data = await creditRepo.list(params)
     return NextResponse.json(data)
   } catch (err) {
-    if (isTableMissing(err)) return NextResponse.json([])
-    return NextResponse.json({ error: "Failed to fetch credits", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/credits]", err)
+    return NextResponse.json({ data: [], total: 0 })
   }
 }
 

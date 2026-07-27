@@ -31,13 +31,21 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json()
     const updates = Object.entries(body).map(([key, value]) => ({
       key,
-      value: typeof value === "string" ? value : JSON.stringify(value),
+      value: typeof value === "object" ? JSON.stringify(value) : String(value),
       updated_at: new Date().toISOString(),
     }))
     const { error } = await supabaseAdmin.from("site_settings").upsert(updates, { onConflict: "key" })
     if (error) throw new Error(error.message)
+
+    // Clear email lib cache so new settings take effect immediately
+    try {
+      const emailLib = await import("@/lib/email")
+      if (typeof (emailLib as any).clearCache === "function") (emailLib as any).clearCache()
+    } catch {}
+
     return NextResponse.json({ success: true })
   } catch (err) {
+    console.error("[Settings PATCH]", err)
     return NextResponse.json({ error: "Failed to save settings", details: (err as Error).message }, { status: 500 })
   }
 }

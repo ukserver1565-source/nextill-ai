@@ -30,7 +30,8 @@ export async function GET() {
     )
     return NextResponse.json(data || [])
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch backups", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/backups]", err)
+    return NextResponse.json([])
   }
 }
 

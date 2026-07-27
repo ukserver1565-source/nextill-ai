@@ -32,14 +32,14 @@ export async function GET() {
       .order("provider")
 
     if (error) {
-      console.error("Fetch payment credentials error:", error)
-      return NextResponse.json({ error: "Failed to fetch credentials", details: error.message }, { status: 500 })
+      console.error("[admin/payment-credentials] Fetch error:", error)
+      return NextResponse.json([])
     }
 
     return NextResponse.json(credentials || [])
   } catch (err) {
-    console.error("Payment credentials GET API error:", err)
-    return NextResponse.json({ error: "Failed to fetch credentials", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/payment-credentials]", err)
+    return NextResponse.json([])
   }
 }
 

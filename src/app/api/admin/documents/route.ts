@@ -9,6 +9,7 @@ export async function GET(request: Request) {
     const result = await documentsRepo.listAll(params)
     return NextResponse.json(result)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch documents", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/documents]", err)
+    return NextResponse.json({ data: [], total: 0 })
   }
 }

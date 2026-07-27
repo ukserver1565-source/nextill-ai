@@ -7,7 +7,8 @@ export async function GET(req: NextRequest) {
     const data = await apiKeysService.list(providerSlug)
     return NextResponse.json(data)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch API keys", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/api-keys]", err)
+    return NextResponse.json([])
   }
 }
 

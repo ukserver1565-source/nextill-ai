@@ -7,7 +7,8 @@ export async function GET(req: NextRequest) {
     const data = await modelsService.list(providerSlug)
     return NextResponse.json(data)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch models", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/models]", err)
+    return NextResponse.json([])
   }
 }
 

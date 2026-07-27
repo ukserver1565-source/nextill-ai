@@ -12,8 +12,8 @@ export async function GET() {
     const plans = await planRepo.list()
     return NextResponse.json(plans)
   } catch (err) {
-    if (isTableMissing(err)) return NextResponse.json([])
-    return NextResponse.json({ error: "Failed to fetch plans", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/plans]", err)
+    return NextResponse.json([])
   }
 }
 

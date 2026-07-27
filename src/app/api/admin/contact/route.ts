@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
     const data = result.data.map((m: any) => ({ ...m, read: m.status === "read" || m.status === "replied" }))
     return NextResponse.json({ ...result, data })
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch messages", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/contact]", err)
+    return NextResponse.json({ data: [], total: 0 })
   }
 }

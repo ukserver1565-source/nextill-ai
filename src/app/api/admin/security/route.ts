@@ -17,7 +17,8 @@ export async function GET(req: NextRequest) {
     if (error) throw new Error(error.message)
     return NextResponse.json({ data: data || [], total: count || 0, page, perPage })
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch security events", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/security]", err)
+    return NextResponse.json({ data: [], total: 0 })
   }
 }
 

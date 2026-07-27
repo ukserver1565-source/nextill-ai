@@ -8,7 +8,8 @@ export async function GET(req: NextRequest) {
     const data = await projectRepo.list(params)
     return NextResponse.json(data)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch projects", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/projects]", err)
+    return NextResponse.json({ data: [], total: 0 })
   }
 }
 

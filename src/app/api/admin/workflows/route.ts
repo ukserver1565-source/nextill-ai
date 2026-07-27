@@ -10,7 +10,8 @@ export async function GET() {
     if (error) throw new Error(error.message)
     return NextResponse.json(data || [])
   } catch (_err) {
-    return NextResponse.json({ error: "Failed to fetch workflows" }, { status: 500 })
+    console.error("[admin/workflows]", _err)
+    return NextResponse.json([])
   }
 }
 

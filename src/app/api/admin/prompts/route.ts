@@ -7,7 +7,8 @@ export async function GET(req: NextRequest) {
     const data = await promptsService.list(category)
     return NextResponse.json(data)
   } catch (_err) {
-    return NextResponse.json({ error: "Failed to fetch prompts" }, { status: 500 })
+    console.error("[admin/prompts]", _err)
+    return NextResponse.json([])
   }
 }
 

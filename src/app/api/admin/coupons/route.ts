@@ -7,7 +7,8 @@ export async function GET() {
     const coupons = await couponRepo.list()
     return NextResponse.json(coupons)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch coupons", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/coupons]", err)
+    return NextResponse.json([])
   }
 }
 

@@ -49,6 +49,15 @@ export async function GET() {
       timestamp: new Date().toISOString(),
     })
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch analytics", details: (err as Error).message }, { status: 500 })
+    console.error("[admin/analytics]", err)
+    return NextResponse.json({
+      totalUsers: 0,
+      totalDocuments: 0,
+      totalProjects: 0,
+      totalAiRequests: 0,
+      providerStats: {},
+      dailyUsage: {},
+      timestamp: new Date().toISOString(),
+    })
   }
 }

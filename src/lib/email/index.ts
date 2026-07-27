@@ -108,3 +108,8 @@ export async function sendEmail(payload: EmailPayload): Promise<{ ok: boolean; e
 
   return { ok: false, error: "Email provider not configured. Set RESEND_API_KEY or SMTP credentials in .env.local or admin settings." }
 }
+
+export function clearCache() {
+  cachedSettings = null
+  cacheTime = 0
+}
