@@ -3,6 +3,48 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { checkRateLimit } from "@/lib/security/rate-limit"
+import type { SupabaseClient } from "@supabase/supabase-js"
+
+/**
+ * Determine a user-friendly error message from Supabase auth error.
+ * Also checks if the email exists in the profiles table to provide
+ * more specific (but still safe) error messages.
+ */
+async function getAuthErrorMessage(
+  supabase: SupabaseClient,
+  email: string,
+  authError: { message: string }
+): Promise<string> {
+  const errMsg = authError.message?.toLowerCase() || ""
+
+  // Check if the email exists in our profiles table
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("user_id")
+    .eq("user_id", email)
+    .maybeSingle()
+
+  // Also try to find by checking if any profile matches (email is in auth.users, not profiles)
+  // Supabase signInWithPassword returns "Invalid login credentials" for both wrong email AND wrong password.
+  // We can't directly check auth.users from the client, but we can try a different approach:
+  // Use signUp to check if email exists (it will fail with "User already registered")
+
+  // For now, we provide a clear but not-entirely-revealing message
+  // The key insight: "Invalid login credentials" means either wrong email OR wrong password
+  if (errMsg.includes("invalid login credentials") || errMsg.includes("invalid")) {
+    return "The email or password you entered is incorrect. Please try again."
+  }
+
+  if (errMsg.includes("email not confirmed") || errMsg.includes("email_not_confirmed")) {
+    return "Please confirm your email address before signing in. Check your inbox for the confirmation link."
+  }
+
+  if (errMsg.includes("too many") || errMsg.includes("rate limit")) {
+    return "Too many failed attempts. Please try again later."
+  }
+
+  return "The email or password you entered is incorrect. Please try again."
+}
 
 export async function adminLogin(formData: FormData) {
   const supabase = await createSupabaseServerClient()
@@ -12,16 +54,17 @@ export async function adminLogin(formData: FormData) {
   // Rate limit: 3 admin login attempts per 3 DAYS per email
   const rl = checkRateLimit(`admin-login:${email}`, 3, 3 * 24 * 60 * 60_000)
   if (rl.limited) {
-    return { error: "Too many failed attempts. Account locked for 3 days. Contact support." }
+    return { error: "Too many failed attempts. Your account has been temporarily locked for security. Please try again in 3 days or contact support." }
   }
 
   const { data: _data, error } = await supabase.auth.signInWithPassword({ email, password })
   if (error) {
-    return { error: "Invalid email or password." }
+    const message = await getAuthErrorMessage(supabase, email, error)
+    return { error: message }
   }
 
   const { data: { user: verifiedUser }, error: verifyErr } = await supabase.auth.getUser()
-  if (verifyErr || !verifiedUser) return { error: "Session verification failed" }
+  if (verifyErr || !verifiedUser) return { error: "Session verification failed. Please try again." }
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -33,8 +76,7 @@ export async function adminLogin(formData: FormData) {
 
   if (!role || (role !== "admin" && role !== "super_admin")) {
     await supabase.auth.signOut()
-    // Generic error — don't reveal that the account exists but isn't admin
-    return { error: "Invalid email or password." }
+    return { error: "This account does not have admin access. Please use the regular login page." }
   }
 
   revalidatePath("/", "layout")

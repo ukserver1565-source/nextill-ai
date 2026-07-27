@@ -17,8 +17,9 @@ const adminApiRoutes = ["/api/admin"]
 
 const isDev = process.env.NODE_ENV === "development"
 
-// 4-hour sliding-window session timeout
-const SESSION_TIMEOUT_MS = 4 * 60 * 60 * 1000 // 4 hours in milliseconds
+// Sliding-window session timeouts
+const SESSION_TIMEOUT_MS = 4 * 60 * 60 * 1000 // 4 hours for regular users
+const ADMIN_SESSION_TIMEOUT_MS = 30 * 60 * 1000 // 30 minutes for admin routes
 const LAST_ACTIVE_COOKIE = "last_active_at"
 
 function debug(...args: unknown[]) { if (isDev) console.log("[MIDDLEWARE]", ...args) }
@@ -91,13 +92,13 @@ export async function proxy(request: NextRequest) {
         const { data: profile } = await supabase.from("profiles").select("role").eq("user_id", user.id).maybeSingle()
         const role = ((profile as { role?: string } | null)?.role || "").toLowerCase()
         if (role === "admin" || role === "super_admin") {
-          // Update session activity for admins too
+          // Update session activity for admins too (30-minute timeout)
           response.cookies.set(LAST_ACTIVE_COOKIE, String(Date.now()), {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             path: "/",
-            // No maxAge = session cookie = dies when browser closes
+            maxAge: ADMIN_SESSION_TIMEOUT_MS / 1000,
           })
           return NextResponse.redirect(new URL("/zain-nextill-ansari", request.url))
         }
@@ -109,11 +110,11 @@ export async function proxy(request: NextRequest) {
     const { data: { user }, error: userErr } = await supabase.auth.getUser()
     if (userErr || !user) return NextResponse.redirect(new URL("/zain-nextill-ansari/login", request.url))
 
-    // Sliding-window session timeout for admin routes too
+    // Sliding-window session timeout for admin routes (30 minutes)
     const lastActiveCookie = request.cookies.get(LAST_ACTIVE_COOKIE)
     const lastActiveAt = lastActiveCookie ? parseInt(lastActiveCookie.value, 10) : 0
     const now = Date.now()
-    if (lastActiveAt > 0 && (now - lastActiveAt) > SESSION_TIMEOUT_MS) {
+    if (lastActiveAt > 0 && (now - lastActiveAt) > ADMIN_SESSION_TIMEOUT_MS) {
       // Don't force signOut — just redirect to login and let Supabase handle token expiry
       const expiredResponse = NextResponse.redirect(new URL("/zain-nextill-ansari/login", request.url))
       expiredResponse.cookies.delete(LAST_ACTIVE_COOKIE)
@@ -124,7 +125,7 @@ export async function proxy(request: NextRequest) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: SESSION_TIMEOUT_MS / 1000,
+      maxAge: ADMIN_SESSION_TIMEOUT_MS / 1000,
     })
 
     const { data: profile } = await supabase.from("profiles").select("role").eq("user_id", user.id).maybeSingle()

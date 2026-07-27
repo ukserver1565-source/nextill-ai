@@ -114,10 +114,19 @@ export default function SettingsPage() {
             if (Array.isArray(parsed) && parsed.length > 0) {
               // Only keep allowed payment methods (GoPayFast + Stripe)
               const allowed = parsed.filter((m: PaymentMethod) => ["gopayfast", "stripe"].includes(m.id))
-              if (allowed.length > 0) setPaymentMethods(allowed)
-              else setPaymentMethods(DEFAULT_PAYMENT_METHODS)
+              // Always ensure both GoPayFast and Stripe are present in the list
+              const hasGopayfast = allowed.some(m => m.id === "gopayfast")
+              const hasStripe = allowed.some(m => m.id === "stripe")
+              const merged = [...allowed]
+              if (!hasGopayfast) merged.unshift(DEFAULT_PAYMENT_METHODS[0])
+              if (!hasStripe) merged.push(DEFAULT_PAYMENT_METHODS[1])
+              setPaymentMethods(merged)
+            } else {
+              setPaymentMethods(DEFAULT_PAYMENT_METHODS)
             }
-          } catch { /* ignore */ }
+          } catch { setPaymentMethods(DEFAULT_PAYMENT_METHODS) }
+        } else {
+          setPaymentMethods(DEFAULT_PAYMENT_METHODS)
         }
       })
       .catch(() => {})
