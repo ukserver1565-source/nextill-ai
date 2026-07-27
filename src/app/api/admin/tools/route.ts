@@ -6,6 +6,7 @@ export async function GET() {
     const tools = await toolRepo.list()
     return NextResponse.json(tools)
   } catch (err) {
-    return NextResponse.json({ error: "Failed to fetch tools", details: (err as Error).message }, { status: 500 })
+    console.error("[Tools]", err)
+    return NextResponse.json([])
   }
 }

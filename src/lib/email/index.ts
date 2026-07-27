@@ -1,8 +1,8 @@
-const RESEND_API_KEY = process.env.RESEND_API_KEY || ""
-const SMTP_HOST = process.env.SMTP_HOST || ""
-const SMTP_USER = process.env.SMTP_USER || ""
-const SMTP_PASS = process.env.SMTP_PASS || ""
-const FROM_EMAIL = process.env.EMAIL_FROM || "noreply@adultpulse.co.uk"
+const ENV_RESEND_API_KEY = process.env.RESEND_API_KEY || ""
+const ENV_SMTP_HOST = process.env.SMTP_HOST || ""
+const ENV_SMTP_USER = process.env.SMTP_USER || ""
+const ENV_SMTP_PASS = process.env.SMTP_PASS || ""
+const ENV_FROM_EMAIL = process.env.EMAIL_FROM || "noreply@adultpulse.co.uk"
 
 interface EmailPayload {
   to: string
@@ -10,28 +10,70 @@ interface EmailPayload {
   html: string
 }
 
-function isResendConfigured(): boolean {
-  return RESEND_API_KEY.length > 0
+// Load settings from DB (site_settings table) — caches for 60s
+let cachedSettings: Record<string, string> | null = null
+let cacheTime = 0
+
+async function getSettings(): Promise<Record<string, string>> {
+  const now = Date.now()
+  if (cachedSettings && (now - cacheTime) < 60_000) return cachedSettings
+
+  try {
+    // Dynamic import to avoid circular deps
+    const { supabaseAdmin } = await import("@/lib/supabase/admin")
+    const { data } = await supabaseAdmin.from("site_settings").select("key, value")
+    const map: Record<string, string> = {}
+    for (const row of data || []) {
+      if (row.key && row.value) {
+        map[row.key] = typeof row.value === "string" ? row.value : JSON.stringify(row.value)
+      }
+    }
+    cachedSettings = map
+    cacheTime = now
+    return map
+  } catch {
+    return {}
+  }
 }
 
-function isSmtpConfigured(): boolean {
-  return SMTP_HOST.length > 0 && SMTP_USER.length > 0 && SMTP_PASS.length > 0
+function getApiKey(settings: Record<string, string>): string {
+  return ENV_RESEND_API_KEY || settings.resend_api_key || ""
 }
 
-function isConfigured(): boolean {
-  return isResendConfigured() || isSmtpConfigured()
+function getFromEmail(settings: Record<string, string>): string {
+  return settings.from_email || ENV_FROM_EMAIL
 }
 
-async function sendViaResend(payload: EmailPayload): Promise<{ ok: boolean; error?: string }> {
+function getSmtpConfig(settings: Record<string, string>) {
+  return {
+    host: settings.smtp_host || ENV_SMTP_HOST,
+    user: settings.smtp_user || ENV_SMTP_USER,
+    pass: settings.smtp_pass || ENV_SMTP_PASS,
+  }
+}
+
+function isResendConfigured(settings: Record<string, string>): boolean {
+  return getApiKey(settings).length > 0
+}
+
+function isSmtpConfigured(settings: Record<string, string>): boolean {
+  const smtp = getSmtpConfig(settings)
+  return smtp.host.length > 0 && smtp.user.length > 0 && smtp.pass.length > 0
+}
+
+async function sendViaResend(payload: EmailPayload, settings: Record<string, string>): Promise<{ ok: boolean; error?: string }> {
+  const apiKey = getApiKey(settings)
+  const fromEmail = getFromEmail(settings)
+
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${RESEND_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: FROM_EMAIL,
+        from: fromEmail,
         to: payload.to,
         subject: payload.subject,
         html: payload.html,
@@ -54,13 +96,15 @@ async function sendViaSmtp(_payload: EmailPayload): Promise<{ ok: boolean; error
 }
 
 export async function sendEmail(payload: EmailPayload): Promise<{ ok: boolean; error?: string }> {
-  if (!isConfigured()) {
-    return { ok: false, error: "Email provider not configured" }
+  const settings = await getSettings()
+
+  if (isResendConfigured(settings)) {
+    return sendViaResend(payload, settings)
   }
 
-  if (isResendConfigured()) {
-    return sendViaResend(payload)
+  if (isSmtpConfigured(settings)) {
+    return sendViaSmtp(payload)
   }
 
-  return sendViaSmtp(payload)
+  return { ok: false, error: "Email provider not configured. Set RESEND_API_KEY or SMTP credentials in .env.local or admin settings." }
 }
