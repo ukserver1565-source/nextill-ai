@@ -18,7 +18,7 @@ async function getAuthErrorMessage(
   const errMsg = authError.message?.toLowerCase() || ""
 
   // Check if the email exists in our profiles table
-  const { data: profile } = await supabase
+  const { data: _profile } = await supabase
     .from("profiles")
     .select("user_id")
     .eq("user_id", email)

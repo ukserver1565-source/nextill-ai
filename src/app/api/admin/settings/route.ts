@@ -122,8 +122,9 @@ export async function PATCH(req: NextRequest) {
 
 function clearEmailCache() {
   try {
-    const emailLib = require("@/lib/email")
-    if (typeof emailLib.clearCache === "function") emailLib.clearCache()
+    import("@/lib/email").then(emailLib => {
+      if (typeof (emailLib as any).clearCache === "function") (emailLib as any).clearCache()
+    }).catch(() => {})
   } catch {
     // Email lib may not exist yet — not critical
   }
