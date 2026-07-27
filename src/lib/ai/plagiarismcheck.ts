@@ -1,6 +1,6 @@
 /**
  * PlagiarismCheck.org API Client
- * Token: g8wx9zI_K4XhrX7XBuslyphJRg4hVaYh
+ * Token: set via PLAGIARISM_CHECK_API_KEY env var
  * Docs: https://plagiarismcheck.org/api-docs/
  */
 
