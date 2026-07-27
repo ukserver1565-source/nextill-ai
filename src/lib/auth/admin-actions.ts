@@ -9,10 +9,10 @@ export async function adminLogin(formData: FormData) {
   const email = (formData.get("email") as string) || ""
   const password = formData.get("password") as string
 
-  // Rate limit: 5 admin login attempts per 15 minutes per email
-  const rl = checkRateLimit(`admin-login:${email}`, 5, 15 * 60_000)
+  // Rate limit: 3 admin login attempts per 3 DAYS per email
+  const rl = checkRateLimit(`admin-login:${email}`, 3, 3 * 24 * 60 * 60_000)
   if (rl.limited) {
-    return { error: "Too many login attempts. Please try again later." }
+    return { error: "Too many failed attempts. Account locked for 3 days. Contact support." }
   }
 
   const { data: _data, error } = await supabase.auth.signInWithPassword({ email, password })
@@ -33,7 +33,8 @@ export async function adminLogin(formData: FormData) {
 
   if (!role || (role !== "admin" && role !== "super_admin")) {
     await supabase.auth.signOut()
-    return { error: "Not authorized. Admin access required." }
+    // Generic error — don't reveal that the account exists but isn't admin
+    return { error: "Invalid email or password." }
   }
 
   revalidatePath("/", "layout")

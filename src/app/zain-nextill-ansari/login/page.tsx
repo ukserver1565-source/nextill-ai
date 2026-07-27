@@ -33,7 +33,7 @@ export default function AdminLoginPage() {
     setLoading(false)
   }
 
-  const isRateLimited = attempts >= 5
+  const isRateLimited = attempts >= 3
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
             </p>
             <p className="text-[10px] text-muted flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
-              Rate limited: max 5 attempts per 15 minutes
+              Rate limited: max 3 attempts, then 3-day lockout
             </p>
             <p className="text-[10px] text-muted flex items-start gap-2">
               <span className="text-primary mt-0.5">•</span>
@@ -83,7 +83,7 @@ export default function AdminLoginPage() {
                     <p className="text-xs text-[#EF4444] font-medium">{error}</p>
                     {error.includes("Invalid email or password") && attempts >= 2 && (
                       <p className="text-[10px] text-[#EF4444]/70 mt-1">
-                        {5 - attempts > 0 ? `${5 - attempts} attempts remaining before temporary lockout.` : "Account temporarily locked. Please wait 15 minutes."}
+                        {3 - attempts > 0 ? `${3 - attempts} attempts remaining before 3-day lockout.` : "Account temporarily locked for 3 days. Contact support."}
                       </p>
                     )}
                   </div>
@@ -133,7 +133,7 @@ export default function AdminLoginPage() {
                 {loading ? (
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : isRateLimited ? (
-                  "Too many attempts — wait 15 minutes"
+                  "Locked for 3 days — too many attempts"
                 ) : (
                   <>Sign In <ArrowRight className="w-4 h-4" /></>
                 )}
