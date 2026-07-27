@@ -101,6 +101,15 @@ export function PublicHeader() {
                     >
                       Dashboard
                     </Link>
+                    {(profile?.role === "admin" || profile?.role === "super_admin") && (
+                      <Link
+                        href="/zain-nextill-ansari"
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-[#F59E0B] hover:text-white hover:bg-[#F59E0B]/10 rounded-lg transition-colors"
+                        onClick={() => setProfileOpen(false)}
+                      >
+                        ⚡ Admin Panel
+                      </Link>
+                    )}
                     <Link
                       href="/dashboard/settings"
                       className="flex items-center gap-2 px-3 py-2 text-sm text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] rounded-lg transition-colors"

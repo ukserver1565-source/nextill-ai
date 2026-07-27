@@ -17,9 +17,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (!loading && !session) {
       router.push("/login")
     }
-    if (!loading && session && profile && (profile.role === "admin" || profile.role === "super_admin")) {
-      router.push("/zain-nextill-ansari")
-    }
+    // Admins can access user dashboard too — admin panel is at /zain-nextill-ansari
   }, [session, loading, profile, router])
 
   // Close mobile sidebar on route change
