@@ -86,7 +86,7 @@
 - `src/lib/email/templates.ts` — professional branded HTML
 - `src/lib/email/index.ts` — reads from BOTH env vars AND site_settings table (60s cache)
 - **Admin Email Settings:** `/zain-nextill-ansari/email` — save Resend API key
-- API key: `re_FDrwiBo4_FTfRDGA9KeTjXX3Mg6jdyqeF`
+- API key: set in `.env.local` as `RESEND_API_KEY`
 - Domain verified: adultpulse.co.uk
 - Admin email: muzamal57gansari@icloud.com
 
