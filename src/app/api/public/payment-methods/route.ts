@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
+import { unwrapSettingJson } from "@/lib/utils/site-settings"
 
 interface PaymentMethod {
   id: string
@@ -28,16 +29,9 @@ export async function GET() {
     if (error) return NextResponse.json([])
     if (!data?.value) return NextResponse.json([])
 
-    let methods: PaymentMethod[]
-    if (typeof data.value === "string") {
-      try {
-        methods = JSON.parse(data.value)
-      } catch {
-        return NextResponse.json([])
-      }
-    } else {
-      methods = data.value
-    }
+    const unwrapped = unwrapSettingJson<PaymentMethod[]>(data.value)
+    if (!unwrapped) return NextResponse.json([])
+    const methods = unwrapped
 
     if (!Array.isArray(methods)) return NextResponse.json([])
 

@@ -100,8 +100,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s)
       setUser(s?.user ?? null)
-      if (s?.user) { fetchProfile(s.user.id).catch(() => {}) }
-      else setProfile(null)
+      if (s?.user) {
+        // Set login_at cookie for absolute timeout tracking
+        if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+          // Only set on fresh login, not on refresh (to keep absolute time from login)
+          if (event === "SIGNED_IN") {
+            document.cookie = `login_at=${Date.now()}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`
+          }
+        }
+        fetchProfile(s.user.id).catch(() => {})
+      }
+      else {
+        setProfile(null)
+        // Clear login_at on sign out
+        document.cookie = "login_at=; path=/; max-age=0"
+      }
     })
 
     return () => {

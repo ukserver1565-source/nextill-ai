@@ -25,7 +25,13 @@ async function getSettings(): Promise<Record<string, string>> {
     const map: Record<string, string> = {}
     for (const row of data || []) {
       if (row.key && row.value) {
-        map[row.key] = typeof row.value === "string" ? row.value : JSON.stringify(row.value)
+        // Unwrap { v: "..." } wrapper objects used for safe jsonb storage
+        const val = row.value
+        if (typeof val === "object" && val !== null && !Array.isArray(val) && "v" in val) {
+          map[row.key] = String((val as { v: unknown }).v ?? "")
+        } else {
+          map[row.key] = typeof val === "string" ? val : JSON.stringify(val)
+        }
       }
     }
     cachedSettings = map

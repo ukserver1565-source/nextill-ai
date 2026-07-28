@@ -1,4 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase/admin"
+import { unwrapSetting } from "@/lib/utils/site-settings"
 
 export interface SiteSettingsRow {
   id: string
@@ -15,7 +16,7 @@ export const settingsRepo = {
     if (error) throw new Error(`Failed to fetch settings: ${error.message}`)
     const map: Record<string, unknown> = {}
     for (const row of data || []) {
-      map[row.key] = row.value
+      map[row.key] = unwrapSetting(row.value)
     }
     return map
   },
@@ -23,17 +24,18 @@ export const settingsRepo = {
   async get(key: string) {
     const { data, error } = await supabaseAdmin.from("site_settings").select("*").eq("key", key).maybeSingle()
     if (error) throw new Error(`Failed to fetch setting: ${error.message}`)
-    return data?.value ?? null
+    return unwrapSetting(data?.value) ?? null
   },
 
   async set(key: string, value: unknown) {
+    const wrapped = { v: value }
     const { data: existing } = await supabaseAdmin.from("site_settings").select("id").eq("key", key).maybeSingle()
     if (existing) {
-      const { data, error } = await supabaseAdmin.from("site_settings").update({ value, updated_at: new Date().toISOString() }).eq("key", key).select().single()
+      const { data, error } = await supabaseAdmin.from("site_settings").update({ value: wrapped, updated_at: new Date().toISOString() }).eq("key", key).select().single()
       if (error) throw new Error(`Failed to update setting: ${error.message}`)
       return data as SiteSettingsRow
     }
-    const { data, error } = await supabaseAdmin.from("site_settings").insert({ key, value }).select().single()
+    const { data, error } = await supabaseAdmin.from("site_settings").insert({ key, value: wrapped }).select().single()
     if (error) throw new Error(`Failed to create setting: ${error.message}`)
     return data as SiteSettingsRow
   },
