@@ -7,11 +7,13 @@ import { PublicFooter } from "@/components/layout/public-footer"
 import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About Nextill AI — Our Mission to Democratize SEO with AI Tools",
   description:
-    "Learn about Nextill AI — the all-in-one platform for AI-powered SEO content creation, keyword research, and plagiarism detection. Our mission is to democratize premium AI tools for creators of all sizes.",
+    "Learn about Nextill AI — the all-in-one AI SEO platform with 22+ tools for content creation, keyword research, and plagiarism detection. Free for all creators.",
+  keywords: ["about Nextill AI", "AI SEO platform", "SEO company", "AI content tools"],
+  alternates: { canonical: "/about" },
   openGraph: {
-    title: "About Nextill AI — AI-Powered SEO & Content Platform",
+    title: "About Nextill AI — AI-Powered SEO Platform",
     description:
       "Learn about Nextill AI and our mission to democratize premium AI content tools for creators and businesses.",
     url: `${getSiteUrl()}/about`,

@@ -94,15 +94,27 @@ export default function RootLayout({
     "url": siteUrl,
     "logo": `${siteUrl}/api/og`,
     "description": "AI-powered SEO and content generation platform for keyword research, post generation, and plagiarism checking.",
-    "sameAs": [],
+    "sameAs": [
+      "https://twitter.com/adultpulse",
+      "https://www.facebook.com/adultpulse",
+      "https://www.instagram.com/adultpulse",
+    ],
   }
 
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Nextill AI",
+    "name": "Nextill AI — SEO with AI Tools",
     "url": siteUrl,
-    "description": "AI-powered SEO and content generation platform.",
+    "description": "AI-powered SEO and content generation platform with 22+ tools.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${siteUrl}/tools?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   }
 
   return (

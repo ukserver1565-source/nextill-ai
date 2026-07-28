@@ -9,14 +9,21 @@ import { getSiteUrl } from "@/lib/site-url"
 export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
-  title: "Pricing",
+  title: "AI SEO Tool Pricing — Free, Starter, Pro & Business Plans",
   description:
-    "Choose the plan that fits your needs. Free, Starter, Pro, and Business plans with AI-powered SEO tools, keyword research, post generation, and plagiarism checking.",
+    "Choose the plan that fits your needs. Free tier with daily limits, Starter, Pro, and Business plans with AI-powered SEO tools, keyword research, and content generation.",
+  keywords: ["AI SEO pricing", "SEO tool plans", "free SEO tools", "AI content pricing"],
+  alternates: { canonical: "/pricing" },
   openGraph: {
-    title: "Pricing — Nextill AI",
+    title: "AI SEO Tool Pricing — Free to Business | Nextill AI",
     description:
-      "Choose the plan that fits your needs. Free, Starter, Pro, and Business plans with AI-powered SEO tools.",
+      "Free, Starter, Pro, and Business plans. AI-powered SEO tools from $0/mo.",
     url: `${getSiteUrl()}/pricing`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI SEO Tool Pricing | Nextill AI",
+    description: "Free to Business plans. AI-powered SEO tools starting at $0/mo.",
   },
 }
 

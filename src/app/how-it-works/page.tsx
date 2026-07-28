@@ -7,13 +7,20 @@ import { BackButton } from "@/components/shared/back-button"
 import { Search, FileText, Shield, ArrowRight, Check, Zap } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "How It Works",
+  title: "How AI SEO Tools Work — 3 Simple Steps | Nextill AI",
   description:
-    "Learn how Nextill AI works in 3 simple steps. Research keywords, generate SEO-optimized content, and verify originality with AI-powered workflows.",
+    "Learn how AI SEO tools work in 3 steps: Research keywords, generate optimized content, and verify originality. Free AI-powered workflow for creators.",
+  keywords: ["how AI SEO works", "AI content workflow", "SEO steps", "AI writing process"],
+  alternates: { canonical: "/how-it-works" },
   openGraph: {
-    title: "How It Works — Nextill AI",
-    description: "3 simple steps to AI-powered SEO content creation.",
+    title: "How AI SEO Tools Work — 3 Simple Steps | Nextill AI",
+    description: "Research → Generate → Verify: the AI-powered SEO workflow.",
     url: `${getSiteUrl()}/how-it-works`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "How AI SEO Tools Work | Nextill AI",
+    description: "3 simple steps to rank higher with AI-powered SEO tools.",
   },
 }
 

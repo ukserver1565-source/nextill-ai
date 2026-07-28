@@ -7,11 +7,13 @@ import { PublicHeader } from "@/components/layout/public-header"
 import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
-  title: "Features",
+  title: "AI SEO Features — 22+ Tools for Keyword Research, Content & Analysis",
   description:
-    "Explore Nextill AI's three powerful workflows: Domain Intelligence for keyword research, Post Generator for SEO content, and Plagiarism Checker for originality verification.",
+    "Explore 22+ AI SEO tools: keyword research, content generation, plagiarism checking, domain analysis, website audit, rank tracking & more. Free to start.",
+  keywords: ["AI SEO features", "keyword research tool", "AI content generator", "SEO tools"],
+  alternates: { canonical: "/features" },
   openGraph: {
-    title: "Features — Nextill AI",
+    title: "AI SEO Features — 22+ Tools | Nextill AI",
     description:
       "Domain Intelligence, Post Generator, and Plagiarism Checker — three AI workflows for content creation and SEO.",
     url: `${getSiteUrl()}/features`,
