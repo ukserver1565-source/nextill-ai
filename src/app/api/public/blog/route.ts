@@ -488,13 +488,67 @@ Use the **ICE framework** for prioritization:
 
 **Priority Score = (Impact × 0.4) + (Confidence × 0.3) + (Ease × 0.3)**
 
-## Test Your Knowledge
+## Test Your Knowledge — 10 MCQs
 
-> **Q: Which search intent has the highest conversion potential?**
-> - A) Informational
-> - B) Navigational
-> - C) Commercial
-> - D) **Transactional** ✅
+**1. Which search intent has the highest conversion potential?**
+- A) Informational
+- B) Navigational
+- C) Commercial
+- D) **Transactional** ✅
+
+**2. What is the first step in keyword research?**
+- A) Check competitors
+- B) **Define your goals** ✅
+- C) Buy tools
+- D) Write content
+
+**3. What does keyword difficulty score measure?**
+- A) How hard the keyword is to spell
+- B) How many people search for it
+- C) **How competitive it is to rank for** ✅
+- D) How long the keyword is
+
+**4. What is a long-tail keyword?**
+- A) A very long article
+- B) A keyword with high volume
+- C) **A specific phrase with lower competition** ✅
+- D) A keyword in the URL
+
+**5. What is the ICE prioritization framework?**
+- A) Impact, Cost, Efficiency
+- B) **Impact, Confidence, Ease** ✅
+- C) Index, Crawl, Evaluate
+- D) Ideas, Content, Engagement
+
+**6. Which AI feature helps identify content gaps?**
+- A) Grammar checking
+- B) Spell checking
+- C) **Competitor analysis** ✅
+- D) Image optimization
+
+**7. What is search intent classification?**
+- A) Sorting keywords by length
+- B) Grouping keywords by language
+- C) **Categorizing why people search for terms** ✅
+- D) Counting keyword frequency
+
+**8. What is a seed keyword?**
+- A) The most popular keyword
+- B) A hidden keyword
+- C) **A broad starting topic for expansion** ✅
+- D) A keyword that costs money
+
+**9. Why should you prioritize commercial intent keywords?**
+- A) They have highest volume
+- B) They are easiest to rank for
+- C) **They lead to purchases** ✅
+- D) They have no competition
+
+**10. What is the biggest advantage of AI keyword research?**
+- A) It is free
+- B) It writes content for you
+- C) **It finds hidden opportunities faster** ✅
+- D) It guarantees #1 ranking
 
 ## Conclusion
 
@@ -555,19 +609,67 @@ Before publishing, run your content through a reliable plagiarism checker. This 
 
 If you use AI writing tools, always verify the output with a plagiarism checker. AI models can sometimes generate text that closely resembles existing content.
 
-## Test Your Knowledge
+## Test Your Knowledge — 10 MCQs
 
-> **Q: What is the search ranking penalty for duplicate content?**
-> - A) -10%
-> - B) -25%
-> - C) **-50%** ✅
-> - D) Complete deindexing
+**1. What is the search ranking penalty for duplicate content?**
+- A) -10%
+- B) -25%
+- C) **-50%** ✅
+- D) Complete deindexing
 
-> **Q: How many web pages does the largest plagiarism database contain?**
-> - A) 1 billion
-> - B) 5 billion
-> - C) 10 billion
-> - D) **16 billion+** ✅
+**2. How many web pages does the largest plagiarism database contain?**
+- A) 1 billion
+- B) 5 billion
+- C) 10 billion
+- D) **16 billion+** ✅
+
+**3. What is text matching in plagiarism detection?**
+- A) Comparing images
+- B) Checking grammar
+- C) **Comparing text directly against known sources** ✅
+- D) Analyzing keywords
+
+**4. Can AI detection tools identify paraphrased AI content?**
+- A) No, never
+- B) Only sometimes
+- C) **Yes, using statistical pattern analysis** ✅
+- D) Only with human help
+
+**5. What is the best way to create original content?**
+- A) Copy from competitors
+- B) Use article spinners
+- C) **Draw from personal experience and research** ✅
+- D) Translate from other languages
+
+**6. Why is original content important for SEO?**
+- A) It loads faster
+- B) It has more images
+- C) **Search engines penalize duplicate content** ✅
+- D) It uses fewer keywords
+
+**7. What should you do before publishing AI-generated content?**
+- A) Publish immediately
+- B) Only check spelling
+- C) **Run through a plagiarism checker** ✅
+- D) Add more keywords
+
+**8. What is AI content verification?**
+- A) Checking if the website is live
+- B) Verifying the author's identity
+- C) **Checking AI output for similarity to existing content** ✅
+- D) Testing page load speed
+
+**9. Which tool has the largest plagiarism database?**
+- A) Copyscape
+- B) Grammarly
+- C) **Turnitin (99B+ words)** ✅
+- D) Quetext
+
+**10. What happens when readers find copied content?**
+- A) They share it more
+- B) They bookmark it
+- C) **They lose trust in the website** ✅
+- D) They subscribe for more
 
 ## Conclusion
 
