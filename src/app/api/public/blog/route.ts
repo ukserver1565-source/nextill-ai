@@ -272,6 +272,8 @@ Keyword research remains the cornerstone of successful SEO. With AI-powered inte
 
 ## Search Intent Classification
 
+![Keyword Research](https://images.unsplash.com/photo-1553484771-371a605b060b?w=800&h=400&fit=crop)
+
 | Intent Type | Example Query | Content Format | Conversion Potential |
 |-------------|---------------|----------------|---------------------|
 | **Informational** | "what is keyword research" | Blog post, guide | Low (top of funnel) |
@@ -351,6 +353,8 @@ Original content is the foundation of successful SEO and credible publishing. Un
 Search engines penalize duplicate content, and readers lose trust in websites that publish copied material. Original content ranks better and earns more backlinks.
 
 ### The Impact of Duplicate Content
+
+![Original Content Matters](https://images.unsplash.com/photo-1504711434969-e33886168d8c?w=800&h=400&fit=crop)
 
 | Ranking Factor | Original Content | Duplicate Content |
 |---------------|-----------------|-------------------|
