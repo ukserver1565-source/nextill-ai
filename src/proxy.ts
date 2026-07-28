@@ -18,8 +18,8 @@ const adminApiRoutes = ["/api/admin"]
 const isDev = process.env.NODE_ENV === "development"
 
 // Sliding-window session timeouts
-const SESSION_TIMEOUT_MS = 7 * 24 * 60 * 60 * 1000 // 7 days for regular users
-const ADMIN_SESSION_TIMEOUT_MS = 24 * 60 * 60 * 1000 // 24 hours for admin routes
+const SESSION_TIMEOUT_MS = 4 * 60 * 60 * 1000 // 4 hours for regular users
+const ADMIN_SESSION_TIMEOUT_MS = 30 * 60 * 1000 // 30 minutes for admin routes
 const LAST_ACTIVE_COOKIE = "last_active_at"
 
 function debug(...args: unknown[]) { if (isDev) console.log("[MIDDLEWARE]", ...args) }
