@@ -21,14 +21,13 @@ export async function GET() {
 
 /**
  * Format a value for storage in a jsonb column.
- * Objects/arrays are kept as-is (already valid JSON).
- * Strings and primitives are JSON-encoded so they become valid jsonb strings.
+ * PostgREST (Supabase) handles serialization — just pass values as-is.
+ * Objects/arrays pass through. Strings pass through.
+ * Do NOT JSON.stringify — it double-encodes and adds extra quotes.
  */
 function formatJsonValue(value: unknown): unknown {
   if (value === null || value === undefined) return ""
-  if (typeof value === "object") return value // arrays and objects are valid jsonb
-  // Primitives: wrap in JSON.stringify so "foo" becomes "\"foo\"" (valid jsonb string)
-  return JSON.stringify(value)
+  return value // PostgREST handles jsonb serialization
 }
 
 export async function PATCH(req: NextRequest) {
