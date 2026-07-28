@@ -9,12 +9,19 @@ export const metadata: Metadata = {
   title: "Blog — AI SEO & Content Marketing Insights",
   description:
     "Expert insights on AI-powered SEO, content creation, keyword research, and digital marketing strategies. Stay ahead with the latest trends and tools.",
+  keywords: ["AI SEO blog", "content marketing tips", "keyword research guide", "SEO strategy 2026"],
+  alternates: { canonical: "/blog" },
   openGraph: {
-    title: "Blog — AdultPulse AI",
+    title: "Blog — AI SEO & Content Marketing Insights | Nextill AI",
     description:
-      "Expert insights on AI-powered SEO, content creation, keyword research, and digital marketing strategies.",
+      "Expert insights on AI-powered SEO, content creation, keyword research, and digital marketing.",
     url: `${getSiteUrl()}/blog`,
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI SEO Blog | Nextill AI",
+    description: "Expert insights on AI-powered SEO and content marketing.",
   },
 }
 

@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     "AI blog writer", "rank tracker free", "website audit tool", "AI writing assistant",
     "SEO software", "content marketing tools", "AI-powered SEO", "free SEO tools",
   ],
+  alternates: { canonical: "/" },
   openGraph: {
     title: "SEO with AI — Free AI SEO Tools & Content Platform | Nextill AI",
     description:
