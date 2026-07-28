@@ -491,48 +491,53 @@ export default function SettingsPage() {
                           />
                         </div>
 
-                        <div className="space-y-1.5">
-                          <label className="text-[10px] font-medium text-muted uppercase tracking-wider">Wallet Address</label>
-                          <input
-                            value={method.wallet_address}
-                            onChange={(e) => {
-                              const next = [...paymentMethods]
-                              next[i] = { ...next[i], wallet_address: e.target.value }
-                              setPaymentMethods(next)
-                            }}
-                            placeholder="Enter wallet address (for crypto/mobile payments)"
-                            className="w-full h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all font-mono"
-                          />
-                        </div>
+                        {/* Wallet/QR fields only for non-card types (crypto, mobile, bank) */}
+                        {method.type !== "card" && (
+                          <>
+                            <div className="space-y-1.5">
+                              <label className="text-[10px] font-medium text-muted uppercase tracking-wider">Wallet Address</label>
+                              <input
+                                value={method.wallet_address}
+                                onChange={(e) => {
+                                  const next = [...paymentMethods]
+                                  next[i] = { ...next[i], wallet_address: e.target.value }
+                                  setPaymentMethods(next)
+                                }}
+                                placeholder="Enter wallet address (for crypto/mobile payments)"
+                                className="w-full h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all font-mono"
+                              />
+                            </div>
 
-                        <div className="space-y-1.5">
-                          <label className="text-[10px] font-medium text-muted uppercase tracking-wider">QR Code URL</label>
-                          <input
-                            value={method.qr_code_url}
-                            onChange={(e) => {
-                              const next = [...paymentMethods]
-                              next[i] = { ...next[i], qr_code_url: e.target.value }
-                              setPaymentMethods(next)
-                            }}
-                            placeholder="https://... (URL to QR code image)"
-                            className="w-full h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
-                          />
-                        </div>
+                            <div className="space-y-1.5">
+                              <label className="text-[10px] font-medium text-muted uppercase tracking-wider">QR Code URL</label>
+                              <input
+                                value={method.qr_code_url}
+                                onChange={(e) => {
+                                  const next = [...paymentMethods]
+                                  next[i] = { ...next[i], qr_code_url: e.target.value }
+                                  setPaymentMethods(next)
+                                }}
+                                placeholder="https://... (URL to QR code image)"
+                                className="w-full h-9 px-3 rounded-lg bg-card border border-border text-foreground text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all"
+                              />
+                            </div>
 
-                        <div className="space-y-1.5">
-                          <label className="text-[10px] font-medium text-muted uppercase tracking-wider">Instructions</label>
-                          <textarea
-                            value={method.instructions}
-                            onChange={(e) => {
-                              const next = [...paymentMethods]
-                              next[i] = { ...next[i], instructions: e.target.value }
-                              setPaymentMethods(next)
-                            }}
-                            rows={3}
-                            placeholder="Payment instructions for customers..."
-                            className="w-full px-3 py-2 rounded-lg bg-card border border-border text-foreground text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all resize-none"
-                          />
-                        </div>
+                            <div className="space-y-1.5">
+                              <label className="text-[10px] font-medium text-muted uppercase tracking-wider">Instructions</label>
+                              <textarea
+                                value={method.instructions}
+                                onChange={(e) => {
+                                  const next = [...paymentMethods]
+                                  next[i] = { ...next[i], instructions: e.target.value }
+                                  setPaymentMethods(next)
+                                }}
+                                rows={3}
+                                placeholder="Payment instructions for customers..."
+                                className="w-full px-3 py-2 rounded-lg bg-card border border-border text-foreground text-xs placeholder-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#6D5EF5]/30 transition-all resize-none"
+                              />
+                            </div>
+                          </>
+                        )}
 
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-medium text-muted uppercase tracking-wider">Icon</label>
