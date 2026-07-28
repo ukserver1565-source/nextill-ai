@@ -3,6 +3,19 @@
 import { useState, useEffect } from "react"
 import { Save, Mail, Send, Eye, EyeOff, Loader2 } from "lucide-react"
 
+/** Strip all layers of escaped/JSON-encoded quotes from DB values */
+function cleanDbValue(val: unknown): string {
+  if (!val) return ""
+  let s = String(val)
+  // Keep stripping surrounding quotes until stable
+  while ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith('\\"') && s.endsWith('\\"'))) {
+    const next = s.replace(/^"|"$/g, "").replace(/^\\"|\\"$/g, "")
+    if (next === s) break
+    s = next
+  }
+  return s
+}
+
 export default function EmailPage() {
   const [provider, setProvider] = useState<"smtp" | "resend">("smtp")
   const [showSmtpPass, setShowSmtpPass] = useState(false)
@@ -32,8 +45,8 @@ export default function EmailPage() {
         if (data.smtp_user) setForm(f => ({ ...f, smtpUser: data.smtp_user }))
         if (data.smtp_pass) setForm(f => ({ ...f, smtpPass: "••••••••••••••••" }))
         if (data.resend_api_key) setForm(f => ({ ...f, apiKey: "••••••••••••••••" }))
-        if (data.from_email) setForm(f => ({ ...f, fromEmail: String(data.from_email).replace(/^"|"$/g, "") }))
-        if (data.from_name) setForm(f => ({ ...f, fromName: String(data.from_name).replace(/^"|"$/g, "") }))
+        if (data.from_email) setForm(f => ({ ...f, fromEmail: cleanDbValue(data.from_email) }))
+        if (data.from_name) setForm(f => ({ ...f, fromName: cleanDbValue(data.from_name) }))
       })
       .catch(() => {})
       .finally(() => setLoading(false))
