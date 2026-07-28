@@ -252,7 +252,11 @@ function _createClient(request: NextRequest) {
         setAll(cookiesToSet) {
           for (const { name, value, options } of cookiesToSet) {
             request.cookies.set(name, value)
-            response.cookies.set(name, value, options)
+            response.cookies.set(name, value, {
+              ...options,
+              maxAge: options.maxAge ?? 60 * 60 * 24 * 7, // 7 days default
+              path: "/",
+            })
           }
         },
       },
