@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { getAdminOrNull } from "@/lib/supabase/admin"
+import { unwrapSetting } from "@/lib/utils/site-settings"
 
 export async function GET() {
   try {
@@ -14,7 +15,7 @@ export async function GET() {
       .eq("key", "site_logo_url")
       .single()
 
-    return NextResponse.json({ logo_url: data?.value || null })
+    return NextResponse.json({ logo_url: unwrapSetting(data?.value) || null })
   } catch {
     return NextResponse.json({ logo_url: null })
   }

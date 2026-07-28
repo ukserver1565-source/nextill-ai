@@ -7,6 +7,7 @@ import { BackButton } from "@/components/shared/back-button"
 import { getSiteUrl } from "@/lib/site-url"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { BlogPostContent } from "./blog-post-content"
+import { TableOfContents } from "./table-of-contents"
 
 interface BlogPostData {
   id: string
@@ -184,9 +185,29 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             </p>
           )}
 
+          {/* Table of Contents */}
+          <TableOfContents content={post.content || ""} />
+
           {/* Content */}
           <div className="rounded-3xl bg-card/60 border border-border/50 p-6 sm:p-10 lg:p-14 mb-16">
             <BlogPostContent content={post.content || ""} />
+          </div>
+
+          {/* Author Box */}
+          <div className="rounded-2xl bg-card/60 border border-border/50 p-6 sm:p-8 mb-16">
+            <div className="flex items-start gap-5">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/30 to-secondary/30 border-2 border-primary/20 flex items-center justify-center shrink-0">
+                <span className="text-xl font-bold text-primary">AP</span>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-foreground mb-1">AdultPulse AI Team</h3>
+                <p className="text-xs text-primary mb-3">Content & SEO Experts</p>
+                <p className="text-sm text-muted leading-relaxed">
+                  Our team combines years of SEO expertise with cutting-edge AI tools to create
+                  data-driven content that ranks. We test every strategy we write about on our own sites first.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Related Posts */}

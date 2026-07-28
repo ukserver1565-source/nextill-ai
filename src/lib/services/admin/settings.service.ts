@@ -1,4 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase/admin"
+import { unwrapSetting } from "@/lib/utils/site-settings"
 
 export interface SiteSettingRow {
   id: string
@@ -18,7 +19,7 @@ export const adminSettingsService = {
     if (error) throw new Error(`Failed to fetch settings: ${error.message}`)
     const map: Record<string, unknown> = {}
     for (const row of data || []) {
-      map[row.key] = row.value
+      map[row.key] = unwrapSetting(row.value)
     }
     return map
   },
@@ -31,11 +32,11 @@ export const adminSettingsService = {
       .maybeSingle()
     if (error) throw new Error(`Failed to fetch setting: ${error.message}`)
     if (!data) return null
-    return data.value
+    return unwrapSetting(data.value)
   },
 
   async set(key: string, value: unknown) {
-    const jsonValue = typeof value === "string" ? value : JSON.stringify(value)
+    const wrapped = { v: value }
     const { data: existing } = await supabaseAdmin
       .from("site_settings")
       .select("id")
@@ -44,7 +45,7 @@ export const adminSettingsService = {
     if (existing) {
       const { data: updated, error } = await supabaseAdmin
         .from("site_settings")
-        .update({ value: jsonValue, updated_at: new Date().toISOString() })
+        .update({ value: wrapped, updated_at: new Date().toISOString() })
         .eq("key", key)
         .select()
         .single()
@@ -53,7 +54,7 @@ export const adminSettingsService = {
     }
     const { data: created, error } = await supabaseAdmin
       .from("site_settings")
-      .insert({ key, value: jsonValue, category: "general" })
+      .insert({ key, value: wrapped, category: "general" })
       .select()
       .single()
     if (error) throw new Error(`Failed to create setting: ${error.message}`)
@@ -78,7 +79,7 @@ export const adminSettingsService = {
     if (error) throw new Error(`Failed to fetch settings by category: ${error.message}`)
     const map: Record<string, unknown> = {}
     for (const row of data || []) {
-      map[row.key] = row.value
+      map[row.key] = unwrapSetting(row.value)
     }
     return map
   },
