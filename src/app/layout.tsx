@@ -121,6 +121,8 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <head>
         <meta name="google-site-verification" content="RlOwPuXymU_VATwzE1bgeeEMsk4pv71H-kgh7D0whvI" />
+        <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+        <link rel="alternate" type="application/rss+xml" title="Nextill AI Blog RSS" href="/feed.xml" />
         {/* Prevent flash of wrong theme — runs before first paint */}
         <script
           dangerouslySetInnerHTML={{

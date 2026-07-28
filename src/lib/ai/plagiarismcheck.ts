@@ -40,14 +40,18 @@ export async function checkPlagiarism(text: string): Promise<PlagiarismResult> {
   }
 
   try {
-    // Step 1: Submit text for checking
+    // Step 1: Submit text for checking (API requires form-data, NOT JSON)
+    const formData = new FormData()
+    formData.append("text", text)
+    formData.append("language", "en")
+
     const submitRes = await fetch(`${BASE_URL}/api/v1/text`, {
       method: "POST",
       headers: {
         "X-API-TOKEN": API_TOKEN,
-        "Content-Type": "application/json",
+        // NOTE: Do NOT set Content-Type — browser sets it automatically with boundary for FormData
       },
-      body: JSON.stringify({ text, language: "en" }),
+      body: formData,
     })
 
     if (!submitRes.ok) {

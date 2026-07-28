@@ -233,6 +233,30 @@ async function generateText(
     )
   }
 
+  // Fallback 1: Try env-var-based Gemini provider (works without DB config)
+  const envGeminiKey = process.env.GEMINI_API_KEY
+  if (envGeminiKey) {
+    try {
+      const { geminiProvider } = await import("@/lib/ai/providers/gemini.provider")
+      if (geminiProvider.enabled) {
+        const envResult = await geminiProvider.generate(prompt, options as Record<string, unknown>)
+        if (envResult.success) {
+          const envLatency = Date.now() - startTotal
+          return {
+            success: true,
+            content: envResult.content,
+            model: "gemini-env",
+            provider: "gemini",
+            latencyMs: envLatency,
+          }
+        }
+      }
+    } catch {
+      // env fallback failed, continue to local
+    }
+  }
+
+  // Fallback 2: Local heuristic engine (no API needed)
   const fallbackResult = localFallback(prompt, workflowSlug)
   const fallbackLatency = Date.now() - startTotal
 
