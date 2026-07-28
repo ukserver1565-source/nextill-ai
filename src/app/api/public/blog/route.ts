@@ -288,9 +288,8 @@ export async function GET(req: NextRequest) {
 
     let query = supabaseAdmin
       .from("blog_posts")
-      .select("id, title, slug, excerpt, featured_image_url, published_at, blog_categories(id, name, slug)", { count: "exact" })
+      .select("id, title, slug, excerpt, featured_image_url, published_at, category_id", { count: "exact" })
       .eq("status", "published")
-      .not("published_at", "is", null)
       .order("published_at", { ascending: false })
 
     if (category_id) query = query.eq("category_id", category_id)

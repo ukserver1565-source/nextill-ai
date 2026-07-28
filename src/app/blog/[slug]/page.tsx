@@ -25,10 +25,9 @@ interface BlogPostData {
 async function getPost(slug: string): Promise<BlogPostData | null> {
   const { data, error } = await supabaseAdmin
     .from("blog_posts")
-    .select("*, blog_categories(id, name, slug)")
+    .select("*")
     .eq("slug", slug)
     .eq("status", "published")
-    .not("published_at", "is", null)
     .single()
 
   if (error || !data) return null
@@ -46,7 +45,7 @@ async function getRelatedPosts(categoryId: string, excludeId: string) {
   if (!categoryId) return []
   const { data } = await supabaseAdmin
     .from("blog_posts")
-    .select("id, title, slug, excerpt, featured_image_url, published_at, blog_categories(id, name, slug)")
+    .select("id, title, slug, excerpt, featured_image_url, published_at")
     .eq("status", "published")
     .eq("category_id", categoryId)
     .neq("id", excludeId)
