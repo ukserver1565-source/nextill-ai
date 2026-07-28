@@ -678,13 +678,7 @@ Maintaining content originality requires awareness, good practices, and the righ
 
 async function ensureSeeded() {
   try {
-    const { count } = await supabaseAdmin
-      .from("blog_posts")
-      .select("id", { count: "exact", head: true })
-
-    if (count && count > 0) return
-
-    // No posts — seed them
+    // Always upsert — updates content if posts exist, creates if they don't
     for (const post of BLOG_POSTS) {
       const content = ARTICLES[post.slug] || ""
       await supabaseAdmin
