@@ -6,14 +6,23 @@ import { PublicFooter } from "@/components/layout/public-footer"
 import { ToolStatusGuard } from "@/components/shared/tool-status-guard"
 
 export const metadata: Metadata = {
-  title: "Domain Intelligence",
+  title: "Free Domain Intelligence — SEO Analysis & Audit | Nextill AI",
   description:
     "Discover high-value keywords with real-time search volume, difficulty scoring, trend data, competitor analysis, and SERP feature breakdown — all powered by AI.",
+  keywords: ["domain intelligence", "SEO analysis", "website audit tool"],
   openGraph: {
-    title: "Domain Intelligence — Nextill AI",
+    title: "Free Domain Intelligence — SEO Analysis & Audit | Nextill AI",
     description:
       "Discover high-value keywords with volume, difficulty, trends, competitors, and SERP analysis.",
     url: `${getSiteUrl()}/domain-overview`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Domain Intelligence — SEO Analysis & Audit | Nextill AI",
+    description: "Discover high-value keywords with real-time search volume, difficulty scoring, trend data, competitor analysis, and SERP feature breakdown.",
+  },
+  alternates: {
+    canonical: `${getSiteUrl()}/domain-overview`,
   },
 }
 

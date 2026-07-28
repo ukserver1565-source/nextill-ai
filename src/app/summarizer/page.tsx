@@ -3,14 +3,23 @@ import type { Metadata } from "next"
 import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
-  title: "Summarizer",
+  title: "AI Summarizer — Condense Long Articles | Nextill AI",
   description:
     "Condense long articles and documents into concise, key-point summaries.",
+  keywords: ["AI summarizer", "text summarizer", "article summarizer"],
   openGraph: {
-    title: "Summarizer — Nextill AI",
+    title: "AI Summarizer — Condense Long Articles | Nextill AI",
     description:
       "Condense long articles and documents into concise, key-point summaries.",
     url: `${getSiteUrl()}/summarizer`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI Summarizer — Condense Long Articles | Nextill AI",
+    description: "Condense long articles and documents into concise, key-point summaries.",
+  },
+  alternates: {
+    canonical: `${getSiteUrl()}/summarizer`,
   },
 }
 

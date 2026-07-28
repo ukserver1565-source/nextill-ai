@@ -3,14 +3,23 @@ import type { Metadata } from "next"
 import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
-  title: "AI Detector",
+  title: "AI Content Detector — Check if Text is AI-Generated | Nextill AI",
   description:
     "Detect whether content was written by AI or a human with high accuracy.",
+  keywords: ["AI detector", "check AI content", "GPTZero alternative"],
   openGraph: {
-    title: "AI Detector — Nextill AI",
+    title: "AI Content Detector — Check if Text is AI-Generated | Nextill AI",
     description:
       "Detect whether content was written by AI or a human with high accuracy.",
     url: `${getSiteUrl()}/ai-detector`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI Content Detector — Check if Text is AI-Generated | Nextill AI",
+    description: "Detect whether content was written by AI or a human with high accuracy.",
+  },
+  alternates: {
+    canonical: `${getSiteUrl()}/ai-detector`,
   },
 }
 

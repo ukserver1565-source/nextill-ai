@@ -6,14 +6,23 @@ import { PublicFooter } from "@/components/layout/public-footer"
 import { ToolStatusGuard } from "@/components/shared/tool-status-guard"
 
 export const metadata: Metadata = {
-  title: "AI Post Generator",
+  title: "AI Post Generator — Write SEO Blog Posts Free | Nextill AI",
   description:
     "Generate fully SEO-optimized blog posts with AI in one click. Includes SEO titles, meta descriptions, FAQ schema, internal links, and structured content.",
+  keywords: ["AI post generator", "SEO blog writer", "AI article writer"],
   openGraph: {
-    title: "AI Post Generator — Nextill AI",
+    title: "AI Post Generator — Write SEO Blog Posts Free | Nextill AI",
     description:
       "Generate SEO-optimized blog posts with AI — titles, meta, FAQ schema, and internal links included.",
     url: `${getSiteUrl()}/post-generator`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI Post Generator — Write SEO Blog Posts Free | Nextill AI",
+    description: "Generate fully SEO-optimized blog posts with AI in one click. Includes SEO titles, meta descriptions, FAQ schema, internal links, and structured content.",
+  },
+  alternates: {
+    canonical: `${getSiteUrl()}/post-generator`,
   },
 }
 

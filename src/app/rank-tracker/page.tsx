@@ -3,14 +3,23 @@ import type { Metadata } from "next"
 import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
-  title: "Rank Tracker",
+  title: "Free Rank Tracker — Monitor Google Rankings | Nextill AI",
   description:
     "Track your keyword rankings and monitor SEO performance over time.",
+  keywords: ["rank tracker", "SERP tracking", "Google position checker"],
   openGraph: {
-    title: "Rank Tracker — Nextill AI",
+    title: "Free Rank Tracker — Monitor Google Rankings | Nextill AI",
     description:
       "Track your keyword rankings and monitor SEO performance over time.",
     url: `${getSiteUrl()}/rank-tracker`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Rank Tracker — Monitor Google Rankings | Nextill AI",
+    description: "Track your keyword rankings and monitor SEO performance over time.",
+  },
+  alternates: {
+    canonical: `${getSiteUrl()}/rank-tracker`,
   },
 }
 

@@ -3,14 +3,23 @@ import type { Metadata } from "next"
 import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
-  title: "Website Audit",
+  title: "Free Website Audit Tool — SEO Health Check | Nextill AI",
   description:
     "Audit your website for SEO issues, performance, and best practices.",
+  keywords: ["website audit", "SEO audit", "site health check"],
   openGraph: {
-    title: "Website Audit — Nextill AI",
+    title: "Free Website Audit Tool — SEO Health Check | Nextill AI",
     description:
       "Audit your website for SEO issues, performance, and best practices.",
     url: `${getSiteUrl()}/website-audit`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Website Audit Tool — SEO Health Check | Nextill AI",
+    description: "Audit your website for SEO issues, performance, and best practices.",
+  },
+  alternates: {
+    canonical: `${getSiteUrl()}/website-audit`,
   },
 }
 

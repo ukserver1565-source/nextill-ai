@@ -3,14 +3,23 @@ import type { Metadata } from "next"
 import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
-  title: "Internal Link Generator",
+  title: "Internal Link Generator — Improve Site Structure | Nextill AI",
   description:
     "Discover and generate internal linking opportunities for SEO.",
+  keywords: ["internal links", "site structure", "link building"],
   openGraph: {
-    title: "Internal Link Generator — Nextill AI",
+    title: "Internal Link Generator — Improve Site Structure | Nextill AI",
     description:
       "Discover and generate internal linking opportunities for SEO.",
     url: `${getSiteUrl()}/internal-link-generator`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Internal Link Generator — Improve Site Structure | Nextill AI",
+    description: "Discover and generate internal linking opportunities for SEO.",
+  },
+  alternates: {
+    canonical: `${getSiteUrl()}/internal-link-generator`,
   },
 }
 

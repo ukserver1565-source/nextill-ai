@@ -3,14 +3,23 @@ import type { Metadata } from "next"
 import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
-  title: "Article Rewriter",
+  title: "Article Rewriter — Rephrase & Optimize Content | Nextill AI",
   description:
     "Rewrite and rephrase articles while preserving meaning and SEO value.",
+  keywords: ["article rewriter", "content rephraser", "text rewriter"],
   openGraph: {
-    title: "Article Rewriter — Nextill AI",
+    title: "Article Rewriter — Rephrase & Optimize Content | Nextill AI",
     description:
       "Rewrite and rephrase articles while preserving meaning and SEO value.",
     url: `${getSiteUrl()}/article-rewriter`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Article Rewriter — Rephrase & Optimize Content | Nextill AI",
+    description: "Rewrite and rephrase articles while preserving meaning and SEO value.",
+  },
+  alternates: {
+    canonical: `${getSiteUrl()}/article-rewriter`,
   },
 }
 

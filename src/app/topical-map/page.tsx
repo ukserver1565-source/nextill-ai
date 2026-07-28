@@ -3,14 +3,23 @@ import type { Metadata } from "next"
 import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
-  title: "Topical Map",
+  title: "AI Topical Map Generator — Content Strategy | Nextill AI",
   description:
     "Generate topical authority maps for comprehensive content strategy.",
+  keywords: ["topical map", "content strategy", "topic clustering"],
   openGraph: {
-    title: "Topical Map — Nextill AI",
+    title: "AI Topical Map Generator — Content Strategy | Nextill AI",
     description:
       "Generate topical authority maps for comprehensive content strategy.",
     url: `${getSiteUrl()}/topical-map`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI Topical Map Generator — Content Strategy | Nextill AI",
+    description: "Generate topical authority maps for comprehensive content strategy.",
+  },
+  alternates: {
+    canonical: `${getSiteUrl()}/topical-map`,
   },
 }
 

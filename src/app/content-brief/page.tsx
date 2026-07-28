@@ -3,14 +3,23 @@ import type { Metadata } from "next"
 import { getSiteUrl } from "@/lib/site-url"
 
 export const metadata: Metadata = {
-  title: "Content Brief",
+  title: "AI Content Brief Generator — Plan SEO Content | Nextill AI",
   description:
     "Create detailed content briefs with SEO guidelines and structure.",
+  keywords: ["content brief generator", "SEO content plan", "article outline"],
   openGraph: {
-    title: "Content Brief — Nextill AI",
+    title: "AI Content Brief Generator — Plan SEO Content | Nextill AI",
     description:
       "Create detailed content briefs with SEO guidelines and structure.",
     url: `${getSiteUrl()}/content-brief`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI Content Brief Generator — Plan SEO Content | Nextill AI",
+    description: "Create detailed content briefs with SEO guidelines and structure.",
+  },
+  alternates: {
+    canonical: `${getSiteUrl()}/content-brief`,
   },
 }
 
