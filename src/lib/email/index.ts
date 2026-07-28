@@ -113,3 +113,17 @@ export function clearCache() {
   cachedSettings = null
   cacheTime = 0
 }
+
+/**
+ * Check if any email provider is configured (env OR database).
+ * Used by the test email endpoint to give a clear error message.
+ */
+export async function isEmailConfigured(): Promise<boolean> {
+  // Check env vars first (fast path)
+  if (ENV_RESEND_API_KEY) return true
+  if (ENV_SMTP_HOST && ENV_SMTP_USER && ENV_SMTP_PASS) return true
+
+  // Check database settings
+  const settings = await getSettings()
+  return isResendConfigured(settings) || isSmtpConfigured(settings)
+}

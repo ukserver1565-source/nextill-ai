@@ -41,6 +41,7 @@ export default function EmailPage() {
 
   const handleSave = async () => {
     setSaving(true)
+    setSaveError("")
     try {
       const body: Record<string, any> = {
         email_provider: provider,
@@ -51,21 +52,45 @@ export default function EmailPage() {
         body.smtp_host = form.smtpHost
         body.smtp_port = form.smtpPort
         body.smtp_user = form.smtpUser
-        if (form.smtpPass) body.smtp_pass = form.smtpPass
+        if (form.smtpPass && !form.smtpPass.includes("••••")) {
+          body.smtp_pass = form.smtpPass
+        }
       } else {
-        if (form.apiKey) body.resend_api_key = form.apiKey
+        // Always send the API key — if field is empty, don't overwrite existing key
+        if (form.apiKey && !form.apiKey.includes("••••")) {
+          body.resend_api_key = form.apiKey
+        }
       }
       const res = await fetch("/api/admin/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       })
+
+      // Handle auth errors — session expired
+      if (res.status === 401 || res.status === 403) {
+        setSaveError("Session expired. Please refresh the page and log in again.")
+        return
+      }
+
+      // Handle rate limit
+      if (res.status === 429) {
+        setSaveError("Too many requests. Please wait a moment and try again.")
+        return
+      }
+
       const data = await res.json()
-      if (!res.ok) throw new Error(data.details || data.error || "Failed to save")
+      if (!res.ok) throw new Error(data.details || data.error || "Failed to save settings")
       setSaved(true)
       setSaveError("")
       setTimeout(() => setSaved(false), 2000)
-    } catch (e: any) { setSaveError(e.message || "Failed to save") } finally {
+    } catch (e: any) {
+      if (e.name === "TypeError" && e.message.includes("fetch")) {
+        setSaveError("Network error. Please check your connection and try again.")
+      } else {
+        setSaveError(e.message || "Failed to save settings")
+      }
+    } finally {
       setSaving(false)
     }
   }

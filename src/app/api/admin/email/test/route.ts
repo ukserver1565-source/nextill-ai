@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server"
-import { sendEmail } from "@/lib/email"
+import { sendEmail, isEmailConfigured } from "@/lib/email"
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}))
     const targetEmail = body.to || process.env.ADMIN_EMAIL || "muzamal57gansari@icloud.com"
 
-    // Check if Resend is configured
-    if (!process.env.RESEND_API_KEY) {
+    // Check if email is configured (checks both env vars AND database settings)
+    if (!isEmailConfigured()) {
       return NextResponse.json({
         success: false,
-        error: "RESEND_API_KEY not set in environment variables. Add it to .env.local.",
+        error: "No email provider configured. Set RESEND_API_KEY in .env.local, or configure it in Email Settings above and save first.",
       }, { status: 400 })
     }
 
