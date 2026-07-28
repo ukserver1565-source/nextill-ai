@@ -139,7 +139,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <article className="pt-20 pb-20">
+      <article className="pt-24 pb-20">
         <div className="max-w-4xl mx-auto px-4">
           <div className="mb-8">
             <BackButton fallback="/blog" />
@@ -147,27 +147,23 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           {/* Hero Image */}
           {post.featured_image_url && (
-            <div className="relative rounded-2xl overflow-hidden mb-8 aspect-[16/9]">
+            <div className="relative rounded-3xl overflow-hidden mb-10 aspect-[16/9]">
               <img
                 src={post.featured_image_url}
                 alt={post.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
             </div>
           )}
 
-          {/* Category + Date */}
-          <div className="flex items-center gap-3 mb-4">
-            {post.blog_categories && (
-              <Link
-                href={`/blog?category=${post.blog_categories.slug}`}
-                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
-              >
-                {post.blog_categories.name}
-              </Link>
-            )}
-            <time className="text-xs text-muted" dateTime={publishDate}>
+          {/* Meta Bar */}
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+              Article
+            </span>
+            <time className="text-xs text-muted flex items-center gap-1.5" dateTime={publishDate}>
+              <span className="w-1 h-1 rounded-full bg-muted" />
               {new Date(publishDate).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
@@ -183,13 +179,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           {/* Excerpt */}
           {post.excerpt && (
-            <p className="text-lg text-muted leading-relaxed mb-8 max-w-3xl">
+            <p className="text-lg text-muted leading-relaxed mb-10 max-w-3xl border-l-2 border-primary/30 pl-6">
               {post.excerpt}
             </p>
           )}
 
           {/* Content */}
-          <div className="liquid-glass-card rounded-2xl p-6 sm:p-10">
+          <div className="rounded-3xl bg-card/60 border border-border/50 p-6 sm:p-10 lg:p-14 mb-16">
             <BlogPostContent content={post.content || ""} />
           </div>
 
