@@ -158,13 +158,8 @@ export default function ToolsPage() {
     }
   }
 
-  // Change tool status
+  // Change tool status — admin can freely toggle without test requirement
   const changeStatus = async (tool: ToolSetting, newStatus: "coming_soon" | "published" | "maintenance") => {
-    // Published requires api_verified
-    if (newStatus === "published" && !tool.api_verified) {
-      setError("Cannot publish: API key must be tested and verified first")
-      return
-    }
     try {
       const res = await fetch(`/api/admin/tools/${tool.id}/status`, {
         method: "PATCH",

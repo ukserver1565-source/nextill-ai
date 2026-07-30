@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server"
 import { runPostGenerator } from "@/lib/workflows"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
@@ -35,20 +36,14 @@ export async function POST(req: Request) {
     const body = await req.json()
     const { primaryKeyword, articleType, wordCount, language, country, tone, audience } = body
     if (!primaryKeyword) {
-      return new Response(
-        encoder.encode(JSON.stringify({ error: "Primary keyword is required" })),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      )
+      return NextResponse.json({ error: "Primary keyword is required" }, { status: 400 })
     }
 
     // Authenticate user
     const supabase = await createSupabaseServerClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) {
-      return new Response(
-        encoder.encode(JSON.stringify({ error: "Unauthorized", code: "UNAUTHORIZED" })),
-        { status: 401, headers: { "Content-Type": "application/json" } }
-      )
+      return NextResponse.json({ error: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 })
     }
 
     // Check credits
@@ -61,15 +56,12 @@ export async function POST(req: Request) {
 
     const balance = (profile as { balance: number } | null)?.balance ?? 0
     if (balance < creditsCost) {
-      return new Response(
-        encoder.encode(JSON.stringify({
-          error: "Insufficient credits",
-          code: "INSUFFICIENT_CREDITS",
-          creditsRequired: creditsCost,
-          creditsAvailable: balance,
-        })),
-        { status: 402, headers: { "Content-Type": "application/json" } }
-      )
+      return NextResponse.json({
+        error: "Insufficient credits",
+        code: "INSUFFICIENT_CREDITS",
+        creditsRequired: creditsCost,
+        creditsAvailable: balance,
+      }, { status: 402 })
     }
 
     const input = {
@@ -82,62 +74,77 @@ export async function POST(req: Request) {
       audience: audience || "general",
     }
 
+    // Keep a reference so the loop can signal completion
+    let resolveResult: ((value: any) => void) | null = null
+    let rejectResult: ((err: any) => void) | null = null
+    const resultPromise = new Promise((resolve, reject) => {
+      resolveResult = resolve
+      rejectResult = reject
+    })
+
+    // Start generation in background
+    runPostGenerator(input)
+      .then(async (result) => {
+        // Deduct credits
+        const { error: deductErr } = await supabaseAdmin
+          .rpc("deduct_credits", { p_user_id: user.id, p_amount: creditsCost })
+
+        if (!deductErr) {
+          try {
+            await supabaseAdmin.from("credit_logs").insert({
+              user_id: user.id,
+              amount: creditsCost,
+              type: "used",
+              reason: "post-generator usage",
+            })
+          } catch { /* best-effort */ }
+
+          try {
+            await supabaseAdmin.from("usage_logs").insert({
+              user_id: user.id,
+              tool_slug: "post-generator",
+              credits_used: creditsCost,
+              input_chars: JSON.stringify(input).length,
+              output_chars: JSON.stringify(result || {}).length,
+            })
+          } catch { /* best-effort */ }
+        }
+
+        resolveResult!(result)
+      })
+      .catch((err) => {
+        rejectResult!(err)
+      })
+
     const stream = new ReadableStream({
       async start(controller) {
+        // Send step progress updates
         for (let i = 0; i < steps.length; i++) {
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({ step: steps[i], status: "running", progress: i + 1, total: steps.length })}\n\n`
             )
           )
-          if (i === 0) {
-            runPostGenerator(input)
-              .then(async (result) => {
-                // Deduct credits after successful generation
-                const { error: deductErr } = await supabaseAdmin
-                  .rpc("deduct_credits", { p_user_id: user.id, p_amount: creditsCost })
-
-                if (!deductErr) {
-                  // Log credit usage
-                  try {
-                    await supabaseAdmin.from("credit_logs").insert({
-                      user_id: user.id,
-                      amount: creditsCost,
-                      type: "used",
-                      reason: "post-generator usage",
-                    })
-                  } catch { /* best-effort logging */ }
-
-                  // Log usage
-                  try {
-                    await supabaseAdmin.from("usage_logs").insert({
-                      user_id: user.id,
-                      tool_slug: "post-generator",
-                      credits_used: creditsCost,
-                      input_chars: JSON.stringify(input).length,
-                      output_chars: JSON.stringify(result || {}).length,
-                    })
-                  } catch { /* best-effort logging */ }
-                }
-
-                controller.enqueue(
-                  encoder.encode(
-                    `data: ${JSON.stringify({ step: "complete", status: "completed", data: result, creditsUsed: creditsCost })}\n\n`
-                  )
-                )
-                controller.close()
-              })
-              .catch((err) => {
-                controller.enqueue(
-                  encoder.encode(
-                    `data: ${JSON.stringify({ step: "error", status: "failed", error: err.message })}\n\n`
-                  )
-                )
-                controller.close()
-              })
-          }
-          await new Promise((r) => setTimeout(r, 500))
+          await new Promise((r) => setTimeout(r, 400))
         }
+
+        // Now WAIT for the actual result (this keeps the stream open)
+        try {
+          const result = await resultPromise
+          controller.enqueue(
+            encoder.encode(
+              `data: ${JSON.stringify({ step: "complete", status: "completed", data: result, creditsUsed: creditsCost })}\n\n`
+            )
+          )
+        } catch (err) {
+          controller.enqueue(
+            encoder.encode(
+              `data: ${JSON.stringify({ step: "error", status: "failed", error: (err as Error).message })}\n\n`
+            )
+          )
+        }
+
+        controller.close()
       },
     })
 
@@ -149,9 +156,9 @@ export async function POST(req: Request) {
       },
     })
   } catch (err) {
-    return new Response(
-      encoder.encode(JSON.stringify({ error: "Stream failed", details: (err as Error).message })),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+    return NextResponse.json(
+      { error: "Stream failed", details: (err as Error).message },
+      { status: 500 }
     )
   }
 }
