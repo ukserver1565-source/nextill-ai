@@ -154,17 +154,10 @@ Write the complete article now:`
     result: { wordCount: articleContent.split(/\s+/).length },
   })
 
-  // Step 4: humanizer (AI-powered with local fallback)
-  // Skip AI calls when using local engine — saves 10-30s
+  // Step 4: humanizer (always runs — AI with local fallback)
   runner.startStep(3)
   runner.updateProgress(3, 50)
-  let humanized: { humanized: string; changes: Array<{ original: string; replacement: string; reason: string }> }
-  if (usingLocal) {
-    const localResult = humanizeContentLocal(articleContent)
-    humanized = { humanized: localResult.humanized, changes: localResult.changes }
-  } else {
-    humanized = await humanizeContentWithAI(articleContent)
-  }
+  const humanized = await humanizeContentWithAI(articleContent)
   runner.updateProgress(3, 100)
   runner.completeStep(3, { changes: humanized.changes.length })
   pipelineSteps.push({
@@ -173,16 +166,10 @@ Write the complete article now:`
     result: { changes: humanized.changes.length },
   })
 
-  // Step 5: rewriter (skip AI calls when using local engine — saves 10-30s)
+  // Step 5: rewriter (always runs — AI with local fallback)
   runner.startStep(4)
   runner.updateProgress(4, 50)
-  let rewriteResult: { rewritten: string; changes: number; method: string }
-  if (usingLocal) {
-    rewriteResult = { rewritten: humanized.humanized, changes: 0, method: "local" }
-  } else {
-    const aiRewrite = await rewriteContentWithAI(humanized.humanized)
-    rewriteResult = { rewritten: aiRewrite.rewritten, changes: aiRewrite.changes, method: aiRewrite.method }
-  }
+  const rewriteResult = await rewriteContentWithAI(humanized.humanized)
   runner.updateProgress(4, 100)
   runner.completeStep(4, { changes: rewriteResult.changes, method: rewriteResult.method })
   pipelineSteps.push({
