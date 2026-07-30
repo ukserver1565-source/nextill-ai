@@ -40,15 +40,16 @@ const pipelineSteps = [
   { key: "seo_outline", icon: Trello, name: "SEO Outline" },
   { key: "ai_writer", icon: PenSquare, name: "AI Writer" },
   { key: "humanizer", icon: UserCheck, name: "Humanizer" },
+  { key: "rewriter", icon: PenSquare, name: "Rewriter" },
   { key: "grammar_check", icon: CheckSquare, name: "Grammar Check" },
   { key: "ai_detector", icon: Shield, name: "AI Detector" },
   { key: "plagiarism_check", icon: FileSearch, name: "Plagiarism Check" },
   { key: "seo_title", icon: Type, name: "SEO Title" },
   { key: "meta_description", icon: FileText, name: "Meta Description" },
-  { key: "faq_generator", icon: Quote, name: "FAQ Generator" },
-  { key: "schema_generator", icon: Hash, name: "Schema Generator" },
+  { key: "faq", icon: Quote, name: "FAQ Generator" },
+  { key: "schema", icon: Hash, name: "Schema Generator" },
   { key: "internal_links", icon: ExternalLink, name: "Internal Links" },
-  { key: "readability_check", icon: BookOpen, name: "Readability Check" },
+  { key: "readability", icon: BookOpen, name: "Readability Check" },
   { key: "final_optimization", icon: Star, name: "Final Optimization" },
 ]
 
@@ -623,6 +624,8 @@ function PostGeneratorContent() {
       if (!reader) { setError("No stream"); setLoading(false); return }
       const decoder = new TextDecoder()
 
+      let receivedResult = false
+
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
@@ -647,15 +650,29 @@ function PostGeneratorContent() {
               setPipelineProgress(pipelineSteps.length)
               setResult(data.data as PostGeneratorResult)
               setShowPipeline(false)
+              receivedResult = true
+            }
+            if (data.status === "completed" && !data.data && data.step === "complete") {
+              // Step completed without data — mark all done
+              pipelineSteps.forEach((s) => { statuses[s.key] = "completed" })
+              setPipelineStepStatuses({ ...statuses })
+              setPipelineProgress(pipelineSteps.length)
+              receivedResult = true
             }
             if (data.status === "failed") {
               const currentStep = pipelineSteps.find((s) => statuses[s.key] === "running")
               if (currentStep) statuses[currentStep.key] = "failed"
               setPipelineStepStatuses({ ...statuses })
               setError(data.error || "Generation failed")
+              receivedResult = true
             }
           } catch { /* ignore parse errors */ }
         }
+      }
+
+      // Stream closed without receiving result — show error
+      if (!receivedResult) {
+        setError("Generation timed out or was interrupted. Please try again.")
       }
     } catch (e) {
       if ((e as Error).name !== "AbortError") setError("Network error. Please try again.")

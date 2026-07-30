@@ -118,19 +118,27 @@ export async function POST(req: Request) {
 
     const stream = new ReadableStream({
       async start(controller) {
-        // Send step progress updates
-        for (let i = 0; i < steps.length; i++) {
-          controller.enqueue(
-            encoder.encode(
-              `data: ${JSON.stringify({ step: steps[i], status: "running", progress: i + 1, total: steps.length })}\n\n`
-            )
+        // Send initial "starting" event
+        controller.enqueue(
+          encoder.encode(
+            `data: ${JSON.stringify({ step: steps[0], status: "running", progress: 1, total: steps.length })}\n\n`
           )
-          await new Promise((r) => setTimeout(r, 400))
-        }
+        )
 
-        // Now WAIT for the actual result (this keeps the stream open)
+        // WAIT for the actual result (stream stays open while pipeline runs)
         try {
           const result = await resultPromise
+
+          // Send all steps as completed (the pipeline ran them all)
+          for (let i = 0; i < steps.length; i++) {
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({ step: steps[i], status: "completed", progress: i + 1, total: steps.length })}\n\n`
+              )
+            )
+          }
+
+          // Send final result
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({ step: "complete", status: "completed", data: result, creditsUsed: creditsCost })}\n\n`

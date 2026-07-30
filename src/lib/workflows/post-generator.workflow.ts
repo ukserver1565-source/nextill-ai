@@ -382,7 +382,7 @@ function parseArticleSections(content: string): ParsedSection[] {
     }
 
     if (h2Match) {
-      // Save previous section
+      // Save previous section (including intro before first H2)
       if (currentH2) {
         sections.push({
           ...(currentH1 && sections.length === 0 ? { h1: currentH1 } : {}),
@@ -390,6 +390,17 @@ function parseArticleSections(content: string): ParsedSection[] {
           h3: [...currentH3s],
           content: currentContent.join("\n").trim(),
         })
+      } else if (currentContent.length > 0) {
+        // Save intro text (content before first H2) as a section
+        const introContent = currentContent.join("\n").trim()
+        if (introContent.length > 0) {
+          sections.push({
+            h1: currentH1,
+            h2: "Introduction",
+            h3: [],
+            content: introContent,
+          })
+        }
       }
       currentH2 = h2Match[1].trim()
       currentH3s = []
