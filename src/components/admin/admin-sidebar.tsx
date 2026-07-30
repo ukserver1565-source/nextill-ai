@@ -10,7 +10,7 @@ import {
   FileSpreadsheet, MessageSquare, FileEdit, TicketPercent, HeartPulse,
   ChevronDown, ChevronRight, Sparkles,
   PanelLeftClose, PanelLeft, Mail, Terminal, Database, Zap,
-  Link as LinkIcon, Workflow, Search, Wrench,
+  Link as LinkIcon, Workflow, Search, Wrench, BookMarked,
 } from "lucide-react"
 import { ThemeToggle } from "@/components/shared/theme-toggle"
 
@@ -19,6 +19,7 @@ const menuSections = [
     section: "Overview",
     items: [
       { label: "Dashboard", icon: LayoutDashboard, href: "/zain-nextill-ansari" },
+      { label: "Site Guide", icon: BookMarked, href: "/zain-nextill-ansari/documentation" },
     ],
   },
   {
