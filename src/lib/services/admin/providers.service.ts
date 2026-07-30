@@ -1,4 +1,22 @@
 import { supabaseAdmin } from "@/lib/supabase/admin"
+import { createDecipheriv } from "crypto"
+
+const ENCRYPTION_KEY = (process.env.ENCRYPTION_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "").slice(0, 32).padEnd(32, "0")
+
+function decrypt(text: string): string {
+  if (!text || !text.includes(":")) return text
+  try {
+    const parts = text.split(":")
+    const iv = Buffer.from(parts.shift()!, "hex")
+    const encrypted = parts.join(":")
+    const decipher = createDecipheriv("aes-256-cbc", Buffer.from(ENCRYPTION_KEY), iv)
+    let decrypted = decipher.update(encrypted, "hex", "utf8")
+    decrypted += decipher.final("utf8")
+    return decrypted
+  } catch {
+    return text
+  }
+}
 
 export interface AIProviderRow {
   id: string
@@ -153,11 +171,12 @@ export const providersService = {
       .limit(1)
       .maybeSingle()
     if (!apiKey?.key_encrypted) throw new Error("No API key configured for this provider")
+    const decryptedKey = decrypt(apiKey.key_encrypted)
     const start = Date.now()
     try {
       const baseUrl = (provider.base_url || "").replace(/\/+$/, "")
       const response = await fetch(`${baseUrl}/models`, {
-        headers: { Authorization: `Bearer ${apiKey.key_encrypted}` },
+        headers: { Authorization: `Bearer ${decryptedKey}` },
         signal: AbortSignal.timeout(10000),
       })
       return { latency: Date.now() - start, success: response.ok }

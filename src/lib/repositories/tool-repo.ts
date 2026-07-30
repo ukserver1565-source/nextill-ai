@@ -5,6 +5,10 @@ export interface ToolSettingRow {
   tool_slug: string
   tool_name: string
   is_enabled: boolean
+  status: "coming_soon" | "published" | "maintenance"
+  api_verified: boolean
+  last_tested_at: string | null
+  last_test_result: string | null
   guest_daily_limit: number
   free_daily_limit: number
   premium_daily_limit: number
@@ -27,16 +31,22 @@ export const toolRepo = {
   async list() {
     const { data, error } = await supabaseAdmin
       .from("workflow_settings")
-      .select("*")
+      .select("id, workflow_slug, workflow_name, is_enabled, status, api_verified, last_tested_at, last_test_result, guest_daily_limit, free_daily_limit, premium_daily_limit, credits_cost, default_model, prompt_template, created_at, updated_at")
       .order("workflow_slug")
     if (error) throw new Error(`Failed to fetch tools: ${error.message}`)
 
     // Map workflow_settings to tool-like format for the UI
+    // NOTE: The `status` column must exist in the DB (see migration 021).
+    // Fallback to "coming_soon" if column is missing or value is null.
     const tools: ToolSettingRow[] = (data || []).map((w: any) => ({
       id: w.id,
       tool_slug: w.workflow_slug,
       tool_name: WORKFLOW_TOOLS[w.workflow_slug]?.name || w.workflow_name || w.workflow_slug,
       is_enabled: w.is_enabled ?? true,
+      status: w.status ?? "coming_soon",
+      api_verified: w.api_verified ?? false,
+      last_tested_at: w.last_tested_at ?? null,
+      last_test_result: w.last_test_result ?? null,
       guest_daily_limit: w.guest_daily_limit ?? 0,
       free_daily_limit: w.free_daily_limit ?? 0,
       premium_daily_limit: w.premium_daily_limit ?? 0,
@@ -58,6 +68,8 @@ export const toolRepo = {
     if (updates.premium_daily_limit !== undefined) payload.premium_daily_limit = updates.premium_daily_limit
     if (updates.is_enabled !== undefined) payload.is_enabled = updates.is_enabled
     if (updates.default_model !== undefined) payload.default_model = updates.default_model
+    if (updates.status !== undefined) payload.status = updates.status
+    if (updates.api_verified !== undefined) payload.api_verified = updates.api_verified
 
     const { data, error } = await supabaseAdmin
       .from("workflow_settings")

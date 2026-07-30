@@ -678,22 +678,46 @@ Maintaining content originality requires awareness, good practices, and the righ
 
 async function ensureSeeded() {
   try {
-    // Always upsert — updates content if posts exist, creates if they don't
+    // Check if posts already exist — don't reset published_at on existing posts
+    const { data: existing } = await supabaseAdmin
+      .from("blog_posts")
+      .select("slug")
+      .in("slug", BLOG_POSTS.map(p => p.slug))
+
+    const existingSlugs = new Set((existing || []).map((r: { slug: string }) => r.slug))
+
     for (const post of BLOG_POSTS) {
       const content = ARTICLES[post.slug] || ""
-      await supabaseAdmin
-        .from("blog_posts")
-        .upsert({
-          title: post.title,
-          slug: post.slug,
-          content,
-          excerpt: post.excerpt,
-          seo_title: post.seo_title,
-          meta_description: post.meta_description,
-          status: "published",
-          published_at: new Date().toISOString(),
-          view_count: 0,
-        }, { onConflict: "slug" })
+      if (existingSlugs.has(post.slug)) {
+        // Update content only — preserve published_at and view_count
+        await supabaseAdmin
+          .from("blog_posts")
+          .update({
+            title: post.title,
+            content,
+            excerpt: post.excerpt,
+            seo_title: post.seo_title,
+            meta_description: post.meta_description,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("slug", post.slug)
+      } else {
+        // New post — set published_at now
+        await supabaseAdmin
+          .from("blog_posts")
+          .upsert({
+            title: post.title,
+            slug: post.slug,
+            content,
+            excerpt: post.excerpt,
+            seo_title: post.seo_title,
+            meta_description: post.meta_description,
+            status: "published",
+            published_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            view_count: 0,
+          }, { onConflict: "slug" })
+      }
     }
   } catch {
     // Seed failed silently — will show empty blog

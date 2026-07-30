@@ -1,6 +1,24 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { createServerClient } from "@supabase/ssr"
+import { createCipheriv, createDecipheriv } from "crypto"
+
+const ENCRYPTION_KEY = (process.env.ENCRYPTION_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "").slice(0, 32).padEnd(32, "0")
+
+function decrypt(text: string): string {
+  if (!text || !text.includes(":")) return text
+  try {
+    const parts = text.split(":")
+    const iv = Buffer.from(parts.shift()!, "hex")
+    const encrypted = parts.join(":")
+    const decipher = createDecipheriv("aes-256-cbc", Buffer.from(ENCRYPTION_KEY), iv)
+    let decrypted = decipher.update(encrypted, "hex", "utf8")
+    decrypted += decipher.final("utf8")
+    return decrypted
+  } catch {
+    return text
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,7 +59,7 @@ export async function POST(req: NextRequest) {
         .select("key_encrypted")
         .eq("id", api_key_id)
         .single()
-      apiKey = keyRow?.key_encrypted || null
+      apiKey = keyRow?.key_encrypted ? decrypt(keyRow.key_encrypted) : null
     } else {
       // Get the first enabled key for this provider
       const { data: keyRow } = await supabaseAdmin
@@ -52,7 +70,7 @@ export async function POST(req: NextRequest) {
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle()
-      apiKey = keyRow?.key_encrypted || null
+      apiKey = keyRow?.key_encrypted ? decrypt(keyRow.key_encrypted) : null
     }
 
     if (!apiKey && provider_slug !== "ollama") {

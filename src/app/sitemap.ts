@@ -6,13 +6,21 @@ const baseUrl = getSiteUrl()
 
 async function getBlogPostUrls(): Promise<MetadataRoute.Sitemap> {
   try {
-    const { data } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from("blog_posts")
       .select("slug, published_at, updated_at")
       .eq("status", "published")
       .not("published_at", "is", null)
 
-    if (!data) return []
+    if (error) {
+      console.error("[Sitemap] Blog posts query error:", error.message)
+      return []
+    }
+
+    if (!data || data.length === 0) {
+      console.warn("[Sitemap] No published blog posts found in database")
+      return []
+    }
 
     const blogIndex: MetadataRoute.Sitemap = [
       {
@@ -25,13 +33,15 @@ async function getBlogPostUrls(): Promise<MetadataRoute.Sitemap> {
 
     const blogPosts: MetadataRoute.Sitemap = data.map(post => ({
       url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: new Date(post.updated_at),
+      lastModified: new Date(post.updated_at || post.published_at),
       changeFrequency: "weekly" as const,
       priority: 0.7,
     }))
 
+    console.log(`[Sitemap] Found ${blogPosts.length} blog posts`)
     return [...blogIndex, ...blogPosts]
-  } catch {
+  } catch (err) {
+    console.error("[Sitemap] Failed to fetch blog posts:", err)
     return [
       {
         url: `${baseUrl}/blog`,
@@ -98,6 +108,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${baseUrl}/terms`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/refund-policy`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/service-policy`,
       lastModified: now,
       changeFrequency: "yearly",
       priority: 0.3,

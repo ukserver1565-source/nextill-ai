@@ -68,6 +68,8 @@ export const createProjectSchema = z.object({
 
 export const updateToolSchema = z.object({
   is_enabled: z.boolean().optional(),
+  status: z.enum(["coming_soon", "published", "maintenance"]).optional(),
+  api_verified: z.boolean().optional(),
   guest_daily_limit: z.number().int().min(0).optional(),
   free_daily_limit: z.number().int().min(0).optional(),
   premium_daily_limit: z.number().int().min(0).optional(),
