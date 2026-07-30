@@ -27,6 +27,15 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react"],
   },
 
+  // Redirects for old/missing URLs (fixes 404s in Google Search Console)
+  async redirects() {
+    return [
+      { source: "/generate-article", destination: "/post-generator", permanent: true },
+      { source: "/seo-title", destination: "/seo-title-generator", permanent: true },
+      { source: "/meta-description", destination: "/meta-description-generator", permanent: true },
+    ]
+  },
+
   // Headers for performance and security
   async headers() {
     return [
