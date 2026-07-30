@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Terms of Service",
   description:
     "Read the terms and conditions that govern your use of the Nextill AI platform, including account registration, credits, billing, content ownership, and user responsibilities.",
+  alternates: { canonical: "/terms" },
   openGraph: {
     title: "Terms of Service — Nextill AI",
     description:

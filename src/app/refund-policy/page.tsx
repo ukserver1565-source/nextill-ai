@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Refund Policy",
   description:
     "Learn about Nextill AI's refund and return policy, including our 7-day money-back guarantee, eligibility criteria, and how to request a refund.",
+  alternates: { canonical: "/refund-policy" },
   openGraph: {
     title: "Refund Policy — Nextill AI",
     description:

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Service & Delivery Policy",
   description:
     "Learn how Nextill AI delivers its digital SaaS services, including instant access, subscription details, uptime commitments, and technical support.",
+  alternates: { canonical: "/service-policy" },
   openGraph: {
     title: "Service & Delivery Policy — Nextill AI",
     description:

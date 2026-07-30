@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
     "Learn how Nextill AI collects, uses, protects, and manages your personal information. Our comprehensive privacy policy covers data collection, usage, sharing, and your rights.",
+  alternates: { canonical: "/privacy-policy" },
   openGraph: {
     title: "Privacy Policy — Nextill AI",
     description:

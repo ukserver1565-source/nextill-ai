@@ -188,12 +188,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.9,
     },
-    {
-      url: `${baseUrl}/keyword-intelligence`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
     // Individual AI tools
     {
       url: `${baseUrl}/ai-writer`,

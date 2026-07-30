@@ -1,25 +1,13 @@
-"use client"
+import { redirect } from "next/navigation"
+import type { Metadata } from "next"
 
-import { useEffect } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+export const metadata: Metadata = {
+  title: "Keyword Intelligence — Redirecting",
+  robots: { index: false, follow: true },
+}
 
-// Permanent redirect: /keyword-intelligence → /domain-overview
+// Server-side redirect: /keyword-intelligence → /domain-overview
+// Googlebot follows server redirects but NOT client-side JS redirects
 export default function KeywordIntelligenceRedirect() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString())
-    const target = `/domain-overview${params.toString() ? "?" + params.toString() : ""}`
-    router.replace(target)
-  }, [router, searchParams])
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <div className="animate-spin w-8 h-8 border-2 border-[#6D5EF5] border-t-transparent rounded-full mx-auto mb-4" />
-        <p className="text-sm text-[#A7B0C0]">Redirecting to Domain Intelligence...</p>
-      </div>
-    </div>
-  )
+  redirect("/domain-overview")
 }
