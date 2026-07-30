@@ -3,6 +3,8 @@ import { runPostGenerator } from "@/lib/workflows"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 
+export const runtime = "edge" // Edge runtime keeps stream alive beyond serverless timeout
+
 const steps = [
   "keyword_analysis",
   "seo_outline",
