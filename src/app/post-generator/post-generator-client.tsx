@@ -598,7 +598,8 @@ function PostGeneratorContent() {
       abortRef.current?.abort()
       abortRef.current = new AbortController()
 
-      const res = await fetch("/api/workflows/post-generator/stream", {
+      // Step 1: Start generation (returns job ID immediately — no timeout!)
+      const startRes = await fetch("/api/workflows/post-generator/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -613,66 +614,79 @@ function PostGeneratorContent() {
         signal: abortRef.current.signal,
       })
 
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}))
-        setError(errData.error || "Request failed")
+      if (!startRes.ok) {
+        const errData = await startRes.json().catch(() => ({}))
+        setError(errData.error || "Failed to start generation")
         setLoading(false)
         return
       }
 
-      const reader = res.body?.getReader()
-      if (!reader) { setError("No stream"); setLoading(false); return }
-      const decoder = new TextDecoder()
+      const { jobId } = await startRes.json()
+      if (!jobId) {
+        setError("No job ID returned")
+        setLoading(false)
+        return
+      }
 
-      let receivedResult = false
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        const chunk = decoder.decode(value, { stream: true })
-        const lines = chunk.split("\n").filter((l) => l.startsWith("data: "))
-
-        for (const line of lines) {
-          try {
-            const data = JSON.parse(line.slice(6))
-            if (data.status === "running" && data.step !== "complete") {
-              const stepIdx = pipelineSteps.findIndex((s) => s.key === data.step)
-              if (stepIdx >= 0) {
-                statuses[data.step] = "running"
-                if (stepIdx > 0) statuses[pipelineSteps[stepIdx - 1].key] = "completed"
-                setPipelineStepStatuses({ ...statuses })
-                setPipelineProgress(data.progress ?? stepIdx + 1)
-              }
-            }
-            if (data.status === "completed" && data.data) {
-              pipelineSteps.forEach((s) => { statuses[s.key] = "completed" })
-              setPipelineStepStatuses({ ...statuses })
-              setPipelineProgress(pipelineSteps.length)
-              setResult(data.data as PostGeneratorResult)
-              setShowPipeline(false)
-              receivedResult = true
-            }
-            if (data.status === "completed" && !data.data && data.step === "complete") {
-              // Step completed without data — mark all done
-              pipelineSteps.forEach((s) => { statuses[s.key] = "completed" })
-              setPipelineStepStatuses({ ...statuses })
-              setPipelineProgress(pipelineSteps.length)
-              receivedResult = true
-            }
-            if (data.status === "failed") {
-              const currentStep = pipelineSteps.find((s) => statuses[s.key] === "running")
-              if (currentStep) statuses[currentStep.key] = "failed"
-              setPipelineStepStatuses({ ...statuses })
-              setError(data.error || "Generation failed")
-              receivedResult = true
-            }
-          } catch { /* ignore parse errors */ }
+      // Step 2: Show all steps as "running" with animated progress
+      let currentStep = 0
+      const animateSteps = () => {
+        if (currentStep < pipelineSteps.length) {
+          statuses[pipelineSteps[currentStep].key] = "running"
+          if (currentStep > 0) statuses[pipelineSteps[currentStep - 1].key] = "completed"
+          setPipelineStepStatuses({ ...statuses })
+          setPipelineProgress(currentStep + 1)
+          currentStep++
         }
       }
 
-      // Stream closed without receiving result — show error
-      if (!receivedResult) {
-        setError("Generation timed out or was interrupted. Please try again.")
+      // Animate steps every 2 seconds while waiting
+      const stepInterval = setInterval(animateSteps, 2000)
+      animateSteps() // Start immediately
+
+      // Step 3: Poll for result (no timeout — waits as long as needed!)
+      let completed = false
+      let attempts = 0
+      const maxAttempts = 600 // 20 minutes max (600 × 2s)
+
+      while (!completed && attempts < maxAttempts) {
+        await new Promise(r => setTimeout(r, 2000)) // Poll every 2 seconds
+        attempts++
+
+        try {
+          const statusRes = await fetch(`/api/workflows/post-generator/stream?jobId=${jobId}`, {
+            signal: abortRef.current.signal,
+          })
+
+          if (!statusRes.ok) continue
+
+          const statusData = await statusRes.json()
+
+          if (statusData.status === "completed" && statusData.data) {
+            // Mark all steps completed
+            pipelineSteps.forEach((s) => { statuses[s.key] = "completed" })
+            setPipelineStepStatuses({ ...statuses })
+            setPipelineProgress(pipelineSteps.length)
+            setResult(statusData.data as PostGeneratorResult)
+            setShowPipeline(false)
+            completed = true
+          } else if (statusData.status === "failed") {
+            const failStep = pipelineSteps.find((s) => statuses[s.key] === "running")
+            if (failStep) statuses[failStep.key] = "failed"
+            setPipelineStepStatuses({ ...statuses })
+            setError(statusData.error || "Generation failed")
+            completed = true
+          }
+          // else: still running, continue polling
+        } catch {
+          // Network error on poll — retry
+        }
+      }
+
+      clearInterval(stepInterval)
+
+      if (!completed) {
+        setError("Generation is taking longer than expected. Please check back later.")
       }
     } catch (e) {
       if ((e as Error).name !== "AbortError") setError("Network error. Please try again.")

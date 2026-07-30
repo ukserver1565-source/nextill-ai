@@ -1,27 +1,16 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { runPostGenerator } from "@/lib/workflows"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 
-export const runtime = "edge" // Edge runtime keeps stream alive beyond serverless timeout
-
-const steps = [
-  "keyword_analysis",
-  "seo_outline",
-  "ai_writer",
-  "humanizer",
-  "rewriter",
-  "grammar_check",
-  "ai_detector",
-  "plagiarism_check",
-  "seo_title",
-  "meta_description",
-  "faq",
-  "schema",
-  "internal_links",
-  "readability",
-  "final_optimization",
-]
+// In-memory job store (survives within same serverless instance)
+// For cross-instance: use DB or Redis
+const jobs = new Map<string, {
+  status: "pending" | "running" | "completed" | "failed"
+  result: any
+  error: string | null
+  createdAt: number
+}>()
 
 const encoder = new TextEncoder()
 
@@ -33,7 +22,8 @@ function getCreditCost(wordCount: number): number {
   return 20
 }
 
-export async function POST(req: Request) {
+// POST — Start generation (returns immediately with job ID)
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const { primaryKeyword, articleType, wordCount, language, country, tone, audience } = body
@@ -76,15 +66,11 @@ export async function POST(req: Request) {
       audience: audience || "general",
     }
 
-    // Keep a reference so the loop can signal completion
-    let resolveResult: ((value: any) => void) | null = null
-    let rejectResult: ((err: any) => void) | null = null
-    const resultPromise = new Promise((resolve, reject) => {
-      resolveResult = resolve
-      rejectResult = reject
-    })
+    // Create job ID
+    const jobId = `job_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+    jobs.set(jobId, { status: "running", result: null, error: null, createdAt: Date.now() })
 
-    // Start generation in background
+    // Run generation in background (fire and forget — no timeout!)
     runPostGenerator(input)
       .then(async (result) => {
         // Deduct credits
@@ -112,62 +98,102 @@ export async function POST(req: Request) {
           } catch { /* best-effort */ }
         }
 
-        resolveResult!(result)
-      })
-      .catch((err) => {
-        rejectResult!(err)
-      })
-
-    const stream = new ReadableStream({
-      async start(controller) {
-        // Send initial "starting" event
-        controller.enqueue(
-          encoder.encode(
-            `data: ${JSON.stringify({ step: steps[0], status: "running", progress: 1, total: steps.length })}\n\n`
-          )
-        )
-
-        // WAIT for the actual result (stream stays open while pipeline runs)
-        try {
-          const result = await resultPromise
-
-          // Send all steps as completed (the pipeline ran them all)
-          for (let i = 0; i < steps.length; i++) {
-            controller.enqueue(
-              encoder.encode(
-                `data: ${JSON.stringify({ step: steps[i], status: "completed", progress: i + 1, total: steps.length })}\n\n`
-              )
-            )
-          }
-
-          // Send final result
-          controller.enqueue(
-            encoder.encode(
-              `data: ${JSON.stringify({ step: "complete", status: "completed", data: result, creditsUsed: creditsCost })}\n\n`
-            )
-          )
-        } catch (err) {
-          controller.enqueue(
-            encoder.encode(
-              `data: ${JSON.stringify({ step: "error", status: "failed", error: (err as Error).message })}\n\n`
-            )
-          )
+        // Save result to job
+        const job = jobs.get(jobId)
+        if (job) {
+          job.status = "completed"
+          job.result = result
         }
 
-        controller.close()
-      },
-    })
+        // Also save to DB for persistence
+        try {
+          await supabaseAdmin.from("generated_posts").insert({
+            user_id: user.id,
+            primary_keyword: primaryKeyword,
+            article_type: input.articleType,
+            word_count: input.wordCount,
+            language: input.language,
+            country: input.country,
+            tone: input.tone,
+            audience: input.audience,
+            seo_title: result.seoTitle,
+            meta_description: result.metaDescription,
+            slug: result.slug,
+            content: result.content,
+            html_content: result.htmlContent,
+            markdown_content: result.markdownContent,
+          })
+        } catch { /* non-critical */ }
+      })
+      .catch((err) => {
+        const job = jobs.get(jobId)
+        if (job) {
+          job.status = "failed"
+          job.error = (err as Error).message || "Generation failed"
+        }
+      })
 
-    return new Response(stream, {
-      headers: {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        "Connection": "keep-alive",
-      },
+    // Return job ID immediately (no timeout!)
+    return NextResponse.json({
+      jobId,
+      status: "running",
+      message: "Generation started. Poll /status for result.",
+      creditsRequired: creditsCost,
     })
   } catch (err) {
     return NextResponse.json(
-      { error: "Stream failed", details: (err as Error).message },
+      { error: "Failed to start generation", details: (err as Error).message },
+      { status: 500 }
+    )
+  }
+}
+
+// GET — Poll job status (returns result when ready)
+export async function GET(req: NextRequest) {
+  try {
+    const jobId = req.nextUrl.searchParams.get("jobId")
+    if (!jobId) {
+      return NextResponse.json({ error: "jobId is required" }, { status: 400 })
+    }
+
+    const job = jobs.get(jobId)
+    if (!job) {
+      return NextResponse.json({ error: "Job not found", status: "not_found" }, { status: 404 })
+    }
+
+    // Clean up old jobs (older than 1 hour)
+    const now = Date.now()
+    for (const [key, val] of jobs.entries()) {
+      if (now - val.createdAt > 3600000) jobs.delete(key)
+    }
+
+    if (job.status === "completed") {
+      // Clean up job after returning result
+      const result = job.result
+      jobs.delete(jobId)
+      return NextResponse.json({
+        status: "completed",
+        data: result,
+      })
+    }
+
+    if (job.status === "failed") {
+      const error = job.error
+      jobs.delete(jobId)
+      return NextResponse.json({
+        status: "failed",
+        error: error,
+      })
+    }
+
+    // Still running
+    return NextResponse.json({
+      status: job.status,
+      message: "Still generating... Please wait.",
+    })
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Failed to check status", details: (err as Error).message },
       { status: 500 }
     )
   }
