@@ -4,8 +4,49 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 
 const baseUrl = getSiteUrl()
 
+// Blog post metadata for auto-seeding
+const BLOG_POSTS = [
+  { slug: "how-to-humanize-ai-content", title: "How to Humanize AI Content: Complete Guide to Pass AI Detection in 2026", excerpt: "Learn proven techniques to humanize AI-generated content and pass AI detection tools. Step-by-step guide with examples." },
+  { slug: "ai-vs-human-writing-seo", title: "AI vs Human Writing: Which Is Better for SEO Rankings in 2026?", excerpt: "Comprehensive comparison of AI vs human writing for SEO. Data-driven analysis of rankings, engagement, and quality." },
+  { slug: "top-10-ai-seo-tools", title: "Top 10 AI SEO Tools Every Content Creator Needs in 2026", excerpt: "Discover the best AI-powered SEO tools for keyword research, content optimization, and ranking improvement." },
+  { slug: "mastering-keyword-research", title: "Mastering Keyword Research: A Step-by-Step Guide Using AI Intelligence", excerpt: "Complete keyword research guide using AI tools. Find high-value keywords, long-tail phrases, and content opportunities." },
+  { slug: "plagiarism-detection-ensure-original-content", title: "Plagiarism Detection Explained: How to Ensure Your Content Is 100% Original", excerpt: "How plagiarism detection works, why originality matters for SEO, and tools to check content authenticity." },
+]
+
+async function ensureBlogPostsSeeded() {
+  try {
+    const { data: existing } = await supabaseAdmin
+      .from("blog_posts")
+      .select("slug")
+      .in("slug", BLOG_POSTS.map(p => p.slug))
+
+    const existingSlugs = new Set((existing || []).map((r: { slug: string }) => r.slug))
+    const now = new Date().toISOString()
+
+    for (const post of BLOG_POSTS) {
+      if (!existingSlugs.has(post.slug)) {
+        await supabaseAdmin.from("blog_posts").upsert({
+          title: post.title,
+          slug: post.slug,
+          content: "",
+          excerpt: post.excerpt,
+          status: "published",
+          published_at: now,
+          updated_at: now,
+          view_count: 0,
+        }, { onConflict: "slug" })
+      }
+    }
+  } catch {
+    // Seed failed — sitemap will still work for non-blog pages
+  }
+}
+
 async function getBlogPostUrls(): Promise<MetadataRoute.Sitemap> {
   try {
+    // Ensure blog posts exist in DB (for Google crawling)
+    await ensureBlogPostsSeeded()
+
     const { data, error } = await supabaseAdmin
       .from("blog_posts")
       .select("slug, published_at, updated_at")

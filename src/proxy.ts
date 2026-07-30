@@ -10,7 +10,17 @@ const toolRoutes = [
   "/faq-generator", "/article-rewriter", "/grammar-checker",
   "/summarizer", "/translator",
 ]
-const guestAccessible = new Set(["/", "/tools", "/login", "/signup", "/zain-nextill-ansari/login", "/reset-password", "/unauthorized", "/pricing", "/contact", "/terms", "/privacy-policy", "/affiliate", "/domain-overview", "/keyword-intelligence", "/checkout", "/post-generator", "/plagiarism-checker", "/how-it-works", "/blog"])
+const guestAccessible = new Set([
+  "/", "/tools", "/login", "/signup", "/zain-nextill-ansari/login", "/reset-password",
+  "/unauthorized", "/pricing", "/contact", "/terms", "/privacy-policy", "/refund-policy",
+  "/service-policy", "/about", "/features", "/how-it-works", "/checkout", "/blog",
+  "/domain-overview", "/keyword-intelligence", "/post-generator", "/plagiarism-checker",
+  "/ai-writer", "/ai-humanizer", "/ai-detector", "/article-rewriter", "/grammar-checker",
+  "/summarizer", "/translator", "/keyword-research", "/seo-title-generator",
+  "/meta-description-generator", "/schema-generator", "/sitemap-generator",
+  "/robots-txt-generator", "/content-brief", "/topical-map", "/website-audit",
+  "/rank-tracker", "/backlink-checker", "/internal-link-generator", "/faq-generator",
+])
 const userRoutes = ["/dashboard"]
 const adminRoutes = ["/zain-nextill-ansari"]
 const adminApiRoutes = ["/api/admin"]
