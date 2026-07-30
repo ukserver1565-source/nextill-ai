@@ -21,6 +21,9 @@ export default function robots(): MetadataRoute.Robots {
           "/zain-nextill-ansari/",
           // API routes
           "/api/",
+          // Static assets (should not be indexed)
+          "/_next/",
+          "/fonts/",
           // Utility/error pages
           "/unauthorized",
           "/maintenance",

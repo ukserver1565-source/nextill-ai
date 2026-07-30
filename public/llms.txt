@@ -1,0 +1,29 @@
+# Nextill AI
+
+## About
+Nextill AI is an all-in-one AI-powered SEO platform for content creators and SEO professionals.
+
+## Features
+- Keyword Intelligence — AI-powered keyword research with difficulty, CPC, trend analysis
+- Domain Intelligence — Website analysis with PageSpeed, technical SEO, and competitor data
+- Post Generator — SEO-optimized blog post generation with 15-step workflow
+- Plagiarism Checker — Content originality verification using PlagiarismCheck.org API
+- AI Writer — AI-powered content generation using Gemini API
+- AI Humanizer — Make AI content sound natural and human-written
+- SEO Analyzer — On-page SEO analysis and recommendations
+- Rank Tracker — SERP position tracking
+- Backlink Analyzer — Backlink profile analysis
+- Website Audit — Full technical SEO audit
+
+## Pricing
+- Free Plan: 100 credits/month, basic tools
+- Pro Plan: $29/month, all tools, 500 credits/month
+- Enterprise Plan: $99/month, unlimited access
+
+## Contact
+- Website: https://www.adultpulse.co.uk
+- Email: support@adultpulse.co.uk
+
+## API
+- Base URL: https://www.adultpulse.co.uk/api
+- Authentication: Supabase Auth (JWT tokens)
