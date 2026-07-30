@@ -98,6 +98,12 @@ export function normalizeDomainInput(
     }
   }
 
+  // Auto-add .com if no TLD present (e.g., "tiktok" → "tiktok.com")
+  if (effectiveDomain && !effectiveDomain.includes(".")) {
+    effectiveDomain = `${effectiveDomain}.com`
+    hostname = subdomain ? `${subdomain}.${effectiveDomain}` : effectiveDomain
+  }
+
   // Validate domain format
   if (!effectiveDomain || !effectiveDomain.includes(".")) {
     throw new Error(`Invalid domain: "${raw}"`)

@@ -7,7 +7,7 @@ import type { ITechnicalProvider, ProviderResult } from "./provider.interface"
 import { cacheGet, cacheSet, TTL } from "./cache.service"
 
 const PSI_BASE = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed"
-const TIMEOUT_MS = 30000
+const TIMEOUT_MS = 60000 // 60s — PageSpeed can be slow for large sites
 
 interface PSIResponse {
   lighthouseResult?: {
@@ -57,9 +57,21 @@ export class PageSpeedProvider implements ITechnicalProvider {
       })
       if (apiKey) params.set("key", apiKey)
 
-      const res = await fetch(`${PSI_BASE}?${params}`, {
+      let res = await fetch(`${PSI_BASE}?${params}`, {
         signal: AbortSignal.timeout(TIMEOUT_MS),
       })
+
+      // If API key fails (400/403), retry without key (free tier)
+      if (!res.ok && apiKey) {
+        const paramsNoKey = new URLSearchParams({
+          url: url.startsWith("http") ? url : `https://${url}`,
+          strategy: "mobile",
+          category: "performance,accessibility,best-practices,seo",
+        })
+        res = await fetch(`${PSI_BASE}?${paramsNoKey}`, {
+          signal: AbortSignal.timeout(TIMEOUT_MS),
+        })
+      }
 
       if (!res.ok) {
         const body = await res.text().catch(() => "")

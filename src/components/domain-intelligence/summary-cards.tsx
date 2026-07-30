@@ -38,7 +38,7 @@ function StatusIndicator({ status }: { status: string }) {
     case "loading":
       return <Loader2 className="w-4 h-4 text-[#6D5EF5] animate-spin" />
     case "unavailable":
-      return <span className="text-[10px] text-[#A7B0C0] bg-white/5 px-1.5 py-0.5 rounded">Unavailable</span>
+      return <span className="text-[10px] text-[#F59E0B]/80 bg-[#F59E0B]/10 px-1.5 py-0.5 rounded border border-[#F59E0B]/20">Semrush</span>
     case "error":
       return <AlertCircle className="w-4 h-4 text-red-400" />
     default:

@@ -267,27 +267,27 @@ function mergeTechnical(local: TechnicalSEO | null, pagespeed: TechnicalSEO | nu
 }
 
 function buildEmptyOverview(): DomainOverview {
-  const unavailable = (label: string): DomainOverview[keyof DomainOverview] => ({
+  const semrushNeeded = (label: string): DomainOverview[keyof DomainOverview] => ({
     label,
     value: null,
     change: null,
     changeLabel: null,
-    source: null,
+    source: "semrush",
     status: "unavailable",
-    tooltip: "Semrush not configured — add API key in Admin",
+    tooltip: "Connect Semrush API in Admin → Providers to unlock this metric",
   })
   return {
-    authorityScore: unavailable("Authority Score"),
-    organicTraffic: unavailable("Organic Traffic"),
-    paidTraffic: unavailable("Paid Traffic"),
-    organicKeywords: unavailable("Organic Keywords"),
-    paidKeywords: unavailable("Paid Keywords"),
-    backlinks: unavailable("Backlinks"),
-    referringDomains: unavailable("Referring Domains"),
-    trafficShare: unavailable("Traffic Share"),
-    aiVisibility: unavailable("AI Visibility"),
-    aiMentions: unavailable("AI Mentions"),
-    citedPages: unavailable("Cited Pages"),
+    authorityScore: semrushNeeded("Authority Score"),
+    organicTraffic: semrushNeeded("Organic Traffic"),
+    paidTraffic: semrushNeeded("Paid Traffic"),
+    organicKeywords: semrushNeeded("Organic Keywords"),
+    paidKeywords: semrushNeeded("Paid Keywords"),
+    backlinks: semrushNeeded("Backlinks"),
+    referringDomains: semrushNeeded("Referring Domains"),
+    trafficShare: semrushNeeded("Traffic Share"),
+    aiVisibility: semrushNeeded("AI Visibility"),
+    aiMentions: semrushNeeded("AI Mentions"),
+    citedPages: semrushNeeded("Cited Pages"),
   }
 }
 
