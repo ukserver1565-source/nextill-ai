@@ -93,31 +93,53 @@ export async function runPostGenerator(input: {
 
   // Step 3: ai_writer
   runner.startStep(2)
-  const prompt = `Write a comprehensive, SEO-optimized ${articleType} article about "${primaryKeyword}".
 
-REQUIREMENTS:
-- Target word count: ${wordCount} words (minimum ${wordCount} words, aim for ${Math.round(wordCount * 1.1)})
+  // Use Gemini with explicit instructions to use REAL knowledge about the topic
+  const prompt = `You are an expert research writer. Write a comprehensive, detailed article about "${primaryKeyword}".
+
+CRITICAL INSTRUCTIONS:
+- You MUST use your REAL knowledge about "${primaryKeyword}". Write factual, specific information.
+- If "${primaryKeyword}" is a person: include their full name, birth date, birthplace, age, career, achievements, family, education, net worth, controversies, and current status.
+- If "${primaryKeyword}" is a product/brand: include launch date, features, pricing, versions, competitors, and user reviews.
+- If "${primaryKeyword}" is a topic: include history, key concepts, statistics, examples, and real-world applications.
+- Do NOT write generic placeholder content. Every paragraph must contain specific, real facts about "${primaryKeyword}".
+- Do NOT use phrases like "Write Something" or "comprehensive solution" — always use the actual name "${primaryKeyword}".
+
+FORMAT:
+- Start with # H1 title containing "${primaryKeyword}"
+- Include a Table of Contents
+- Use ## H2 and ### H3 headings
+- Include tables with real data (dates, stats, comparisons)
+- Include bullet points and numbered lists
+- Target: ${wordCount} words minimum
 - Language: ${language}
 - Tone: ${tone}
 - Audience: ${audience}
-- Include an engaging introduction
-- Use proper H2 and H3 headings
-- Include practical examples and actionable advice
-- Write naturally and conversationally
-- Do NOT include meta descriptions or titles — just the article body
-- The article MUST be at least ${wordCount} words long. Count carefully. Do not stop short.
-- Start with an H1 title, then write the full article body with multiple sections.
 
-Write the complete article now:`
-  // ALWAYS use local engine for article generation
-  // Gemini API generates generic "Write Something" content that ignores the keyword
-  // Local engine properly uses the actual keyword throughout the article
+Write the complete article now with REAL facts about "${primaryKeyword}":`
+
   const writerResult = await generateText("post-generator", prompt, {
     maxTokens: Math.max(16384, Math.ceil(wordCount * 2.5)),
   })
-  const usingLocal = true // Force local engine — always uses correct keyword
-  const articleData = localEngine.generateArticle(primaryKeyword, wordCount, tone, audience, h1)
-  let articleContent = [articleData.intro, articleData.body, articleData.conclusion, articleData.cta].join("\n\n")
+
+  // Check if AI output actually contains the keyword (not generic content)
+  const aiOutput = writerResult.content || ""
+  const keywordInOutput = aiOutput.toLowerCase().includes(primaryKeyword.toLowerCase())
+  const outputHasSubstance = aiOutput.length > 500 && aiOutput.split(/\s+/).length > 200
+
+  let articleContent: string
+  let usingLocal: boolean
+
+  if (writerResult.success && keywordInOutput && outputHasSubstance) {
+    // AI output is good — uses keyword and has real content
+    articleContent = aiOutput
+    usingLocal = false
+  } else {
+    // AI output is bad (generic, missing keyword, or too short) — use local engine
+    const articleData = localEngine.generateArticle(primaryKeyword, wordCount, tone, audience, h1)
+    articleContent = [articleData.intro, articleData.body, articleData.conclusion, articleData.cta].join("\n\n")
+    usingLocal = true
+  }
 
   // Post-generation word count enforcement: expand if content is too short
   if (!usingLocal) {

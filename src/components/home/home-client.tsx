@@ -2,17 +2,19 @@
 
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { useAuth } from "@/lib/auth/AuthProvider"
+import { useRouter } from "next/navigation"
 import { PricingCard } from "@/components/pricing/pricing-card"
 import {
   Search, FileText, Shield, Sparkles, ArrowRight, Check,
   Menu, X, Star, Zap, Globe, Clock, Award,
   BookOpen, Layers, ChevronDown, ChevronRight,
-  TrendingUp, FileType, Quote, Users
+  TrendingUp, FileType, Quote, Users, LogOut, Settings
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Avatar } from "@/components/ui/avatar"
 import { SiteLogo } from "@/components/shared/site-logo"
 import { ThemeToggle } from "@/components/shared/theme-toggle"
 import { LatestBlogPosts } from "@/components/home/latest-blog-posts"
@@ -208,15 +210,39 @@ const demos = [
 ]
 
 export default function HomePage({ initialPlans }: HomeClientProps) {
-  const { profile } = useAuth()
+  const { profile, user, signOut } = useAuth()
+  const router = useRouter()
   const dashboardHref = profile ? "/dashboard" : "/login"
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const profileRef = useRef<HTMLDivElement>(null)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [activeDemo, setActiveDemo] = useState(0)
   const [plans] = useState<PlanData[]>(initialPlans)
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
   const [creditCosts, setCreditCosts] = useState<WorkflowCost[]>(defaultCreditCosts)
   const [showAllPlans, setShowAllPlans] = useState(false)
+
+  const initials = profile?.full_name
+    ? profile.full_name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
+    : user?.email?.charAt(0).toUpperCase() || "U"
+
+  const handleSignOut = async () => {
+    setProfileOpen(false)
+    await signOut()
+    router.push("/login")
+  }
+
+  // Close profile dropdown on outside click
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClick)
+    return () => document.removeEventListener("mousedown", handleClick)
+  }, [])
 
   useEffect(() => {
     const t = setInterval(() => setActiveDemo((p) => (p + 1) % demos.length), 4000)
@@ -299,16 +325,81 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
           </nav>
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <Link href={dashboardHref} className="hidden sm:block">
-              <Button variant="ghost" size="sm">
-                Dashboard
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button variant="gradient" size="sm">
-                Get Started
-              </Button>
-            </Link>
+            {profile ? (
+              <div className="relative" ref={profileRef}>
+                <button
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="flex items-center gap-2 pl-2 pr-2 py-1 rounded-lg hover:bg-white/[0.06] transition-colors border-l border-white/[0.06]"
+                  aria-label="User menu"
+                >
+                  <Avatar fallback={initials} size="sm" />
+                  <div className="hidden sm:block text-left">
+                    <p className="text-xs font-medium text-foreground leading-tight whitespace-nowrap">{profile?.full_name || "User"}</p>
+                    <p className="text-[10px] text-muted leading-tight capitalize whitespace-nowrap">{profile?.plan || "Free"} Plan</p>
+                  </div>
+                  <ChevronDown className="w-3 h-3 text-muted hidden sm:block" />
+                </button>
+                {profileOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-52 bg-card/95 backdrop-blur-xl border border-border rounded-xl shadow-2xl z-50 overflow-hidden">
+                    <div className="px-4 py-3 border-b border-border">
+                      <p className="text-sm font-medium text-foreground">{profile?.full_name || "User"}</p>
+                      <p className="text-xs text-muted">{profile?.email || user?.email || ""}</p>
+                      <div className="mt-1.5">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[#6D5EF5]/10 text-[#6D5EF5] border border-[#6D5EF5]/20 capitalize">
+                          {profile?.plan || "Free"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-1">
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-muted hover:text-foreground hover:bg-card rounded-lg transition-colors"
+                        onClick={() => setProfileOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                      {(profile?.role === "admin" || profile?.role === "super_admin") && (
+                        <Link
+                          href="/zain-nextill-ansari"
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-[#F59E0B] hover:text-white hover:bg-[#F59E0B]/10 rounded-lg transition-colors"
+                          onClick={() => setProfileOpen(false)}
+                        >
+                          ⚡ Admin Panel
+                        </Link>
+                      )}
+                      <Link
+                        href="/dashboard/settings"
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-muted hover:text-foreground hover:bg-card rounded-lg transition-colors"
+                        onClick={() => setProfileOpen(false)}
+                      >
+                        <Settings className="w-4 h-4" />
+                        Settings
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="flex items-center gap-2 w-full px-3 py-2 text-sm text-muted hover:text-[#EF4444] hover:bg-[#EF4444]/10 rounded-lg transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link href="/login" className="hidden sm:block">
+                  <Button variant="ghost" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button variant="gradient" size="sm">
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden p-2 text-muted hover:text-foreground transition-colors"
@@ -348,17 +439,47 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                 >
                   Blog
                 </Link>
-                <Link href={dashboardHref} onClick={() => setMobileOpen(false)}>
-                  <Button variant="outline" className="w-full">
-                    Dashboard
-                  </Button>
-                </Link>
-                {!profile && (
-                  <Link href="/signup" onClick={() => setMobileOpen(false)}>
-                    <Button variant="gradient" className="w-full">
-                      Get Started Free
-                    </Button>
-                  </Link>
+                {profile ? (
+                  <>
+                    <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
+                      <Button variant="outline" className="w-full">
+                        Dashboard
+                      </Button>
+                    </Link>
+                    {(profile?.role === "admin" || profile?.role === "super_admin") && (
+                      <Link href="/zain-nextill-ansari" onClick={() => setMobileOpen(false)}>
+                        <Button variant="outline" className="w-full text-[#F59E0B] border-[#F59E0B]/30">
+                          ⚡ Admin Panel
+                        </Button>
+                      </Link>
+                    )}
+                    <Link href="/dashboard/settings" onClick={() => setMobileOpen(false)}>
+                      <Button variant="outline" className="w-full">
+                        <Settings className="w-4 h-4 mr-2" />
+                        Settings
+                      </Button>
+                    </Link>
+                    <button
+                      onClick={() => { setMobileOpen(false); handleSignOut() }}
+                      className="flex items-center justify-center gap-2 w-full px-3 py-2 text-sm text-[#EF4444] hover:bg-[#EF4444]/10 rounded-lg transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login" onClick={() => setMobileOpen(false)}>
+                      <Button variant="outline" className="w-full">
+                        Sign In
+                      </Button>
+                    </Link>
+                    <Link href="/signup" onClick={() => setMobileOpen(false)}>
+                      <Button variant="gradient" className="w-full">
+                        Get Started Free
+                      </Button>
+                    </Link>
+                  </>
                 )}
               </div>
             </motion.div>

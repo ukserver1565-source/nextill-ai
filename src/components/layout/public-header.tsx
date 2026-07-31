@@ -72,7 +72,7 @@ export function PublicHeader() {
             <div className="relative" ref={profileRef}>
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="flex items-center gap-2 pl-2 pr-2 py-1 rounded-lg hover:bg-[#151C2E] transition-colors border-l border-white/[0.06]"
+                className="flex items-center gap-2 pl-2 pr-2 py-1 rounded-lg hover:bg-card transition-colors border-l border-border"
                 aria-label="User menu"
               >
                 <Avatar fallback={initials} size="sm" />
@@ -83,8 +83,8 @@ export function PublicHeader() {
                 <ChevronDown className="w-3 h-3 text-[#A7B0C0] hidden sm:block" />
               </button>
               {profileOpen && (
-                <div className="absolute right-0 top-full mt-2 w-52 bg-[#111827]/95 backdrop-blur-xl border border-white/[0.06] rounded-xl shadow-2xl z-50 overflow-hidden">
-                  <div className="px-4 py-3 border-b border-white/[0.06]">
+                <div className="absolute right-0 top-full mt-2 w-52 bg-card/95 backdrop-blur-xl border border-border rounded-xl shadow-2xl z-50 overflow-hidden">
+                  <div className="px-4 py-3 border-b border-border">
                     <p className="text-sm font-medium text-foreground">{profile?.full_name || "User"}</p>
                     <p className="text-xs text-[#A7B0C0]">{profile?.email || user?.email || ""}</p>
                     <div className="mt-1.5">
