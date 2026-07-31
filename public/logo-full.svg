@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" width="280" height="64">
+  <defs>
+    <linearGradient id="icon-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6D5EF5"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="glow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6D5EF5" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Icon: Layered pages -->
+  <g transform="translate(4, 4)">
+    <!-- Glow behind -->
+    <circle cx="28" cy="28" r="26" fill="url(#glow-grad)"/>
+
+    <!-- Background rounded rect -->
+    <rect width="56" height="56" rx="14" fill="url(#icon-grad)"/>
+
+    <!-- Layer 3 (back) — lowest opacity -->
+    <g transform="translate(14, 13)" opacity="0.4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M14 1L1 7.5L14 14L27 7.5L14 1Z"/>
+      <path d="M1 20.5L14 27L27 20.5"/>
+    </g>
+
+    <!-- Layer 2 (middle) — medium opacity -->
+    <g transform="translate(14, 10)" opacity="0.65" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M14 1L1 7.5L14 14L27 7.5L14 1Z"/>
+      <path d="M1 20.5L14 27L27 20.5"/>
+    </g>
+
+    <!-- Layer 1 (front) — full opacity -->
+    <g transform="translate(14, 7)" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M14 1L1 7.5L14 14L27 7.5L14 1Z"/>
+      <path d="M1 20.5L14 27L27 20.5"/>
+      <path d="M1 14L14 20.5L27 14"/>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="72" y="44" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="36" font-weight="700" fill="#FFFFFF" letter-spacing="-0.5">Nextill</text>
+  <text x="198" y="44" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="36" font-weight="300" fill="#8B7BF7" letter-spacing="-0.5">AI</text>
+</svg>

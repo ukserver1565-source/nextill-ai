@@ -109,18 +109,15 @@ REQUIREMENTS:
 - Start with an H1 title, then write the full article body with multiple sections.
 
 Write the complete article now:`
+  // ALWAYS use local engine for article generation
+  // Gemini API generates generic "Write Something" content that ignores the keyword
+  // Local engine properly uses the actual keyword throughout the article
   const writerResult = await generateText("post-generator", prompt, {
     maxTokens: Math.max(16384, Math.ceil(wordCount * 2.5)),
   })
-  const usingLocal = isLocalEngine(writerResult.provider)
-  let articleContent: string
-
-  if (!usingLocal && writerResult.success) {
-    articleContent = writerResult.content
-  } else {
-    const articleData = localEngine.generateArticle(primaryKeyword, wordCount, tone, audience, h1)
-    articleContent = [articleData.intro, articleData.body, articleData.conclusion, articleData.cta].join("\n\n")
-  }
+  const usingLocal = true // Force local engine — always uses correct keyword
+  const articleData = localEngine.generateArticle(primaryKeyword, wordCount, tone, audience, h1)
+  let articleContent = [articleData.intro, articleData.body, articleData.conclusion, articleData.cta].join("\n\n")
 
   // Post-generation word count enforcement: expand if content is too short
   if (!usingLocal) {
