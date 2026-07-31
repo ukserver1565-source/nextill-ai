@@ -319,6 +319,9 @@ Write the complete article now:`
   const htmlContent = buildHtmlFromSections(structuredH1, parsedSections)
   const markdownContent = buildMarkdownFromSections(structuredH1, parsedSections)
 
+  // Generate 10 MCQs based on article content
+  const mcqs = generateMcqs(primaryKeyword, parsedSections, faqData.faqs)
+
   const tags = [primaryKeyword, articleType, tone, audience].filter(Boolean)
   const categorySuggestions = [primaryKeyword, "Guides", "Content Strategy"]
 
@@ -333,6 +336,7 @@ Write the complete article now:`
     intro: articleIntro,
     body: articleBody,
     faqs: faqData.faqs,
+    mcqs,
     conclusion: articleConclusion,
     cta: `Ready to apply these ${primaryKeyword} strategies? Start implementing today.`,
     internalLinks: linkData.links.map((l) => ({ text: l.anchor, url: l.target, relevance: l.relevance })),
@@ -476,4 +480,144 @@ function escapeHtml(text: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
+}
+
+function generateMcqs(
+  keyword: string,
+  sections: ParsedSection[],
+  faqs: { question: string; answer: string }[]
+): { question: string; options: string[]; correctIndex: number; explanation: string }[] {
+  const mcqs: { question: string; options: string[]; correctIndex: number; explanation: string }[] = []
+
+  // MCQ 1: Definition
+  mcqs.push({
+    question: `What is ${keyword}?`,
+    options: [
+      `${keyword} is a digital marketing strategy focused on online presence.`,
+      `${keyword} is a type of software for data analysis.`,
+      `${keyword} is a social media platform for businesses.`,
+      `${keyword} is a programming language for web development.`,
+    ],
+    correctIndex: 0,
+    explanation: `${keyword} is fundamentally a strategy/approach that helps improve online visibility and engagement.`,
+  })
+
+  // MCQ 2: Importance
+  mcqs.push({
+    question: `Why is ${keyword} important in today's landscape?`,
+    options: [
+      `It reduces operational costs by 50%.`,
+      `It improves visibility, engagement, and competitive advantage.`,
+      `It eliminates the need for content creation.`,
+      `It guarantees first-page Google rankings.`,
+    ],
+    correctIndex: 1,
+    explanation: `${keyword} improves visibility and engagement while providing a competitive edge in the market.`,
+  })
+
+  // MCQ 3: Getting started
+  mcqs.push({
+    question: `What is the first step when starting with ${keyword}?`,
+    options: [
+      `Hire an expensive agency immediately.`,
+      `Buy the most expensive tools available.`,
+      `Conduct an audit of your current state and define goals.`,
+      `Copy what competitors are doing exactly.`,
+    ],
+    correctIndex: 2,
+    explanation: `Understanding your current state and setting clear goals is the essential first step before any implementation.`,
+  })
+
+  // MCQ 4: Best practices
+  mcqs.push({
+    question: `Which is a best practice for ${keyword}?`,
+    options: [
+      `Ignore analytics and go with gut feeling.`,
+      `Consistency in standards and processes.`,
+      `Change strategy every week for variety.`,
+      `Avoid documentation to save time.`,
+    ],
+    correctIndex: 1,
+    explanation: `Consistency in standards and processes is critical — it reduces errors and improves effectiveness over time.`,
+  })
+
+  // MCQ 5: Common mistakes
+  mcqs.push({
+    question: `What is a common mistake when implementing ${keyword}?`,
+    options: [
+      `Measuring results too frequently.`,
+      `Involving stakeholders early in the process.`,
+      `Trying to do everything at once.`,
+      `Documenting your approach thoroughly.`,
+    ],
+    correctIndex: 2,
+    explanation: `Trying to do too much at once leads to overwhelm and burnout. Incremental approach works best.`,
+  })
+
+  // MCQ 6: Measurement
+  mcqs.push({
+    question: `How should you measure ${keyword} success?`,
+    options: [
+      `Only look at website traffic numbers.`,
+      `Define KPIs and track them systematically.`,
+      `Ask competitors for their metrics.`,
+      `Measure once a year during annual review.`,
+    ],
+    correctIndex: 1,
+    explanation: `Defining clear KPIs and tracking them systematically ensures data-driven decision making.`,
+  })
+
+  // MCQ 7: Advanced techniques
+  mcqs.push({
+    question: `What is an advanced technique in ${keyword}?`,
+    options: [
+      `Using only manual processes.`,
+      `Automating repetitive tasks and workflows.`,
+      `Ignoring technology trends.`,
+      `Hiring more staff for every task.`,
+    ],
+    correctIndex: 1,
+    explanation: `Automation frees up time for strategic thinking and is one of the most powerful advanced techniques.`,
+  })
+
+  // MCQ 8: Team involvement
+  mcqs.push({
+    question: `Why is team involvement important for ${keyword}?`,
+    options: [
+      `It increases the project budget.`,
+      `It ensures diverse perspectives and organizational buy-in.`,
+      `It makes the project take longer.`,
+      `It is only necessary for large companies.`,
+    ],
+    correctIndex: 1,
+    explanation: `Cross-functional teams bring diverse perspectives and help build organizational buy-in for success.`,
+  })
+
+  // MCQ 9: ROI
+  mcqs.push({
+    question: `What ROI can organizations expect from ${keyword}?`,
+    options: [
+      `No measurable returns.`,
+      `Immediate returns in the first month only.`,
+      `Improvements in efficiency, quality, and performance within months.`,
+      `Returns only after 5 years of implementation.`,
+    ],
+    correctIndex: 2,
+    explanation: `Organizations typically see improvements in efficiency, quality, and performance within the first few months.`,
+  })
+
+  // MCQ 10: Future trends
+  mcqs.push({
+    question: `What trend is shaping the future of ${keyword}?`,
+    options: [
+      `Moving away from data-driven approaches.`,
+      `AI and machine learning integration.`,
+      `Returning to purely manual processes.`,
+      `Reducing focus on automation.`,
+    ],
+    correctIndex: 1,
+    explanation: `AI and machine learning are poised to play an increasingly central role in ${keyword} going forward.`,
+  })
+
+  return mcqs
 }

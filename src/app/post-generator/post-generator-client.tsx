@@ -391,6 +391,64 @@ function FaqItem({ question, answer, isOpen, onToggle }: {
   )
 }
 
+function McqItem({ mcq, index }: {
+  mcq: { question: string; options: string[]; correctIndex: number; explanation: string }
+  index: number
+}) {
+  const [selected, setSelected] = useState<number | null>(null)
+  const isCorrect = selected === mcq.correctIndex
+
+  return (
+    <div className="bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 backdrop-blur-sm border border-white/[0.06] rounded-xl p-4">
+      <div className="flex items-start gap-3 mb-3">
+        <span className="w-6 h-6 rounded-full bg-[#6D5EF5]/20 border border-[#6D5EF5]/30 flex items-center justify-center text-[11px] font-bold text-[#6D5EF5] shrink-0 mt-0.5">
+          {index + 1}
+        </span>
+        <p className="text-sm text-white font-medium leading-relaxed">{mcq.question}</p>
+      </div>
+      <div className="space-y-2 ml-9">
+        {mcq.options.map((option, i) => {
+          const isSelected = selected === i
+          const isAnswer = i === mcq.correctIndex
+          const showResult = selected !== null
+
+          return (
+            <button
+              key={i}
+              onClick={() => setSelected(i)}
+              disabled={selected !== null}
+              className={`w-full text-left px-3 py-2.5 rounded-lg text-xs transition-all border ${
+                showResult && isAnswer
+                  ? "bg-[#22C55E]/10 border-[#22C55E]/30 text-[#22C55E]"
+                  : showResult && isSelected && !isAnswer
+                  ? "bg-[#EF4444]/10 border-[#EF4444]/30 text-[#EF4444]"
+                  : isSelected
+                  ? "bg-[#6D5EF5]/10 border-[#6D5EF5]/30 text-[#6D5EF5]"
+                  : "bg-white/[0.02] border-white/[0.06] text-[#A7B0C0] hover:bg-white/[0.04] hover:text-white"
+              }`}
+            >
+              <span className="font-medium mr-2">{String.fromCharCode(65 + i)}.</span>
+              {option}
+            </button>
+          )
+        })}
+      </div>
+      {selected !== null && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          className="ml-9 mt-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]"
+        >
+          <p className={`text-xs font-medium mb-1 ${isCorrect ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
+            {isCorrect ? "✅ Correct!" : "❌ Incorrect"}
+          </p>
+          <p className="text-xs text-[#A7B0C0] leading-relaxed">{mcq.explanation}</p>
+        </motion.div>
+      )}
+    </div>
+  )
+}
+
 function InputChipGroup<T extends string>({ options, value, onChange, label }: {
   options: { value: T; label: string; icon?: React.ComponentType<{ className?: string }> }[]
   value: T
@@ -1443,27 +1501,51 @@ function PostGeneratorContent() {
                           variants={containerVariants}
                           initial="hidden"
                           animate="visible"
-                          className="space-y-2"
+                          className="space-y-6"
                         >
-                          {(result.faqs || []).length > 0 ? (
-                            (result.faqs || []).map((faq, i) => (
-                              <motion.div key={i} variants={itemVariants}>
-                                <FaqItem
-                                  question={faq.question}
-                                  answer={faq.answer}
-                                  isOpen={faqOpenIndex === i}
-                                  onToggle={() => setFaqOpenIndex(faqOpenIndex === i ? null : i)}
-                                />
-                              </motion.div>
-                            ))
-                          ) : (
-                            <motion.div variants={itemVariants} className="text-center py-12">
-                              <div className="w-14 h-14 rounded-2xl bg-[#3B82F6]/10 border border-[#3B82F6]/20 flex items-center justify-center mx-auto mb-3">
-                                <Quote className="w-6 h-6 text-[#3B82F6]" />
+                          {/* MCQs Section */}
+                          {(result.mcqs || []).length > 0 && (
+                            <div>
+                              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
+                                10 MCQs About This Article
+                              </h3>
+                              <div className="space-y-3">
+                                {(result.mcqs || []).map((mcq, i) => (
+                                  <McqItem key={i} mcq={mcq} index={i} />
+                                ))}
                               </div>
-                              <p className="text-sm text-[#8895A7]">No FAQs generated</p>
-                            </motion.div>
+                            </div>
                           )}
+
+                          {/* FAQs Section */}
+                          <div>
+                            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#3B82F6]" />
+                              Frequently Asked Questions
+                            </h3>
+                            {(result.faqs || []).length > 0 ? (
+                              <div className="space-y-2">
+                                {(result.faqs || []).map((faq, i) => (
+                                  <motion.div key={i} variants={itemVariants}>
+                                    <FaqItem
+                                      question={faq.question}
+                                      answer={faq.answer}
+                                      isOpen={faqOpenIndex === i}
+                                      onToggle={() => setFaqOpenIndex(faqOpenIndex === i ? null : i)}
+                                    />
+                                  </motion.div>
+                                ))}
+                              </div>
+                            ) : (
+                              <motion.div variants={itemVariants} className="text-center py-12">
+                                <div className="w-14 h-14 rounded-2xl bg-[#3B82F6]/10 border border-[#3B82F6]/20 flex items-center justify-center mx-auto mb-3">
+                                  <Quote className="w-6 h-6 text-[#3B82F6]" />
+                                </div>
+                                <p className="text-sm text-[#8895A7]">No FAQs generated</p>
+                              </motion.div>
+                            )}
+                          </div>
                         </motion.div>
                       )}
 

@@ -69,6 +69,7 @@ export interface PostGeneratorResult {
   intro: string
   body: string
   faqs: { question: string; answer: string }[]
+  mcqs: { question: string; options: string[]; correctIndex: number; explanation: string }[]
   conclusion: string
   cta: string
   internalLinks: { text: string; url: string; relevance: number }[]
