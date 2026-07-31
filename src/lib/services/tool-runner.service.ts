@@ -176,11 +176,14 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
 
     // Fallback to local analysis
     const result = runPlagiarismLocal(text)
+    const isCreditsExhausted = apiResult.error?.includes("credits exhausted") || apiResult.error?.includes("Not enough pages")
     return {
       success: true,
       type: "plagiarism",
       available: false,
-      message: apiResult.error || "Local analysis only. PlagiarismCheck.org API available for web-based detection.",
+      message: isCreditsExhausted
+        ? "PlagiarismCheck.org API credits exhausted. Showing local analysis only. Renew plan at plagiarismcheck.org for full web-based scanning."
+        : apiResult.error || "Local analysis only. PlagiarismCheck.org API available for web-based detection.",
       content: {
         originalityScore: result.originalityScore,
         wordCount: result.wordCount,
@@ -192,7 +195,9 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
         repeatedPhrases: result.repeatedPhrases,
         repeatedSentences: result.repeatedSentences,
         safeToPublish: result.safeToPublish,
-        summary: `Plagiarism check complete (local). Originality: ${result.originalityScore}%. ${result.matches.length} matches found.`,
+        summary: isCreditsExhausted
+          ? `Local analysis only (API credits exhausted). Originality: ${result.originalityScore}%. ${result.matches.length} matches found.`
+          : `Plagiarism check complete (local). Originality: ${result.originalityScore}%. ${result.matches.length} matches found.`,
       },
       wordCount,
     }

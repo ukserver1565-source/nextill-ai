@@ -56,6 +56,15 @@ export async function checkPlagiarism(text: string): Promise<PlagiarismResult> {
 
     if (!submitRes.ok) {
       const err = await submitRes.text()
+      // Handle specific error codes with user-friendly messages
+      if (submitRes.status === 409 || err.includes("Not enough pages")) {
+        return {
+          success: false, score: 0, originalityScore: 0, similarityScore: 0,
+          totalWords: text.split(/\s+/).filter(Boolean).length,
+          matchedSources: [],
+          error: "PlagiarismCheck.org API credits exhausted. Please renew your plan at plagiarismcheck.org or contact support.",
+        }
+      }
       return {
         success: false, score: 0, originalityScore: 0, similarityScore: 0,
         totalWords: 0, matchedSources: [], error: `PlagCheck submit failed: ${submitRes.status} ${err}`,
