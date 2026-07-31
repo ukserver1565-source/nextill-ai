@@ -116,6 +116,10 @@ function SignupPageContent() {
       {/* Right - Form Panel */}
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-md">
+          <Link href="/" className="inline-flex items-center gap-2 h-9 rounded-lg px-3.5 text-xs sm:text-sm font-medium text-muted hover:text-foreground hover:bg-card border border-border hover:border-muted transition-all mb-4">
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Back to Home
+          </Link>
           <div className="liquid-glass-card rounded-xl p-8 space-y-6">
             {/* Mobile Logo */}
             <div className="lg:hidden text-center">

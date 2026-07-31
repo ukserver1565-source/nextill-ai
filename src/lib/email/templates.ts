@@ -200,7 +200,7 @@ function featureRow(icon: string, title: string, description: string, credits: s
 // ══════════════════════════════════════════════════════════════
 // ── Welcome Email ───────────────────────────────────────────
 // ══════════════════════════════════════════════════════════════
-export function welcomeEmail(name: string, email: string): { subject: string; html: string } {
+export function welcomeEmail(name: string, _email: string): { subject: string; html: string } {
   return {
     subject: `Welcome to ${SITE_NAME} — Your AI SEO Toolkit is Ready!`,
     html: wrapTemplate("Welcome", `

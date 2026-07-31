@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase/client"
-import { Sparkles, Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react"
+import { Sparkles, Eye, EyeOff, Loader2, CheckCircle2, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
@@ -103,6 +103,10 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        <Link href="/" className="inline-flex items-center gap-2 h-9 rounded-lg px-3.5 text-xs sm:text-sm font-medium text-muted hover:text-foreground hover:bg-card border border-border hover:border-muted transition-all mb-4">
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to Home
+        </Link>
         <div className="liquid-glass-card rounded-xl p-8 space-y-6">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#6D5EF5] to-[#8B5CF6] mb-4 shadow-lg shadow-[#6D5EF5]/30">

@@ -44,7 +44,6 @@ export async function humanizeContentWithAI(content: string): Promise<HumanizeRe
 
     if (result.success && result.content && result.content.trim().length > 50) {
       const humanizedText = result.content.trim()
-      const beforeScore = humanizeContentLocal(content)
       const afterScore = humanizeContentLocal(humanizedText)
 
       const changes = extractChanges(content, humanizedText)

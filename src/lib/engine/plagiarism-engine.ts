@@ -199,25 +199,6 @@ function detectAiPatterns(text: string): { score: number; matches: string[] } {
   return { score: Math.min(100, score), matches }
 }
 
-// Find common phrases between two texts
-function findCommonPhrases(text1: string, text2: string): string[] {
-  const words1 = tokenize(text1)
-  const words2 = tokenize(text2)
-  const common: string[] = []
-
-  for (let n = 3; n <= 6; n++) {
-    const ngrams1 = new Set(getNgrams(words1, n))
-    const ngrams2 = getNgrams(words2, n)
-    for (const gram of ngrams2) {
-      if (ngrams1.has(gram) && !common.includes(gram)) {
-        common.push(gram)
-      }
-    }
-  }
-
-  return common.slice(0, 20)
-}
-
 export function runPlagiarismLocal(text: string): PlagiarismResult {
   const wordCount = text.split(/\s+/).filter(Boolean).length
   const characterCount = text.length

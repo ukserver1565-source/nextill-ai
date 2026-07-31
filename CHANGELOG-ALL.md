@@ -4,15 +4,15 @@
 
 ---
 
-## Current Status (Jul 31, 2026 — Session 11)
+## Current Status (Jul 31, 2026 — Session 12)
 
 | Metric | Value |
 |--------|-------|
-| Git commits | 60+ on main |
-| Last commit | `d196dfc` — fix: PlagCheck form-data + Post Generator env Gemini fallback |
+| Git commits | 65+ on main |
+| Last commit | `5c177dd` — fix: Post Generator — force local engine |
 | Build | ✅ Passing (152+ pages, 0 TS errors) |
 | TypeScript | ✅ 0 errors |
-| Lint | ✅ 2 errors fixed, 25 warnings (unused vars only) |
+| Lint | ✅ 0 errors, 15 warnings (unused vars only) |
 | Performance | 91 mobile / 94 desktop |
 | Accessibility | 95 mobile / 95 desktop |
 | Best Practices | 100 |
@@ -46,6 +46,16 @@
 ## What's Done (Everything)
 
 ### Recent Sessions (Jul 26–31 — 35+ Commits)
+
+#### Session 12: Header/Nav Audit & Fix
+1. **Homepage header profile dropdown** — added avatar, name, plan badge, dropdown with Dashboard/Admin Panel/Settings/Sign Out (was showing plain "Dashboard" button even when logged in)
+2. **Homepage mobile menu** — added full auth-aware menu (Dashboard, Admin Panel, Settings, Sign Out when logged in; Sign In, Get Started when logged out)
+3. **Login page navigation** — added "Back to Home" link + made logo clickable (was a dead-end page with no way to navigate back)
+4. **Signup page navigation** — added "Back to Home" link + made logo clickable
+5. **Reset Password page** — added "Back to Home" link
+6. **PublicHeader light mode fix** — replaced hardcoded dark colors (`#111827`, `#151C2E`, `#A7B0C0`, `white/[0.06]`) with theme tokens (`bg-card`, `text-muted`, `border-border`) so dropdown works in both dark and light mode
+7. **Dashboard TopBar** — added "View Site" link with Globe icon (opens in new tab) for easy navigation back to public site
+8. **Homepage footer** — added contact info strip (address, phone, email, hours) to match PublicFooter; added `liquid-glass` class
 
 #### Session 11: Logo Build
 1. **Custom SVG logo icon** — `LogoIcon` component with purple gradient layered-pages design

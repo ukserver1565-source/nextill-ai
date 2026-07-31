@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Search, Bell, Sparkles, ChevronDown, LogOut, Settings, Menu, ArrowLeft } from "lucide-react"
+import { Search, Bell, Sparkles, ChevronDown, LogOut, Settings, Menu, ArrowLeft, Globe } from "lucide-react"
 import { Avatar } from "@/components/ui/avatar"
 import { useAuth } from "@/lib/auth/AuthProvider"
 import { useRouter, usePathname } from "next/navigation"
@@ -132,6 +132,16 @@ export function TopBar({ onMenuClick }: TopBarProps) {
       </div>
 
       <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 shrink-0">
+        {/* View Site */}
+        <Link
+          href="/"
+          target="_blank"
+          className="hidden md:flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-muted hover:text-foreground hover:bg-card border border-border hover:border-muted transition-all text-xs shrink-0"
+        >
+          <Globe className="w-3.5 h-3.5" />
+          <span>View Site</span>
+        </Link>
+
         {/* Credits */}
         <div className="flex items-center gap-1.5 px-2 lg:px-3 py-1.5 rounded-lg bg-[#6D5EF5]/10 border border-[#6D5EF5]/20 shrink-0">
           <Sparkles className="w-3.5 h-3.5 text-[#6D5EF5]" />

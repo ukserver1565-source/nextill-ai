@@ -12,8 +12,6 @@ const jobs = new Map<string, {
   createdAt: number
 }>()
 
-const encoder = new TextEncoder()
-
 function getCreditCost(wordCount: number): number {
   if (wordCount <= 1000) return 5
   if (wordCount <= 2000) return 8

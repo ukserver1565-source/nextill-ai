@@ -179,7 +179,6 @@ export const gopayfastAdapter: PaymentVerificationAdapter = {
     }
 
     const config = getConfig()
-    const baseUrl = getBaseUrl()
 
     // Test by requesting a token for a dummy basket
     try {

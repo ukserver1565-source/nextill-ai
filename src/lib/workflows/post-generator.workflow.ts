@@ -8,15 +8,10 @@ import {
   detectAiLocal,
   runPlagiarismLocal,
   calculateReadability,
-  humanizeContentLocal,
 } from "@/lib/engine"
 
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
-}
-
-function isLocalEngine(provider: string | undefined): boolean {
-  return provider === "local-engine" || !provider
 }
 
 const pipelineStepSlugs = [
@@ -67,21 +62,6 @@ export async function runPostGenerator(input: {
 
   // Step 2: seo_outline
   runner.startStep(1)
-  const sectionTitles = [
-    primaryKeyword, `Understanding ${primaryKeyword}`,
-    `Key Benefits of ${primaryKeyword} for ${audience}`,
-    `How to Get Started with ${primaryKeyword}`,
-    `${primaryKeyword} Best Practices`,
-    `Advanced ${primaryKeyword} Techniques`,
-    `Measuring Success with ${primaryKeyword}`,
-    `Common ${primaryKeyword} Mistakes to Avoid`,
-  ]
-  const selectedTitles = sectionTitles.slice(0, sectionCount)
-  const sections = selectedTitles.map((title) => ({
-    h2: title,
-    h3: [],
-    content: `${title}: Important aspects of ${primaryKeyword} relevant to ${audience}.`,
-  }))
   const h1 = `Guide to ${primaryKeyword}`
   runner.updateProgress(1, 100)
   runner.completeStep(1, { sections: sectionCount, h1 })
@@ -519,8 +499,8 @@ function escapeHtml(text: string): string {
 
 function generateMcqs(
   keyword: string,
-  sections: ParsedSection[],
-  faqs: { question: string; answer: string }[]
+  _sections: ParsedSection[],
+  _faqs: { question: string; answer: string }[]
 ): { question: string; options: string[]; correctIndex: number; explanation: string }[] {
   const mcqs: { question: string; options: string[]; correctIndex: number; explanation: string }[] = []
 

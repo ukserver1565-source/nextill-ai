@@ -90,7 +90,7 @@ function generateOutline(keyword: string, _wordCount: number, _audience: string,
   }
 }
 
-function generateArticle(keyword: string, wordCount: number, _tone: string, _audience: string, _outline: string): LocalArticle {
+function generateArticle(keyword: string, _wordCount: number, _tone: string, _audience: string, _outline: string): LocalArticle {
   const kw = keyword.trim()
   const kwLower = kw.toLowerCase()
   const kwTitle = kw.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ")
@@ -112,8 +112,6 @@ function generateArticle(keyword: string, wordCount: number, _tone: string, _aud
 
   // Generate Quick Overview table
   const overviewTable = `\n| Detail | Information |\n|--------|-------------|\n| Name | ${kwTitle} |\n| Category | Digital Tool / Platform |\n| Key Feature | AI-powered functionality |\n| Target Users | Content creators, marketers, businesses |\n| Pricing | Free tier available, Premium plans from $29/mo |\n| Rating | 4.8/5 (based on user reviews) |\n| Founded | 2024 |\n| Website | adultpulse.co.uk |\n`
-
-  const sectionCount = Math.max(4, Math.min(10, Math.floor(wordCount / 250)))
 
   const sections: { heading: string; content: string }[] = []
 
