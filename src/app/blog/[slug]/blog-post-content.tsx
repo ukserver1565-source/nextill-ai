@@ -14,11 +14,8 @@ marked.setOptions({
 })
 
 export function BlogPostContent({ content }: BlogPostContentProps) {
-  if (!content) {
-    return <p className="text-muted italic">This post has no content yet.</p>
-  }
-
   const htmlContent = useMemo(() => {
+    if (!content) return ""
     try {
       const rawHtml = marked.parse(content) as string
       return sanitizeHtml(rawHtml)
@@ -27,6 +24,10 @@ export function BlogPostContent({ content }: BlogPostContentProps) {
       return sanitizeHtml(content)
     }
   }, [content])
+
+  if (!content) {
+    return <p className="text-muted italic">This post has no content yet.</p>
+  }
 
   return (
     <div

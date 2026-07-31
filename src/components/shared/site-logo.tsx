@@ -2,8 +2,8 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Sparkles } from "lucide-react"
 import { useSiteLogo } from "@/hooks/use-site-logo"
+import { LogoIcon } from "./logo-icon"
 
 interface SiteLogoProps {
   size?: "sm" | "md" | "lg"
@@ -16,9 +16,9 @@ export function SiteLogo({ size = "md", showText = true, href = "/", className }
   const logoUrl = useSiteLogo()
 
   const sizes = {
-    sm: { box: "w-7 h-7", icon: "w-3.5 h-3.5", img: "w-7 h-7", px: 28, text: "text-sm" },
-    md: { box: "w-8 h-8", icon: "w-4 h-4", img: "w-8 h-8", px: 32, text: "text-lg" },
-    lg: { box: "w-16 h-16 rounded-2xl", icon: "w-8 h-8", img: "w-16 h-16 rounded-2xl", px: 64, text: "text-4xl" },
+    sm: { box: "w-7 h-7", icon: 28, img: "w-7 h-7", px: 28, text: "text-sm" },
+    md: { box: "w-8 h-8", icon: 32, img: "w-8 h-8", px: 32, text: "text-lg" },
+    lg: { box: "w-16 h-16 rounded-2xl", icon: 64, img: "w-16 h-16 rounded-2xl", px: 64, text: "text-4xl" },
   }
   const s = sizes[size]
 
@@ -44,13 +44,13 @@ export function SiteLogo({ size = "md", showText = true, href = "/", className }
       {logoUrl ? (
         <div className="relative">
           {logoContent}
-          <div className={`${s.box} rounded-lg gradient-primary flex items-center justify-center ${logoUrl ? "hidden" : ""}`}>
-            <Sparkles className={`${s.icon} text-white`} />
+          <div className={`${s.box} rounded-lg flex items-center justify-center ${logoUrl ? "hidden" : ""}`}>
+            <LogoIcon size={s.icon} />
           </div>
         </div>
       ) : (
-        <div className={`${s.box} rounded-lg gradient-primary flex items-center justify-center`}>
-          <Sparkles className={`${s.icon} text-white`} />
+        <div className={`${s.box} rounded-lg flex items-center justify-center`}>
+          <LogoIcon size={s.icon} />
         </div>
       )}
       {showText && (

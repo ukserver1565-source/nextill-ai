@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { PublicHeader } from "@/components/layout/public-header"
 import { PublicFooter } from "@/components/layout/public-footer"
 import { getSiteUrl } from "@/lib/site-url"
-import { BackButton } from "@/components/shared/back-button"
 import { BlogListClient } from "./blog-list-client"
 
 export const metadata: Metadata = {
@@ -108,12 +108,12 @@ export default function BlogPage() {
                 >
                   Get Started Free
                 </a>
-                <a
+                <Link
                   href="/#tools"
                   className="px-8 py-3 rounded-xl border border-border bg-card/50 text-foreground font-medium text-sm hover:bg-card/80 transition-colors"
                 >
                   Explore Tools
-                </a>
+                </Link>
               </div>
             </div>
           </div>
