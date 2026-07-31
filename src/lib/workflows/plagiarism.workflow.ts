@@ -68,6 +68,13 @@ export async function runPlagiarismCheck(input: PlagiarismWorkflowInput): Promis
           repeatedSentences: [],
           highlightedText: [],
           safeToPublish: copyleaksResult.summary.originalityScore >= 70,
+          analysis: {
+            vocabularyDiversity: 0,
+            sentenceVariety: 0,
+            aiPatternScore: 0,
+            commonPhraseCount: 0,
+            selfDuplicationPercent: 0,
+          },
         },
         aiDetection,
         engine: "copyleaks",
