@@ -3,13 +3,10 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import {
-  BookOpen, Users, Shield, CreditCard, Wrench, Mail, Cpu,
-  FileText, Search, BarChart3, Settings, LayoutDashboard,
-  ChevronDown, ChevronRight, ExternalLink, CheckCircle2,
-  AlertTriangle, Info, ArrowRight, Globe, Lock, Key,
-  UserPlus, LogIn, Sparkles, Activity, FileEdit, PenSquare,
-  TrendingUp, Share2, Clock, Rocket, Zap, Database,
-  HelpCircle, BookMarked
+  Shield, CreditCard, Wrench, Mail, Cpu,
+  Search, BarChart3, LayoutDashboard,
+  ChevronDown, ChevronRight, ExternalLink,
+  Globe, LogIn, Rocket, Database, BookMarked
 } from "lucide-react"
 
 const sections = [

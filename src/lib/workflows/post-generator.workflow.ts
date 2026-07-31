@@ -95,28 +95,44 @@ export async function runPostGenerator(input: {
   runner.startStep(2)
 
   // Use Gemini with explicit instructions to use REAL knowledge about the topic
-  const prompt = `You are an expert research writer. Write a comprehensive, detailed article about "${primaryKeyword}".
+  const prompt = `Write a detailed, factual article about "${primaryKeyword}". This must read like a real human wrote it — not like AI.
 
-CRITICAL INSTRUCTIONS:
-- You MUST use your REAL knowledge about "${primaryKeyword}". Write factual, specific information.
-- If "${primaryKeyword}" is a person: include their full name, birth date, birthplace, age, career, achievements, family, education, net worth, controversies, and current status.
-- If "${primaryKeyword}" is a product/brand: include launch date, features, pricing, versions, competitors, and user reviews.
-- If "${primaryKeyword}" is a topic: include history, key concepts, statistics, examples, and real-world applications.
-- Do NOT write generic placeholder content. Every paragraph must contain specific, real facts about "${primaryKeyword}".
-- Do NOT use phrases like "Write Something" or "comprehensive solution" — always use the actual name "${primaryKeyword}".
+STYLE RULES:
+- Write like a knowledgeable person explaining something to a friend
+- Use contractions (don't, it's, they're, we've)
+- Mix short and long sentences naturally
+- Use real facts, dates, numbers, names — never make up information
+- Include specific examples and anecdotes
+- Avoid generic phrases like "comprehensive solution", "cutting-edge", "leverage", "at its core"
+- If you don't know something specific, say so honestly instead of making it up
+- Write with personality and voice, not like a textbook
+
+CONTENT REQUIREMENTS for "${primaryKeyword}":
+- WHO: Who is/what is "${primaryKeyword}"? (real description)
+- WHEN: When did it start/when was it created/when was it born?
+- WHERE: Where is it based/where did it originate?
+- WHAT: What does it do/what are its main features/achievements?
+- WHY: Why is it important/popular/significant?
+- HOW: How does it work/how was it created/how to use it?
+- NUMBERS: Include real statistics, dates, amounts, ratings
+- COMPARISON: How does it compare to alternatives?
+- FUTURE: What's next for "${primaryKeyword}"?
 
 FORMAT:
-- Start with # H1 title containing "${primaryKeyword}"
-- Include a Table of Contents
-- Use ## H2 and ### H3 headings
-- Include tables with real data (dates, stats, comparisons)
-- Include bullet points and numbered lists
-- Target: ${wordCount} words minimum
-- Language: ${language}
-- Tone: ${tone}
-- Audience: ${audience}
+# [Title with "${primaryKeyword}"]
 
-Write the complete article now with REAL facts about "${primaryKeyword}":`
+Table of Contents
+1. [Section 1]
+2. [Section 2]
+...
+
+[Sections with ## headings, tables, bullet points, bold text]
+
+Include at least 2 tables with real data.
+
+Write ${wordCount}+ words. Language: ${language}. Tone: ${tone}.
+
+Write the article now:`
 
   const writerResult = await generateText("post-generator", prompt, {
     maxTokens: Math.max(16384, Math.ceil(wordCount * 2.5)),

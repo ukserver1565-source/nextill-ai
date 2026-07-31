@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, Suspense } from "react"
-import { Sparkles, Eye, EyeOff, Loader2, Check, X } from "lucide-react"
+import { Sparkles, Eye, EyeOff, Loader2, Check, X, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { signup } from "@/lib/auth/actions"
@@ -103,10 +103,12 @@ function SignupPageContent() {
         <div className="absolute top-20 left-20 w-72 h-72 bg-primary/30 rounded-full blur-[128px]" />
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent/20 rounded-full blur-[128px]" />
         <div className="relative z-10 text-center max-w-md px-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent mb-6 shadow-lg shadow-primary/30">
+          <Link href="/" className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent mb-6 shadow-lg shadow-primary/30 hover:scale-105 transition-transform">
             <Sparkles className="w-8 h-8 text-foreground" />
-          </div>
-          <span className="text-4xl font-bold gradient-primary-text">Nextill AI</span>
+          </Link>
+          <Link href="/" className="block">
+            <span className="text-4xl font-bold gradient-primary-text">Nextill AI</span>
+          </Link>
           <p className="text-muted mt-3 text-lg">Your AI content workflow.</p>
         </div>
       </div>

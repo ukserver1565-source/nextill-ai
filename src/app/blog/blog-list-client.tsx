@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Calendar, ArrowRight, Clock, Eye, Loader2, TrendingUp, BookOpen, Search, Zap } from "lucide-react"
+import { Calendar, ArrowRight, Clock, Loader2, TrendingUp, BookOpen, Search, Zap } from "lucide-react"
 
 interface BlogPost {
   id: string

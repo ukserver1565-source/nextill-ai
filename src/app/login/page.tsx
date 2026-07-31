@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, Suspense } from "react"
-import { Sparkles, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react"
+import { Sparkles, Eye, EyeOff, Loader2, AlertCircle, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { login } from "@/lib/auth/actions"
@@ -61,10 +61,12 @@ function LoginPageContent() {
         <div className="absolute top-1/3 right-1/3 w-6 h-6 border border-accent/30 rounded-lg rotate-45" />
         <div className="absolute bottom-1/3 left-1/3 w-3 h-3 bg-primary/40 rounded-full" />
         <div className="relative z-10 text-center max-w-md px-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent mb-6 shadow-lg shadow-primary/30">
+          <Link href="/" className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent mb-6 shadow-lg shadow-primary/30 hover:scale-105 transition-transform">
             <Sparkles className="w-8 h-8 text-foreground" />
-          </div>
-          <span className="text-4xl font-bold gradient-primary-text">Nextill AI</span>
+          </Link>
+          <Link href="/" className="block">
+            <span className="text-4xl font-bold gradient-primary-text">Nextill AI</span>
+          </Link>
           <p className="text-muted mt-3 text-lg">Your AI content workflow.</p>
 
         </div>
@@ -73,6 +75,10 @@ function LoginPageContent() {
       {/* Right - Form Panel */}
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-md">
+          <Link href="/" className="inline-flex items-center gap-2 h-9 rounded-lg px-3.5 text-xs sm:text-sm font-medium text-muted hover:text-foreground hover:bg-card border border-border hover:border-muted transition-all mb-4">
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Back to Home
+          </Link>
           <div className="liquid-glass-card rounded-2xl p-8 space-y-6">
             {/* Mobile Logo */}
             <div className="lg:hidden text-center">

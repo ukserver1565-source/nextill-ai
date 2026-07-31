@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
 import { createServerClient } from "@supabase/ssr"
-import { createCipheriv, createDecipheriv } from "crypto"
+import { createDecipheriv } from "crypto"
 
 const ENCRYPTION_KEY = (process.env.ENCRYPTION_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "").slice(0, 32).padEnd(32, "0")
 

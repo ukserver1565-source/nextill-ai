@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Download, Users, DollarSign, BarChart3, Cpu, Loader2, XCircle } from "lucide-react"
+import { Download, Users, DollarSign, BarChart3, Cpu, XCircle } from "lucide-react"
 
 function downloadCSV(filename: string, headers: string[], rows: any[][]) {
   const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n")

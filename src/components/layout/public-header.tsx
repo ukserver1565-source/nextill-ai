@@ -80,13 +80,13 @@ export function PublicHeader() {
                   <p className="text-xs font-medium text-foreground leading-tight whitespace-nowrap">{profile?.full_name || "User"}</p>
                   <p className="text-[10px] text-[#A7B0C0] leading-tight capitalize whitespace-nowrap">{profile?.plan || "Free"} Plan</p>
                 </div>
-                <ChevronDown className="w-3 h-3 text-[#A7B0C0] hidden sm:block" />
+                <ChevronDown className="w-3 h-3 text-muted hidden sm:block" />
               </button>
               {profileOpen && (
                 <div className="absolute right-0 top-full mt-2 w-52 bg-card/95 backdrop-blur-xl border border-border rounded-xl shadow-2xl z-50 overflow-hidden">
                   <div className="px-4 py-3 border-b border-border">
                     <p className="text-sm font-medium text-foreground">{profile?.full_name || "User"}</p>
-                    <p className="text-xs text-[#A7B0C0]">{profile?.email || user?.email || ""}</p>
+                    <p className="text-xs text-muted">{profile?.email || user?.email || ""}</p>
                     <div className="mt-1.5">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[#6D5EF5]/10 text-[#6D5EF5] border border-[#6D5EF5]/20 capitalize">
                         {profile?.plan || "Free"}
@@ -96,7 +96,7 @@ export function PublicHeader() {
                   <div className="p-1">
                     <Link
                       href="/dashboard"
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] rounded-lg transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-muted hover:text-foreground hover:bg-card rounded-lg transition-colors"
                       onClick={() => setProfileOpen(false)}
                     >
                       Dashboard
@@ -112,7 +112,7 @@ export function PublicHeader() {
                     )}
                     <Link
                       href="/dashboard/settings"
-                      className="flex items-center gap-2 px-3 py-2 text-sm text-[#A7B0C0] hover:text-white hover:bg-[#151C2E] rounded-lg transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-muted hover:text-foreground hover:bg-card rounded-lg transition-colors"
                       onClick={() => setProfileOpen(false)}
                     >
                       <Settings className="w-4 h-4" />
@@ -120,7 +120,7 @@ export function PublicHeader() {
                     </Link>
                     <button
                       onClick={handleSignOut}
-                      className="flex items-center gap-2 w-full px-3 py-2 text-sm text-[#A7B0C0] hover:text-[#EF4444] hover:bg-[#EF4444]/10 rounded-lg transition-colors"
+                      className="flex items-center gap-2 w-full px-3 py-2 text-sm text-muted hover:text-[#EF4444] hover:bg-[#EF4444]/10 rounded-lg transition-colors"
                     >
                       <LogOut className="w-4 h-4" />
                       Sign Out

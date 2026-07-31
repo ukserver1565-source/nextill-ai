@@ -35,7 +35,7 @@ export async function GET() {
 
     // Fetch user profiles for each payment
     const userIds = [...new Set((payments || []).map((p: any) => p.user_id).filter(Boolean))]
-    let profileMap: Record<string, { email: string; full_name: string }> = {}
+    const profileMap: Record<string, { email: string; full_name: string }> = {}
 
     if (userIds.length > 0) {
       const { data: profiles } = await supabaseAdmin
