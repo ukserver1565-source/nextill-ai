@@ -57,7 +57,7 @@ const allTools = [
   { name: "Website Audit", slug: "website-audit", icon: Activity, color: "from-gray-500 to-slate-600", desc: "Full technical SEO audit with PageSpeed scores and recommendations.", features: ["PageSpeed scores", "Technical SEO", "Performance metrics"], category: "seo", live: false },
   { name: "Keyword Research", slug: "keyword-research", icon: Search, color: "from-gray-500 to-slate-600", desc: "Research keywords with search volume, difficulty, and CPC data.", features: ["Volume data", "Difficulty scores", "CPC estimates"], category: "research", live: false },
   { name: "Rank Tracker", slug: "rank-tracker", icon: TrendingUp, color: "from-gray-500 to-slate-600", desc: "Track your search engine rankings over time.", features: ["Position tracking", "Historical data", "SERP changes"], category: "research", live: false },
-  { name: "Backlink Checker", slug: "backlink-checker", icon: Globe, color: "from-gray-500 to-slate-600", desc: "Analyze your backlink profile and referring domains.", features: ["Backlink count", "Domain authority", "Link quality"], category: "research", live: false },
+  { name: "Backlink Checker", slug: "backlink-analyzer", icon: Globe, color: "from-gray-500 to-slate-600", desc: "Analyze your backlink profile and referring domains.", features: ["Backlink count", "Domain authority", "Link quality"], category: "research", live: false },
 ]
 
 const categories = [

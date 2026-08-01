@@ -160,7 +160,7 @@ export default async function PricingPage() {
                   </thead>
                   <tbody>
                     {[
-                      { feature: "Monthly Credits", free: "100", starter: "1,000", pro: "5,000", business: "25,000" },
+                      { feature: "Monthly Credits", free: "100", starter: "2,000", pro: "7,500", business: "20,000" },
                       { feature: "Keyword Research", free: "3/day", starter: "✓", pro: "✓", business: "✓" },
                       { feature: "Post Generator", free: "3/day", starter: "✓", pro: "✓", business: "✓" },
                       { feature: "Plagiarism Checker", free: "3/day", starter: "✓", pro: "✓", business: "✓" },

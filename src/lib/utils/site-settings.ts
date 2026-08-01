@@ -9,8 +9,12 @@
  */
 export function unwrapSetting(val: unknown): unknown {
   if (val === null || val === undefined) return ""
-  if (typeof val === "object" && !Array.isArray(val) && "v" in val) {
-    return (val as Record<string, unknown>).v
+  if (typeof val === "object" && !Array.isArray(val)) {
+    const obj = val as Record<string, unknown>
+    // Handle {v: value} format (canonical)
+    if ("v" in obj) return obj.v
+    // Handle {value: value} format (legacy)
+    if ("value" in obj && Object.keys(obj).length <= 2) return obj.value
   }
   if (typeof val === "string") {
     // Strip accumulated escaped quotes from old bug

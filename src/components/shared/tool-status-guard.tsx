@@ -94,13 +94,13 @@ export function ToolStatusGuard({ toolSlug, toolName, toolDescription: _toolDesc
           <div className={`w-16 h-16 rounded-2xl ${config.bgColor} border flex items-center justify-center mx-auto mb-6`}>
             <StatusIcon className={`w-8 h-8 ${config.color}`} />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">{toolName}</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">{toolName}</h2>
           <p className={`font-medium mb-3 ${config.color}`}>{config.label}</p>
           <p className="text-sm text-muted mb-8 leading-relaxed">{config.description}</p>
           <div className="flex items-center justify-center gap-3">
             <Link
               href="/tools"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03] text-sm text-white hover:bg-white/[0.06] transition-all"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-border bg-card/50 text-sm text-foreground hover:bg-card/80 transition-all"
             >
               <ArrowLeft className="w-4 h-4" /> View All Tools
             </Link>

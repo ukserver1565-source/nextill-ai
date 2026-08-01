@@ -58,6 +58,14 @@
 8. **Full codebase review** — 18 modified files + 1 new file audited. 7 bugs found and fixed.
 9. **Build verified** — 158 pages, 0 TS errors, compiled successfully
 
+#### Session 14: Deep Site Audit Fixes (Aug 1)
+1. **Site-settings unwrap fixed** — `unwrapSetting` now handles both `{v: val}` and `{value: val}` formats. Contact page social links and maintenance page message now render correctly.
+2. **Pricing credit mismatch fixed** — comparison table was showing 1,000/5,000/25,000 credits but cards show 2,000/7,500/20,000. Now consistent.
+3. **Backlink checker slug mismatch fixed** — tools-client used "backlink-checker" but workflow_settings has "backlink-analyzer". Now matches.
+4. **Blog dedup** — added dedup-by-slug in public blog API to prevent duplicate posts from old seed runs showing.
+5. **Tool-status-guard light mode fix** — replaced hardcoded `text-white` / `border-white` with theme tokens for Coming Soon state.
+6. **Full live site audit** — homepage, tools, blog, pricing, about, contact, login, tool pages, API endpoints all checked.
+
 #### Session 12: Header/Nav Audit & Fix
 1. **Homepage header profile dropdown** — added avatar, name, plan badge, dropdown with Dashboard/Admin Panel/Settings/Sign Out (was showing plain "Dashboard" button even when logged in)
 2. **Homepage mobile menu** — added full auth-aware menu (Dashboard, Admin Panel, Settings, Sign Out when logged in; Sign In, Get Started when logged out)

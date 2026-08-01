@@ -748,7 +748,15 @@ export async function GET(req: NextRequest) {
     const { data, error, count } = await query
     if (error) throw error
 
-    return NextResponse.json({ data: data || [], total: count || 0 })
+    // Deduplicate by slug (keep most recent) — data may have duplicates from old seed runs
+    const seen = new Set<string>()
+    const deduped = (data || []).filter((row: { slug: string }) => {
+      if (seen.has(row.slug)) return false
+      seen.add(row.slug)
+      return true
+    })
+
+    return NextResponse.json({ data: deduped, total: deduped.length })
   } catch (_err) {
     return NextResponse.json({ data: [], total: 0 })
   }
