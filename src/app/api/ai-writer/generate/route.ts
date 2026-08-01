@@ -29,7 +29,11 @@ const generateSchema = z.object({
 export async function POST(req: Request) {
   try {
     const supabase = await createSupabaseServerClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user }, error: authErr } = await supabase.auth.getUser()
+
+    if (authErr || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
 
     const body = await req.json()
     const parsed = generateSchema.safeParse(body)

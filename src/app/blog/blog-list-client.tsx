@@ -178,7 +178,7 @@ export function BlogListClient() {
                         </span>
                         <span className="text-xs text-muted flex items-center gap-1">
                           <Clock className="w-3 h-3" />
-                          {getReadTime(featuredPost.title)}
+                          {getReadTime(featuredPost.excerpt)}
                         </span>
                       </div>
 

@@ -25,7 +25,7 @@ export async function GET() {
     const { data: payments, error } = await supabaseAdmin
       .from("payments")
       .select("*")
-      .eq("verification_status", "pending")
+      .eq("verification_status", "pending_manual_review")
       .order("created_at", { ascending: false })
 
     if (error) {

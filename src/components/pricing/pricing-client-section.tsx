@@ -59,13 +59,13 @@ export function PricingClientSection({ initialPlans, initialCreditCosts }: Props
       <div className="flex items-center justify-center gap-3 mb-8">
         <button
           onClick={() => setBillingCycle("monthly")}
-          className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "monthly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-foreground"}`}
+          className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "monthly" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted hover:text-foreground"}`}
         >
           Monthly
         </button>
         <button
           onClick={() => setBillingCycle("yearly")}
-          className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "yearly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-foreground"}`}
+          className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "yearly" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted hover:text-foreground"}`}
         >
           Yearly
           <span className="ml-1.5 text-[10px] font-bold text-emerald-400">Save 2 months</span>
@@ -106,12 +106,12 @@ export function PricingClientSection({ initialPlans, initialCreditCosts }: Props
                 value={couponCode}
                 onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponResult(null) }}
                 placeholder="Enter coupon code"
-                className="flex-1 h-10 px-3 rounded-lg bg-[#090B16] border border-white/[0.06] text-sm text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 font-mono uppercase"
+                className="flex-1 h-10 px-3 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 font-mono uppercase"
               />
               <button
                 onClick={validateCoupon}
                 disabled={couponLoading || !couponCode.trim()}
-                className="h-10 px-4 rounded-lg bg-[#6D5EF5] text-white text-xs font-medium hover:brightness-110 transition-all disabled:opacity-50"
+                className="h-10 px-4 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:brightness-110 transition-all disabled:opacity-50"
               >
                 {couponLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Apply"}
               </button>
@@ -135,36 +135,36 @@ export function PricingClientSection({ initialPlans, initialCreditCosts }: Props
         <div className="liquid-glass-card rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.06]">
-                <th className="text-left p-4 text-xs text-[#A7B0C0] font-medium uppercase">Action</th>
-                <th className="text-right p-4 text-xs text-[#A7B0C0] font-medium uppercase">Credits</th>
+              <tr className="border-b border-border">
+                <th className="text-left p-4 text-xs text-muted font-medium uppercase">Action</th>
+                <th className="text-right p-4 text-xs text-muted font-medium uppercase">Credits</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-white/[0.03]">
+              <tr className="border-b border-border/50">
                 <td className="p-4 text-foreground text-xs sm:text-sm">Domain Intelligence — basic/local</td>
                 <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />{getCreditCost("domain-intelligence")}</span></td>
               </tr>
-              <tr className="border-b border-white/[0.03]">
+              <tr className="border-b border-border/50">
                 <td className="p-4 text-foreground text-xs sm:text-sm">Post Generator — 1,000 words</td>
                 <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />5</span></td>
               </tr>
-              <tr className="border-b border-white/[0.03]">
+              <tr className="border-b border-border/50">
                 <td className="p-4 text-foreground text-xs sm:text-sm">Post Generator — 2,000 words</td>
                 <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />8</span></td>
               </tr>
-              <tr className="border-b border-white/[0.03]">
+              <tr className="border-b border-border/50">
                 <td className="p-4 text-foreground text-xs sm:text-sm">Post Generator — 5,000 words</td>
                 <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />20</span></td>
               </tr>
-              <tr className="border-b border-white/[0.03]">
+              <tr className="border-b border-border/50">
                 <td className="p-4 text-foreground text-xs sm:text-sm">Plagiarism & Authenticity check</td>
                 <td className="p-4 text-right"><span className="inline-flex items-center gap-1 text-xs font-medium text-[#6D5EF5]"><Zap className="w-3 h-3" />{getCreditCost("plagiarism-checker")}</span></td>
               </tr>
             </tbody>
           </table>
         </div>
-        <p className="text-center text-xs text-[#A7B0C0] mt-4">Credit costs are configured by the admin and may vary.</p>
+        <p className="text-center text-xs text-muted mt-4">Credit costs are configured by the admin and may vary.</p>
       </div>
     </>
   )

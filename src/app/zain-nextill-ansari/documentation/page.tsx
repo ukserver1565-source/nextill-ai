@@ -316,18 +316,16 @@ Resend (resend.com) — Configured
     content: `━━ ACTIVE INTEGRATIONS ━━
 
 1. REWRITEAI (rewriteai.com) ✅ Active
-   • API Key: rw_sk_4b2e881...
+   • API Key: Configured in .env.local → REWRITEAI_API_KEY
    • Services: /api/v1/humanize, /api/v1/write
    • Used by: AI Humanizer, AI Writer tools
    • Fallback: Local engine if API fails
-   • Config: .env.local → REWRITEAI_API_KEY
 
 2. PLAGIARISMCHECK.ORG ✅ Active
-   • API Key: g8wx9zI_K4XhrX7XBuslyphJRg4hVaYh
+   • API Key: Configured in .env.local → PLAGIARISMCHECK_API_KEY
    • Single-user API
    • Used by: Plagiarism Checker tool
    • Fallback: Local similarity analysis
-   • Config: .env.local → PLAGIARISMCHECK_API_KEY
 
 3. RESEND (resend.com) ✅ Active
    • API Key: stored in site_settings or .env.local

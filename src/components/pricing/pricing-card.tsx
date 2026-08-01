@@ -71,9 +71,9 @@ export function PricingCard({ plan, billingCycle, couponResult, couponCode, isLo
   const ctaHref = isLoggedIn ? checkoutUrl : `/signup?redirect=${encodeURIComponent(checkoutUrl)}`
 
   return (
-    <div className={`relative liquid-glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6 transition-all duration-300 ${plan.is_popular ? "border-[#6D5EF5]/40 ring-1 ring-[#6D5EF5]/20 shadow-lg shadow-[#6D5EF5]/10 bg-[#151C2E]/90 hover:scale-[1.02]" : "hover:border-white/[0.12]"}`}>
+    <div className={`relative liquid-glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6 transition-all duration-300 ${plan.is_popular ? "border-primary/40 ring-1 ring-primary/20 shadow-lg shadow-primary/10 bg-card/90 hover:scale-[1.02]" : "hover:border-border"}`}>
       {plan.badge && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#6D5EF5] text-white text-[9px] sm:text-[10px] font-bold px-2.5 sm:px-3 py-1 rounded-full uppercase tracking-wider whitespace-nowrap">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[9px] sm:text-[10px] font-bold px-2.5 sm:px-3 py-1 rounded-full uppercase tracking-wider whitespace-nowrap">
           {plan.badge}
         </div>
       )}
@@ -83,7 +83,7 @@ export function PricingCard({ plan, billingCycle, couponResult, couponCode, isLo
       <div className="mb-3 sm:mb-4">
         {hasDiscount ? (
           <div className="flex items-baseline gap-2">
-            <span className="text-lg text-[#A7B0C0] line-through">${displayPrice}</span>
+            <span className="text-lg text-muted line-through">${displayPrice}</span>
             <span className="text-2xl sm:text-3xl font-bold text-emerald-400">${finalPrice}</span>
             <span className="text-xs sm:text-sm text-muted">/{billingCycle === "yearly" ? "year" : "month"}</span>
           </div>
@@ -105,13 +105,13 @@ export function PricingCard({ plan, billingCycle, couponResult, couponCode, isLo
       {/* CTA Button */}
       {isFree ? (
         <Link href="/signup">
-          <button className="w-full py-2.5 rounded-lg text-xs sm:text-sm font-semibold mb-4 sm:mb-6 border border-white/[0.12] hover:bg-white/[0.04] transition-colors">
+          <button className="w-full py-2.5 rounded-lg text-xs sm:text-sm font-semibold mb-4 sm:mb-6 border border-border hover:bg-card transition-colors">
             Get Started
           </button>
         </Link>
       ) : (
         <Link href={ctaHref}>
-          <button className={`w-full py-2.5 rounded-lg text-xs sm:text-sm font-semibold mb-4 sm:mb-6 transition-colors ${plan.is_popular ? "bg-[#6D5EF5] text-white hover:brightness-110 shadow-lg shadow-[#6D5EF5]/20" : "border border-white/[0.12] hover:bg-white/[0.04]"}`}>
+          <button className={`w-full py-2.5 rounded-lg text-xs sm:text-sm font-semibold mb-4 sm:mb-6 transition-colors ${plan.is_popular ? "bg-primary text-primary-foreground hover:brightness-110 shadow-lg shadow-primary/20" : "border border-border hover:bg-card"}`}>
             Choose {plan.name}
           </button>
         </Link>
@@ -121,28 +121,28 @@ export function PricingCard({ plan, billingCycle, couponResult, couponCode, isLo
       <ul className="space-y-2 sm:space-y-2.5">
         {plan.features.map((f: string) => (
           <li key={f} className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm">
-            <Check className="w-3.5 h-3.5 text-[#6D5EF5] shrink-0 mt-0.5" />
-            <span className="text-[#A7B0C0]">{f}</span>
+            <Check className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+            <span className="text-muted">{f}</span>
           </li>
         ))}
       </ul>
 
       {/* Limits */}
-      <div className="mt-4 pt-4 border-t border-white/[0.06] space-y-1.5">
+      <div className="mt-4 pt-4 border-t border-border space-y-1.5">
         <div className="flex justify-between text-[11px]">
-          <span className="text-[#A7B0C0]">Projects</span>
+          <span className="text-muted">Projects</span>
           <span className="text-foreground font-medium">{formatLimit(plan.max_projects)}</span>
         </div>
         <div className="flex justify-between text-[11px]">
-          <span className="text-[#A7B0C0]">Documents</span>
+          <span className="text-muted">Documents</span>
           <span className="text-foreground font-medium">{formatLimit(plan.max_documents)}</span>
         </div>
         <div className="flex justify-between text-[11px]">
-          <span className="text-[#A7B0C0]">Max article length</span>
+          <span className="text-muted">Max article length</span>
           <span className="text-foreground font-medium">{formatLimit(plan.max_article_length, "words")}</span>
         </div>
         <div className="flex justify-between text-[11px]">
-          <span className="text-[#A7B0C0]">Report history</span>
+          <span className="text-muted">Report history</span>
           <span className="text-foreground font-medium">{plan.report_history_days >= 9999 ? "Unlimited" : `${plan.report_history_days} days`}</span>
         </div>
       </div>

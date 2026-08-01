@@ -59,16 +59,20 @@ function isConfigured(): boolean {
 export function validateCallbackHash(
   basketId: string,
   errCode: string,
+  receivedHash: string,
 ): boolean {
   const config = getConfig()
-  if (!config.securedKey) return false
+  if (!config.securedKey || !receivedHash) return false
 
-  const hash = crypto
+  const computedHash = crypto
     .createHash("sha256")
     .update(`${basketId}|${config.securedKey}|${config.merchantId}|${errCode}`)
     .digest("hex")
 
-  return Boolean(hash)
+  return crypto.timingSafeEqual(
+    Buffer.from(computedHash, "hex"),
+    Buffer.from(receivedHash, "hex"),
+  )
 }
 
 /**

@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     const data = await apiKeysService.create({
       provider_slug: body.provider_slug || body.provider_id,
       name: body.name,
-      key: body.key,
+      key: body.key || body.key_encrypted,
       is_enabled: body.is_enabled ?? true,
     })
     return NextResponse.json(data)

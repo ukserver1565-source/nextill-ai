@@ -62,7 +62,7 @@ export async function copyleaksScanPlagiarism(text: string): Promise<CopyleaksSc
   const _start = Date.now()
   try {
     // Create scan
-    const createRes = await fetch(`${COPYLEAKS_BASE}/create扫描`, {
+    const createRes = await fetch(`${COPYLEAKS_BASE}/plagiarism/new`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${key}`,
@@ -94,7 +94,7 @@ export async function copyleaksScanPlagiarism(text: string): Promise<CopyleaksSc
     let attempts = 0
     while (attempts < 10) {
       await new Promise(r => setTimeout(r, 3000))
-      const statusRes = await fetch(`${COPYLEAKS_BASE}/扫描/${scanId}`, {
+      const statusRes = await fetch(`${COPYLEAKS_BASE}/plagiarism/${scanId}`, {
         headers: { "Authorization": `Bearer ${key}` },
         signal: AbortSignal.timeout(10000),
       })

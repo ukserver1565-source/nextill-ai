@@ -140,6 +140,23 @@ function CheckoutContent() {
     return undefined
   }
 
+  const handleFreeCheckout = async () => {
+    setProcessing(true); setError("")
+    try {
+      const res = await fetch("/api/checkout/create", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          plan_slug: plan?.slug,
+          billing_cycle: billing,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setError(data.error || "Activation failed."); return }
+      window.location.href = "/dashboard"
+    } catch { setError("Activation unavailable.") }
+    finally { setProcessing(false) }
+  }
+
   const handleCheckout = async () => {
     setProcessing(true); setError("")
     try {
@@ -636,8 +653,15 @@ function CheckoutContent() {
         )}
 
         {/* Proceed to Payment Button */}
-        <button onClick={() => { setStep("payment"); setError("") }}
-          disabled={isFree || (!isFree && paymentMethods.length > 0 && !selectedPaymentId)}
+        <button onClick={() => {
+          if (isFree) {
+            // Free plan — activate directly
+            handleFreeCheckout()
+          } else {
+            setStep("payment"); setError("")
+          }
+        }}
+          disabled={!isFree && paymentMethods.length > 0 && !selectedPaymentId}
           className="w-full h-12 rounded-xl bg-gradient-to-r from-[#6D5EF5] to-[#4CC9F0] text-foreground font-medium flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50">
           {isFree ? (
             "Get Started Free"

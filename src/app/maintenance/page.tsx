@@ -9,7 +9,7 @@ export default function MaintenancePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch("/api/admin/settings")
+    fetch("/api/public/site-settings")
       .then(r => r.json())
       .then(data => {
         if (data.maintenance_message) setMessage(data.maintenance_message)

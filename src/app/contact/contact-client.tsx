@@ -50,7 +50,7 @@ export default function ContactPage() {
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([])
 
   useEffect(() => {
-    fetch("/api/admin/settings")
+    fetch("/api/public/site-settings")
       .then((r) => r.json())
       .then((data) => {
         const raw = data.social_links

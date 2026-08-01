@@ -9,7 +9,11 @@ export async function POST(req: Request) {
     if (!primaryKeyword) return NextResponse.json({ error: "Primary keyword is required" }, { status: 400 })
 
     const supabase = await createSupabaseServerClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user }, error: authErr } = await supabase.auth.getUser()
+
+    if (authErr || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
 
     const result = await runPostGenerator({
       primaryKeyword,

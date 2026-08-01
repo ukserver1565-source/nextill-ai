@@ -17,20 +17,6 @@ async function getAuthErrorMessage(
 ): Promise<string> {
   const errMsg = authError.message?.toLowerCase() || ""
 
-  // Check if the email exists in our profiles table
-  const { data: _profile } = await supabase
-    .from("profiles")
-    .select("user_id")
-    .eq("user_id", email)
-    .maybeSingle()
-
-  // Also try to find by checking if any profile matches (email is in auth.users, not profiles)
-  // Supabase signInWithPassword returns "Invalid login credentials" for both wrong email AND wrong password.
-  // We can't directly check auth.users from the client, but we can try a different approach:
-  // Use signUp to check if email exists (it will fail with "User already registered")
-
-  // For now, we provide a clear but not-entirely-revealing message
-  // The key insight: "Invalid login credentials" means either wrong email OR wrong password
   if (errMsg.includes("invalid login credentials") || errMsg.includes("invalid")) {
     return "The email or password you entered is incorrect. Please try again."
   }
