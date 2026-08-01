@@ -17,7 +17,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const body = await req.json()
     const updated = await apiKeysService.update(id, {
       name: body.name,
-      key: body.key,
+      key: body.key || body.key_encrypted,
       is_enabled: body.is_enabled,
     })
     return NextResponse.json(updated)

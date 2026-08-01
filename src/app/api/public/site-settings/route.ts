@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/supabase/admin"
+import { unwrapSetting } from "@/lib/utils/site-settings"
 
 // Public endpoint — returns ONLY safe, non-sensitive site settings
 export async function GET() {
@@ -11,11 +12,7 @@ export async function GET() {
 
     const settings: Record<string, unknown> = {}
     for (const row of data || []) {
-      try {
-        settings[row.key] = typeof row.value === "string" ? JSON.parse(row.value) : row.value
-      } catch {
-        settings[row.key] = row.value
-      }
+      settings[row.key] = unwrapSetting(row.value)
     }
 
     return NextResponse.json(settings)

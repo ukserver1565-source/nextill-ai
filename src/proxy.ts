@@ -74,6 +74,7 @@ export async function proxy(request: NextRequest) {
   if (pathname.startsWith("/api/tools")) return NextResponse.next()
   if (pathname.startsWith("/api/cron/")) return NextResponse.next()
   if (pathname === "/maintenance") return NextResponse.next()
+  if (pathname === "/api/public/site-settings") return NextResponse.next()
   if (pathname.startsWith("/_next") || pathname === "/favicon.ico") return NextResponse.next()
 
   // Admin routes and admin API are never blocked by maintenance

@@ -69,10 +69,11 @@ export function validateCallbackHash(
     .update(`${basketId}|${config.securedKey}|${config.merchantId}|${errCode}`)
     .digest("hex")
 
-  return crypto.timingSafeEqual(
-    Buffer.from(computedHash, "hex"),
-    Buffer.from(receivedHash, "hex"),
-  )
+  // Guard against length mismatch (timingSafeEqual throws otherwise)
+  const receivedBuf = Buffer.from(receivedHash, "hex")
+  if (computedHash.length !== receivedBuf.length) return false
+
+  return crypto.timingSafeEqual(Buffer.from(computedHash, "hex"), receivedBuf)
 }
 
 /**

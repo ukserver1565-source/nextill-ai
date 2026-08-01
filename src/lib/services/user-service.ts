@@ -17,11 +17,25 @@ export const userService = {
   },
 
   async delete(id: string) {
-    const { data: projects } = await supabaseAdmin.from("projects").select("id").eq("user_id", id)
+    // Look up the auth user_id from the profile (profile PK != auth.users PK)
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("user_id")
+      .eq("id", id)
+      .single()
+    const authUserId = profile?.user_id || id
+
+    // Delete projects (references auth.users.id via user_id)
+    const { data: projects } = await supabaseAdmin.from("projects").select("id").eq("user_id", authUserId)
     if (projects && projects.length > 0) {
-      await supabaseAdmin.from("projects").delete().eq("user_id", id)
+      await supabaseAdmin.from("projects").delete().eq("user_id", authUserId)
     }
-    await supabaseAdmin.auth.admin.deleteUser(id)
+
+    // Delete the auth user (cascades to all user tables via ON DELETE CASCADE)
+    const { error: delErr } = await supabaseAdmin.auth.admin.deleteUser(authUserId)
+    if (delErr) console.error("Failed to delete auth user:", delErr.message)
+
+    // Delete the profile row
     await profileRepo.delete(id)
   },
 

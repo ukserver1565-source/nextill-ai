@@ -47,11 +47,16 @@
 
 ### Recent Sessions (Jul 26–Aug 1 — 36+ Commits)
 
-#### Session 13: Bug Fixes & Review (Aug 1)
-1. **api-keys/[id]/route.ts TS error fixed** — route was directly importing `encrypt` from service (not exported). Refactored to use `apiKeysService` layer instead (cleaner architecture)
-2. **Full codebase review** — all 18 modified files + 1 new file reviewed for bugs, security issues, and logic errors. No critical issues found.
-3. **New: `/api/public/site-settings`** — public endpoint for safe, non-sensitive settings (social_links, site_name, logo, maintenance mode). Used by maintenance page.
-4. **Build verified** — 158 pages, 0 TS errors, compiled successfully
+#### Session 13: Bug Fixes & Security Hardening (Aug 1)
+1. **CRITICAL: Admin user deletion fixed** — was passing profile PK to `deleteUser()` instead of auth `user_id`. User appeared deleted but could still log in; projects/documents never cleaned up. Now looks up `user_id` from profile first.
+2. **CRITICAL: Site-settings unwrap fixed** — new public endpoint wasn't unwrapping `{v: val}` format, causing contact page social links to never render and maintenance page to crash with React object error.
+3. **CRITICAL: Maintenance mode bypass** — added `/api/public/site-settings` to proxy always-allow list so maintenance page can fetch its custom message.
+4. **API key edit fixed** — was ignoring `key_encrypted` field from UI; now handles both `key` and `key_encrypted`.
+5. **GoPayFast hash validation hardened** — `validateCallbackHash` now checks buffer length before `timingSafeEqual` to prevent crash on malformed input.
+6. **Signup open redirect fixed** — added `//` prefix check (matching the existing login fix) to prevent redirect to external domains.
+7. **`text-primary-foreground` defined** — added `--color-primary-foreground: #FFFFFF` to theme so purple buttons show white text in light mode.
+8. **Full codebase review** — 18 modified files + 1 new file audited. 7 bugs found and fixed.
+9. **Build verified** — 158 pages, 0 TS errors, compiled successfully
 
 #### Session 12: Header/Nav Audit & Fix
 1. **Homepage header profile dropdown** — added avatar, name, plan badge, dropdown with Dashboard/Admin Panel/Settings/Sign Out (was showing plain "Dashboard" button even when logged in)

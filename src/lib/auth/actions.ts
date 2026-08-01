@@ -116,7 +116,7 @@ export async function signup(formData: FormData) {
     revalidatePath("/", "layout")
 
     // If a redirect param is provided, honor it (e.g. from checkout flow)
-    if (redirectTo && redirectTo.startsWith("/")) {
+    if (redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//")) {
       return { redirect: redirectTo }
     }
 
