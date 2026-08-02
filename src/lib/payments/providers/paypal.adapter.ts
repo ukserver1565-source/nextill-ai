@@ -20,7 +20,10 @@ import type {
  */
 
 function getPayPalBaseUrl(): string {
-  return process.env.PAYPAL_SANDBOX === 'true'
+  // Default to SANDBOX when PAYPAL_SANDBOX is unset — never hit live PayPal
+  // by accident. Set PAYPAL_SANDBOX=false explicitly for production.
+  const sandbox = process.env.PAYPAL_SANDBOX !== 'false'
+  return sandbox
     ? 'https://api-m.sandbox.paypal.com'
     : 'https://api-m.paypal.com'
 }

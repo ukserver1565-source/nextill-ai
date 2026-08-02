@@ -165,5 +165,17 @@ INSERT INTO public.site_settings (key, value) VALUES
   ('smtp_pass', '""')
 ON CONFLICT (key) DO NOTHING;
 
+-- ── 10. SERVICE_ROLE GRANTS for tables created after the
+-- original GRANT ALL ran. Without these, admin payment-credentials,
+-- coupon redemptions, workspaces, credit transactions and
+-- provider statuses all fail with 403 (permission denied). ──
+GRANT ALL ON TABLE public.payment_provider_credentials TO service_role;
+GRANT ALL ON TABLE public.coupon_redemptions TO service_role;
+GRANT ALL ON TABLE public.credit_transactions TO service_role;
+GRANT ALL ON TABLE public.workspaces TO service_role;
+GRANT ALL ON TABLE public.provider_statuses TO service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO service_role;
+GRANT USAGE ON SCHEMA public TO service_role;
+
 -- ── DONE ──────────────────────────────────────────────────
 SELECT 'FIX_ALL completed successfully!' as result;

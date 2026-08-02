@@ -86,12 +86,18 @@ export async function POST(req: Request) {
 }
 
 // GET endpoint — also triggers renewal (Vercel cron sends GET)
-// Vercel cron adds Authorization: Bearer <CRON_SECRET> header
+// Vercel cron authenticates via the `x-vercel-cron` header it adds automatically.
+// We also accept x-cron-secret / Authorization: Bearer for manual or external cron.
 export async function GET(req: Request) {
-  // Verify cron secret (Vercel sends it as Authorization: Bearer)
+  const isVercelCron = req.headers.get("x-vercel-cron") !== null
   const authHeader = req.headers.get("authorization")
   const cronSecret = authHeader?.replace("Bearer ", "") || req.headers.get("x-cron-secret")
   const expectedSecret = process.env.CRON_SECRET
+
+  // Vercel Cron signals its own invocations with the x-vercel-cron header.
+  if (isVercelCron) {
+    return runRenewal(req)
+  }
 
   if (!expectedSecret) {
     return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 })
@@ -100,6 +106,12 @@ export async function GET(req: Request) {
   if (cronSecret !== expectedSecret) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
+
+  return runRenewal(req)
+}
+
+// Shared renewal execution (used by POST, GET, and Vercel cron)
+async function runRenewal(_req: Request) {
 
   const supabase = supabaseAdmin
 

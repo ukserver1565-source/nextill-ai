@@ -1,7 +1,14 @@
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { createDecipheriv } from "crypto"
+import { createDecipheriv, createHash } from "crypto"
 
-const ENCRYPTION_KEY = (process.env.ENCRYPTION_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "").slice(0, 32).padEnd(32, "0")
+// Must match provider-repo.ts / api-keys.service.ts derivation exactly,
+// otherwise keys written by one module cannot be decrypted by the others.
+const ENCRYPTION_KEY =
+  process.env.ENCRYPTION_KEY ||
+  createHash("sha256")
+    .update(String(process.env.SUPABASE_SERVICE_ROLE_KEY))
+    .digest("hex")
+    .slice(0, 32)
 
 function decrypt(text: string): string {
   if (!text || !text.includes(":")) return text

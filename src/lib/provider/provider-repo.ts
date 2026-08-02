@@ -69,8 +69,18 @@ export const providerRepo = {
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle()
-    if (!data?.key_encrypted) return null
-    return decrypt(data.key_encrypted)
+    if (data?.key_encrypted) return decrypt(data.key_encrypted)
+
+    // Fall back to the provider's documented env var (e.g. GEMINI_API_KEY)
+    // so keys configured via .env still work when no DB row is stored.
+    const provider = await supabaseAdmin
+      .from("ai_providers")
+      .select("config")
+      .eq("slug", providerSlug)
+      .maybeSingle()
+    const keyEnvVar = (provider?.data?.config as { key_env_var?: string } | undefined)?.key_env_var
+    if (keyEnvVar && process.env[keyEnvVar]) return process.env[keyEnvVar] || null
+    return null
   },
 
   async getApiKeyPreview(providerSlug: string): Promise<string | null> {

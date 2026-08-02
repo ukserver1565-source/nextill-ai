@@ -42,8 +42,11 @@ export async function humanizeContentWithAI(content: string): Promise<HumanizeRe
       maxTokens: Math.min(content.split(/\s+/).length * 4, 16000),
     })
 
-    if (result.success && result.content && result.content.trim().length > 50) {
-      const humanizedText = result.content.trim()
+    const candidate = result.content?.trim() || ""
+    // Only accept if the result is actually related to the original — a generic
+    // template fallback ("Content for X via ai-humanizer") fails the overlap check.
+    if (result.success && candidate.length > 50 && contentOverlap(content, candidate) >= 0.15) {
+      const humanizedText = candidate
       const afterScore = humanizeContentLocal(humanizedText)
 
       const changes = extractChanges(content, humanizedText)
@@ -56,12 +59,24 @@ export async function humanizeContentWithAI(content: string): Promise<HumanizeRe
       }
     }
 
-    // AI failed or returned empty — fall back to local
+    // AI failed or returned empty/unrelated — fall back to local
     return humanizeContentLocal(content)
   } catch {
     // On any error, fall back to local engine
     return humanizeContentLocal(content)
   }
+}
+
+// Fraction of the candidate's significant words that appear in the original.
+function contentOverlap(original: string, candidate: string): number {
+  const stop = new Set(["the", "and", "for", "are", "that", "this", "with", "from", "you", "your", "have", "will", "not", "was", "were", "they", "them", "about", "what", "when", "where", "which", "into", "more", "than", "then"])
+  const origWords = new Set(
+    original.toLowerCase().split(/\s+/).map(w => w.replace(/[^a-z0-9]/g, "")).filter(w => w.length > 3 && !stop.has(w))
+  )
+  const candWords = candidate.toLowerCase().split(/\s+/).map(w => w.replace(/[^a-z0-9]/g, "")).filter(w => w.length > 3 && !stop.has(w))
+  if (candWords.length === 0) return 0
+  const matched = candWords.filter(w => origWords.has(w)).length
+  return matched / candWords.length
 }
 
 function extractChanges(original: string, humanized: string): HumanizeResult["changes"] {

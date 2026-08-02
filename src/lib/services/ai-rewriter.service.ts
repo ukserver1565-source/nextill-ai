@@ -39,25 +39,42 @@ export async function rewriteContentWithAI(content: string): Promise<{
 
   try {
     const prompt = buildRewritePrompt(content)
-    const result = await generateText("post-generator", prompt, {
+    // NOTE: use a non-template workflow slug so that when no AI provider is
+    // available, generateText does NOT substitute a generic template article.
+    const result = await generateText("ai-rewriter", prompt, {
       systemPrompt: REWRITE_SYSTEM_PROMPT,
       temperature: 0.7,
       maxTokens: Math.min(content.split(/\s+/).length * 4, 16000),
     })
 
-    if (result.success && result.content && result.content.trim().length > 50) {
-      const rewrittenText = result.content.trim()
+    const candidate = result.content?.trim() || ""
+    // Only accept the result if it is actually related to the original content —
+    // a generic template (e.g. "write something") would fail the overlap check.
+    if (result.success && candidate.length > 50 && contentOverlap(content, candidate) >= 0.15) {
+      const rewrittenText = candidate
       const changes = countChanges(content, rewrittenText)
       return { rewritten: rewrittenText, changes, method: "ai" }
     }
 
-    // AI failed — use local humanizer as fallback
+    // AI failed or produced unrelated content — use local humanizer as fallback
     const localResult = humanizeContentLocal(content)
     return { rewritten: localResult.humanized, changes: localResult.changes.length, method: "local" }
   } catch {
     const localResult = humanizeContentLocal(content)
     return { rewritten: localResult.humanized, changes: localResult.changes.length, method: "local" }
   }
+}
+
+// Fraction of the candidate's significant words that appear in the original.
+function contentOverlap(original: string, candidate: string): number {
+  const stop = new Set(["the", "and", "for", "are", "that", "this", "with", "from", "you", "your", "have", "will", "not", "was", "were", "they", "them", "about", "what", "when", "where", "which", "into", "more", "than", "then"])
+  const origWords = new Set(
+    original.toLowerCase().split(/\s+/).map(w => w.replace(/[^a-z0-9]/g, "")).filter(w => w.length > 3 && !stop.has(w))
+  )
+  const candWords = candidate.toLowerCase().split(/\s+/).map(w => w.replace(/[^a-z0-9]/g, "")).filter(w => w.length > 3 && !stop.has(w))
+  if (candWords.length === 0) return 0
+  const matched = candWords.filter(w => origWords.has(w)).length
+  return matched / candWords.length
 }
 
 function countChanges(original: string, rewritten: string): number {

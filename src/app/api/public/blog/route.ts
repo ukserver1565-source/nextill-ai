@@ -5,28 +5,28 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 const BLOG_POSTS = [
   {
     title: "How to Humanize AI Content: Complete Guide to Pass AI Detection in 2026",
-    slug: "how-to-humanize-ai-content-pass-detection",
+    slug: "how-to-humanize-ai-content",
     excerpt: "Learn proven techniques to humanize AI-generated content so it reads naturally and passes AI detection tools like GPTZero and Originality.ai.",
     seo_title: "How to Humanize AI Content & Pass AI Detection | Nextill AI Guide 2026",
     meta_description: "Step-by-step guide to humanize AI content and pass detection tools. Learn natural writing techniques, sentence variation, and burstiness strategies that work.",
   },
   {
     title: "AI vs Human Writing: Which Is Better for SEO Rankings in 2026?",
-    slug: "ai-vs-human-writing-seo-rankings",
+    slug: "ai-vs-human-writing-seo",
     excerpt: "We compare AI-generated and human-written content across real SEO metrics. Find out which approach ranks higher and how to combine both for maximum results.",
     seo_title: "AI vs Human Writing for SEO: Which Ranks Higher in 2026? | Nextill AI",
     meta_description: "Compare AI vs human writing for SEO rankings. Data-driven analysis of traffic, engagement, and Google ranking factors for AI and human content.",
   },
   {
     title: "Top 10 AI SEO Tools Every Content Creator Needs in 2026",
-    slug: "top-10-ai-seo-tools-content-creators",
+    slug: "top-10-ai-seo-tools",
     excerpt: "Discover the best AI-powered SEO tools for keyword research, content optimization, plagiarism checking, and domain analysis that save hours of manual work.",
     seo_title: "Top 10 AI SEO Tools for Content Creators in 2026 | Nextill AI",
     meta_description: "Best AI SEO tools for 2026. Compare keyword research, content generation, plagiarism checking, and domain intelligence tools for content creators.",
   },
   {
     title: "Mastering Keyword Research: A Step-by-Step Guide Using AI Intelligence",
-    slug: "mastering-keyword-research-ai-intelligence",
+    slug: "mastering-keyword-research",
     excerpt: "Learn how to use AI-powered keyword intelligence to find low-competition, high-volume keywords that drive organic traffic to your website.",
     seo_title: "Keyword Research Guide: Use AI to Find Low Competition Keywords | Nextill AI",
     meta_description: "Complete keyword research tutorial using AI intelligence. Find low-competition, high-volume keywords with volume data, difficulty scores, and SERP analysis.",
@@ -41,7 +41,7 @@ const BLOG_POSTS = [
 ]
 
 const ARTICLES: Record<string, string> = {
-  "how-to-humanize-ai-content-pass-detection": `# How to Humanize AI Content: Complete Guide to Pass AI Detection in 2026
+  "how-to-humanize-ai-content": `# How to Humanize AI Content: Complete Guide to Pass AI Detection in 2026
 
 The rise of AI writing tools has transformed content creation, but it has also created a new challenge: AI detection. Search engines, academic institutions, and content platforms are increasingly using AI detection tools to identify machine-generated text. If you rely on AI for content creation, learning how to humanize that content is essential.
 
@@ -186,7 +186,7 @@ Here is a step-by-step workflow for creating high-quality AI-assisted content:
 
 Humanizing AI content is not about deception. It is about ensuring that AI-assisted content meets the quality standards that readers and search engines expect. Start implementing these strategies today, and you will find that AI becomes a powerful ally in your content creation process.`,
 
-  "ai-vs-human-writing-seo-rankings": `# AI vs Human Writing: Which Is Better for SEO Rankings in 2026?
+  "ai-vs-human-writing-seo": `# AI vs Human Writing: Which Is Better for SEO Rankings in 2026?
 
 The debate between AI-generated and human-written content has intensified as search engines refine their algorithms. Understanding how each approach impacts SEO rankings is crucial for content strategy in 2026.
 
@@ -292,7 +292,7 @@ The most successful content strategies in 2026 combine AI efficiency with human 
 
 Neither AI nor human writing alone represents the optimal approach for SEO in 2026. The winning strategy combines AI efficiency with human expertise, experience, and editorial judgment.`,
 
-  "top-10-ai-seo-tools-content-creators": `# Top 10 AI SEO Tools Every Content Creator Needs in 2026
+  "top-10-ai-seo-tools": `# Top 10 AI SEO Tools Every Content Creator Needs in 2026
 
 Discover the best AI-powered SEO tools for keyword research, content optimization, plagiarism checking, and domain analysis that save hours of manual work.
 
@@ -422,7 +422,7 @@ Original content is critical for SEO. AI-powered plagiarism checkers scan your c
 
 The right combination of AI SEO tools can dramatically improve your content creation workflow and search engine rankings. Start with keyword research, optimize with AI writing tools, humanize for authenticity, and verify with plagiarism checking.`,
 
-  "mastering-keyword-research-ai-intelligence": `# Mastering Keyword Research: A Step-by-Step Guide Using AI Intelligence
+  "mastering-keyword-research": `# Mastering Keyword Research: A Step-by-Step Guide Using AI Intelligence
 
 Keyword research remains the cornerstone of successful SEO. With AI-powered intelligence, you can discover opportunities that traditional tools miss.
 
@@ -748,13 +748,32 @@ export async function GET(req: NextRequest) {
     const { data, error, count } = await query
     if (error) throw error
 
-    // Deduplicate by slug (keep most recent) — data may have duplicates from old seed runs
-    const seen = new Set<string>()
-    const deduped = (data || []).filter((row: { slug: string }) => {
-      if (seen.has(row.slug)) return false
-      seen.add(row.slug)
-      return true
-    })
+    // Deduplicate by slug AND by normalized title (keep most recent),
+    // preferring canonical slugs — data may have duplicates from old seed runs
+    const CANONICAL_SLUGS = new Set([
+      "how-to-humanize-ai-content",
+      "ai-vs-human-writing-seo",
+      "top-10-ai-seo-tools",
+      "mastering-keyword-research",
+      "plagiarism-detection-ensure-original-content",
+    ])
+    const bySlug = new Map<string, (typeof data)[number]>()
+    for (const row of data || []) {
+      if (bySlug.has(row.slug)) continue
+      bySlug.set(row.slug, row)
+    }
+    const byTitle = new Map<string, (typeof data)[number]>()
+    for (const row of bySlug.values()) {
+      const titleKey = (row.title || "").trim().toLowerCase()
+      if (!titleKey) { byTitle.set("__slug__" + row.slug, row); continue }
+      const existing = byTitle.get(titleKey)
+      if (!existing) { byTitle.set(titleKey, row); continue }
+      // Prefer the canonical slug when the same title exists under two slugs
+      if (CANONICAL_SLUGS.has(row.slug) && !CANONICAL_SLUGS.has(existing.slug)) {
+        byTitle.set(titleKey, row)
+      }
+    }
+    const deduped = Array.from(byTitle.values())
 
     return NextResponse.json({ data: deduped, total: deduped.length })
   } catch (_err) {

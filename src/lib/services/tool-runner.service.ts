@@ -340,7 +340,12 @@ const handlers: Record<string, (input: Record<string, unknown>) => ToolRunnerRes
 
   "rank-tracker": (input) => {
     const domain = (input.domain as string) || ""
-    const keywords = ((input.keywords as string) || "").split(",").map(k => k.trim()).filter(Boolean)
+    // keywords may arrive as a comma-separated string OR an array
+    const rawKeywords = input.keywords
+    const keywords = (Array.isArray(rawKeywords)
+      ? (rawKeywords as string[]).map(String)
+      : String(rawKeywords || "").split(",")
+    ).map(k => k.trim()).filter(Boolean)
     return {
       success: true,
       type: "rankings",

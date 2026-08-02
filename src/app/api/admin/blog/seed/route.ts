@@ -6,7 +6,7 @@ import { humanizeText } from "@/lib/ai/rewriteai"
 const BLOG_POSTS = [
   {
     title: "How to Humanize AI Content: Complete Guide to Pass AI Detection in 2026",
-    slug: "how-to-humanize-ai-content-pass-detection",
+    slug: "how-to-humanize-ai-content",
     excerpt: "Learn proven techniques to humanize AI-generated content so it reads naturally and passes AI detection tools like GPTZero and Originality.ai.",
     seo_title: "How to Humanize AI Content & Pass AI Detection | Nextill AI Guide 2026",
     meta_description: "Step-by-step guide to humanize AI content and pass detection tools. Learn natural writing techniques, sentence variation, and burstiness strategies that work.",
@@ -15,7 +15,7 @@ const BLOG_POSTS = [
   },
   {
     title: "AI vs Human Writing: Which Is Better for SEO Rankings in 2026?",
-    slug: "ai-vs-human-writing-seo-rankings",
+    slug: "ai-vs-human-writing-seo",
     excerpt: "We compare AI-generated and human-written content across real SEO metrics. Find out which approach ranks higher and how to combine both for maximum results.",
     seo_title: "AI vs Human Writing for SEO: Which Ranks Higher in 2026? | Nextill AI",
     meta_description: "Compare AI vs human writing for SEO rankings. Data-driven analysis of traffic, engagement, and Google ranking factors for AI and human content.",
@@ -24,7 +24,7 @@ const BLOG_POSTS = [
   },
   {
     title: "Top 10 AI SEO Tools Every Content Creator Needs in 2026",
-    slug: "top-10-ai-seo-tools-content-creators",
+    slug: "top-10-ai-seo-tools",
     excerpt: "Discover the best AI-powered SEO tools for keyword research, content optimization, plagiarism checking, and domain analysis that save hours of manual work.",
     seo_title: "Top 10 AI SEO Tools for Content Creators in 2026 | Nextill AI",
     meta_description: "Best AI SEO tools for 2026. Compare keyword research, content generation, plagiarism checking, and domain intelligence tools for content creators.",
@@ -33,7 +33,7 @@ const BLOG_POSTS = [
   },
   {
     title: "Mastering Keyword Research: A Step-by-Step Guide Using AI Intelligence",
-    slug: "mastering-keyword-research-ai-intelligence",
+    slug: "mastering-keyword-research",
     excerpt: "Learn how to use AI-powered keyword intelligence to find low-competition, high-volume keywords that drive organic traffic to your website.",
     seo_title: "Keyword Research Guide: Use AI to Find Low Competition Keywords | Nextill AI",
     meta_description: "Complete keyword research tutorial using AI intelligence. Find low-competition, high-volume keywords with volume data, difficulty scores, and SERP analysis.",
@@ -54,7 +54,7 @@ const BLOG_POSTS = [
 // Generate full 2000-word article content (no AI needed — hand-crafted SEO content)
 function generateArticleContent(post: (typeof BLOG_POSTS)[number]): string {
   const articles: Record<string, string> = {
-    "how-to-humanize-ai-content-pass-detection": `# How to Humanize AI Content: Complete Guide to Pass AI Detection in 2026
+    "how-to-humanize-ai-content": `# How to Humanize AI Content: Complete Guide to Pass AI Detection in 2026
 
 The rise of AI writing tools has transformed content creation, but it has also created a new challenge: AI detection. Search engines, academic institutions, and content platforms are increasingly using AI detection tools to identify machine-generated text. If you rely on AI for content creation, learning how to humanize that content is essential.
 
@@ -137,7 +137,7 @@ Humanizing AI content is not about deception. It is about ensuring that AI-assis
 
 Start implementing these strategies today, and you will find that AI becomes a powerful ally in your content creation process rather than a liability.`,
 
-    "ai-vs-human-writing-seo-rankings": `# AI vs Human Writing: Which Is Better for SEO Rankings in 2026?
+    "ai-vs-human-writing-seo": `# AI vs Human Writing: Which Is Better for SEO Rankings in 2026?
 
 The debate between AI-generated and human-written content has intensified as search engines refine their algorithms and AI writing tools become more sophisticated. Understanding how each approach impacts SEO rankings is crucial for content strategy in 2026.
 
@@ -227,7 +227,7 @@ As AI detection tools improve and search engines become more sophisticated, the 
 
 Neither AI nor human writing alone represents the optimal approach for SEO in 2026. The winning strategy combines AI efficiency with human expertise, experience, and editorial judgment. Focus on creating genuinely valuable content for your audience, and rankings will follow.`,
 
-    "top-10-ai-seo-tools-content-creators": `# Top 10 AI SEO Tools Every Content Creator Needs in 2026
+    "top-10-ai-seo-tools": `# Top 10 AI SEO Tools Every Content Creator Needs in 2026
 
 Artificial intelligence has revolutionized search engine optimization, making powerful analysis and content tools accessible to creators of all levels. Here are the ten AI-powered SEO tools that deliver the most value for content creators in 2026.
 
@@ -301,7 +301,7 @@ Consider your budget, team size, and content volume when selecting tools. Many p
 
 AI SEO tools have democratized search engine optimization, making professional-grade analysis and content creation accessible to everyone. By leveraging these tools strategically, content creators can produce better content, rank higher in search results, and build more successful online presences.`,
 
-    "mastering-keyword-research-ai-intelligence": `# Mastering Keyword Research: A Step-by-Step Guide Using AI Intelligence
+    "mastering-keyword-research": `# Mastering Keyword Research: A Step-by-Step Guide Using AI Intelligence
 
 Keyword research is the most important skill in SEO. Understanding what people search for, how often they search, and what content they expect to find is fundamental to driving organic traffic. AI-powered intelligence tools have made keyword research faster and more accurate than ever before.
 

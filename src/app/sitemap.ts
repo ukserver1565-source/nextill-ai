@@ -49,7 +49,7 @@ async function getBlogPostUrls(): Promise<MetadataRoute.Sitemap> {
 
     const { data, error } = await supabaseAdmin
       .from("blog_posts")
-      .select("slug, published_at, updated_at")
+      .select("slug, title, published_at, updated_at")
       .eq("status", "published")
       .not("published_at", "is", null)
 
@@ -63,6 +63,33 @@ async function getBlogPostUrls(): Promise<MetadataRoute.Sitemap> {
       return []
     }
 
+    // Deduplicate by slug and normalized title (old seed runs created duplicate rows),
+    // preferring canonical slugs when the same title exists under two slugs
+    const CANONICAL_SLUGS = new Set([
+      "how-to-humanize-ai-content",
+      "ai-vs-human-writing-seo",
+      "top-10-ai-seo-tools",
+      "mastering-keyword-research",
+      "plagiarism-detection-ensure-original-content",
+    ])
+    const rows = data as Array<{ slug: string; title?: string; published_at?: string; updated_at?: string }>
+    const bySlug = new Map<string, typeof rows[number]>()
+    for (const row of rows) {
+      if (bySlug.has(row.slug)) continue
+      bySlug.set(row.slug, row)
+    }
+    const byTitle = new Map<string, typeof rows[number]>()
+    for (const row of bySlug.values()) {
+      const t = (row.title || "").trim().toLowerCase()
+      if (!t) { byTitle.set("__slug__" + row.slug, row); continue }
+      const existing = byTitle.get(t)
+      if (!existing) { byTitle.set(t, row); continue }
+      if (CANONICAL_SLUGS.has(row.slug) && !CANONICAL_SLUGS.has(existing.slug)) {
+        byTitle.set(t, row)
+      }
+    }
+    const uniquePosts = Array.from(byTitle.values())
+
     const blogIndex: MetadataRoute.Sitemap = [
       {
         url: `${baseUrl}/blog`,
@@ -72,9 +99,9 @@ async function getBlogPostUrls(): Promise<MetadataRoute.Sitemap> {
       },
     ]
 
-    const blogPosts: MetadataRoute.Sitemap = data.map(post => ({
+    const blogPosts: MetadataRoute.Sitemap = uniquePosts.map(post => ({
       url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: new Date(post.updated_at || post.published_at),
+      lastModified: new Date(post.updated_at || post.published_at || new Date()),
       changeFrequency: "weekly" as const,
       priority: 0.7,
     }))

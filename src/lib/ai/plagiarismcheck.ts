@@ -72,7 +72,10 @@ export async function checkPlagiarism(text: string): Promise<PlagiarismResult> {
     }
 
     const submitData = await submitRes.json()
-    const checkId = submitData.id
+    // The API wraps the created check under data.text.id — tolerate both shapes
+    const checkId = submitData?.id
+      ?? submitData?.data?.text?.id
+      ?? (typeof submitData?.data === "string" ? submitData.data : null)
 
     if (!checkId) {
       return {
@@ -92,7 +95,9 @@ export async function checkPlagiarism(text: string): Promise<PlagiarismResult> {
 
       if (!resultRes.ok) continue
 
-      const resultData = await resultRes.json()
+      const rawResultData = await resultRes.json()
+      // API may wrap the check under data / data.text — unwrap defensively
+      const resultData = rawResultData?.data?.text ?? rawResultData?.data ?? rawResultData
 
       // Still processing (status 2 or 3)
       if (resultData.status === 2 || resultData.status === 3) {
