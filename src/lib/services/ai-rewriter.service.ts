@@ -48,9 +48,18 @@ export async function rewriteContentWithAI(content: string): Promise<{
     })
 
     const candidate = result.content?.trim() || ""
-    // Only accept the result if it is actually related to the original content —
-    // a generic template (e.g. "write something") would fail the overlap check.
-    if (result.success && candidate.length > 50 && contentOverlap(content, candidate) >= 0.15) {
+    const origWordCount = content.split(/\s+/).length
+    const candWordCount = candidate.split(/\s+/).length
+    // Only accept the result if it is a REAL provider rewrite: not a local-engine
+    // fallback, is actually related to the original content, and is a substantial
+    // fraction of its length (a generic one-liner would fail all three checks).
+    if (
+      result.success &&
+      result.provider !== "local-engine" &&
+      candidate.length > 50 &&
+      candWordCount >= Math.max(20, Math.floor(origWordCount * 0.3)) &&
+      contentOverlap(content, candidate) >= 0.15
+    ) {
       const rewrittenText = candidate
       const changes = countChanges(content, rewrittenText)
       return { rewritten: rewrittenText, changes, method: "ai" }

@@ -1,4 +1,7 @@
+"use client"
+
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -43,7 +46,7 @@ const routeLabels: Record<string, string> = {
 }
 
 export function Breadcrumbs({ className }: { className?: string }) {
-  const pathname = typeof window !== "undefined" ? window.location.pathname : ""
+  const pathname = usePathname()
   const segments = pathname.split("/").filter(Boolean)
 
   if (segments.length <= 1) return null

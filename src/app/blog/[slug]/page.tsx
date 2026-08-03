@@ -202,7 +202,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 <span className="text-xl font-bold text-primary">AP</span>
               </div>
               <div>
-                <h3 className="text-base font-bold text-foreground mb-1">AdultPulse AI Team</h3>
+                <h3 className="text-base font-bold text-foreground mb-1">Nextill AI Team</h3>
                 <p className="text-xs text-primary mb-3">Content & SEO Experts</p>
                 <p className="text-sm text-muted leading-relaxed">
                   Our team combines years of SEO expertise with cutting-edge AI tools to create
