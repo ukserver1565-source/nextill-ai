@@ -451,3 +451,4 @@ d93791e fix: tools page — only 3 premium tools live, rest 'Coming Soon'
 ---
 
 *Last updated: Jul 30, 2026 by Claude Code — Session 11*
+## v2 — trigger redeploy
