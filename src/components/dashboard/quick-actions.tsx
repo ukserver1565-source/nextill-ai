@@ -31,13 +31,13 @@ export function QuickActions() {
       animate="visible"
       className="flex flex-wrap items-center gap-3"
     >
-      <span className="text-xs text-[#A7B0C0] font-medium mr-1">Quick Actions:</span>
+      <span className="text-xs text-muted font-medium mr-1">Quick Actions:</span>
       {actions.map((action) => {
         const Icon = action.icon
         return (
           <motion.div key={action.label} variants={itemVariants}>
             <Link href={action.path}>
-              <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] hover:border-white/[0.12] hover:bg-[#151C2E]/90 transition-all duration-200 group cursor-pointer">
+              <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card/80 backdrop-blur-xl border border-white/[0.06] hover:border-white/[0.12] hover:bg-card/90 transition-all duration-200 group cursor-pointer">
                 <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center`}>
                   <Icon className="w-3.5 h-3.5 text-white" />
                 </div>

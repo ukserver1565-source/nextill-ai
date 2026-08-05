@@ -76,7 +76,7 @@ export default function AIHubPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">AI Hub</h1>
-        <p className="text-sm text-[#A7B0C0] mt-1">Manage AI providers, models, prompts and API keys</p>
+        <p className="text-sm text-muted mt-1">Manage AI providers, models, prompts and API keys</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -88,7 +88,7 @@ export default function AIHubPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all"
+              className="bg-card/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br ${stat.color}`}>
@@ -101,7 +101,7 @@ export default function AIHubPage() {
               ) : (
                 <p className="text-2xl font-bold text-white">{stat.value}</p>
               )}
-              <p className="text-xs text-[#A7B0C0] mt-0.5">{stat.label}</p>
+              <p className="text-xs text-muted mt-0.5">{stat.label}</p>
             </motion.div>
           )
         })}
@@ -111,7 +111,7 @@ export default function AIHubPage() {
         <h2 className="text-sm font-semibold text-white mb-3">Provider Overview</h2>
         {providersLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" />
+            <Loader2 className="w-6 h-6 animate-spin text-muted" />
           </div>
         ) : Array.isArray(providers) && providers.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -127,7 +127,7 @@ export default function AIHubPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.03 }}
-                  className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.12] transition-all group cursor-pointer"
+                  className="bg-card/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.12] transition-all group cursor-pointer"
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div className={`w-9 h-9 rounded-lg flex items-center justify-center bg-gradient-to-br ${color}`}>
@@ -139,27 +139,27 @@ export default function AIHubPage() {
                         {isEnabled ? (
                           <CheckCircle className="w-3 h-3 text-[#22C55E]" />
                         ) : (
-                          <XCircle className="w-3 h-3 text-[#A7B0C0]" />
+                          <XCircle className="w-3 h-3 text-muted" />
                         )}
-                        <span className={`text-[10px] ${isEnabled ? "text-[#22C55E]" : "text-[#A7B0C0]"}`}>
+                        <span className={`text-[10px] ${isEnabled ? "text-[#22C55E]" : "text-muted"}`}>
                           {isEnabled ? "Enabled" : "Disabled"}
                         </span>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center justify-between text-xs pt-3 border-t border-white/[0.06]">
-                    <span className="text-[#A7B0C0]">Latency: <span className="text-white font-medium">{latency}</span></span>
-                    <span className="text-[#A7B0C0]">Usage: <span className="text-white font-medium">{usage}</span></span>
+                    <span className="text-muted">Latency: <span className="text-white font-medium">{latency}</span></span>
+                    <span className="text-muted">Usage: <span className="text-white font-medium">{usage}</span></span>
                   </div>
                 </motion.div>
               )
             })}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-12 bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl">
-            <Inbox className="w-10 h-10 text-[#A7B0C0] mb-3" />
-            <p className="text-sm font-medium text-[#A7B0C0] mb-1">No providers configured</p>
-            <p className="text-xs text-[#A7B0C0]">Add an AI provider to get started</p>
+          <div className="flex flex-col items-center justify-center py-12 bg-card/80 backdrop-blur-xl border border-white/[0.06] rounded-xl">
+            <Inbox className="w-10 h-10 text-muted mb-3" />
+            <p className="text-sm font-medium text-muted mb-1">No providers configured</p>
+            <p className="text-xs text-muted">Add an AI provider to get started</p>
           </div>
         )}
       </div>
@@ -176,7 +176,7 @@ export default function AIHubPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 onClick={() => router.push(a.href)}
-                className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.12] transition-all text-left group"
+                className="bg-card/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.12] transition-all text-left group"
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center bg-gradient-to-br ${a.color}`}>
@@ -184,9 +184,9 @@ export default function AIHubPage() {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-white">{a.label}</p>
-                    <p className="text-[10px] text-[#A7B0C0]">{a.desc}</p>
+                    <p className="text-[10px] text-muted">{a.desc}</p>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-[#A7B0C0] group-hover:text-white transition-colors" />
+                  <ArrowRight className="w-4 h-4 text-muted group-hover:text-foreground transition-colors" />
                 </div>
               </motion.button>
             )
@@ -196,21 +196,21 @@ export default function AIHubPage() {
 
       <div>
         <h2 className="text-sm font-semibold text-white mb-3">Recent Activity</h2>
-        <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+        <div className="bg-card/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
           {logsLoading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-6 h-6 animate-spin text-[#A7B0C0]" />
+              <Loader2 className="w-6 h-6 animate-spin text-muted" />
             </div>
           ) : activity.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
-              <Inbox className="w-10 h-10 text-[#A7B0C0] mb-3" />
-              <p className="text-sm font-medium text-[#A7B0C0]">No recent activity</p>
+              <Inbox className="w-10 h-10 text-muted mb-3" />
+              <p className="text-sm font-medium text-muted">No recent activity</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/[0.06] text-xs text-[#A7B0C0]">
+                  <tr className="border-b border-white/[0.06] text-xs text-muted">
                     <th className="text-left p-4 font-medium">Action</th>
                     <th className="text-left p-4 font-medium">Target</th>
                     <th className="text-left p-4 font-medium">Time</th>
@@ -221,8 +221,8 @@ export default function AIHubPage() {
                   {activity.map((item: any, i: number) => (
                     <tr key={item.id || i} className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.02] transition-colors">
                       <td className="p-4 text-sm text-white font-medium">{item.action || item.message || "—"}</td>
-                      <td className="p-4 text-xs text-[#A7B0C0]">{item.target_type || item.target_id || "—"}</td>
-                      <td className="p-4 text-xs text-[#A7B0C0]">{item.created_at ? new Date(item.created_at).toLocaleString() : "—"}</td>
+                      <td className="p-4 text-xs text-muted">{item.target_type || item.target_id || "—"}</td>
+                      <td className="p-4 text-xs text-muted">{item.created_at ? new Date(item.created_at).toLocaleString() : "—"}</td>
                       <td className="p-4 text-right">
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${
                           item.level === "info" ? "bg-[#22C55E]/10 text-[#22C55E] border-[#22C55E]/20" :

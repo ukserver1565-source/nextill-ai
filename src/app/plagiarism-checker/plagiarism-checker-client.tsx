@@ -63,7 +63,7 @@ function ScoreGauge({ score, size = 200 }: { score: number; size?: number }) {
           {score}<span className="text-2xl">%</span>
         </motion.span>
         <motion.span
-          className="text-xs text-[#A7B0C0] mt-2"
+          className="text-xs text-muted mt-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
@@ -82,7 +82,7 @@ function PublishBadge({ score }: { score: number }) {
         className="flex items-center gap-3 px-5 py-3 rounded-xl bg-[#22C55E]/10 border border-[#22C55E]/20"
       >
         <div className="w-10 h-10 rounded-full bg-[#22C55E]/20 flex items-center justify-center"><ShieldCheck className="w-5 h-5 text-[#22C55E]" /></div>
-        <div><p className="text-sm font-semibold text-[#22C55E]">Safe to Publish</p><p className="text-xs text-[#A7B0C0]">Your content passes originality checks</p></div>
+        <div><p className="text-sm font-semibold text-[#22C55E]">Safe to Publish</p><p className="text-xs text-muted">Your content passes originality checks</p></div>
       </motion.div>
     )
   }
@@ -92,7 +92,7 @@ function PublishBadge({ score }: { score: number }) {
         className="flex items-center gap-3 px-5 py-3 rounded-xl bg-[#F59E0B]/10 border border-[#F59E0B]/20"
       >
         <div className="w-10 h-10 rounded-full bg-[#F59E0B]/20 flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-[#F59E0B]" /></div>
-        <div><p className="text-sm font-semibold text-[#F59E0B]">Review Recommended</p><p className="text-xs text-[#A7B0C0]">Some sections may need rewriting</p></div>
+        <div><p className="text-sm font-semibold text-[#F59E0B]">Review Recommended</p><p className="text-xs text-muted">Some sections may need rewriting</p></div>
       </motion.div>
     )
   }
@@ -101,7 +101,7 @@ function PublishBadge({ score }: { score: number }) {
       className="flex items-center gap-3 px-5 py-3 rounded-xl bg-[#EF4444]/10 border border-[#EF4444]/20"
     >
       <div className="w-10 h-10 rounded-full bg-[#EF4444]/20 flex items-center justify-center"><ShieldAlert className="w-5 h-5 text-[#EF4444]" /></div>
-      <div><p className="text-sm font-semibold text-[#EF4444]">High Similarity Detected</p><p className="text-xs text-[#A7B0C0]">Significant matches found — rewrite before publishing</p></div>
+      <div><p className="text-sm font-semibold text-[#EF4444]">High Similarity Detected</p><p className="text-xs text-muted">Significant matches found — rewrite before publishing</p></div>
     </motion.div>
   )
 }
@@ -113,7 +113,7 @@ function SimilarityBar({ unique, matched }: { unique: number; matched: number })
   return (
     <div className="space-y-2.5">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-[#A7B0C0]">Content Breakdown</span>
+        <span className="text-muted">Content Breakdown</span>
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#22C55E]" /> Unique</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#EF4444]" /> Matched</span>
@@ -131,7 +131,7 @@ function SimilarityBar({ unique, matched }: { unique: number; matched: number })
           transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
         />
       </div>
-      <div className="flex justify-between text-xs text-[#A7B0C0]">
+      <div className="flex justify-between text-xs text-muted">
         <span>{unique.toLocaleString()} words unique</span>
         <span>{matched.toLocaleString()} words matched</span>
       </div>
@@ -144,7 +144,7 @@ function LoadingSkeleton() {
     <div className="space-y-6">
       {[1, 2, 3].map((i) => (
         <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-          className="bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 rounded-xl border border-white/[0.06] p-6"
+          className="bg-gradient-to-b from-card/60 to-card/30 rounded-xl border border-white/[0.06] p-6"
         >
           <div className="h-4 w-1/3 rounded-lg bg-white/[0.06] mb-4 animate-pulse" />
           <div className="space-y-3">
@@ -174,7 +174,7 @@ function EmptyState() {
         </div>
       </motion.div>
       <h3 className="text-xl font-semibold text-white mb-2">Check your content for plagiarism</h3>
-      <p className="text-[#A7B0C0] text-sm max-w-md">Paste or upload your content above to scan billions of web sources for duplicate content.</p>
+      <p className="text-muted text-sm max-w-md">Paste or upload your content above to scan billions of web sources for duplicate content.</p>
     </motion.div>
   )
 }
@@ -252,40 +252,40 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <motion.div variants={itemVariants}
-          className="lg:col-span-2 bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center shadow-xl shadow-black/10"
+          className="lg:col-span-2 bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center shadow-xl shadow-black/10"
         >
           <ScoreGauge score={result.originalityScore} />
           <div className="mt-5 grid grid-cols-2 gap-3 w-full">
             <div className="text-center p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.10] transition-colors">
               <p className="text-lg font-bold text-white">{result.wordCount}</p>
-              <p className="text-[10px] text-[#A7B0C0]">Words Checked</p>
+              <p className="text-[10px] text-muted">Words Checked</p>
             </div>
             <div className="text-center p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.10] transition-colors">
               <p className="text-lg font-bold text-white">{result.matchedPhrases.length}</p>
-              <p className="text-[10px] text-[#A7B0C0]">Matches Found</p>
+              <p className="text-[10px] text-muted">Matches Found</p>
             </div>
           </div>
         </motion.div>
 
         <motion.div variants={itemVariants} className="lg:col-span-3 space-y-4">
-          <div className="bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-5 shadow-xl shadow-black/10">
+          <div className="bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-5 shadow-xl shadow-black/10">
             <SimilarityBar unique={uniqueWords} matched={matchedWords} />
           </div>
-          <div className="bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-5 shadow-xl shadow-black/10">
+          <div className="bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-5 shadow-xl shadow-black/10">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-7 h-7 rounded-lg bg-[#6D5EF5]/10 flex items-center justify-center">
                 <Shield className="w-3.5 h-3.5 text-[#6D5EF5]" />
               </div>
               <h4 className="text-sm font-semibold text-white">Recommendation</h4>
             </div>
-            <p className="text-sm text-[#A7B0C0] leading-relaxed">{result.recommendation}</p>
+            <p className="text-sm text-muted leading-relaxed">{result.recommendation}</p>
           </div>
         </motion.div>
       </div>
 
       {result.sources.length > 0 && (
         <motion.div variants={itemVariants}>
-          <div className="bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl overflow-hidden shadow-xl shadow-black/10">
+          <div className="bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl overflow-hidden shadow-xl shadow-black/10">
             <div className="px-5 py-3.5 border-b border-white/[0.06] bg-white/[0.02]">
               <h3 className="text-sm font-semibold text-white flex items-center gap-2">
                 <ExternalLink className="w-4 h-4 text-[#6D5EF5]" />
@@ -323,7 +323,7 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
 
       {result.matchedPhrases.length > 0 && (
         <motion.div variants={itemVariants}>
-          <div className="bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl overflow-hidden shadow-xl shadow-black/10">
+          <div className="bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl overflow-hidden shadow-xl shadow-black/10">
             <div className="px-5 py-3.5 border-b border-white/[0.06] bg-white/[0.02]">
               <h3 className="text-sm font-semibold text-white flex items-center gap-2">
                 <FileSearch className="w-4 h-4 text-[#6D5EF5]" />
@@ -334,10 +334,10 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
-                    <th className="text-left py-3 px-5 text-xs text-[#A7B0C0] font-medium uppercase tracking-wider">Matched Phrase</th>
-                    <th className="text-left py-3 px-4 text-xs text-[#A7B0C0] font-medium uppercase tracking-wider whitespace-nowrap">Source</th>
-                    <th className="text-right py-3 px-4 text-xs text-[#A7B0C0] font-medium uppercase tracking-wider whitespace-nowrap">Similarity</th>
-                    <th className="text-left py-3 px-4 text-xs text-[#A7B0C0] font-medium uppercase tracking-wider">Action</th>
+                    <th className="text-left py-3 px-5 text-xs text-muted font-medium uppercase tracking-wider">Matched Phrase</th>
+                    <th className="text-left py-3 px-4 text-xs text-muted font-medium uppercase tracking-wider whitespace-nowrap">Source</th>
+                    <th className="text-right py-3 px-4 text-xs text-muted font-medium uppercase tracking-wider whitespace-nowrap">Similarity</th>
+                    <th className="text-left py-3 px-4 text-xs text-muted font-medium uppercase tracking-wider">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/[0.04]">
@@ -349,7 +349,7 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
                         <span className="text-white/90 text-sm leading-relaxed">"{p.text}"</span>
                       </td>
                       <td className="py-3 px-4">
-                        <span className="text-xs text-[#A7B0C0]">{p.source || "—"}</span>
+                        <span className="text-xs text-muted">{p.source || "—"}</span>
                       </td>
                       <td className="py-3 px-4 text-right">
                         <span className={`text-xs font-bold tabular-nums ${
@@ -379,25 +379,25 @@ function ResultsSection({ result, onNewCheck }: { result: PlagiarismCheckerResul
           <Download className="w-4 h-4" /> Download Report
         </button>
         <button onClick={handleCopyReport}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-sm text-[#A7B0C0] hover:text-white transition-all"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-sm text-muted hover:text-foreground transition-all"
         >
           {copied === "copy" ? <Check className="w-4 h-4 text-[#22C55E]" /> : <Copy className="w-4 h-4" />}
           {copied === "copy" ? "Copied!" : "Copy Results"}
         </button>
         <button onClick={handleSaveReport} disabled={saving}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-sm text-[#A7B0C0] hover:text-white transition-all disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-sm text-muted hover:text-foreground transition-all disabled:opacity-40"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : copied === "save" ? <Check className="w-4 h-4 text-[#22C55E]" /> : <Save className="w-4 h-4" />}
           {copied === "save" ? "Saved!" : "Save Report"}
         </button>
         <button onClick={handleShare}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-sm text-[#A7B0C0] hover:text-white transition-all"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-sm text-muted hover:text-foreground transition-all"
         >
           {copied === "share" ? <Check className="w-4 h-4 text-[#22C55E]" /> : <Share2 className="w-4 h-4" />}
           {copied === "share" ? "Shared!" : "Share"}
         </button>
         <button onClick={onNewCheck}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-sm text-[#A7B0C0] hover:text-white transition-all ml-auto"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-sm text-muted hover:text-foreground transition-all ml-auto"
         >
           <RefreshCw className="w-4 h-4" /> New Check
         </button>
@@ -579,14 +579,14 @@ function PlagiarismCheckerContent() {
               <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white/[0.04] border border-white/[0.06] w-fit">
                 <button onClick={() => setMode("paste")}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all ${
-                    mode === "paste" ? "bg-gradient-to-r from-[#6D5EF5] to-[#8B5CF6] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-white"
+                    mode === "paste" ? "bg-gradient-to-r from-[#6D5EF5] to-[#8B5CF6] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-muted hover:text-foreground"
                   }`}
                 >
                   <FileText className="w-3.5 h-3.5" /> Paste Text
                 </button>
                 <button onClick={() => setMode("upload")}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all ${
-                    mode === "upload" ? "bg-gradient-to-r from-[#6D5EF5] to-[#8B5CF6] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-white"
+                    mode === "upload" ? "bg-gradient-to-r from-[#6D5EF5] to-[#8B5CF6] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-muted hover:text-foreground"
                   }`}
                 >
                   <Upload className="w-3.5 h-3.5" /> Upload File
@@ -605,11 +605,11 @@ function PlagiarismCheckerContent() {
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         rows={10}
-                        className="w-full rounded-xl bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 border border-white/[0.06] px-4 py-3.5 text-sm text-white placeholder:text-[#8895A7]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-2 focus:ring-[#6D5EF5]/12 transition-all resize-none"
+                        className="w-full rounded-xl bg-gradient-to-b from-card/80 to-card/60 border border-white/[0.06] px-4 py-3.5 text-sm text-white placeholder:text-muted/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-2 focus:ring-[#6D5EF5]/12 transition-all resize-none"
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className="text-xs text-[#A7B0C0]">
+                      <p className="text-xs text-muted">
                         {wordCount > 0 ? `${wordCount} words` : "Minimum 50 words recommended"}
                       </p>
                     </div>
@@ -630,7 +630,7 @@ function PlagiarismCheckerContent() {
                             <FileText className="w-6 h-6 text-[#22C55E]" />
                           </div>
                           <p className="text-sm text-white font-medium mb-1">{fileName}</p>
-                          <p className="text-xs text-[#A7B0C0]">{wordCount} words loaded</p>
+                          <p className="text-xs text-muted">{wordCount} words loaded</p>
                         </div>
                       ) : (
                         <>
@@ -638,7 +638,7 @@ function PlagiarismCheckerContent() {
                             <FileUp className="w-6 h-6 text-[#6D5EF5]" />
                           </div>
                           <p className="text-sm text-white font-medium mb-1">Drop file here or click to browse</p>
-                          <p className="text-xs text-[#A7B0C0]">Supports .txt files only</p>
+                          <p className="text-xs text-muted">Supports .txt files only</p>
                         </>
                       )}
                     </div>
@@ -665,7 +665,7 @@ function PlagiarismCheckerContent() {
             {/* Result Meta */}
             {hasResult && (
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 shadow-sm"
+                className="bg-gradient-to-b from-card/40 to-card/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 shadow-sm"
               >
                 <div className="flex items-center justify-between mb-3 pb-3 border-b border-white/[0.04]">
                   <span className="text-xs text-[#8895A7]">Status</span>
@@ -702,7 +702,7 @@ function PlagiarismCheckerContent() {
             {/* New Check */}
             {hasResult && (
               <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={handleNewCheck}
-                className="w-full h-11 rounded-2xl border border-dashed border-white/[0.08] text-xs text-[#8895A7] hover:text-white hover:border-white/[0.15] hover:bg-white/[0.02] transition-all"
+                className="w-full h-11 rounded-2xl border border-dashed border-white/[0.08] text-xs text-[#8895A7] hover:text-foreground hover:border-white/[0.15] hover:bg-white/[0.02] transition-all"
               >
                 + New Check
               </motion.button>
@@ -714,7 +714,7 @@ function PlagiarismCheckerContent() {
         <div className="flex-1 overflow-y-auto bg-gradient-to-b from-[#090B16] via-[#0A0C1A] to-[#090B16]">
           {loading && (
             <div className="p-8 max-w-2xl mx-auto">
-              <div className="bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 shadow-xl shadow-black/20">
+              <div className="bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 shadow-xl shadow-black/20">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6D5EF5]/20 to-[#8B5CF6]/10 border border-[#6D5EF5]/20 flex items-center justify-center">
                     <ScanSearch className="w-4.5 h-4.5 text-[#6D5EF5]" />
@@ -739,7 +739,7 @@ function PlagiarismCheckerContent() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-[#EF4444]">Check Failed</p>
-                  <p className="text-xs text-[#A7B0C0] mt-1">{error}</p>
+                  <p className="text-xs text-muted mt-1">{error}</p>
                   <button onClick={handleCheck} className="mt-3 px-4 py-1.5 rounded-lg bg-[#EF4444]/10 border border-[#EF4444]/20 text-xs font-medium text-[#EF4444] hover:bg-[#EF4444]/20 transition-all">
                     Try Again
                   </button>
@@ -763,7 +763,7 @@ function PlagiarismCheckerContent() {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-[#F59E0B]">API Not Configured</p>
-                    <p className="text-xs text-[#A7B0C0] mt-1 leading-relaxed">{apiMessage || "Connect a real plagiarism detection API for accurate web-based scanning."}</p>
+                    <p className="text-xs text-muted mt-1 leading-relaxed">{apiMessage || "Connect a real plagiarism detection API for accurate web-based scanning."}</p>
                     <p className="text-xs text-[#8895A7] mt-2 italic">Results shown are from local internal analysis only (self-duplication detection) and do not represent full web-based plagiarism scanning.</p>
                   </div>
                 </motion.div>

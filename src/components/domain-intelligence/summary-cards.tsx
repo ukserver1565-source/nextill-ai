@@ -52,7 +52,7 @@ export function SummaryCards({ overview, loading }: SummaryCardsProps) {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
         {skeletonCards.map((_, i) => (
-          <div key={i} className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-4">
+          <div key={i} className="bg-card/80 border border-white/[0.06] rounded-xl p-4">
             <div className="skeleton h-3 w-20 mb-3" />
             <div className="skeleton h-7 w-16 mb-2" />
             <div className="skeleton h-3 w-12" />
@@ -74,15 +74,15 @@ export function SummaryCards({ overview, loading }: SummaryCardsProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.03 }}
-          className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-4 relative group"
+          className="bg-card/80 border border-white/[0.06] rounded-xl p-4 relative group"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] text-[#A7B0C0] font-medium uppercase tracking-wider">{card.label}</span>
+            <span className="text-[11px] text-muted font-medium uppercase tracking-wider">{card.label}</span>
             <div className="flex items-center gap-1">
               <StatusIndicator status={card.status} />
               {card.tooltip && (
                 <div className="relative group/tip">
-                  <HelpCircle className="w-3 h-3 text-[#A7B0C0]/50 cursor-help" />
+                  <HelpCircle className="w-3 h-3 text-muted/50 cursor-help" />
                   <div className="absolute right-0 bottom-full mb-2 px-3 py-2 text-xs text-white bg-[#111827]/95 border border-white/10 rounded-lg shadow-xl whitespace-nowrap opacity-0 invisible group-hover/tip:opacity-100 group-hover/tip:visible transition-all z-50">
                     {card.tooltip}
                   </div>
@@ -95,7 +95,7 @@ export function SummaryCards({ overview, loading }: SummaryCardsProps) {
               {card.status === "loading" ? (
                 <span className="inline-flex items-center gap-1"><Loader2 className="w-4 h-4 animate-spin" />...</span>
               ) : card.status === "unavailable" ? (
-                <span className="text-sm text-[#A7B0C0]">—</span>
+                <span className="text-sm text-muted">—</span>
               ) : (
                 formatValue(card.value)
               )}
@@ -103,7 +103,7 @@ export function SummaryCards({ overview, loading }: SummaryCardsProps) {
             <ChangeBadge change={card.change} />
           </div>
           {card.source && (
-            <span className="text-[9px] text-[#A7B0C0]/60 mt-1 block">Source: {card.source}</span>
+            <span className="text-[9px] text-muted/60 mt-1 block">Source: {card.source}</span>
           )}
         </motion.div>
       ))}

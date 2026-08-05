@@ -21,14 +21,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Read from localStorage, respect system preference on first visit
+    // Read from localStorage; always default to dark on first visit
+    // regardless of system/device preference
     const stored = localStorage.getItem("theme") as Theme | null
     if (stored) {
       setThemeState(stored)
-    } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-      setThemeState(prefersDark ? "dark" : "light")
     }
+    // If no stored preference, the useState("dark") default is already correct
     setMounted(true)
   }, [])
 

@@ -20,7 +20,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
             <RefreshCw className="w-4 h-4" />
             Try Again
           </button>
-          <Link href="/" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/[0.06] text-muted text-sm hover:text-white hover:border-white/[0.12] transition-all">
+          <Link href="/" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/[0.06] text-muted text-sm hover:text-foreground hover:border-white/[0.12] transition-all">
             <Home className="w-4 h-4" />
             Home
           </Link>

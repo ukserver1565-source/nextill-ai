@@ -39,7 +39,7 @@ export function MetricCards({ stats }: MetricCardsProps) {
             initial="hidden"
             animate="visible"
           >
-            <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.1] hover:bg-[#151C2E]/90 transition-all duration-300 group cursor-default">
+            <div className="bg-card/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.1] hover:bg-card/90 transition-all duration-300 group cursor-default">
               <div className="flex items-start justify-between mb-4">
                 <div className={cn(
                   "w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center",
@@ -62,7 +62,7 @@ export function MetricCards({ stats }: MetricCardsProps) {
                 </div>
               </div>
               <span className="text-2xl font-bold tracking-tight text-foreground">{metric.value}</span>
-              <p className="text-xs text-[#A7B0C0] mt-1">{metric.label}</p>
+              <p className="text-xs text-muted mt-1">{metric.label}</p>
             </div>
           </motion.div>
         )

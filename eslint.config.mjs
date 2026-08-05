@@ -14,6 +14,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Audit harness scripts (Node.js test scripts, not app code)
     "audit-*.js",
+    "audit-*/**",
     "scripts/**",
   ]),
   {

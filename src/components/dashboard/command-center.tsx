@@ -25,7 +25,7 @@ const itemVariants = {
 
 export function CommandCenter() {
   return (
-    <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
+    <div className="bg-card/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5">
       <div className="flex items-center gap-2 mb-4">
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#6D5EF5]/10 border border-[#6D5EF5]/20">
           <Sparkles className="w-3 h-3 text-[#6D5EF5]" />

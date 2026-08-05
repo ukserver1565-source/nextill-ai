@@ -48,7 +48,7 @@ export function AIToolCards() {
     <section>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold tracking-tight text-foreground">AI Workflows</h2>
-        <span className="text-xs text-[#A7B0C0]">3 available</span>
+        <span className="text-xs text-muted">3 available</span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {tools.map((tool, i) => {
@@ -61,7 +61,7 @@ export function AIToolCards() {
                 initial="hidden"
                 animate="visible"
                 whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6 hover:border-[#6D5EF5]/30 hover:bg-[#151C2E]/90 transition-all duration-300 group cursor-pointer h-full flex flex-col"
+                className="bg-card/80 backdrop-blur-xl border border-white/[0.06] rounded-xl p-6 hover:border-[#6D5EF5]/30 hover:bg-card/90 transition-all duration-300 group cursor-pointer h-full flex flex-col"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br ${tool.color} shadow-lg`}>
@@ -72,7 +72,7 @@ export function AIToolCards() {
                   </div>
                 </div>
                 <h3 className="text-base font-semibold text-foreground mb-2">{tool.name}</h3>
-                <p className="text-xs text-[#A7B0C0] leading-relaxed mb-4 flex-1">
+                <p className="text-xs text-muted leading-relaxed mb-4 flex-1">
                   {tool.description}
                 </p>
                 <div className="flex items-center justify-between pt-3 border-t border-white/[0.06]">
@@ -82,7 +82,7 @@ export function AIToolCards() {
                         {tool.badge}
                       </span>
                     )}
-                    <span className="text-[10px] text-[#A7B0C0]">{tool.credits}</span>
+                    <span className="text-[10px] text-muted">{tool.credits}</span>
                   </div>
                   <Sparkles className="w-3.5 h-3.5 text-[#6D5EF5]/40" />
                 </div>

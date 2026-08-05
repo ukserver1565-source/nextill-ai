@@ -78,7 +78,7 @@ export function PublicHeader() {
                 <Avatar fallback={initials} size="sm" />
                 <div className="hidden sm:block text-left">
                   <p className="text-xs font-medium text-foreground leading-tight whitespace-nowrap">{profile?.full_name || "User"}</p>
-                  <p className="text-[10px] text-[#A7B0C0] leading-tight capitalize whitespace-nowrap">{profile?.plan || "Free"} Plan</p>
+                  <p className="text-[10px] text-muted leading-tight capitalize whitespace-nowrap">{profile?.plan || "Free"} Plan</p>
                 </div>
                 <ChevronDown className="w-3 h-3 text-muted hidden sm:block" />
               </button>
@@ -104,7 +104,7 @@ export function PublicHeader() {
                     {(profile?.role === "admin" || profile?.role === "super_admin") && (
                       <Link
                         href="/zain-nextill-ansari"
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-[#F59E0B] hover:text-white hover:bg-[#F59E0B]/10 rounded-lg transition-colors"
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-[#F59E0B] hover:text-foreground hover:bg-[#F59E0B]/10 rounded-lg transition-colors"
                         onClick={() => setProfileOpen(false)}
                       >
                         ⚡ Admin Panel

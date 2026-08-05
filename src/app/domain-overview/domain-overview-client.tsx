@@ -154,20 +154,20 @@ function DomainOverviewContent() {
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 flex items-center gap-2">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A7B0C0]" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
                 <input
                   type="text"
                   value={domain}
                   onChange={e => setDomain(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && analyze()}
                   placeholder="Enter domain (e.g., example.com)"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#151C2E]/80 border border-white/[0.06] rounded-xl text-sm text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 bg-card/80 border border-white/[0.06] rounded-xl text-sm text-white placeholder-[#A7B0C0] focus:outline-none focus:border-[#6D5EF5]/50 transition-colors"
                 />
               </div>
               <select
                 value={mode}
                 onChange={e => setMode(e.target.value as "root_domain" | "exact_url")}
-                className="px-3 py-2.5 bg-[#151C2E]/80 border border-white/[0.06] rounded-xl text-sm text-white appearance-none cursor-pointer focus:outline-none focus:border-[#6D5EF5]/50"
+                className="px-3 py-2.5 bg-card/80 border border-white/[0.06] rounded-xl text-sm text-white appearance-none cursor-pointer focus:outline-none focus:border-[#6D5EF5]/50"
               >
                 <option value="root_domain">Root Domain</option>
                 <option value="exact_url">Exact URL</option>
@@ -175,7 +175,7 @@ function DomainOverviewContent() {
               <select
                 value={country}
                 onChange={e => setCountry(e.target.value)}
-                className="px-3 py-2.5 bg-[#151C2E]/80 border border-white/[0.06] rounded-xl text-sm text-white appearance-none cursor-pointer focus:outline-none focus:border-[#6D5EF5]/50 hidden sm:block"
+                className="px-3 py-2.5 bg-card/80 border border-white/[0.06] rounded-xl text-sm text-white appearance-none cursor-pointer focus:outline-none focus:border-[#6D5EF5]/50 hidden sm:block"
               >
                 {COUNTRIES.map(c => (
                   <option key={c.code} value={c.code}>{c.name}</option>
@@ -184,13 +184,13 @@ function DomainOverviewContent() {
               <div className="hidden sm:flex items-center border border-white/[0.06] rounded-xl overflow-hidden">
                 <button
                   onClick={() => setDevice("desktop")}
-                  className={`p-2.5 transition-colors ${device === "desktop" ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-[#A7B0C0] hover:text-white"}`}
+                  className={`p-2.5 transition-colors ${device === "desktop" ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-muted hover:text-foreground"}`}
                 >
                   <Monitor className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setDevice("mobile")}
-                  className={`p-2.5 transition-colors ${device === "mobile" ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-[#A7B0C0] hover:text-white"}`}
+                  className={`p-2.5 transition-colors ${device === "mobile" ? "bg-[#6D5EF5]/20 text-[#6D5EF5]" : "text-muted hover:text-foreground"}`}
                 >
                   <Smartphone className="w-4 h-4" />
                 </button>
@@ -220,8 +220,8 @@ function DomainOverviewContent() {
               {providerStatus.map(ps => (
                 <div key={ps.provider} className="flex items-center gap-1.5">
                   <span className={`w-1.5 h-1.5 rounded-full ${ps.connected ? "bg-emerald-400" : "bg-[#A7B0C0]/40"}`} />
-                  <span className="text-[#A7B0C0] capitalize">{ps.provider}</span>
-                  {!ps.connected && <span className="text-[#A7B0C0]/60">(not connected)</span>}
+                  <span className="text-muted capitalize">{ps.provider}</span>
+                  {!ps.connected && <span className="text-muted/60">(not connected)</span>}
                 </div>
               ))}
             </div>
@@ -263,7 +263,7 @@ function DomainOverviewContent() {
                     className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-all border-b-2 ${
                       activeTab === tab.id
                         ? "text-[#6D5EF5] border-[#6D5EF5]"
-                        : "text-[#A7B0C0] border-transparent hover:text-white"
+                        : "text-muted border-transparent hover:text-foreground"
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -326,7 +326,7 @@ function OverviewTab({ overview: _overview, technical, competitors, loading }: {
     <div className="space-y-6">
       {/* Technical SEO Summary */}
       {technical && (
-        <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-6">
+        <div className="bg-card/80 border border-white/[0.06] rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
             <Wrench className="w-4 h-4 text-[#6D5EF5]" />
             Technical SEO Summary
@@ -349,7 +349,7 @@ function OverviewTab({ overview: _overview, technical, competitors, loading }: {
                     <span className="text-xs font-bold text-white">{item.value ?? "—"}</span>
                   </div>
                 </div>
-                <span className="text-[11px] text-[#A7B0C0]">{item.label}</span>
+                <span className="text-[11px] text-muted">{item.label}</span>
               </div>
             ))}
           </div>
@@ -358,7 +358,7 @@ function OverviewTab({ overview: _overview, technical, competitors, loading }: {
 
       {/* Core Web Vitals */}
       {technical && (technical.lcp || technical.cls || technical.inp) && (
-        <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-6">
+        <div className="bg-card/80 border border-white/[0.06] rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-[#4CC9F0]" />
             Core Web Vitals
@@ -371,12 +371,12 @@ function OverviewTab({ overview: _overview, technical, competitors, loading }: {
               { label: "FCP", value: technical.fcp, unit: "ms", good: (v: number) => v < 1800, warn: (v: number) => v < 3000 },
             ].map(vit => (
               <div key={vit.label} className="bg-white/[0.02] rounded-lg p-4">
-                <span className="text-[11px] text-[#A7B0C0] uppercase tracking-wider">{vit.label}</span>
+                <span className="text-[11px] text-muted uppercase tracking-wider">{vit.label}</span>
                 <div className="flex items-baseline gap-1 mt-1">
                   <span className="text-lg font-bold text-white">
                     {vit.value != null ? (vit.unit === "ms" ? Math.round(vit.value) : vit.value.toFixed(3)) : "—"}
                   </span>
-                  {vit.unit && <span className="text-xs text-[#A7B0C0]">{vit.unit}</span>}
+                  {vit.unit && <span className="text-xs text-muted">{vit.unit}</span>}
                 </div>
                 {vit.value != null && (
                   <span className={`text-[10px] font-medium mt-1 inline-block ${
@@ -393,7 +393,7 @@ function OverviewTab({ overview: _overview, technical, competitors, loading }: {
 
       {/* Quick Competitors */}
       {competitors.length > 0 && (
-        <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-6">
+        <div className="bg-card/80 border border-white/[0.06] rounded-xl p-6">
           <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
             <Users className="w-4 h-4 text-[#6D5EF5]" />
             Top Competitors
@@ -402,10 +402,10 @@ function OverviewTab({ overview: _overview, technical, competitors, loading }: {
             {competitors.slice(0, 5).map((c, i) => (
               <div key={c.domain} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.03] transition-colors">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-[#A7B0C0] w-5">{i + 1}</span>
+                  <span className="text-xs text-muted w-5">{i + 1}</span>
                   <span className="text-sm text-white">{c.domain}</span>
                 </div>
-                <div className="flex items-center gap-4 text-xs text-[#A7B0C0]">
+                <div className="flex items-center gap-4 text-xs text-muted">
                   {c.overlap != null && <span>{c.overlap} overlap</span>}
                   {c.organicTraffic != null && <span>{c.organicTraffic.toLocaleString()} traffic</span>}
                 </div>
@@ -421,17 +421,17 @@ function OverviewTab({ overview: _overview, technical, competitors, loading }: {
 function GrowthTab({ data }: { data: GrowthDataPoint[] }) {
   if (!data.length) {
     return (
-      <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-12 text-center">
-        <TrendingUp className="w-8 h-8 text-[#A7B0C0]/40 mx-auto mb-3" />
-        <p className="text-sm text-[#A7B0C0]">No historical data available</p>
-        <p className="text-xs text-[#A7B0C0]/60 mt-1">Growth data requires Semrush Business tier or higher</p>
+      <div className="bg-card/80 border border-white/[0.06] rounded-xl p-12 text-center">
+        <TrendingUp className="w-8 h-8 text-muted/40 mx-auto mb-3" />
+        <p className="text-sm text-muted">No historical data available</p>
+        <p className="text-xs text-muted/60 mt-1">Growth data requires Semrush Business tier or higher</p>
       </div>
     )
   }
   return (
-    <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-6">
+    <div className="bg-card/80 border border-white/[0.06] rounded-xl p-6">
       <h3 className="text-sm font-semibold text-white mb-4">Growth Over Time</h3>
-      <p className="text-xs text-[#A7B0C0]">Chart rendering would go here</p>
+      <p className="text-xs text-muted">Chart rendering would go here</p>
     </div>
   )
 }
@@ -439,31 +439,31 @@ function GrowthTab({ data }: { data: GrowthDataPoint[] }) {
 function CountriesTab({ data }: { data: CountryRow[] }) {
   if (!data.length) {
     return (
-      <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-12 text-center">
-        <Globe2 className="w-8 h-8 text-[#A7B0C0]/40 mx-auto mb-3" />
-        <p className="text-sm text-[#A7B0C0]">No country distribution data available</p>
-        <p className="text-xs text-[#A7B0C0]/60 mt-1">Connect Semrush to see country-level data</p>
+      <div className="bg-card/80 border border-white/[0.06] rounded-xl p-12 text-center">
+        <Globe2 className="w-8 h-8 text-muted/40 mx-auto mb-3" />
+        <p className="text-sm text-muted">No country distribution data available</p>
+        <p className="text-xs text-muted/60 mt-1">Connect Semrush to see country-level data</p>
       </div>
     )
   }
   return (
-    <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-6">
+    <div className="bg-card/80 border border-white/[0.06] rounded-xl p-6">
       <h3 className="text-sm font-semibold text-white mb-4">Country Distribution</h3>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/[0.06]">
-              <th className="text-left py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Country</th>
-              <th className="text-right py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Traffic Share</th>
-              <th className="text-right py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Keywords</th>
+              <th className="text-left py-3 px-3 text-[11px] text-muted font-medium uppercase">Country</th>
+              <th className="text-right py-3 px-3 text-[11px] text-muted font-medium uppercase">Traffic Share</th>
+              <th className="text-right py-3 px-3 text-[11px] text-muted font-medium uppercase">Keywords</th>
             </tr>
           </thead>
           <tbody>
             {data.map(row => (
               <tr key={row.countryCode} className="border-b border-white/[0.03] hover:bg-white/[0.02]">
                 <td className="py-3 px-3 text-white">{row.country}</td>
-                <td className="py-3 px-3 text-right text-[#A7B0C0]">{row.trafficShare != null ? `${row.trafficShare}%` : "—"}</td>
-                <td className="py-3 px-3 text-right text-[#A7B0C0]">{row.keywords?.toLocaleString() ?? "—"}</td>
+                <td className="py-3 px-3 text-right text-muted">{row.trafficShare != null ? `${row.trafficShare}%` : "—"}</td>
+                <td className="py-3 px-3 text-right text-muted">{row.keywords?.toLocaleString() ?? "—"}</td>
               </tr>
             ))}
           </tbody>
@@ -487,7 +487,7 @@ function KeywordsTab({ domain: _domain, keywords, filters, setFilters, page: _pa
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-4">
+      <div className="bg-card/80 border border-white/[0.06] rounded-xl p-4">
         <div className="flex items-center gap-2 mb-3">
           <Filter className="w-4 h-4 text-[#6D5EF5]" />
           <span className="text-sm font-medium text-white">Filters</span>
@@ -517,7 +517,7 @@ function KeywordsTab({ domain: _domain, keywords, filters, setFilters, page: _pa
             <option value="phrase">Phrase Match</option>
             <option value="related">Related</option>
           </select>
-          <label className="flex items-center gap-2 text-xs text-[#A7B0C0] cursor-pointer">
+          <label className="flex items-center gap-2 text-xs text-muted cursor-pointer">
             <input
               type="checkbox"
               checked={filters.questionsOnly}
@@ -530,24 +530,24 @@ function KeywordsTab({ domain: _domain, keywords, filters, setFilters, page: _pa
       </div>
 
       {/* Keyword Table */}
-      <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="bg-card/80 border border-white/[0.06] rounded-xl overflow-hidden">
         {!keywords.length ? (
           <div className="p-12 text-center">
-            <Search className="w-8 h-8 text-[#A7B0C0]/40 mx-auto mb-3" />
-            <p className="text-sm text-[#A7B0C0]">No keyword data available</p>
-            <p className="text-xs text-[#A7B0C0]/60 mt-1">Live Semrush keyword metrics are unavailable. Connect Semrush from Admin → Providers.</p>
+            <Search className="w-8 h-8 text-muted/40 mx-auto mb-3" />
+            <p className="text-sm text-muted">No keyword data available</p>
+            <p className="text-xs text-muted/60 mt-1">Live Semrush keyword metrics are unavailable. Connect Semrush from Admin → Providers.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/[0.06]">
-                  <th className="text-left py-3 px-4 text-[11px] text-[#A7B0C0] font-medium uppercase">Keyword</th>
-                  <th className="text-center py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Position</th>
-                  <th className="text-right py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Volume</th>
-                  <th className="text-right py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">CPC</th>
-                  <th className="text-center py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Trend</th>
-                  <th className="text-center py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Actions</th>
+                  <th className="text-left py-3 px-4 text-[11px] text-muted font-medium uppercase">Keyword</th>
+                  <th className="text-center py-3 px-3 text-[11px] text-muted font-medium uppercase">Position</th>
+                  <th className="text-right py-3 px-3 text-[11px] text-muted font-medium uppercase">Volume</th>
+                  <th className="text-right py-3 px-3 text-[11px] text-muted font-medium uppercase">CPC</th>
+                  <th className="text-center py-3 px-3 text-[11px] text-muted font-medium uppercase">Trend</th>
+                  <th className="text-center py-3 px-3 text-[11px] text-muted font-medium uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -555,19 +555,19 @@ function KeywordsTab({ domain: _domain, keywords, filters, setFilters, page: _pa
                   <tr key={kw.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
                     <td className="py-3 px-4">
                       <span className="text-white">{kw.keyword}</span>
-                      {kw.url && <span className="block text-[11px] text-[#A7B0C0]/60 truncate max-w-[300px]">{kw.url}</span>}
+                      {kw.url && <span className="block text-[11px] text-muted/60 truncate max-w-[300px]">{kw.url}</span>}
                     </td>
                     <td className="py-3 px-3 text-center">
                       {kw.position != null ? (
                         <span className={`inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold ${
                           kw.position <= 3 ? "bg-emerald-500/10 text-emerald-400" :
                           kw.position <= 10 ? "bg-blue-500/10 text-blue-400" :
-                          "bg-white/5 text-[#A7B0C0]"
+                          "bg-white/5 text-muted"
                         }`}>{kw.position}</span>
                       ) : "—"}
                     </td>
-                    <td className="py-3 px-3 text-right text-[#A7B0C0]">{kw.volume?.toLocaleString() ?? "—"}</td>
-                    <td className="py-3 px-3 text-right text-[#A7B0C0]">{kw.cpc != null ? `$${kw.cpc.toFixed(2)}` : "—"}</td>
+                    <td className="py-3 px-3 text-right text-muted">{kw.volume?.toLocaleString() ?? "—"}</td>
+                    <td className="py-3 px-3 text-right text-muted">{kw.cpc != null ? `$${kw.cpc.toFixed(2)}` : "—"}</td>
                     <td className="py-3 px-3 text-center">
                       {kw.trend && kw.trend.length > 0 ? (
                         <div className="flex items-end justify-center gap-px h-4">
@@ -581,14 +581,14 @@ function KeywordsTab({ domain: _domain, keywords, filters, setFilters, page: _pa
                       <div className="flex items-center justify-center gap-1">
                         <button
                           onClick={() => copyKeyword(kw.keyword)}
-                          className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-white hover:bg-white/[0.06] transition-colors"
+                          className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-white/[0.06] transition-colors"
                           title="Copy keyword"
                         >
                           <Copy className="w-3.5 h-3.5" />
                         </button>
                         <a
                           href={`/post-generator?keyword=${encodeURIComponent(kw.keyword)}`}
-                          className="p-1.5 rounded-lg text-[#A7B0C0] hover:text-[#6D5EF5] hover:bg-[#6D5EF5]/10 transition-colors"
+                          className="p-1.5 rounded-lg text-muted hover:text-[#6D5EF5] hover:bg-[#6D5EF5]/10 transition-colors"
                           title="Send to Post Generator"
                         >
                           <Send className="w-3.5 h-3.5" />
@@ -609,15 +609,15 @@ function KeywordsTab({ domain: _domain, keywords, filters, setFilters, page: _pa
 function CompetitorsTab({ data }: { data: CompetitorRow[] }) {
   if (!data.length) {
     return (
-      <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-12 text-center">
-        <Users className="w-8 h-8 text-[#A7B0C0]/40 mx-auto mb-3" />
-        <p className="text-sm text-[#A7B0C0]">No competitor data available</p>
-        <p className="text-xs text-[#A7B0C0]/60 mt-1">Connect Semrush to see competitors</p>
+      <div className="bg-card/80 border border-white/[0.06] rounded-xl p-12 text-center">
+        <Users className="w-8 h-8 text-muted/40 mx-auto mb-3" />
+        <p className="text-sm text-muted">No competitor data available</p>
+        <p className="text-xs text-muted/60 mt-1">Connect Semrush to see competitors</p>
       </div>
     )
   }
   return (
-    <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl overflow-hidden">
+    <div className="bg-card/80 border border-white/[0.06] rounded-xl overflow-hidden">
       <div className="p-4 border-b border-white/[0.06]">
         <h3 className="text-sm font-semibold text-white flex items-center gap-2">
           <Users className="w-4 h-4 text-[#6D5EF5]" />
@@ -628,21 +628,21 @@ function CompetitorsTab({ data }: { data: CompetitorRow[] }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/[0.06]">
-              <th className="text-left py-3 px-4 text-[11px] text-[#A7B0C0] font-medium uppercase">#</th>
-              <th className="text-left py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Domain</th>
-              <th className="text-right py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Overlap</th>
-              <th className="text-right py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Common KWs</th>
-              <th className="text-right py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Organic Traffic</th>
+              <th className="text-left py-3 px-4 text-[11px] text-muted font-medium uppercase">#</th>
+              <th className="text-left py-3 px-3 text-[11px] text-muted font-medium uppercase">Domain</th>
+              <th className="text-right py-3 px-3 text-[11px] text-muted font-medium uppercase">Overlap</th>
+              <th className="text-right py-3 px-3 text-[11px] text-muted font-medium uppercase">Common KWs</th>
+              <th className="text-right py-3 px-3 text-[11px] text-muted font-medium uppercase">Organic Traffic</th>
             </tr>
           </thead>
           <tbody>
             {data.map((c, i) => (
               <tr key={c.domain} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
-                <td className="py-3 px-4 text-[#A7B0C0]">{i + 1}</td>
+                <td className="py-3 px-4 text-muted">{i + 1}</td>
                 <td className="py-3 px-3 text-white font-medium">{c.domain}</td>
-                <td className="py-3 px-3 text-right text-[#A7B0C0]">{c.overlap ?? "—"}</td>
-                <td className="py-3 px-3 text-right text-[#A7B0C0]">{c.commonKeywords?.toLocaleString() ?? "—"}</td>
-                <td className="py-3 px-3 text-right text-[#A7B0C0]">{c.organicTraffic?.toLocaleString() ?? "—"}</td>
+                <td className="py-3 px-3 text-right text-muted">{c.overlap ?? "—"}</td>
+                <td className="py-3 px-3 text-right text-muted">{c.commonKeywords?.toLocaleString() ?? "—"}</td>
+                <td className="py-3 px-3 text-right text-muted">{c.organicTraffic?.toLocaleString() ?? "—"}</td>
               </tr>
             ))}
           </tbody>
@@ -655,15 +655,15 @@ function CompetitorsTab({ data }: { data: CompetitorRow[] }) {
 function BacklinksTab({ data }: { data: BacklinkRow[] }) {
   if (!data.length) {
     return (
-      <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-12 text-center">
-        <Link2 className="w-8 h-8 text-[#A7B0C0]/40 mx-auto mb-3" />
-        <p className="text-sm text-[#A7B0C0]">No backlink data available</p>
-        <p className="text-xs text-[#A7B0C0]/60 mt-1">Connect Semrush to see backlinks</p>
+      <div className="bg-card/80 border border-white/[0.06] rounded-xl p-12 text-center">
+        <Link2 className="w-8 h-8 text-muted/40 mx-auto mb-3" />
+        <p className="text-sm text-muted">No backlink data available</p>
+        <p className="text-xs text-muted/60 mt-1">Connect Semrush to see backlinks</p>
       </div>
     )
   }
   return (
-    <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl overflow-hidden">
+    <div className="bg-card/80 border border-white/[0.06] rounded-xl overflow-hidden">
       <div className="p-4 border-b border-white/[0.06]">
         <h3 className="text-sm font-semibold text-white flex items-center gap-2">
           <Link2 className="w-4 h-4 text-[#6D5EF5]" />
@@ -674,10 +674,10 @@ function BacklinksTab({ data }: { data: BacklinkRow[] }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/[0.06]">
-              <th className="text-left py-3 px-4 text-[11px] text-[#A7B0C0] font-medium uppercase">Source</th>
-              <th className="text-left py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Anchor</th>
-              <th className="text-center py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Type</th>
-              <th className="text-right py-3 px-3 text-[11px] text-[#A7B0C0] font-medium uppercase">Authority</th>
+              <th className="text-left py-3 px-4 text-[11px] text-muted font-medium uppercase">Source</th>
+              <th className="text-left py-3 px-3 text-[11px] text-muted font-medium uppercase">Anchor</th>
+              <th className="text-center py-3 px-3 text-[11px] text-muted font-medium uppercase">Type</th>
+              <th className="text-right py-3 px-3 text-[11px] text-muted font-medium uppercase">Authority</th>
             </tr>
           </thead>
           <tbody>
@@ -689,13 +689,13 @@ function BacklinksTab({ data }: { data: BacklinkRow[] }) {
                     <ExternalLink className="w-3 h-3 shrink-0" />
                   </a>
                 </td>
-                <td className="py-3 px-3 text-[#A7B0C0] truncate max-w-[200px]">{bl.anchorText || "—"}</td>
+                <td className="py-3 px-3 text-muted truncate max-w-[200px]">{bl.anchorText || "—"}</td>
                 <td className="py-3 px-3 text-center">
                   <span className={`text-[10px] font-medium px-2 py-0.5 rounded ${
-                    bl.type === "dofollow" ? "bg-emerald-500/10 text-emerald-400" : "bg-white/5 text-[#A7B0C0]"
+                    bl.type === "dofollow" ? "bg-emerald-500/10 text-emerald-400" : "bg-white/5 text-muted"
                   }`}>{bl.type}</span>
                 </td>
-                <td className="py-3 px-3 text-right text-[#A7B0C0]">{bl.authority ?? "—"}</td>
+                <td className="py-3 px-3 text-right text-muted">{bl.authority ?? "—"}</td>
               </tr>
             ))}
           </tbody>
@@ -708,10 +708,10 @@ function BacklinksTab({ data }: { data: BacklinkRow[] }) {
 function TechnicalTab({ data }: { data: TechnicalSEO | null }) {
   if (!data) {
     return (
-      <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-12 text-center">
-        <Wrench className="w-8 h-8 text-[#A7B0C0]/40 mx-auto mb-3" />
-        <p className="text-sm text-[#A7B0C0]">No technical data available</p>
-        <p className="text-xs text-[#A7B0C0]/60 mt-1">Technical analysis runs automatically</p>
+      <div className="bg-card/80 border border-white/[0.06] rounded-xl p-12 text-center">
+        <Wrench className="w-8 h-8 text-muted/40 mx-auto mb-3" />
+        <p className="text-sm text-muted">No technical data available</p>
+        <p className="text-xs text-muted/60 mt-1">Technical analysis runs automatically</p>
       </div>
     )
   }
@@ -729,7 +729,7 @@ function TechnicalTab({ data }: { data: TechnicalSEO | null }) {
 
   return (
     <div className="space-y-4">
-      <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-6">
+      <div className="bg-card/80 border border-white/[0.06] rounded-xl p-6">
         <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
           <Wrench className="w-4 h-4 text-[#6D5EF5]" />
           Technical SEO Checks
@@ -743,11 +743,11 @@ function TechnicalTab({ data }: { data: TechnicalSEO | null }) {
                 ) : check.ok === false ? (
                   <XCircle className="w-5 h-5 text-red-400 shrink-0" />
                 ) : (
-                  <Info className="w-5 h-5 text-[#A7B0C0] shrink-0" />
+                  <Info className="w-5 h-5 text-muted shrink-0" />
                 )}
                 <span className="text-sm text-white font-medium">{check.label}</span>
               </div>
-              <span className={`text-xs ${check.ok ? "text-emerald-400" : check.ok === false ? "text-red-400" : "text-[#A7B0C0]"}`}>
+              <span className={`text-xs ${check.ok ? "text-emerald-400" : check.ok === false ? "text-red-400" : "text-muted"}`}>
                 {check.detail}
               </span>
             </div>
@@ -756,7 +756,7 @@ function TechnicalTab({ data }: { data: TechnicalSEO | null }) {
       </div>
 
       {data.source && (
-        <div className="text-center text-[11px] text-[#A7B0C0]/60">
+        <div className="text-center text-[11px] text-muted/60">
           Source: {data.source} | {new Date().toLocaleDateString()}
         </div>
       )}
@@ -766,10 +766,10 @@ function TechnicalTab({ data }: { data: TechnicalSEO | null }) {
 
 function AISearchTab() {
   return (
-    <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-12 text-center">
-      <Brain className="w-8 h-8 text-[#A7B0C0]/40 mx-auto mb-3" />
-      <p className="text-sm text-[#A7B0C0]">AI Search metrics not yet available</p>
-      <p className="text-xs text-[#A7B0C0]/60 mt-1">This feature requires an AI search data provider. Check back soon.</p>
+    <div className="bg-card/80 border border-white/[0.06] rounded-xl p-12 text-center">
+      <Brain className="w-8 h-8 text-muted/40 mx-auto mb-3" />
+      <p className="text-sm text-muted">AI Search metrics not yet available</p>
+      <p className="text-xs text-muted/60 mt-1">This feature requires an AI search data provider. Check back soon.</p>
     </div>
   )
 }
@@ -777,10 +777,10 @@ function AISearchTab() {
 function RecommendationsTab({ data }: { data: Recommendation[] }) {
   if (!data.length) {
     return (
-      <div className="bg-[#151C2E]/80 border border-white/[0.06] rounded-xl p-12 text-center">
-        <Lightbulb className="w-8 h-8 text-[#A7B0C0]/40 mx-auto mb-3" />
-        <p className="text-sm text-[#A7B0C0]">No recommendations yet</p>
-        <p className="text-xs text-[#A7B0C0]/60 mt-1">Run an analysis to get SEO recommendations</p>
+      <div className="bg-card/80 border border-white/[0.06] rounded-xl p-12 text-center">
+        <Lightbulb className="w-8 h-8 text-muted/40 mx-auto mb-3" />
+        <p className="text-sm text-muted">No recommendations yet</p>
+        <p className="text-xs text-muted/60 mt-1">Run an analysis to get SEO recommendations</p>
       </div>
     )
   }
@@ -789,7 +789,7 @@ function RecommendationsTab({ data }: { data: Recommendation[] }) {
     critical: "bg-red-500/10 text-red-400 border-red-500/20",
     high: "bg-amber-500/10 text-amber-400 border-amber-500/20",
     medium: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    low: "bg-white/5 text-[#A7B0C0] border-white/[0.06]",
+    low: "bg-white/5 text-muted border-white/[0.06]",
   }
 
   return (
@@ -806,8 +806,8 @@ function RecommendationsTab({ data }: { data: Recommendation[] }) {
                 {rec.source && <span className="text-[10px] opacity-60">via {rec.source}</span>}
               </div>
               <h4 className="text-sm font-semibold text-white">{rec.issue}</h4>
-              {rec.evidence && <p className="text-xs text-[#A7B0C0] mt-1">{rec.evidence}</p>}
-              {rec.fix && <p className="text-xs text-[#A7B0C0] mt-2 italic">Fix: {rec.fix}</p>}
+              {rec.evidence && <p className="text-xs text-muted mt-1">{rec.evidence}</p>}
+              {rec.fix && <p className="text-xs text-muted mt-2 italic">Fix: {rec.fix}</p>}
             </div>
           </div>
         </div>

@@ -167,7 +167,7 @@ const DropdownMenuItem = React.forwardRef<HTMLButtonElement, DropdownMenuItemPro
         }}
         className={cn(
           "relative flex w-full cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-white outline-none transition-colors",
-          "hover:bg-white/[0.06] hover:text-white",
+          "hover:bg-white/[0.06] hover:text-foreground",
           "focus-visible:bg-white/[0.06]",
           inset && "pl-8",
           className
@@ -196,7 +196,7 @@ const DropdownMenuLabel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("px-2 py-1.5 text-xs font-semibold text-[#A7B0C0]", className)}
+      className={cn("px-2 py-1.5 text-xs font-semibold text-muted", className)}
       {...props}
     />
   )

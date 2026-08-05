@@ -140,7 +140,7 @@ export default function PendingPaymentsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Pending Payments</h1>
-          <p className="text-sm text-[#A7B0C0] mt-1">
+          <p className="text-sm text-muted mt-1">
             Review and approve manual payment verifications
           </p>
         </div>
@@ -149,7 +149,7 @@ export default function PendingPaymentsPage() {
             setLoading(true)
             fetchPayments()
           }}
-          className="h-10 px-4 rounded-xl bg-[#151C2E]/80 border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white flex items-center gap-2 transition-all"
+          className="h-10 px-4 rounded-xl bg-card/80 border border-white/[0.06] text-xs text-muted hover:text-foreground flex items-center gap-2 transition-all"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           Refresh
@@ -157,7 +157,7 @@ export default function PendingPaymentsPage() {
       </div>
 
       {/* Summary bar */}
-      <div className="flex items-center gap-4 text-xs text-[#A7B0C0]">
+      <div className="flex items-center gap-4 text-xs text-muted">
         <div className="flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5 text-[#F59E0B]" />
           <span>{payments.length} pending</span>
@@ -167,30 +167,30 @@ export default function PendingPaymentsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-[#151C2E]/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="bg-card/80 backdrop-blur-xl border border-white/[0.06] rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/[0.06]">
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">
                   User
                 </th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">
                   Plan
                 </th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">
                   Amount
                 </th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">
                   Payment Method
                 </th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">
                   Transaction ID
                 </th>
-                <th className="text-left p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">
+                <th className="text-left p-4 text-[11px] font-medium text-muted uppercase tracking-wider">
                   Submitted
                 </th>
-                <th className="text-right p-4 text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">
+                <th className="text-right p-4 text-[11px] font-medium text-muted uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -216,7 +216,7 @@ export default function PendingPaymentsPage() {
                         <CheckCircle className="w-6 h-6 text-[#22C55E]" />
                       </div>
                       <p className="text-sm text-white font-medium">No pending payments</p>
-                      <p className="text-xs text-[#A7B0C0]">
+                      <p className="text-xs text-muted">
                         All payment verifications have been reviewed.
                       </p>
                     </div>
@@ -236,7 +236,7 @@ export default function PendingPaymentsPage() {
                       <p className="text-sm text-white">
                         {p.user_name || "Unknown"}
                       </p>
-                      <p className="text-[11px] text-[#A7B0C0]">
+                      <p className="text-[11px] text-muted">
                         {p.user_email || "--"}
                       </p>
                     </td>
@@ -246,7 +246,7 @@ export default function PendingPaymentsPage() {
                       <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium border bg-[#6D5EF5]/10 text-[#6D5EF5] border-[#6D5EF5]/20">
                         {p.plan_slug || "--"}
                       </span>
-                      <span className="text-[10px] text-[#A7B0C0] ml-1.5">
+                      <span className="text-[10px] text-muted ml-1.5">
                         {p.billing_cycle}
                       </span>
                     </td>
@@ -266,7 +266,7 @@ export default function PendingPaymentsPage() {
                     {/* Payment Method */}
                     <td className="p-4">
                       <div className="flex items-center gap-1.5">
-                        <CreditCard className="w-3.5 h-3.5 text-[#A7B0C0]" />
+                        <CreditCard className="w-3.5 h-3.5 text-muted" />
                         <span className="text-xs text-white">
                           {providerLabels[p.provider] || p.provider}
                         </span>
@@ -285,7 +285,7 @@ export default function PendingPaymentsPage() {
                     </td>
 
                     {/* Submitted */}
-                    <td className="p-4 text-xs text-[#A7B0C0]">
+                    <td className="p-4 text-xs text-muted">
                       {formatDate(p.created_at)}
                     </td>
 
@@ -342,7 +342,7 @@ export default function PendingPaymentsPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-[#151C2E] border border-white/[0.06] rounded-2xl p-6 w-full max-w-md shadow-2xl"
+              className="bg-card border border-white/[0.06] rounded-2xl p-6 w-full max-w-md shadow-2xl"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -351,7 +351,7 @@ export default function PendingPaymentsPage() {
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold text-white">Reject Payment</h3>
-                    <p className="text-[11px] text-[#A7B0C0]">
+                    <p className="text-[11px] text-muted">
                       This action cannot be undone
                     </p>
                   </div>
@@ -363,14 +363,14 @@ export default function PendingPaymentsPage() {
                       setRejectPaymentId(null)
                     }
                   }}
-                  className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[#A7B0C0] hover:text-white transition-all"
+                  className="p-1.5 rounded-lg hover:bg-white/[0.06] text-muted hover:text-foreground transition-all"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               <label className="block mb-4">
-                <span className="text-[11px] font-medium text-[#A7B0C0] uppercase tracking-wider">
+                <span className="text-[11px] font-medium text-muted uppercase tracking-wider">
                   Rejection Reason
                 </span>
                 <textarea
@@ -378,7 +378,7 @@ export default function PendingPaymentsPage() {
                   onChange={(e) => setRejectReason(e.target.value)}
                   placeholder="Enter the reason for rejecting this payment..."
                   rows={3}
-                  className="mt-1.5 w-full px-3 py-2.5 rounded-xl bg-[#0D1220] border border-white/[0.06] text-white text-xs placeholder:text-[#A7B0C0]/40 focus:outline-none focus:ring-2 focus:ring-[#EF4444]/30 transition-all resize-none"
+                  className="mt-1.5 w-full px-3 py-2.5 rounded-xl bg-[#0D1220] border border-white/[0.06] text-white text-xs placeholder:text-muted/40 focus:outline-none focus:ring-2 focus:ring-[#EF4444]/30 transition-all resize-none"
                 />
               </label>
 
@@ -389,7 +389,7 @@ export default function PendingPaymentsPage() {
                     setRejectPaymentId(null)
                   }}
                   disabled={rejecting}
-                  className="px-4 py-2 rounded-xl text-xs text-[#A7B0C0] hover:text-white border border-white/[0.06] hover:bg-white/[0.06] transition-all disabled:opacity-50"
+                  className="px-4 py-2 rounded-xl text-xs text-muted hover:text-foreground border border-white/[0.06] hover:bg-white/[0.06] transition-all disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -423,7 +423,7 @@ export default function PendingPaymentsPage() {
             <p className="text-xs text-[#EF4444]">{error}</p>
             <button
               onClick={() => setError("")}
-              className="text-[#EF4444] hover:text-white transition-colors"
+              className="text-[#EF4444] hover:text-foreground transition-colors"
             >
               <XCircle className="w-4 h-4" />
             </button>

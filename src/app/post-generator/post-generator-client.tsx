@@ -221,7 +221,7 @@ function CircularScore({ label, score, color, size = 80 }: { label: string; scor
           </motion.span>
         </div>
       </div>
-      <span className="text-[11px] font-medium text-[#8895A7] group-hover:text-[#A7B0C0] transition-colors">{label}</span>
+      <span className="text-[11px] font-medium text-[#8895A7] group-hover:text-muted transition-colors">{label}</span>
     </div>
   )
 }
@@ -261,7 +261,7 @@ function EmptyState() {
           <motion.div
             key={item.label}
             variants={itemVariants}
-            className="group bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 backdrop-blur-sm border border-white/[0.06] rounded-xl p-4 text-left hover:border-[#6D5EF5]/25 hover:bg-[#151C2E]/60 transition-all duration-300 hover:shadow-lg hover:shadow-[#6D5EF5]/5"
+            className="group bg-gradient-to-b from-card/60 to-card/30 backdrop-blur-sm border border-white/[0.06] rounded-xl p-4 text-left hover:border-[#6D5EF5]/25 hover:bg-card/60 transition-all duration-300 hover:shadow-lg hover:shadow-[#6D5EF5]/5"
           >
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6D5EF5]/15 to-[#8B5CF6]/10 flex items-center justify-center mb-3 group-hover:scale-110 group-hover:rotate-[-4deg] transition-all duration-300">
               <item.icon className="w-[18px] h-[18px] text-[#6D5EF5]" />
@@ -302,7 +302,7 @@ function FloatingToolbar({ onCopy, onDownloadTxt, onDownloadMd, onSave, onShare,
       <div className="flex items-center gap-1.5 flex-wrap">
         <button
           onClick={() => handleClick("copy", onCopy)}
-          className="group flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white hover:border-[#6D5EF5]/30 hover:bg-[#151C2E] transition-all shadow-sm"
+          className="group flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-gradient-to-b from-card/80 to-card/60 border border-white/[0.06] text-xs text-muted hover:text-foreground hover:border-[#6D5EF5]/30 hover:bg-card transition-all shadow-sm"
         >
           {copied === "copy" ? <Check className="w-3.5 h-3.5 text-[#22C55E]" /> : <Copy className="w-3.5 h-3.5" />}
           <span>{copied === "copy" ? "Copied!" : "Copy All"}</span>
@@ -310,14 +310,14 @@ function FloatingToolbar({ onCopy, onDownloadTxt, onDownloadMd, onSave, onShare,
         <div className="w-px h-5 bg-white/[0.06] mx-0.5" />
         <button
           onClick={() => handleClick("txt", onDownloadTxt)}
-          className="group flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white hover:border-white/[0.12] hover:bg-[#151C2E] transition-all"
+          className="group flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-b from-card/80 to-card/60 border border-white/[0.06] text-xs text-muted hover:text-foreground hover:border-white/[0.12] hover:bg-card transition-all"
         >
           <Download className="w-3.5 h-3.5" />
           <span>.txt</span>
         </button>
         <button
           onClick={() => handleClick("md", onDownloadMd)}
-          className="group flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white hover:border-white/[0.12] hover:bg-[#151C2E] transition-all"
+          className="group flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-b from-card/80 to-card/60 border border-white/[0.06] text-xs text-muted hover:text-foreground hover:border-white/[0.12] hover:bg-card transition-all"
         >
           <Download className="w-3.5 h-3.5" />
           <span>.md</span>
@@ -325,14 +325,14 @@ function FloatingToolbar({ onCopy, onDownloadTxt, onDownloadMd, onSave, onShare,
         <div className="w-px h-5 bg-white/[0.06] mx-0.5" />
         <button
           onClick={() => handleClick("save", onSave)}
-          className="group flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white hover:border-white/[0.12] hover:bg-[#151C2E] transition-all"
+          className="group flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-gradient-to-b from-card/80 to-card/60 border border-white/[0.06] text-xs text-muted hover:text-foreground hover:border-white/[0.12] hover:bg-card transition-all"
         >
           {copied === "save" ? <Check className="w-3.5 h-3.5 text-[#22C55E]" /> : <Save className="w-3.5 h-3.5" />}
           <span>{copied === "save" ? "Saved!" : "Save"}</span>
         </button>
         <button
           onClick={() => handleClick("share", onShare)}
-          className="group flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 border border-white/[0.06] text-xs text-[#A7B0C0] hover:text-white hover:border-white/[0.12] hover:bg-[#151C2E] transition-all"
+          className="group flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-gradient-to-b from-card/80 to-card/60 border border-white/[0.06] text-xs text-muted hover:text-foreground hover:border-white/[0.12] hover:bg-card transition-all"
         >
           {copied === "share" ? <Check className="w-3.5 h-3.5 text-[#22C55E]" /> : <Share2 className="w-3.5 h-3.5" />}
           <span>{copied === "share" ? "Shared!" : "Share"}</span>
@@ -358,7 +358,7 @@ function FaqItem({ question, answer, isOpen, onToggle }: {
   onToggle: () => void
 }) {
   return (
-    <div className="group bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 backdrop-blur-sm border border-white/[0.06] rounded-xl overflow-hidden hover:border-white/[0.10] hover:shadow-lg hover:shadow-black/10 transition-all duration-300">
+    <div className="group bg-gradient-to-b from-card/60 to-card/30 backdrop-blur-sm border border-white/[0.06] rounded-xl overflow-hidden hover:border-white/[0.10] hover:shadow-lg hover:shadow-black/10 transition-all duration-300">
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between gap-3 p-4 text-left hover:bg-white/[0.015] transition-colors"
@@ -382,7 +382,7 @@ function FaqItem({ question, answer, isOpen, onToggle }: {
             className="overflow-hidden"
           >
             <div className="px-4 pb-4 pt-0 border-t border-white/[0.04]">
-              <p className="text-sm text-[#A7B0C0] leading-relaxed pt-3">{answer}</p>
+              <p className="text-sm text-muted leading-relaxed pt-3">{answer}</p>
             </div>
           </motion.div>
         )}
@@ -399,7 +399,7 @@ function McqItem({ mcq, index }: {
   const isCorrect = selected === mcq.correctIndex
 
   return (
-    <div className="bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 backdrop-blur-sm border border-white/[0.06] rounded-xl p-4">
+    <div className="bg-gradient-to-b from-card/60 to-card/30 backdrop-blur-sm border border-white/[0.06] rounded-xl p-4">
       <div className="flex items-start gap-3 mb-3">
         <span className="w-6 h-6 rounded-full bg-[#6D5EF5]/20 border border-[#6D5EF5]/30 flex items-center justify-center text-[11px] font-bold text-[#6D5EF5] shrink-0 mt-0.5">
           {index + 1}
@@ -424,7 +424,7 @@ function McqItem({ mcq, index }: {
                   ? "bg-[#EF4444]/10 border-[#EF4444]/30 text-[#EF4444]"
                   : isSelected
                   ? "bg-[#6D5EF5]/10 border-[#6D5EF5]/30 text-[#6D5EF5]"
-                  : "bg-white/[0.02] border-white/[0.06] text-[#A7B0C0] hover:bg-white/[0.04] hover:text-white"
+                  : "bg-white/[0.02] border-white/[0.06] text-muted hover:bg-white/[0.04] hover:text-foreground"
               }`}
             >
               <span className="font-medium mr-2">{String.fromCharCode(65 + i)}.</span>
@@ -442,7 +442,7 @@ function McqItem({ mcq, index }: {
           <p className={`text-xs font-medium mb-1 ${isCorrect ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
             {isCorrect ? "✅ Correct!" : "❌ Incorrect"}
           </p>
-          <p className="text-xs text-[#A7B0C0] leading-relaxed">{mcq.explanation}</p>
+          <p className="text-xs text-muted leading-relaxed">{mcq.explanation}</p>
         </motion.div>
       )}
     </div>
@@ -470,7 +470,7 @@ function InputChipGroup<T extends string>({ options, value, onChange, label }: {
               className={`group relative px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
                 active
                   ? "bg-gradient-to-r from-[#6D5EF5]/15 to-[#8B5CF6]/10 text-white border border-[#6D5EF5]/30 shadow-sm"
-                  : "bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 text-[#8895A7] border border-white/[0.06] hover:border-white/[0.12] hover:text-white hover:bg-[#151C2E]/60"
+                  : "bg-gradient-to-b from-card/60 to-card/30 text-[#8895A7] border border-white/[0.06] hover:border-white/[0.12] hover:text-foreground hover:bg-card/60"
               }`}
             >
               {Icon && <Icon className={`w-3.5 h-3.5 inline mr-1.5 -mt-0.5 ${active ? "text-[#6D5EF5]" : ""}`} />}
@@ -514,7 +514,7 @@ function ArticleSkeleton() {
 
 function PipelineSkeleton() {
   return (
-    <div className="bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 shadow-xl shadow-black/20">
+    <div className="bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 shadow-xl shadow-black/20">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-white/[0.04] animate-pulse" />
@@ -562,7 +562,7 @@ function ScoreCard({ label, value, color }: { label: string; value: number; colo
   return (
     <motion.div
       variants={itemVariants}
-                  className="group bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 backdrop-blur-sm border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.10] hover:shadow-lg hover:shadow-black/10 hover:scale-[1.02] transition-all duration-300"
+                  className="group bg-gradient-to-b from-card/60 to-card/30 backdrop-blur-sm border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.10] hover:shadow-lg hover:shadow-black/10 hover:scale-[1.02] transition-all duration-300"
                 >
                   <div className="flex items-center justify-between mb-2">
         <span className="text-xs text-[#8895A7] font-medium">{label}</span>
@@ -902,7 +902,7 @@ function PostGeneratorContent() {
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
-                  className="relative w-full h-12 pl-11 pr-4 bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 backdrop-blur-sm border border-white/[0.06] rounded-xl text-sm text-white placeholder:text-[#8895A7]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-2 focus:ring-[#6D5EF5]/12 transition-all group-hover:border-white/[0.10]"
+                  className="relative w-full h-12 pl-11 pr-4 bg-gradient-to-b from-card/80 to-card/60 backdrop-blur-sm border border-white/[0.06] rounded-xl text-sm text-white placeholder:text-muted/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-2 focus:ring-[#6D5EF5]/12 transition-all group-hover:border-white/[0.10]"
                 />
                 {keyword && (
                   <button
@@ -921,7 +921,7 @@ function PostGeneratorContent() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 shadow-sm"
+              className="bg-gradient-to-b from-card/40 to-card/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 shadow-sm"
             >
               <InputChipGroup
                 label="Article Type"
@@ -938,7 +938,7 @@ function PostGeneratorContent() {
               transition={{ delay: 0.15 }}
               className="grid grid-cols-2 gap-4"
             >
-              <div className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 space-y-3 shadow-sm">
+              <div className="bg-gradient-to-b from-card/40 to-card/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 space-y-3 shadow-sm">
                 <label className="text-xs font-medium text-[#8895A7] uppercase tracking-wider">Word Count</label>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs text-[#8895A7]">100</span>
@@ -952,7 +952,7 @@ function PostGeneratorContent() {
                   step={10}
                   value={wordCount}
                   onChange={(e) => setWordCount(Number(e.target.value))}
-                  className="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#151C2E] border border-white/[0.06] accent-[#6D5EF5]"
+                  className="w-full h-2 rounded-full appearance-none cursor-pointer bg-card border border-white/[0.06] accent-[#6D5EF5]"
                   style={{
                     background: `linear-gradient(to right, #6D5EF5 0%, #6D5EF5 ${((wordCount - 100) / 3900) * 100}%, #151C2E ${((wordCount - 100) / 3900) * 100}%, #151C2E 100%)`,
                   }}
@@ -962,7 +962,7 @@ function PostGeneratorContent() {
                   <span>~{Math.ceil(wordCount / 200)} min read</span>
                 </div>
               </div>
-              <div className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 shadow-sm">
+              <div className="bg-gradient-to-b from-card/40 to-card/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 shadow-sm">
                 <InputChipGroup
                   label="Tone"
                   options={toneOptions}
@@ -977,11 +977,11 @@ function PostGeneratorContent() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl overflow-hidden shadow-sm"
+              className="bg-gradient-to-b from-card/40 to-card/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl overflow-hidden shadow-sm"
             >
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className="w-full flex items-center justify-between gap-2 px-5 py-4 text-xs font-medium text-[#8895A7] hover:text-white transition-colors"
+                className="w-full flex items-center justify-between gap-2 px-5 py-4 text-xs font-medium text-[#8895A7] hover:text-foreground transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <div className="w-7 h-7 rounded-lg bg-white/[0.04] flex items-center justify-center">
@@ -1013,7 +1013,7 @@ function PostGeneratorContent() {
                           placeholder="e.g. Marketing professionals, small business owners"
                           value={audience}
                           onChange={(e) => setAudience(e.target.value)}
-                          className="w-full h-10 px-3.5 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#8895A7]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all"
+                          className="w-full h-10 px-3.5 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-muted/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all"
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -1023,7 +1023,7 @@ function PostGeneratorContent() {
                           value={keyPoints}
                           onChange={(e) => setKeyPoints(e.target.value)}
                           rows={3}
-                          className="w-full px-3.5 py-2 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#8895A7]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all resize-none"
+                          className="w-full px-3.5 py-2 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-muted/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all resize-none"
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -1032,7 +1032,7 @@ function PostGeneratorContent() {
                           placeholder="e.g. Authoritative yet approachable"
                           value={brandVoice}
                           onChange={(e) => setBrandVoice(e.target.value)}
-                          className="w-full h-10 px-3.5 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-[#8895A7]/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all"
+                          className="w-full h-10 px-3.5 bg-[#090B16]/60 border border-white/[0.06] rounded-lg text-sm text-white placeholder:text-muted/40 focus:outline-none focus:border-[#6D5EF5]/40 focus:ring-1 focus:ring-[#6D5EF5]/10 transition-all"
                         />
                       </div>
                     </div>
@@ -1081,7 +1081,7 @@ function PostGeneratorContent() {
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 shadow-sm"
+                className="bg-gradient-to-b from-card/40 to-card/20 backdrop-blur-sm border border-white/[0.06] rounded-2xl p-5 shadow-sm"
               >
                 <div className="flex items-center justify-between mb-3 pb-3 border-b border-white/[0.04]">
                   <span className="text-xs text-[#8895A7]">Status</span>
@@ -1120,7 +1120,7 @@ function PostGeneratorContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 onClick={handleNewArticle}
-                className="w-full h-11 rounded-2xl border border-dashed border-white/[0.08] text-xs text-[#8895A7] hover:text-white hover:border-white/[0.15] hover:bg-white/[0.02] transition-all"
+                className="w-full h-11 rounded-2xl border border-dashed border-white/[0.08] text-xs text-[#8895A7] hover:text-foreground hover:border-white/[0.15] hover:bg-white/[0.02] transition-all"
               >
                 + New Article
               </motion.button>
@@ -1140,7 +1140,7 @@ function PostGeneratorContent() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
-                    className="bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 shadow-xl shadow-black/20"
+                    className="bg-gradient-to-b from-card/80 to-card/40 backdrop-blur-xl border border-white/[0.06] rounded-2xl p-6 shadow-xl shadow-black/20"
                   >
                     <div className="flex items-center justify-between mb-5">
                       <div className="flex items-center gap-3">
@@ -1196,7 +1196,7 @@ function PostGeneratorContent() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-[#EF4444]">Generation Failed</p>
-                  <p className="text-xs text-[#A7B0C0] mt-1 leading-relaxed">{error}</p>
+                  <p className="text-xs text-muted mt-1 leading-relaxed">{error}</p>
                   <div className="flex gap-2 mt-3">
                     <button
                       onClick={handleGenerate}
@@ -1206,7 +1206,7 @@ function PostGeneratorContent() {
                     </button>
                     <button
                       onClick={handleNewArticle}
-                      className="px-4 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] text-xs font-medium text-[#A7B0C0] hover:text-white hover:bg-white/[0.08] transition-all"
+                      className="px-4 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] text-xs font-medium text-muted hover:text-foreground hover:bg-white/[0.08] transition-all"
                     >
                       New Article
                     </button>
@@ -1281,7 +1281,7 @@ function PostGeneratorContent() {
                         className={`shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-medium transition-all duration-200 relative ${
                           activeTab === tab
                             ? "text-white"
-                            : "text-[#8895A7] hover:text-white"
+                            : "text-[#8895A7] hover:text-foreground"
                         }`}
                       >
                         <TabIcon className="w-3.5 h-3.5" />
@@ -1289,7 +1289,7 @@ function PostGeneratorContent() {
                         {activeTab === tab && (
                           <motion.div
                             layoutId="activeTab"
-                            className="absolute inset-0 bg-gradient-to-b from-[#151C2E]/80 to-[#151C2E]/60 border border-white/[0.06] rounded-lg -z-10 shadow-sm"
+                            className="absolute inset-0 bg-gradient-to-b from-card/80 to-card/60 border border-white/[0.06] rounded-lg -z-10 shadow-sm"
                             transition={{ type: "spring", stiffness: 400, damping: 30 }}
                           />
                         )}
@@ -1306,7 +1306,7 @@ function PostGeneratorContent() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 backdrop-blur-xl border border-white/[0.06] rounded-2xl overflow-hidden shadow-xl shadow-black/10"
+                    className="bg-gradient-to-b from-card/60 to-card/30 backdrop-blur-xl border border-white/[0.06] rounded-2xl overflow-hidden shadow-xl shadow-black/10"
                   >
                     <div className="px-6 py-4 border-b border-white/[0.04] flex items-center justify-between bg-[#0A0C1A]/30">
                       <div className="flex items-center gap-2.5">
@@ -1349,7 +1349,7 @@ function PostGeneratorContent() {
                           </motion.div>
                           <motion.div variants={itemVariants} className="relative">
                             <div className="absolute -left-3 top-0 bottom-0 w-[3px] bg-gradient-to-b from-[#6D5EF5]/40 to-transparent rounded-full" />
-                            <p className="text-sm text-[#A7B0C0] leading-[1.85] pl-3 italic">{result.intro}</p>
+                            <p className="text-sm text-muted leading-[1.85] pl-3 italic">{result.intro}</p>
                           </motion.div>
                           {(result.sections || []).map((section, i) => (
                             <motion.div key={i} variants={itemVariants} className="space-y-4 pt-1">
@@ -1367,7 +1367,7 @@ function PostGeneratorContent() {
                                   ))}
                                 </div>
                               )}
-                              <p className="text-sm text-[#A7B0C0] leading-[1.85]">{section.content}</p>
+                              <p className="text-sm text-muted leading-[1.85]">{section.content}</p>
                             </motion.div>
                           ))}
                           <motion.div variants={itemVariants} className="pt-5 border-t border-white/[0.04]">
@@ -1375,7 +1375,7 @@ function PostGeneratorContent() {
                               <span className="w-1.5 h-1.5 rounded-full bg-[#8B5CF6]" />
                               Conclusion
                             </h2>
-                            <p className="text-sm text-[#A7B0C0] leading-[1.85]">{result.conclusion}</p>
+                            <p className="text-sm text-muted leading-[1.85]">{result.conclusion}</p>
                           </motion.div>
                           {result.cta && (
                             <motion.div variants={itemVariants}>
@@ -1385,7 +1385,7 @@ function PostGeneratorContent() {
                             </motion.div>
                           )}
                           {(result.internalLinks || []).length > 0 && (
-                            <motion.div variants={itemVariants} className="bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 border border-white/[0.06] rounded-2xl p-5 shadow-sm">
+                            <motion.div variants={itemVariants} className="bg-gradient-to-b from-card/60 to-card/30 border border-white/[0.06] rounded-2xl p-5 shadow-sm">
                               <div className="flex items-center gap-2 mb-4">
                                 <div className="w-7 h-7 rounded-lg bg-[#6D5EF5]/10 flex items-center justify-center">
                                   <ExternalLink className="w-3.5 h-3.5 text-[#6D5EF5]" />
@@ -1402,7 +1402,7 @@ function PostGeneratorContent() {
                                     className="flex items-center gap-3 text-sm p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
                                   >
                                     <ExternalLink className="w-3.5 h-3.5 text-[#6D5EF5] shrink-0" />
-                                    <span className="text-[#A7B0C0]">{link.text}</span>
+                                    <span className="text-muted">{link.text}</span>
                                     <span className="text-[#8895A7]">→</span>
                                     <span className="text-[#6D5EF5] font-mono text-xs">/{link.url}</span>
                                   </motion.div>
@@ -1430,7 +1430,7 @@ function PostGeneratorContent() {
                                 <label className="text-xs font-medium text-[#8895A7] uppercase tracking-wider">{item.label}</label>
                               </div>
                               <div className="group flex items-center gap-2 p-4 bg-gradient-to-b from-[#090B16]/60 to-[#090B16]/40 border border-white/[0.06] rounded-xl hover:border-[#6D5EF5]/20 hover:shadow-lg hover:shadow-black/10 transition-all">
-                                <p className="text-sm text-[#A7B0C0] flex-1 leading-relaxed">{item.value}</p>
+                                <p className="text-sm text-muted flex-1 leading-relaxed">{item.value}</p>
                                 <button
                                   onClick={() => handleCopy(item.key, item.value)}
                                   className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-[#6D5EF5]/10 hover:border-[#6D5EF5]/30"
@@ -1486,7 +1486,7 @@ function PostGeneratorContent() {
                                   initial={{ opacity: 0, scale: 0.9 }}
                                   animate={{ opacity: 1, scale: 1 }}
                                   transition={{ delay: i * 0.03 }}
-                                  className="text-[11px] px-3 py-1.5 rounded-full bg-white/[0.04] text-[#A7B0C0] border border-white/[0.06] hover:bg-white/[0.08] transition-colors"
+                                  className="text-[11px] px-3 py-1.5 rounded-full bg-white/[0.04] text-muted border border-white/[0.06] hover:bg-white/[0.08] transition-colors"
                                 >
                                   {cat}
                                 </motion.span>
@@ -1563,7 +1563,7 @@ function PostGeneratorContent() {
                             </div>
                             <button
                               onClick={() => handleCopy("schema", JSON.stringify(result.schemaJson, null, 2))}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 border border-white/[0.06] text-[10px] text-[#A7B0C0] hover:text-white hover:border-[#6D5EF5]/30 transition-all"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-b from-card/60 to-card/30 border border-white/[0.06] text-[10px] text-muted hover:text-foreground hover:border-[#6D5EF5]/30 transition-all"
                             >
                               {copied === "schema" ? <Check className="w-3 h-3 text-[#22C55E]" /> : <Copy className="w-3 h-3" />}
                               Copy
@@ -1572,7 +1572,7 @@ function PostGeneratorContent() {
                           <motion.div variants={itemVariants} className="relative group">
                             <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-[#090B16] to-transparent pointer-events-none z-10 rounded-t-lg" />
                             <pre
-                              className="w-full overflow-x-auto whitespace-pre-wrap break-all text-xs leading-relaxed bg-[#090B16]/80 border border-white/[0.06] rounded-xl p-5 font-mono text-[#A7B0C0] scrollbar-thin group-hover:border-[#F59E0B]/20 transition-colors"
+                              className="w-full overflow-x-auto whitespace-pre-wrap break-all text-xs leading-relaxed bg-[#090B16]/80 border border-white/[0.06] rounded-xl p-5 font-mono text-muted scrollbar-thin group-hover:border-[#F59E0B]/20 transition-colors"
                               style={{ maxHeight: "500px" }}
                             >
                               {JSON.stringify(result.schemaJson, null, 2)}
@@ -1614,7 +1614,7 @@ function PostGeneratorContent() {
                                 <motion.div
                                   key={item.label}
                                   variants={itemVariants}
-                                  className="group bg-gradient-to-b from-[#151C2E]/60 to-[#151C2E]/30 backdrop-blur-sm border border-white/[0.06] rounded-xl p-4 text-center hover:border-white/[0.10] hover:shadow-lg hover:shadow-black/10 transition-all duration-300"
+                                  className="group bg-gradient-to-b from-card/60 to-card/30 backdrop-blur-sm border border-white/[0.06] rounded-xl p-4 text-center hover:border-white/[0.10] hover:shadow-lg hover:shadow-black/10 transition-all duration-300"
                                 >
                                   <div className={`w-9 h-9 rounded-lg bg-gradient-to-br flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300`}
                                     style={{ background: `linear-gradient(135deg, ${item.color}20, ${item.color}10)` }}
@@ -1637,7 +1637,7 @@ function PostGeneratorContent() {
                             })}
                           </motion.div>
 
-                          <motion.div variants={itemVariants} className="bg-gradient-to-b from-[#151C2E]/40 to-[#151C2E]/20 border border-white/[0.06] rounded-xl p-4">
+                          <motion.div variants={itemVariants} className="bg-gradient-to-b from-card/40 to-card/20 border border-white/[0.06] rounded-xl p-4">
                             <div className="grid grid-cols-2 gap-4">
                               <div className="text-center">
                                 <p className="text-2xl font-bold text-white">{(result.wordCount || 0).toLocaleString()} <span className="text-sm text-[#8895A7]">/ {wordCount.toLocaleString()}</span></p>

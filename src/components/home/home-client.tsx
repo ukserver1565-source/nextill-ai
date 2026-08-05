@@ -361,7 +361,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                       {(profile?.role === "admin" || profile?.role === "super_admin") && (
                         <Link
                           href="/zain-nextill-ansari"
-                          className="flex items-center gap-2 px-3 py-2 text-sm text-[#F59E0B] hover:text-white hover:bg-[#F59E0B]/10 rounded-lg transition-colors"
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-[#F59E0B] hover:text-foreground hover:bg-[#F59E0B]/10 rounded-lg transition-colors"
                           onClick={() => setProfileOpen(false)}
                         >
                           ⚡ Admin Panel
@@ -656,7 +656,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                           </div>
                           <div>
                             <h3 className="font-semibold">{demo.name}</h3>
-                            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/[0.06] text-[#A7B0C0] border border-white/[0.06]">{demo.badge}</span>
+                            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/[0.06] text-muted border border-white/[0.06]">{demo.badge}</span>
                           </div>
                         </div>
                         <div className="space-y-3">
@@ -896,13 +896,13 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
           <div className="flex items-center justify-center gap-3 mb-8">
             <button
               onClick={() => setBillingCycle("monthly")}
-              className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "monthly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-foreground"}`}
+              className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "monthly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-muted hover:text-foreground"}`}
             >
               Monthly
             </button>
             <button
               onClick={() => setBillingCycle("yearly")}
-              className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "yearly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-[#A7B0C0] hover:text-foreground"}`}
+              className={`px-5 py-2 rounded-xl text-sm font-medium transition-all ${billingCycle === "yearly" ? "bg-[#6D5EF5] text-white shadow-lg shadow-[#6D5EF5]/20" : "text-muted hover:text-foreground"}`}
             >
               Yearly
               <span className="ml-1.5 text-[10px] font-bold text-emerald-400">Save 2 months</span>
@@ -957,8 +957,8 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/[0.06]">
-                    <th className="text-left p-4 text-xs text-[#A7B0C0] font-medium uppercase">Action</th>
-                    <th className="text-right p-4 text-xs text-[#A7B0C0] font-medium uppercase">Credits</th>
+                    <th className="text-left p-4 text-xs text-muted font-medium uppercase">Action</th>
+                    <th className="text-right p-4 text-xs text-muted font-medium uppercase">Credits</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -985,7 +985,7 @@ export default function HomePage({ initialPlans }: HomeClientProps) {
                 </tbody>
               </table>
             </div>
-            <p className="text-center text-xs text-[#A7B0C0] mt-4">Credit costs are configured by the admin and may vary.</p>
+            <p className="text-center text-xs text-muted mt-4">Credit costs are configured by the admin and may vary.</p>
           </div>
         </div>
       </motion.section>
